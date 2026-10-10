@@ -164,13 +164,13 @@ function SectionMenu() {
                   onClick={() => setOpen(false)}
                   className={`flex w-full items-center gap-3 rounded-xl p-2.5 text-left active:bg-neutral-100 ${onOutfit ? 'bg-neutral-100' : ''}`}
                 >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#171717] text-[#fff]">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#4f46e5] text-[#fff]">
                     <LayoutGrid className="size-4.5" />
                   </span>
                   <span className="min-w-0 flex-1 leading-tight">
                     <span className="flex items-center gap-1.5 font-semibold">
                       Outfit
-                      {!outfitSeen && <span className="rounded-full bg-[#171717] px-1.5 py-px text-[10px] font-bold uppercase text-[#fff]">Nuovo</span>}
+                      {!outfitSeen && <span className="rounded-full bg-[#4f46e5] px-1.5 py-px text-[10px] font-bold uppercase text-[#fff]">Nuovo</span>}
                     </span>
                     <span className="block truncate text-xs text-neutral-500">Look completi da scarpe a giacca</span>
                   </span>

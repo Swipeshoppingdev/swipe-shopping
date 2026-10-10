@@ -1,6 +1,6 @@
-import { AnimatePresence, motion, type PanInfo } from 'framer-motion'
+import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
 import { Heart, RefreshCw, Trash2, X } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { PriceTag } from '../components/PriceTag'
 import { ProductImage } from '../components/ProductImage'
 import { StoreLink } from '../components/StoreLink'
@@ -50,6 +50,12 @@ export function OutfitPage() {
     setSeenState(last)
     save('outfitsSeen', last)
   }
+
+  // Colore suo (indaco) finché la pagina è aperta.
+  useEffect(() => {
+    document.documentElement.classList.add('outfit')
+    return () => document.documentElement.classList.remove('outfit')
+  }, [])
 
   // Gli outfit sono fatti con la Moda: la sezione aperta diventa la Moda (colori e catalogo).
   useEffect(() => {
@@ -128,7 +134,7 @@ export function OutfitPage() {
             <AnimatePresence custom={dir}>
               {deck
                 .slice(0, 2)
-                .map((o, i) => <OutfitCard key={o.id} outfit={o} top={i === 0} onDecide={(yes) => decide(o, yes)} onOpen={() => setOpen(o)} />)
+                .map((o, i) => <OutfitCard key={o.id} outfit={o} index={i} onDecide={(yes) => decide(o, yes)} onOpen={() => setOpen(o)} />)
                 .reverse()}
             </AnimatePresence>
           </div>
@@ -167,29 +173,65 @@ export function OutfitPage() {
   )
 }
 
-function OutfitCard({ outfit, top, onDecide, onOpen }: { outfit: Outfit; top: boolean; onDecide: (yes: boolean) => void; onOpen: () => void }) {
+const SWIPE_DISTANCE = 110
+const SWIPE_VELOCITY = 600
+const cardVariants = {
+  exit: (d: number) => ({
+    x: d * (typeof window === 'undefined' ? 600 : window.innerWidth + 200),
+    rotate: d * 22,
+    opacity: 0,
+    transition: { duration: 0.32, ease: 'easeOut' as const },
+  }),
+}
+
+/** Card dell'outfit: si trascina come i prodotti, con "SÌ" e "NO" che compaiono durante lo swipe. */
+function OutfitCard({ outfit, index, onDecide, onOpen }: { outfit: Outfit; index: number; onDecide: (yes: boolean) => void; onOpen: () => void }) {
+  const top = index === 0
   const total = outfitTotal(outfit.items)
+  const x = useMotionValue(0)
+  const rotate = useTransform(x, [-300, 0, 300], [-16, 0, 16])
+  const likeOpacity = useTransform(x, [20, SWIPE_DISTANCE], [0, 1])
+  const nopeOpacity = useTransform(x, [-SWIPE_DISTANCE, -20], [1, 0])
+  const dragged = useRef(false)
   const onDragEnd = (_: unknown, info: PanInfo) => {
-    if (Math.abs(info.offset.x) < 110 && Math.abs(info.velocity.x) < 600) return
-    onDecide(info.offset.x > 0)
+    if (info.offset.x > SWIPE_DISTANCE || info.velocity.x > SWIPE_VELOCITY) onDecide(true)
+    else if (info.offset.x < -SWIPE_DISTANCE || info.velocity.x < -SWIPE_VELOCITY) onDecide(false)
+    // Il tocco che segue un trascinamento non apre la scheda.
+    setTimeout(() => (dragged.current = false), 0)
   }
+  const open = () => !dragged.current && top && onOpen()
   return (
     <motion.div
       className="absolute inset-0 flex flex-col overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/5"
-      style={{ zIndex: top ? 2 : 1 }}
-      initial={{ scale: 0.96, opacity: 0 }}
-      animate={{ scale: top ? 1 : 0.96, opacity: 1, y: top ? 0 : 8 }}
-      variants={{ exit: (d: number) => ({ x: d * 500, rotate: d * 15, opacity: 0, transition: { duration: 0.25 } }) }}
-      exit="exit"
+      style={{ x, rotate, zIndex: 10 - index, touchAction: top ? 'pan-y' : undefined }}
       drag={top ? 'x' : false}
-      dragSnapToOrigin
-      whileDrag={{ rotate: 0 }}
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.9}
+      onDragStart={() => (dragged.current = true)}
       onDragEnd={onDragEnd}
+      initial={{ scale: 0.94, y: 14, opacity: 0 }}
+      animate={{ scale: 1 - index * 0.04, y: index * 14, opacity: 1 }}
+      exit="exit"
+      variants={cardVariants}
+      transition={{ type: 'spring', stiffness: 320, damping: 30 }}
+      aria-hidden={!top}
     >
-      <button type="button" onClick={onOpen} className="min-h-0 flex-1 bg-neutral-100 p-1.5" aria-label="Vedi i capi dell'outfit">
+      <div onClick={open} className="relative min-h-0 flex-1 cursor-pointer bg-neutral-100 p-1.5" aria-label="Vedi i capi dell'outfit">
         <Collage items={outfit.items} eager={top} />
-      </button>
-      <button type="button" onClick={onOpen} className="flex items-center justify-between gap-3 p-4 text-left">
+        <motion.span
+          style={{ opacity: likeOpacity }}
+          className="pointer-events-none absolute top-6 left-5 -rotate-12 rounded-xl border-4 border-emerald-500 px-3 py-1 text-3xl font-black text-emerald-500"
+        >
+          SÌ
+        </motion.span>
+        <motion.span
+          style={{ opacity: nopeOpacity }}
+          className="pointer-events-none absolute top-6 right-5 rotate-12 rounded-xl border-4 border-red-500 px-3 py-1 text-3xl font-black text-red-500"
+        >
+          NO
+        </motion.span>
+      </div>
+      <div onClick={open} className="flex cursor-pointer items-center justify-between gap-3 p-4">
         <span>
           <span className="block text-xs font-semibold tracking-wide text-neutral-500 uppercase">
             Outfit {STYLE_LABEL[outfit.style].toLowerCase()} · {outfit.items.length} capi
@@ -197,7 +239,7 @@ function OutfitCard({ outfit, top, onDecide, onOpen }: { outfit: Outfit; top: bo
           <span className="block text-lg font-bold">{total !== null ? `Totale ${euro(total)}` : 'Vedi i prezzi'}</span>
         </span>
         <span className="shrink-0 text-sm font-semibold text-rose-500 underline">Vedi capi</span>
-      </button>
+      </div>
     </motion.div>
   )
 }
@@ -207,15 +249,15 @@ function Collage({ items, eager }: { items: Product[]; eager?: boolean }) {
   const split = items.length <= 3 ? 1 : 2
   const cols = [items.slice(0, split), items.slice(split)]
   return (
-    <div className="grid h-full grid-cols-2 gap-1.5">
+    <div className="grid h-full grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-1.5">
       {cols.map((col, c) => (
-        <div key={c} className="flex min-h-0 flex-col gap-1.5">
+        <div key={c} className="flex min-h-0 min-w-0 flex-col gap-1.5">
           {col.map((p) => (
             <ProductImage
               key={p.id}
               product={p}
               eager={eager}
-              className="min-h-0 flex-1 overflow-hidden rounded-2xl [&_img]:h-full [&_img]:w-full [&_img]:object-contain [&_img]:p-2 [&_span]:text-4xl"
+              className="relative min-h-0 flex-1 overflow-hidden rounded-2xl [&_img]:absolute [&_img]:inset-0 [&_img]:h-full [&_img]:w-full [&_img]:object-contain [&_img]:p-2 [&_span]:text-4xl"
             />
           ))}
         </div>
