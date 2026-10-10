@@ -55,7 +55,7 @@ export default function App() {
       <Welcome />
       <ProductSheet />
       <SocialWatcher />
-      <BottomNav current={route === 'outfit' ? 'scopri' : route} />
+      <BottomNav current={route} hash={hash} />
     </div>
   )
 }

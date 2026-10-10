@@ -13,12 +13,18 @@ const ITEMS = [
   { route: 'profilo', label: 'Profilo', Icon: User },
 ] as const
 
-export function BottomNav({ current }: { current: Route }) {
+export function BottomNav({ current, hash }: { current: Route; hash: string }) {
+  // In Outfit niente filtri: Scopri e Preferiti portano agli outfit e agli outfit salvati.
+  const onOutfit = current === 'outfit'
+  const items = onOutfit ? ITEMS.filter((i) => i.route !== 'filtri') : ITEMS
+  const hrefOf = (r: Route) => (!onOutfit ? routeHref(r) : r === 'scopri' ? '#/outfit' : r === 'preferiti' ? '#/outfit/salvati' : routeHref(r))
+  const isActive = (r: Route) =>
+    !onOutfit ? current === r : r === 'preferiti' ? hash.startsWith('#/outfit/salvati') : r === 'scopri' && !hash.startsWith('#/outfit/salvati')
   const { wishlist, state, unseenDeals } = useApp()
   const [unseenSocial, setUnseenSocial] = useState(0)
   useEffect(() => subscribeUnseen(setUnseenSocial), [])
   const badges: Partial<Record<Route, number>> = {
-    preferiti: wishlist.filter((w) => universeOf(w.product.category) === state.mode).length,
+    preferiti: onOutfit ? 0 : wishlist.filter((w) => universeOf(w.product.category) === state.mode).length,
     amici: unseenSocial,
   }
   return (
@@ -26,14 +32,14 @@ export function BottomNav({ current }: { current: Route }) {
       aria-label="Navigazione principale"
       className="fixed inset-x-0 bottom-0 z-30 border-t border-neutral-200/70 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur"
     >
-      <ul className="mx-auto grid h-16 max-w-md grid-cols-5">
-        {ITEMS.map(({ route, label, Icon }) => {
-          const active = current === route
+      <ul className={`mx-auto grid h-16 max-w-md ${onOutfit ? 'grid-cols-4' : 'grid-cols-5'}`}>
+        {items.map(({ route, label, Icon }) => {
+          const active = isActive(route)
           const badge = badges[route]
           return (
             <li key={route}>
               <a
-                href={routeHref(route)}
+                href={hrefOf(route)}
                 aria-current={active ? 'page' : undefined}
                 className={`relative flex h-full flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition ${
                   active ? 'text-neutral-900' : 'text-neutral-400'
@@ -41,7 +47,7 @@ export function BottomNav({ current }: { current: Route }) {
               >
                 <Icon className={`size-6 ${active && route === 'preferiti' ? 'fill-rose-500 text-rose-500' : ''}`} />
                 {label}
-                {route === 'preferiti' && unseenDeals > 0 ? (
+                {route === 'preferiti' && !onOutfit && unseenDeals > 0 ? (
                   <span
                     aria-label={`${unseenDeals} preferiti in offerta`}
                     className="absolute top-2 left-1/2 ml-2 flex h-5 items-center gap-0.5 rounded-full bg-emerald-500 px-1.5 text-[10px] font-bold text-[#fff]"

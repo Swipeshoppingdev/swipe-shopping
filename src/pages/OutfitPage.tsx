@@ -9,6 +9,7 @@ import { brandAndStore } from '../config/stores'
 import { STYLE_LABEL, buildOutfits, outfitTotal, type Outfit, type OutfitStyle } from '../lib/outfits'
 import { openProduct } from '../lib/productSheet'
 import { load, save } from '../lib/storage'
+import { useHashRoute } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
 import type { Product } from '../types/product'
 
@@ -36,7 +37,10 @@ export function OutfitPage() {
     setGenderState(g)
     save('outfitGender', g)
   }
-  const [tab, setTab] = useState<'scopri' | 'salvati'>('scopri')
+  // #/outfit/salvati apre gli outfit salvati (anche dal tasto Preferiti in basso).
+  const { hash } = useHashRoute()
+  const tab = hash.startsWith('#/outfit/salvati') ? 'salvati' : 'scopri'
+  const setTab = (t: 'scopri' | 'salvati') => window.location.replace(t === 'salvati' ? '#/outfit/salvati' : '#/outfit')
   const [saved, setSavedState] = useState(() => load<SavedOutfit[]>('outfitsSaved', []))
   const [seen, setSeenState] = useState(() => load<string[]>('outfitsSeen', []))
   const [open, setOpen] = useState<Outfit | null>(null)
@@ -59,7 +63,7 @@ export function OutfitPage() {
 
   // Gli outfit sono fatti con la Moda: la sezione aperta diventa la Moda (colori e catalogo).
   useEffect(() => {
-    if (state.mode !== 'moda') actions.setMode('moda')
+    if (state.mode !== 'moda' && window.location.hash.startsWith('#/outfit')) actions.setMode('moda')
   }, [state.mode, actions])
 
   const all = useMemo(() => (ready ? buildOutfits(moda, gender) : []), [ready, moda, gender])
@@ -150,10 +154,10 @@ export function OutfitPage() {
             <button
               type="button"
               onClick={() => decide(deck[0], true)}
-              aria-label="Sì, salva l'outfit"
+              aria-label="Mi piace, salva l'outfit"
               className="flex h-14 items-center gap-2 rounded-full bg-rose-500 px-5 font-semibold text-[#fff] shadow-lg shadow-rose-500/30 transition active:scale-90"
             >
-              <Heart className="size-6 fill-current" /> SÌ
+              <Heart className="size-6 fill-current" /> MI PIACE
             </button>
           </div>
         </>
@@ -184,7 +188,7 @@ const cardVariants = {
   }),
 }
 
-/** Card dell'outfit: si trascina come i prodotti, con "SÌ" e "NO" che compaiono durante lo swipe. */
+/** Card dell'outfit: si trascina come i prodotti, con "MI PIACE" e "NO" che compaiono durante lo swipe. */
 function OutfitCard({ outfit, index, onDecide, onOpen }: { outfit: Outfit; index: number; onDecide: (yes: boolean) => void; onOpen: () => void }) {
   const top = index === 0
   const total = outfitTotal(outfit.items)
@@ -220,13 +224,13 @@ function OutfitCard({ outfit, index, onDecide, onOpen }: { outfit: Outfit; index
         <Collage items={outfit.items} eager={top} />
         <motion.span
           style={{ opacity: likeOpacity }}
-          className="pointer-events-none absolute top-6 left-5 -rotate-12 rounded-xl border-4 border-emerald-500 px-3 py-1 text-3xl font-black text-emerald-500"
+          className="pointer-events-none absolute top-6 left-5 -rotate-12 rounded-xl border-4 border-rose-500 bg-rose-500 px-3 py-1 text-2xl font-black tracking-wide text-[#fff] shadow-lg"
         >
-          SÌ
+          MI PIACE
         </motion.span>
         <motion.span
           style={{ opacity: nopeOpacity }}
-          className="pointer-events-none absolute top-6 right-5 rotate-12 rounded-xl border-4 border-red-500 px-3 py-1 text-3xl font-black text-red-500"
+          className="pointer-events-none absolute top-6 right-5 rotate-12 rounded-xl border-4 border-[#262626] bg-[#fff]/90 px-3 py-1 text-2xl font-black tracking-wide text-[#262626]"
         >
           NO
         </motion.span>
@@ -344,7 +348,7 @@ function Saved(props: {
   onDelete: (id: string) => void
 }) {
   if (props.outfits.length === 0) {
-    return <p className="py-10 text-center text-sm text-neutral-500">Gli outfit che ti piacciono (Sì) finiscono qui.</p>
+    return <p className="py-10 text-center text-sm text-neutral-500">Gli outfit a cui metti "Mi piace" finiscono qui.</p>
   }
   return (
     <div className="grid grid-cols-2 gap-3 pb-4">

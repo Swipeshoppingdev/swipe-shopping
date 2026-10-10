@@ -132,8 +132,9 @@ function SectionMenu() {
                 aria-checked={active}
                 onClick={() => {
                   if (!visited.includes(s.id)) setVisited([...visited, s.id])
-                  actions.setMode(s.id)
+                  // Da Outfit: prima si lascia la pagina, poi si cambia sezione (Outfit rimette la Moda finché è aperta).
                   if (onOutfit) window.location.hash = '#/scopri'
+                  actions.setMode(s.id)
                   setOpen(false)
                 }}
                 className={`flex w-full items-center gap-3 rounded-xl p-2.5 text-left active:bg-neutral-100 ${active ? 'bg-neutral-100' : ''}`}
