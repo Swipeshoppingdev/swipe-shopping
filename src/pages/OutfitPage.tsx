@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
-import { Heart, RefreshCw, Send, Trash2, X } from 'lucide-react'
+import { Check, Heart, RefreshCw, Send, Trash2, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { PriceRange } from '../components/PriceRange'
 import { PriceTag } from '../components/PriceTag'
 import { ProductImage } from '../components/ProductImage'
 import { FriendPicker } from '../components/SocialBits'
@@ -42,10 +43,14 @@ export function OutfitPage() {
     setGenderState(g)
     save('outfitGender', g)
   }
-  // #/outfit/salvati apre gli outfit salvati (anche dal tasto Preferiti in basso).
+  const [price, setPriceState] = useState(() => load<{ min?: number; max?: number }>('outfitPrice', {}))
+  const setPrice = (p: { min?: number; max?: number }) => {
+    setPriceState(p)
+    save('outfitPrice', p)
+  }
+  // Dalla barra in basso: #/outfit/salvati (Preferiti) e #/outfit/filtri (Filtri).
   const { hash } = useHashRoute()
-  const tab = hash.startsWith('#/outfit/salvati') ? 'salvati' : 'scopri'
-  const setTab = (t: 'scopri' | 'salvati') => window.location.replace(t === 'salvati' ? '#/outfit/salvati' : '#/outfit')
+  const tab = hash.startsWith('#/outfit/salvati') ? 'salvati' : hash.startsWith('#/outfit/filtri') ? 'filtri' : 'scopri'
   const [saved, setSavedState] = useState(() => load<SavedOutfit[]>('outfitsSaved', []))
   const [seen, setSeenState] = useState(() => load<string[]>('outfitsSeen', []))
   const [open, setOpen] = useState<Outfit | null>(null)
@@ -68,10 +73,19 @@ export function OutfitPage() {
   }, [state.mode, actions])
 
   const all = useMemo(() => (ready ? buildOutfits(moda, gender) : []), [ready, moda, gender])
+  // Il prezzo conta sul totale dell'outfit.
+  const inBudget = useMemo(
+    () =>
+      all.filter((o) => {
+        const total = outfitTotal(o.items)
+        return total !== null && total >= (price.min ?? 0) && total <= (price.max ?? Infinity)
+      }),
+    [all, price],
+  )
   const deck = useMemo(() => {
     const skip = new Set([...seen, ...saved.map((s) => s.id)])
-    return all.filter((o) => !skip.has(o.id))
-  }, [all, seen, saved])
+    return inBudget.filter((o) => !skip.has(o.id))
+  }, [inBudget, seen, saved])
 
   const byId = useMemo(() => new Map(moda.map((p) => [p.id, p])), [moda])
   const savedOutfits = saved.map((s) => ({ ...s, products: s.items.flatMap((id) => (byId.has(id) ? [byId.get(id)!] : [])) }))
@@ -101,36 +115,11 @@ export function OutfitPage() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
-      <div className="flex items-center justify-between gap-2">
-        <div className="grid grid-cols-2 gap-1 rounded-full bg-neutral-200/60 p-1">
-          {(['scopri', 'salvati'] as const).map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => setTab(t)}
-              className={`rounded-full px-4 py-1.5 text-sm font-semibold ${tab === t ? 'bg-white shadow-sm' : 'text-neutral-500'}`}
-            >
-              {t === 'scopri' ? 'Outfit' : `Salvati${saved.length ? ` ${saved.length}` : ''}`}
-            </button>
-          ))}
-        </div>
-        <div className="grid grid-cols-2 gap-1 rounded-full bg-neutral-200/60 p-1">
-          {(['donna', 'uomo'] as const).map((g) => (
-            <button
-              key={g}
-              type="button"
-              onClick={() => setGender(g)}
-              className={`rounded-full px-3 py-1.5 text-sm font-semibold capitalize ${gender === g ? 'bg-white shadow-sm' : 'text-neutral-500'}`}
-            >
-              {g}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {tab === 'salvati' ? (
+      {tab === 'filtri' ? (
+        <OutfitFilters gender={gender} onGender={setGender} price={price} onPrice={setPrice} matching={deck.length} />
+      ) : tab === 'salvati' ? (
         <Saved
-          outfits={savedOutfits.filter((s) => s.gender === gender)}
+          outfits={savedOutfits}
           onOpen={(s) => setOpen({ id: s.id, gender: s.gender, style: s.style, items: s.products })}
           onDelete={(id) => setSaved(saved.filter((s) => s.id !== id))}
         />
@@ -367,12 +356,14 @@ function Saved(props: {
   onOpen: (s: SavedOutfit & { products: Product[] }) => void
   onDelete: (id: string) => void
 }) {
-  if (props.outfits.length === 0) {
-    return <p className="py-10 text-center text-sm text-neutral-500">Gli outfit a cui dici sì finiscono qui.</p>
-  }
   return (
-    <div className="grid grid-cols-2 gap-3 pb-4">
-      {props.outfits.map((s) => {
+    <div className="min-h-0 flex-1 overflow-y-auto pb-4">
+      <h1 className="mb-3 text-2xl font-bold">Outfit salvati</h1>
+      {props.outfits.length === 0 ? (
+        <p className="py-10 text-center text-sm text-neutral-500">Gli outfit a cui dici sì finiscono qui.</p>
+      ) : (
+        <div className="grid grid-cols-2 gap-3">
+          {props.outfits.map((s) => {
         const total = outfitTotal(s.products)
         return (
           <div key={s.id} className="relative overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
@@ -393,10 +384,67 @@ function Saved(props: {
             </button>
           </div>
         )
-      })}
+          })}
+        </div>
+      )}
     </div>
   )
 }
+
+/** Filtri degli outfit (#/outfit/filtri): solo genere e prezzo totale. Si applicano subito. */
+function OutfitFilters(props: {
+  gender: 'uomo' | 'donna'
+  onGender: (g: 'uomo' | 'donna') => void
+  price: { min?: number; max?: number }
+  onPrice: (p: { min?: number; max?: number }) => void
+  matching: number
+}) {
+  const active = props.price.min !== undefined || props.price.max !== undefined
+  return (
+    <div className="min-h-0 flex-1 space-y-6 overflow-y-auto pb-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Filtri outfit</h1>
+        {active && (
+          <button type="button" onClick={() => props.onPrice({})} className="rounded-full bg-rose-600 px-4 py-1.5 text-sm font-semibold text-[#fff] shadow-sm active:scale-95">
+            Azzera prezzo
+          </button>
+        )}
+      </div>
+      <section className="space-y-3">
+        <h2 className="font-semibold">Genere</h2>
+        <div className="grid grid-cols-2 gap-1 rounded-2xl bg-neutral-100 p-1">
+          {(['donna', 'uomo'] as const).map((g) => (
+            <button
+              key={g}
+              type="button"
+              onClick={() => props.onGender(g)}
+              aria-pressed={props.gender === g}
+              className={`rounded-xl py-2 text-sm font-semibold capitalize transition ${props.gender === g ? 'bg-white shadow-sm' : 'text-neutral-500'}`}
+            >
+              {g}
+            </button>
+          ))}
+        </div>
+      </section>
+      <section className="space-y-3">
+        <div>
+          <h2 className="font-semibold">Prezzo</h2>
+          <p className="text-xs text-neutral-500">Il totale di tutti i capi dell'outfit</p>
+        </div>
+        <PriceRange min={props.price.min} max={props.price.max} limit={OUTFIT_PRICE_LIMIT} onChange={(min, max) => props.onPrice({ min, max })} />
+      </section>
+      <div className="flex justify-center pt-2">
+        <a href="#/outfit" className="inline-flex items-center gap-1.5 rounded-full bg-rose-500 px-5 py-2.5 text-sm font-semibold text-[#fff] shadow-lg active:scale-95">
+          <Check className="size-4" /> Applica filtri
+          <span className="font-normal opacity-80">({props.matching.toLocaleString('it-IT')})</span>
+        </a>
+      </div>
+    </div>
+  )
+}
+
+/** Fine del cursore del prezzo totale: oltre, nessun massimo. */
+const OUTFIT_PRICE_LIMIT = 1000
 
 /** Tasto "manda" degli outfit: agli amici arrivano in chat i capi dell'outfit; fuori dall'app va il link della lista. */
 function OutfitSend({ outfit }: { outfit: Outfit }) {

@@ -16,6 +16,8 @@
         // Sezioni oltre la moda: tenere allineato con SECTIONS in src/config/categories.ts.
         var m = (/[?&]sezione=(\w+)/.exec(location.search) || [])[1] || JSON.parse(localStorage.getItem('swipeshop:v1:mode') || 'null')
         if (['tech', 'gadget', 'snack', 'beauty', 'casa', 'animali'].indexOf(m) >= 0) document.documentElement.classList.add(m)
+        // All'apertura (senza una pagina precisa) si torna dove si era: le sezioni ricordano già la loro, Outfit va riaperto qui.
+        if (JSON.parse(localStorage.getItem('swipeshop:v1:inOutfit') || 'false') && !/[?&]sezione=/.test(location.search) && /^(#\/?(scopri)?)?$/.test(location.hash)) history.replaceState(null, '', '#/outfit')
         // Outfit resta attivo anche su Amici, Profilo… (vedi src/lib/outfitMode.ts)
         if (/^#\/outfit/.test(location.hash) || (JSON.parse(localStorage.getItem('swipeshop:v1:inOutfit') || 'false') && !/^(#\/?)?(scopri|preferiti|filtri)?([/?].*)?$/.test(location.hash))) document.documentElement.classList.add('outfit')
       } catch (e) {}

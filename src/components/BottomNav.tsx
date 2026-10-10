@@ -14,12 +14,11 @@ const ITEMS = [
 ] as const
 
 export function BottomNav({ current, hash, inOutfit }: { current: Route; hash: string; inOutfit: boolean }) {
-  // In Outfit niente filtri: Scopri e Preferiti portano agli outfit e agli outfit salvati.
+  // In Outfit Scopri, Preferiti e Filtri portano agli outfit, agli outfit salvati e ai filtri degli outfit.
   const onOutfit = inOutfit
-  const items = onOutfit ? ITEMS.filter((i) => i.route !== 'filtri') : ITEMS
-  const hrefOf = (r: Route) => (!onOutfit ? routeHref(r) : r === 'scopri' ? '#/outfit' : r === 'preferiti' ? '#/outfit/salvati' : routeHref(r))
+  const hrefOf = (r: Route) => (!onOutfit ? routeHref(r) : r === 'scopri' ? '#/outfit' : r === 'preferiti' ? '#/outfit/salvati' : r === 'filtri' ? '#/outfit/filtri' : routeHref(r))
   const isActive = (r: Route) =>
-    current !== 'outfit' ? current === r : r === 'preferiti' ? hash.startsWith('#/outfit/salvati') : r === 'scopri' && !hash.startsWith('#/outfit/salvati')
+    current !== 'outfit' ? current === r : r === 'scopri' ? !/^#\/outfit\/(salvati|filtri)/.test(hash) : hash.startsWith(hrefOf(r))
   const { wishlist, state, unseenDeals } = useApp()
   const [unseenSocial, setUnseenSocial] = useState(0)
   useEffect(() => subscribeUnseen(setUnseenSocial), [])
@@ -32,8 +31,8 @@ export function BottomNav({ current, hash, inOutfit }: { current: Route; hash: s
       aria-label="Navigazione principale"
       className="fixed inset-x-0 bottom-0 z-30 border-t border-neutral-200/70 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur"
     >
-      <ul className={`mx-auto grid h-16 max-w-md ${onOutfit ? 'grid-cols-4' : 'grid-cols-5'}`}>
-        {items.map(({ route, label, Icon }) => {
+      <ul className={`mx-auto grid h-16 max-w-md grid-cols-5`}>
+        {ITEMS.map(({ route, label, Icon }) => {
           const active = isActive(route)
           const badge = badges[route]
           return (

@@ -1,6 +1,6 @@
 import { formatPrice } from '../lib/price'
 
-const MAX = 500
+const LIMIT = 500
 const STEP = 5
 
 /** Doppio cursore per la fascia di prezzo. Agli estremi il limite si toglie (nessun minimo / nessun massimo). */
@@ -8,11 +8,15 @@ export function PriceRange({
   min,
   max,
   onChange,
+  limit = LIMIT,
 }: {
   min?: number
   max?: number
+  /** Fine del cursore (lì il massimo si toglie) */
+  limit?: number
   onChange: (min: number | undefined, max: number | undefined) => void
 }) {
+  const MAX = limit
   const lo = min ?? 0
   const hi = max ?? MAX
   const pct = (v: number) => (v / MAX) * 100
