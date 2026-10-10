@@ -11,6 +11,7 @@ import { FriendProfilePage } from './pages/FriendProfilePage'
 import { FriendsPage } from './pages/FriendsPage'
 import { GiftListPage } from './pages/GiftListPage'
 import { ChatPage } from './pages/ChatPage'
+import { OutfitPage } from './pages/OutfitPage'
 import { PollPage } from './pages/PollPage'
 import { SantaPage } from './pages/SantaPage'
 import { SwipeTogetherPage } from './pages/SwipeTogetherPage'
@@ -22,7 +23,7 @@ import { WishlistPage } from './pages/WishlistPage'
 
 export default function App() {
   const { route, hash } = useHashRoute()
-  const isDiscover = route === 'scopri'
+  const isDiscover = route === 'scopri' || route === 'outfit'
 
   return (
     <div className="flex h-dvh flex-col bg-neutral-50 text-neutral-900">
@@ -46,6 +47,7 @@ export default function App() {
         {route === 'insieme' && <SwipeTogetherPage key={hash} />}
         {route === 'segreto' && <SantaPage key={hash} />}
         {route === 'chat' && <ChatPage key={hash} />}
+        {route === 'outfit' && <OutfitPage />}
         {/* Spazio per la barra in basso: un elemento vero, perché Safari ignora il padding in fondo ai contenitori che scorrono. */}
         {!isDiscover && <div aria-hidden className="h-[calc(6rem+env(safe-area-inset-bottom))] shrink-0" />}
       </main>
@@ -53,7 +55,7 @@ export default function App() {
       <Welcome />
       <ProductSheet />
       <SocialWatcher />
-      <BottomNav current={route} />
+      <BottomNav current={route === 'outfit' ? 'scopri' : route} />
     </div>
   )
 }

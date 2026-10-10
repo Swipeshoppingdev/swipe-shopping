@@ -1,16 +1,18 @@
-import { Check, ChevronDown, Cookie, Cpu, Gift, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { Check, ChevronDown, Cookie, Cpu, Gift, LayoutGrid, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun } from 'lucide-react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { APP_NAME } from '../config/app'
 import { SECTIONS, sectionOf, type Universe } from '../config/categories'
 import { load, save } from '../lib/storage'
 import { useTheme } from '../lib/theme'
 import { SocialLinks } from './SocialLinks'
 import { useApp } from '../state/AppState'
+import { useHashRoute } from '../lib/useHashRoute'
 
 /** Barra in alto: menu delle sezioni a sinistra, logo al centro, tema chiaro/scuro a destra. */
 export function Header() {
   const { theme, toggle } = useTheme()
   const { state } = useApp()
+  const { route } = useHashRoute()
   return (
     // Sticky con sfondo pieno: iOS 26 riconosce la barra e usa il suo colore sotto l'ora invece di sfocare il contenuto.
     <header className="sticky top-0 z-20 shrink-0 bg-neutral-50 pt-[env(safe-area-inset-top)]">
@@ -21,7 +23,7 @@ export function Header() {
             {APP_NAME.split(' ')[0]}
             <span className="text-rose-500">{APP_NAME.split(' ').slice(1).join(' ')}</span>
           </span>
-          <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{sectionOf(state.mode).label}</span>
+          <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{route === 'outfit' ? 'Outfit' : sectionOf(state.mode).label}</span>
         </a>
         <span className="w-18" aria-hidden />
         <button
@@ -54,15 +56,22 @@ const NEW_SECTIONS: Universe[] = ['beauty', 'casa', 'gadget', 'snack', 'animali'
 /** Menu delle sezioni: ognuna è come un'app a sé, con filtri e preferiti suoi. */
 function SectionMenu() {
   const { state, actions } = useApp()
+  const { route } = useHashRoute()
+  const onOutfit = route === 'outfit'
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
-  const current = sectionOf(state.mode)
-  const Icon = ICONS[current.id]
+  const current = onOutfit ? { ...sectionOf('moda'), label: 'Outfit' } : sectionOf(state.mode)
+  const Icon = onOutfit ? LayoutGrid : ICONS[current.id]
   const [visited, setVisited] = useState(() => load<Universe[]>('sectionsVisited', []))
   const [menuSeen, setMenuSeen] = useState(() => load<boolean>('sectionsMenuSeen:2', false))
   const isNew = (u: Universe) => NEW_SECTIONS.includes(u) && !visited.includes(u) && u !== state.mode
   // Il pallino sul pulsante sparisce alla prima apertura del menu; il "Nuovo" nel menu quando si apre la sezione.
-  const dot = !menuSeen && NEW_SECTIONS.some(isNew)
+  // Outfit è "Nuovo" finché non lo si apre.
+  const outfitSeen = onOutfit || load<boolean>('outfitVisited', false)
+  useEffect(() => {
+    if (onOutfit) save('outfitVisited', true)
+  }, [onOutfit])
+  const dot = !menuSeen && (NEW_SECTIONS.some(isNew) || !outfitSeen)
 
   // Anche se si arriva alla sezione in altri modi (benvenuto, link condiviso): la sezione aperta non è più nuova.
   useEffect(() => {
@@ -114,16 +123,17 @@ function SectionMenu() {
         <div role="menu" className="absolute top-12 left-0 z-30 w-72 overflow-hidden rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-neutral-200">
           {SECTIONS.map((s) => {
             const SIcon = ICONS[s.id]
-            const active = s.id === state.mode
+            const active = s.id === state.mode && !onOutfit
             return (
+              <Fragment key={s.id}>
               <button
-                key={s.id}
                 type="button"
                 role="menuitemradio"
                 aria-checked={active}
                 onClick={() => {
                   if (!visited.includes(s.id)) setVisited([...visited, s.id])
                   actions.setMode(s.id)
+                  if (onOutfit) window.location.hash = '#/scopri'
                   setOpen(false)
                 }}
                 className={`flex w-full items-center gap-3 rounded-xl p-2.5 text-left active:bg-neutral-100 ${active ? 'bg-neutral-100' : ''}`}
@@ -145,6 +155,29 @@ function SectionMenu() {
                 </span>
                 {active && <Check className="size-4 shrink-0" style={{ color: s.color }} />}
               </button>
+              {/* Subito dopo la Moda: gli outfit completi, fatti con i capi della Moda. */}
+              {s.id === 'moda' && (
+                <a
+                  href="#/outfit"
+                  role="menuitemradio"
+                  aria-checked={onOutfit}
+                  onClick={() => setOpen(false)}
+                  className={`flex w-full items-center gap-3 rounded-xl p-2.5 text-left active:bg-neutral-100 ${onOutfit ? 'bg-neutral-100' : ''}`}
+                >
+                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#171717] text-[#fff]">
+                    <LayoutGrid className="size-4.5" />
+                  </span>
+                  <span className="min-w-0 flex-1 leading-tight">
+                    <span className="flex items-center gap-1.5 font-semibold">
+                      Outfit
+                      {!outfitSeen && <span className="rounded-full bg-[#171717] px-1.5 py-px text-[10px] font-bold uppercase text-[#fff]">Nuovo</span>}
+                    </span>
+                    <span className="block truncate text-xs text-neutral-500">Look completi da scarpe a giacca</span>
+                  </span>
+                  {onOutfit && <Check className="size-4 shrink-0" />}
+                </a>
+              )}
+              </Fragment>
             )
           })}
           <div className="mt-1 border-t border-neutral-100 pt-1">
