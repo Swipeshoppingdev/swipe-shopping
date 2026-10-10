@@ -5,10 +5,20 @@ import { useApp } from '../state/AppState'
 /** Tasto "annulla" sotto il mazzo: l'ultimo swipe, gli ultimi 10 "no" o tutti i "no" della sezione. */
 export function UndoMenu() {
   const { state, sectionDisliked, actions } = useApp()
+  return (
+    <UndoMenuView
+      canUndo={state.history.length > 0}
+      nos={sectionDisliked.length}
+      onUndo={actions.undo}
+      onRestore={(last) => actions.restore(last ? sectionDisliked.slice(-last) : sectionDisliked)}
+    />
+  )
+}
+
+/** Il menu "annulla": usato dal mazzo dei prodotti e da quello degli outfit. */
+export function UndoMenuView({ canUndo, nos, onUndo, onRestore }: { canUndo: boolean; nos: number; onUndo: () => void; onRestore: (last?: number) => void }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
-  const canUndo = state.history.length > 0
-  const nos = sectionDisliked.length
 
   useEffect(() => {
     if (!open) return
@@ -41,14 +51,14 @@ export function UndoMenu() {
           role="menu"
           className="absolute bottom-full left-0 z-30 mb-2 w-60 overflow-hidden rounded-2xl bg-white text-neutral-900 shadow-xl ring-1 ring-black/10"
         >
-          <button type="button" role="menuitem" disabled={!canUndo} onClick={() => pick(actions.undo)} className={item}>
+          <button type="button" role="menuitem" disabled={!canUndo} onClick={() => pick(onUndo)} className={item}>
             Annulla l'ultimo
           </button>
           <button
             type="button"
             role="menuitem"
             disabled={nos === 0}
-            onClick={() => pick(() => actions.restore(sectionDisliked.slice(-10)))}
+            onClick={() => pick(() => onRestore(10))}
             className={`${item} border-t border-neutral-100`}
           >
             Rivedi gli ultimi {Math.min(10, nos) || 10} "no"
@@ -57,7 +67,7 @@ export function UndoMenu() {
             type="button"
             role="menuitem"
             disabled={nos === 0}
-            onClick={() => pick(() => actions.restore(sectionDisliked))}
+            onClick={() => pick(() => onRestore())}
             className={`${item} border-t border-neutral-100`}
           >
             Rivedi tutti i "no"{nos > 0 ? ` (${nos.toLocaleString('it-IT')})` : ''}

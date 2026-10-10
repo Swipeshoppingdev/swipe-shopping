@@ -1,16 +1,21 @@
 import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
-import { Heart, RefreshCw, Trash2, X } from 'lucide-react'
+import { Heart, RefreshCw, Send, Trash2, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { PriceTag } from '../components/PriceTag'
 import { ProductImage } from '../components/ProductImage'
+import { FriendPicker } from '../components/SocialBits'
 import { StoreLink } from '../components/StoreLink'
+import { UndoMenuView } from '../components/UndoMenu'
 import { universeOf } from '../config/categories'
 import { brandAndStore } from '../config/stores'
 import { STYLE_LABEL, buildOutfits, outfitTotal, type Outfit, type OutfitStyle } from '../lib/outfits'
 import { openProduct } from '../lib/productSheet'
+import { shareList } from '../lib/share'
+import { social } from '../lib/social'
 import { load, save } from '../lib/storage'
 import { useHashRoute } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
+import { useAuth } from '../state/AuthState'
 import type { Product } from '../types/product'
 
 /** Outfit salvato: solo gli id dei capi (i dati arrivano dal catalogo aggiornato). */
@@ -45,6 +50,8 @@ export function OutfitPage() {
   const [seen, setSeenState] = useState(() => load<string[]>('outfitsSeen', []))
   const [open, setOpen] = useState<Outfit | null>(null)
   const [dir, setDir] = useState(1)
+  // Le scelte fatte in questa visita, per il tasto "annulla".
+  const [history, setHistory] = useState<{ id: string; yes: boolean }[]>([])
   const setSaved = (s: SavedOutfit[]) => {
     setSavedState(s)
     save('outfitsSaved', s)
@@ -79,6 +86,23 @@ export function OutfitPage() {
     setDir(yes ? 1 : -1)
     if (yes) setSaved([{ id: o.id, gender: o.gender, style: o.style, items: o.items.map((i) => i.id), savedAt: now() }, ...saved])
     else setSeen([...seen, o.id])
+    setHistory([...history.slice(-29), { id: o.id, yes }])
+  }
+  // Un outfit tolto da salvati/scartati torna in cima: il mazzo segue sempre lo stesso ordine.
+  const undo = () => {
+    const last = history.at(-1)
+    if (!last) return
+    setDir(-1)
+    setHistory(history.slice(0, -1))
+    if (last.yes) setSaved(saved.filter((s) => s.id !== last.id))
+    else setSeen(seen.filter((id) => id !== last.id))
+  }
+  const allIds = useMemo(() => new Set(all.map((o) => o.id)), [all])
+  const nos = seen.filter((id) => allIds.has(id))
+  const restore = (last?: number) => {
+    const back = new Set(last ? nos.slice(-last) : nos)
+    setSeen(seen.filter((id) => !back.has(id)))
+    setHistory(history.filter((h) => !back.has(h.id)))
   }
 
   return (
@@ -142,7 +166,8 @@ export function OutfitPage() {
                 .reverse()}
             </AnimatePresence>
           </div>
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex items-center justify-center gap-3 sm:gap-4">
+            <UndoMenuView canUndo={history.length > 0} nos={nos.length} onUndo={undo} onRestore={restore} />
             <button
               type="button"
               onClick={() => decide(deck[0], false)}
@@ -154,11 +179,12 @@ export function OutfitPage() {
             <button
               type="button"
               onClick={() => decide(deck[0], true)}
-              aria-label="Mi piace, salva l'outfit"
+              aria-label="Sì, salva l'outfit"
               className="flex h-14 items-center gap-2 rounded-full bg-rose-500 px-5 font-semibold text-[#fff] shadow-lg shadow-rose-500/30 transition active:scale-90"
             >
-              <Heart className="size-6 fill-current" /> MI PIACE
+              <Heart className="size-6 fill-current" /> SÌ
             </button>
+            <OutfitSend outfit={deck[0]} />
           </div>
         </>
       )}
@@ -348,7 +374,7 @@ function Saved(props: {
   onDelete: (id: string) => void
 }) {
   if (props.outfits.length === 0) {
-    return <p className="py-10 text-center text-sm text-neutral-500">Gli outfit a cui metti "Mi piace" finiscono qui.</p>
+    return <p className="py-10 text-center text-sm text-neutral-500">Gli outfit a cui dici sì finiscono qui.</p>
   }
   return (
     <div className="grid grid-cols-2 gap-3 pb-4">
@@ -375,5 +401,58 @@ function Saved(props: {
         )
       })}
     </div>
+  )
+}
+
+/** Tasto "manda" degli outfit: agli amici arrivano in chat i capi dell'outfit; fuori dall'app va il link della lista. */
+function OutfitSend({ outfit }: { outfit: Outfit }) {
+  const auth = useAuth()
+  const [open, setOpen] = useState(false)
+  const [toast, setToast] = useState('')
+  const flash = (text: string) => {
+    setToast(text)
+    setTimeout(() => setToast(''), 2000)
+  }
+  const name = `Outfit ${STYLE_LABEL[outfit.style].toLowerCase()}`
+  const shareOutside = async () => {
+    setOpen(false)
+    if ((await shareList(name, outfit.items)) === 'copied') flash('Link copiato')
+  }
+  return (
+    <>
+      <button
+        type="button"
+        aria-label="Manda l'outfit"
+        title="Manda a un amico"
+        onClick={() => (auth.user ? setOpen(true) : void shareOutside())}
+        className="relative grid size-11 place-items-center rounded-full bg-white text-neutral-600 shadow-md ring-1 ring-black/5 transition active:scale-90"
+      >
+        <Send className="size-5" />
+        {toast && (
+          <span className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-full bg-neutral-900 px-2 py-1 text-xs whitespace-nowrap text-white">
+            {toast}
+          </span>
+        )}
+      </button>
+      {open && (
+        <FriendPicker
+          title="Manda l'outfit a…"
+          confirmLabel={`Manda ${outfit.items.length} capi`}
+          onClose={() => setOpen(false)}
+          onConfirm={async (codes) => {
+            // In chat arrivano i capi, uno per messaggio.
+            let n = 0
+            for (const p of outfit.items) n = await social.send(codes, 'consiglio', { productId: p.id })
+            setOpen(false)
+            flash(n === 1 ? 'Inviato!' : `Inviato a ${n}!`)
+          }}
+          extra={
+            <button type="button" onClick={shareOutside} className="mt-3 w-full text-center text-sm font-medium text-neutral-600 underline">
+              Condividi con altre app
+            </button>
+          }
+        />
+      )}
+    </>
   )
 }
