@@ -235,14 +235,12 @@ async function searchCatalog(token: string) {
   let rejectedPrice = 0
   let rejectedReviews = 0
 
-  outer: for (const plan of SEARCH_PLAN) {
-    for (const gender of plan.genders) {
-      for (const brand of plan.brands) {
-        for (let page = 1; page <= pages; page++) {
-          if (requests >= MAX_REQUESTS) {
-            annotate('warning', `Raggiunto il tetto di ${MAX_REQUESTS} richieste: ricerca interrotta a ${plan.category}.`)
-            break outer
-          }
+  // Una ricerca al giorno (quella del mattino) chiede ad Amazon le ultime novità invece dei più rilevanti:
+  // così ogni giorno entrano prodotti nuovi e non sempre gli stessi primi risultati.
+  let sortBy = process.env.AMAZON_SORT ?? (new Date().getUTCHours() < 12 ? 'NewestArrivals' : '')
+
+  /** Una pagina di risultati per categoria, genere e marca: ritorna quanti articoli ha restituito Amazon. */
+  const searchPage = async (plan: (typeof SEARCH_PLAN)[number], gender: string, brand: string, page: number) => {
           let body: any
           const wantReviews = plan.minRating !== undefined
           try {
@@ -253,6 +251,7 @@ async function searchCatalog(token: string) {
                 searchIndex: plan.searchIndex ?? 'Fashion',
                 itemCount: 10,
                 itemPage: page,
+                ...(sortBy ? { sortBy } : {}),
                 minPrice: plan.minPrice * 100,
                 availability: 'Available',
                 resources: [
@@ -267,7 +266,10 @@ async function searchCatalog(token: string) {
                 break
               } catch (e) {
                 if (!/HTTP 400/.test(String(e))) throw e
-                if (wantReviews && reviewResources.length) {
+                if (sortBy) {
+                  annotate('warning', `Ordinamento ${sortBy} non accettato, continuo senza: ${e instanceof Error ? e.message : String(e)}`)
+                  sortBy = ''
+                } else if (wantReviews && reviewResources.length) {
                   annotate('warning', `Recensioni non disponibili, continuo senza: ${e instanceof Error ? e.message : String(e)}`)
                   reviewResources = []
                 } else if (detailResources.length) {
@@ -278,7 +280,7 @@ async function searchCatalog(token: string) {
             }
           } catch (e) {
             annotate('warning', `Ricerca ${plan.category}/${gender}/${brand}: ${e instanceof Error ? e.message : String(e)}`)
-            break
+            return 0
           }
           const items: any[] = body?.searchResult?.items ?? []
           for (const item of items) {
@@ -336,10 +338,41 @@ async function searchCatalog(token: string) {
             const d = readDetails(item)
             if (d) details.set(id, d)
           }
-          if (items.length < 10) break
+          return items.length
+  }
+
+  // Prime pagine di tutte le ricerche; quelle con altri risultati si segnano per andare più a fondo.
+  const deeper: [(typeof SEARCH_PLAN)[number], string, string][] = []
+  let stopped = false
+  outer: for (const plan of SEARCH_PLAN) {
+    for (const gender of plan.genders) {
+      for (const brand of plan.brands) {
+        for (let page = 1; page <= pages; page++) {
+          if (requests >= MAX_REQUESTS) {
+            annotate('warning', `Raggiunto il tetto di ${MAX_REQUESTS} richieste: ricerca interrotta a ${plan.category}.`)
+            stopped = true
+            break outer
+          }
+          const n = await searchPage(plan, gender, brand, page)
+          if (n < 10) break
+          if (page === pages) deeper.push([plan, gender, brand])
         }
       }
     }
+  }
+  // Con le richieste avanzate: pagine 3 e 4, ogni giro da un punto diverso, così in pochi giorni si passa tutto.
+  if (!stopped && deeper.length) {
+    const before = found.size
+    const start = (Math.floor(Date.now() / (12 * 3_600_000)) * 97) % deeper.length
+    let done = 0
+    for (let i = 0; i < deeper.length && requests < MAX_REQUESTS; i++) {
+      const [plan, gender, brand] = deeper[(start + i) % deeper.length]
+      for (let page = pages + 1; page <= pages + 2 && requests < MAX_REQUESTS; page++) {
+        if ((await searchPage(plan, gender, brand, page)) < 10) break
+      }
+      done++
+    }
+    annotate('notice', `Pagine in più: ${done}/${deeper.length} ricerche, ${found.size - before} prodotti in più.`)
   }
   annotate('notice', `Ricerca: ${found.size} prodotti trovati, ${rejectedBrand} scartati per marca, ${rejectedPrice} per prezzo/disponibilità, ${rejectedReviews} per recensioni.`)
   return [...found.values()]
@@ -365,8 +398,15 @@ try {
     annotate('warning', `Scartati ${invalid.length} risultati non validi: ${invalid.slice(0, 5).map((p) => `${p.id} (${validateProduct(p).join(', ')})`).join(' | ')}`)
     searched = searched.filter((p) => validateProduct(p).length === 0)
   }
+  // Trovati nel giro prima ma non in questo (le ricerche cambiano a ogni giro): restano finché il prezzo ha meno di 20 ore.
+  const searchedIds = new Set(searched.map((p) => p.id))
+  const keepUntil = Date.now() - 20 * 3_600_000
+  const kept = catalog.filter(
+    (p) => p.source === 'ricerca' && !searchedIds.has(p.id) && !curatedIds.has(p.id) && p.priceCheckedAt && Date.parse(p.priceCheckedAt) > keepUntil,
+  )
+  if (kept.length) annotate('notice', `Tenuti dal giro precedente: ${kept.length} prodotti.`)
   const others = catalog.filter((p) => p.store !== 'amazon')
-  const next = [...curated, ...others, ...searched]
+  const next = [...curated, ...others, ...searched, ...kept]
   writeFileSync(file, JSON.stringify(next, null, 1) + '\n')
   annotate('notice', `Catalogo: ${next.length} prodotti (${searched.length} dalla ricerca), ${requests} richieste ad Amazon.`)
 } catch (e) {

@@ -4,7 +4,7 @@ import { track } from '../lib/analytics'
 import { loadCatalog } from '../lib/catalog'
 import { fetchUserData, mergeUserData, saveUserData } from '../lib/cloudSync'
 import { matchesFilters, normalizeFilters, sortProducts } from '../lib/filters'
-import { setNewBaseline } from '../lib/newness'
+import { isNew, setNewBaseline } from '../lib/newness'
 import { modelKey, onePerModel } from '../lib/dedupe'
 import { discountBadge } from '../lib/price'
 import { sharedProductId } from '../lib/share'
@@ -248,7 +248,9 @@ function useAppStore() {
     // Una variante per modello: niente stessa felpa in tre colori di fila. Un modello già scartato o salvato non torna.
     const byId = new Map(products.map((p) => [p.id, p]))
     const seenModels = new Set([...seen].flatMap((id) => (byId.has(id) ? [modelKey(byId.get(id)!)] : [])))
-    const sorted = onePerModel(sortProducts(list, activeFilters.sort, MIX_SEED), seenModels)
+    const mixed = sortProducts(list, activeFilters.sort, MIX_SEED)
+    // I prodotti appena arrivati per primi (sempre mescolati), poi tutti gli altri.
+    const sorted = onePerModel([...mixed.filter((p) => isNew(p)), ...mixed.filter((p) => !isNew(p))], seenModels)
     // Scartati rimessi nel mazzo: in cima (anche se il modello era già stato visto).
     const back = state.restored.flatMap((id) => {
       const p = byId.get(id)

@@ -1,6 +1,7 @@
 import type { CategoryId } from '../config/categories'
 import { freshPrice } from './price'
 import { modelKey } from './dedupe'
+import { isNew } from './newness'
 import type { Product } from '../types/product'
 
 /**
@@ -14,44 +15,66 @@ export interface Outfit {
   items: Product[]
 }
 
-export type OutfitStyle = 'casual' | 'elegante' | 'vestito'
-export const STYLE_LABEL: Record<OutfitStyle, string> = { casual: 'Casual', elegante: 'Elegante', vestito: 'Con il vestito' }
+export type OutfitStyle = 'casual' | 'elegante' | 'vestito' | 'sportivo'
+export const STYLE_LABEL: Record<OutfitStyle, string> = { casual: 'Casual', elegante: 'Elegante', vestito: 'Con il vestito', sportivo: 'Sportivo' }
 
-type Slot = { cats: CategoryId[]; optional?: number }
-const RECIPES: { style: OutfitStyle; genders: ('uomo' | 'donna')[]; slots: Slot[] }[] = [
-  {
-    style: 'casual',
-    genders: ['uomo', 'donna'],
-    slots: [
-      { cats: ['tshirt', 'felpe', 'maglioni', 'camicie'] },
-      { cats: ['jeans', 'pantaloni'] },
-      { cats: ['sneakers'] },
-      { cats: ['giacche'], optional: 0.5 },
-      { cats: ['cappellini', 'zaini', 'orologi', 'occhiali'], optional: 0.5 },
-    ],
-  },
-  {
-    style: 'elegante',
-    genders: ['uomo', 'donna'],
-    slots: [
-      { cats: ['camicie', 'maglioni'] },
-      { cats: ['pantaloni'] },
-      { cats: ['scarpe_eleganti', 'stivali'] },
-      { cats: ['cappotti'], optional: 0.5 },
-      { cats: ['cinture', 'orologi', 'borse'], optional: 0.6 },
-    ],
-  },
-  {
-    style: 'vestito',
-    genders: ['donna'],
-    slots: [
-      { cats: ['vestiti'] },
-      { cats: ['stivali', 'scarpe_eleganti', 'sneakers'] },
-      { cats: ['borse'] },
-      { cats: ['giacche', 'cappotti'], optional: 0.4 },
-    ],
-  },
-]
+/** fit: per categorie miste (nello "sportivo" ci sono anche top e reggiseni) solo i capi giusti per quel posto */
+type Slot = { cats: CategoryId[]; optional?: number; fit?: (p: Product) => boolean }
+
+/** Pantaloni da tuta o leggings (non la tuta intera, che ha già la felpa) */
+const sportBottom = (p: Product) =>
+  /\b(jogger\w*|leggings?)\b/i.test(p.title) || (/\bpantalon\w*/i.test(p.title) && (p.category === 'sportivo' || /\b(tuta|sport\w*)\b/i.test(p.title)))
+type Recipe = { style: OutfitStyle; genders: ('uomo' | 'donna')[]; slots: Slot[] }
+
+/** Freddo da ottobre ad aprile: cappotti, stivali e maglioni; d'estate niente capi pesanti. */
+export const isColdSeason = (month: number) => month >= 9 || month <= 3
+
+function recipes(cold: boolean): Recipe[] {
+  return [
+    {
+      style: 'casual',
+      genders: ['uomo', 'donna'],
+      slots: [
+        { cats: cold ? ['felpe', 'maglioni', 'camicie', 'tshirt'] : ['tshirt', 'camicie'] },
+        { cats: ['jeans', 'pantaloni'] },
+        { cats: cold ? ['sneakers', 'stivali'] : ['sneakers'] },
+        { cats: ['giacche'], optional: cold ? 0.8 : 0.15 },
+        { cats: ['cappellini', 'zaini', 'orologi', 'occhiali'], optional: 0.5 },
+      ],
+    },
+    {
+      style: 'elegante',
+      genders: ['uomo', 'donna'],
+      slots: [
+        { cats: cold ? ['camicie', 'maglioni'] : ['camicie'] },
+        { cats: ['pantaloni'] },
+        { cats: cold ? ['scarpe_eleganti', 'stivali'] : ['scarpe_eleganti'] },
+        ...(cold ? [{ cats: ['cappotti'], optional: 0.7 } satisfies Slot] : []),
+        { cats: ['cinture', 'orologi', 'borse'], optional: 0.6 },
+      ],
+    },
+    {
+      style: 'vestito',
+      genders: ['donna'],
+      slots: [
+        { cats: ['vestiti'] },
+        { cats: cold ? ['stivali', 'scarpe_eleganti', 'sneakers'] : ['sandali', 'scarpe_eleganti', 'sneakers'] },
+        { cats: ['borse'] },
+        { cats: cold ? ['giacche', 'cappotti'] : ['giacche'], optional: cold ? 0.7 : 0.2 },
+      ],
+    },
+    {
+      style: 'sportivo',
+      genders: ['uomo', 'donna'],
+      slots: [
+        { cats: cold ? ['felpe'] : ['tshirt', 'felpe'] },
+        { cats: ['sportivo', 'pantaloni'], fit: sportBottom },
+        { cats: ['scarpe_sportive', 'sneakers'] },
+        { cats: ['zaini', 'cappellini', 'orologi'], optional: 0.6 },
+      ],
+    },
+  ]
+}
 
 /** Colori che stanno bene con tutto: ammesso al massimo un capo di un altro colore. */
 const NEUTRAL = new Set(['Nero', 'Bianco', 'Grigio', 'Beige', 'Marrone', 'Blu'])
@@ -80,6 +103,9 @@ const FOR_MEN = /\b(uomo|uomini|men|mens|man|ragazzo)\b/i
 const WOMEN_BRANDS = new Set(['vero moda', 'only', 'liu jo', 'desigual'])
 /** Mai negli outfit: pantaloncini, costumi, pigiami, capi per bambini */
 const NEVER = /\b(shorts?|bermuda|pantaloncin\w*|costum\w*|pigiama|bambin\w*|kids?|junior|neonat\w*)\b/i
+/** Fuori stagione */
+const SUMMER_ONLY = /\b(lino|linen|canott\w*|smanicat\w*|sandal\w*|infradito|ciabatt\w*)\b/i
+const WINTER_ONLY = /\b(lana|wool|piumin\w*|imbottit\w*|teddy|cashmere|montone|dolcevita)\b/i
 /** Non stanno in un outfit elegante */
 const NOT_ELEGANT = /\b(jogg\w*|tuta|sweat\w*|cargo|fleece|pile|gomma|pioggia|rain|felpa|hoodie|sport\w*|running)\b/i
 
@@ -99,12 +125,18 @@ export function outfitTotal(items: Product[]) {
   return total
 }
 
-/** Tutti gli outfit di un genere, sempre gli stessi per lo stesso catalogo. */
-export function buildOutfits(products: Product[], gender: 'uomo' | 'donna'): Outfit[] {
+/**
+ * Tutti gli outfit di un genere, sempre gli stessi per lo stesso catalogo e la stessa stagione.
+ * Solo capi Amazon: le foto degli altri negozi sono quasi sempre indossate, e nel collage stonano.
+ */
+export function buildOutfits(products: Product[], gender: 'uomo' | 'donna', month = new Date().getMonth()): Outfit[] {
+  const cold = isColdSeason(month)
+  const offSeason = cold ? SUMMER_ONLY : WINTER_ONLY
   const pool = new Map<CategoryId, Product[]>()
   const seenModel = new Set<string>()
   for (const p of products) {
-    if (p.availability === 'out_of_stock' || !p.imageUrl || !freshPrice(p) || !mainColor(p)) continue
+    if (p.store !== 'amazon' || p.availability === 'out_of_stock' || !p.imageUrl || !freshPrice(p) || !mainColor(p)) continue
+    if (offSeason.test(p.title)) continue
     if ((p.gender !== gender && p.gender !== 'unisex') || !fits(p, gender)) continue
     // Una variante per modello: niente stessa felpa in due colori.
     const key = modelKey(p)
@@ -114,14 +146,15 @@ export function buildOutfits(products: Product[], gender: 'uomo' | 'donna'): Out
   }
   const uses = new Map<string, number>()
   const outfits: Outfit[] = []
-  for (const recipe of RECIPES) {
+  for (const recipe of recipes(cold)) {
     if (!recipe.genders.includes(gender)) continue
     const rand = rng(hash(`${recipe.style}:${gender}`))
-    const pick = (cats: CategoryId[], colors: string[]) => {
+    const pick = (slot: Slot, colors: string[]) => {
       const strong = colors.filter((c) => !NEUTRAL.has(c)).length
-      const candidates = cats.flatMap((c) => pool.get(c) ?? []).filter((p) => {
+      const candidates = slot.cats.flatMap((c) => pool.get(c) ?? []).filter((p) => {
         if ((uses.get(p.id) ?? 0) >= MAX_USES) return false
-        if (recipe.style !== 'casual' && NOT_ELEGANT.test(p.title)) return false
+        if (slot.fit && !slot.fit(p)) return false
+        if (recipe.style !== 'casual' && recipe.style !== 'sportivo' && NOT_ELEGANT.test(p.title)) return false
         const color = mainColor(p)!
         return NEUTRAL.has(color) || (strong === 0 && !colors.includes(color))
       })
@@ -133,7 +166,7 @@ export function buildOutfits(products: Product[], gender: 'uomo' | 'donna'): Out
       let ok = true
       for (const slot of recipe.slots) {
         if (slot.optional !== undefined && rand() > slot.optional) continue
-        const p = pick(slot.cats, items.map((i) => mainColor(i)!))
+        const p = pick(slot, items.map((i) => mainColor(i)!))
         if (!p) {
           if (slot.optional === undefined) ok = false
           continue
@@ -147,7 +180,9 @@ export function buildOutfits(products: Product[], gender: 'uomo' | 'donna'): Out
       made++
     }
   }
-  // Stili mescolati, sempre nello stesso ordine.
+  // Stili mescolati, sempre nello stesso ordine; prima quelli con capi appena arrivati.
   const rand = rng(hash(gender))
-  return outfits.map((o) => [rand(), o] as const).sort((a, b) => a[0] - b[0]).map(([, o]) => o)
+  const mixed = outfits.map((o) => [rand(), o] as const).sort((a, b) => a[0] - b[0]).map(([, o]) => o)
+  const fresh = (o: Outfit) => o.items.some((i) => isNew(i))
+  return [...mixed.filter(fresh), ...mixed.filter((o) => !fresh(o))]
 }
