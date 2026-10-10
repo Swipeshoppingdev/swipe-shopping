@@ -2,6 +2,7 @@ import { BottomNav } from './components/BottomNav'
 import { ConsentBanner } from './components/ConsentBanner'
 import { Header } from './components/Header'
 import { ProductSheet } from './components/ProductSheet'
+import { useOutfitMode } from './lib/outfitMode'
 import { useHashRoute } from './lib/useHashRoute'
 import { Welcome } from './components/Welcome'
 import { SocialWatcher } from './components/SocialWatcher'
@@ -24,6 +25,7 @@ import { WishlistPage } from './pages/WishlistPage'
 export default function App() {
   const { route, hash } = useHashRoute()
   const isDiscover = route === 'scopri' || route === 'outfit'
+  const inOutfit = useOutfitMode()
 
   return (
     <div className="flex h-dvh flex-col bg-neutral-50 text-neutral-900">
@@ -55,7 +57,7 @@ export default function App() {
       <Welcome />
       <ProductSheet />
       <SocialWatcher />
-      <BottomNav current={route} hash={hash} />
+      <BottomNav current={route} hash={hash} inOutfit={inOutfit} />
     </div>
   )
 }

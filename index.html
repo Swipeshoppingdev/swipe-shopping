@@ -16,7 +16,8 @@
         // Sezioni oltre la moda: tenere allineato con SECTIONS in src/config/categories.ts.
         var m = (/[?&]sezione=(\w+)/.exec(location.search) || [])[1] || JSON.parse(localStorage.getItem('swipeshop:v1:mode') || 'null')
         if (['tech', 'gadget', 'snack', 'beauty', 'casa', 'animali'].indexOf(m) >= 0) document.documentElement.classList.add(m)
-        if (/^#\/outfit/.test(location.hash)) document.documentElement.classList.add('outfit')
+        // Outfit resta attivo anche su Amici, Profilo… (vedi src/lib/outfitMode.ts)
+        if (/^#\/outfit/.test(location.hash) || (JSON.parse(localStorage.getItem('swipeshop:v1:inOutfit') || 'false') && !/^(#\/?)?(scopri|preferiti|filtri)?([/?].*)?$/.test(location.hash))) document.documentElement.classList.add('outfit')
       } catch (e) {}
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />

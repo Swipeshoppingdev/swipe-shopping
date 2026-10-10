@@ -6,13 +6,13 @@ import { load, save } from '../lib/storage'
 import { useTheme } from '../lib/theme'
 import { SocialLinks } from './SocialLinks'
 import { useApp } from '../state/AppState'
-import { useHashRoute } from '../lib/useHashRoute'
+import { useInOutfit } from '../lib/outfitMode'
 
 /** Barra in alto: menu delle sezioni a sinistra, logo al centro, tema chiaro/scuro a destra. */
 export function Header() {
   const { theme, toggle } = useTheme()
   const { state } = useApp()
-  const { route } = useHashRoute()
+  const inOutfit = useInOutfit()
   return (
     // Sticky con sfondo pieno: iOS 26 riconosce la barra e usa il suo colore sotto l'ora invece di sfocare il contenuto.
     <header className="sticky top-0 z-20 shrink-0 bg-neutral-50 pt-[env(safe-area-inset-top)]">
@@ -23,7 +23,7 @@ export function Header() {
             {APP_NAME.split(' ')[0]}
             <span className="text-rose-500">{APP_NAME.split(' ').slice(1).join(' ')}</span>
           </span>
-          <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{route === 'outfit' ? 'Outfit' : sectionOf(state.mode).label}</span>
+          <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{inOutfit ? 'Outfit' : sectionOf(state.mode).label}</span>
         </a>
         <span className="w-18" aria-hidden />
         <button
@@ -56,8 +56,7 @@ const NEW_SECTIONS: Universe[] = ['beauty', 'casa', 'gadget', 'snack', 'animali'
 /** Menu delle sezioni: ognuna è come un'app a sé, con filtri e preferiti suoi. */
 function SectionMenu() {
   const { state, actions } = useApp()
-  const { route } = useHashRoute()
-  const onOutfit = route === 'outfit'
+  const onOutfit = useInOutfit()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const current = onOutfit ? { ...sectionOf('moda'), label: 'Outfit' } : sectionOf(state.mode)

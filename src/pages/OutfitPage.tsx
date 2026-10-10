@@ -62,12 +62,6 @@ export function OutfitPage() {
     save('outfitsSeen', last)
   }
 
-  // Colore suo (indaco) finché la pagina è aperta.
-  useEffect(() => {
-    document.documentElement.classList.add('outfit')
-    return () => document.documentElement.classList.remove('outfit')
-  }, [])
-
   // Gli outfit sono fatti con la Moda: la sezione aperta diventa la Moda (colori e catalogo).
   useEffect(() => {
     if (state.mode !== 'moda' && window.location.hash.startsWith('#/outfit')) actions.setMode('moda')

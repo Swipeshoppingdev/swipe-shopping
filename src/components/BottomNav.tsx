@@ -13,13 +13,13 @@ const ITEMS = [
   { route: 'profilo', label: 'Profilo', Icon: User },
 ] as const
 
-export function BottomNav({ current, hash }: { current: Route; hash: string }) {
+export function BottomNav({ current, hash, inOutfit }: { current: Route; hash: string; inOutfit: boolean }) {
   // In Outfit niente filtri: Scopri e Preferiti portano agli outfit e agli outfit salvati.
-  const onOutfit = current === 'outfit'
+  const onOutfit = inOutfit
   const items = onOutfit ? ITEMS.filter((i) => i.route !== 'filtri') : ITEMS
   const hrefOf = (r: Route) => (!onOutfit ? routeHref(r) : r === 'scopri' ? '#/outfit' : r === 'preferiti' ? '#/outfit/salvati' : routeHref(r))
   const isActive = (r: Route) =>
-    !onOutfit ? current === r : r === 'preferiti' ? hash.startsWith('#/outfit/salvati') : r === 'scopri' && !hash.startsWith('#/outfit/salvati')
+    current !== 'outfit' ? current === r : r === 'preferiti' ? hash.startsWith('#/outfit/salvati') : r === 'scopri' && !hash.startsWith('#/outfit/salvati')
   const { wishlist, state, unseenDeals } = useApp()
   const [unseenSocial, setUnseenSocial] = useState(0)
   useEffect(() => subscribeUnseen(setUnseenSocial), [])
