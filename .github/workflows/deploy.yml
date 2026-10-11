@@ -60,6 +60,8 @@ jobs:
           name: indexnow-urls
       - name: Segnala le pagine
         run: |
+          # Il sito appena pubblicato ci mette un attimo ad arrivare ovunque: prima si aspetta, poi IndexNow controlla la chiave.
+          sleep 90
           KEY=e0d33ae511e9ec6bba7fb998c3420519
           split -l 9000 indexnow-urls.txt part-
           for f in part-*; do
