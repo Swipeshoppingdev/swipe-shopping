@@ -1,7 +1,7 @@
 import type { CategoryId } from '../config/categories'
-import { freshPrice } from './price'
-import { modelKey } from './dedupe'
-import { isNew } from './newness'
+import { freshPrice } from './price.ts'
+import { modelKey } from './dedupe.ts'
+import { isNew } from './newness.ts'
 import type { Product } from '../types/product'
 
 /**
@@ -180,8 +180,10 @@ const NEVER = /\b(calze|calzini|socks|shorts?|bermuda|pantaloncin\w*|costum\w*|p
 /** Fuori stagione */
 const SUMMER_ONLY = /\b(lino|linen|canott\w*|smanicat\w*|sandal\w*|infradito|ciabatt\w*)\b/i
 const WINTER_ONLY = /\b(lana|wool|piumin\w*|imbottit\w*|teddy|cashmere|montone|dolcevita)\b/i
+/** Stili curati: niente capi sportivi o da tempo libero */
+const DRESSY = new Set<OutfitStyle>(['smart', 'elegante', 'ufficio', 'vestito', 'serata'])
 /** Non stanno in un outfit elegante */
-const NOT_ELEGANT = /\b(lavoro|workwear|salopett\w*|jogg\w*|tuta|sweat\w*|cargo|fleece|pile|gomma|pioggia|rain|felpa|hoodie|sport\w*|running)\b/i
+const NOT_ELEGANT = /\b(zain\w*|lavoro|workwear|salopett\w*|jogg\w*|tuta|sweat\w*|cargo|fleece|pile|gomma|pioggia|rain|felpa|hoodie|sport\w*|running)\b/i
 
 /** Capi finiti nella categoria sbagliata (una maglietta tra i jeans): il titolo nomina un capo di sopra. */
 const TOP_WORDS = /\b(t-?shirts?|top|maglia|maglion\w*|felpa|camici\w*|body|polo)\b/i
@@ -204,12 +206,8 @@ export function outfitTotal(items: Product[]) {
   return total
 }
 
-/**
- * Tutti gli outfit di un genere, sempre gli stessi per lo stesso catalogo e la stessa stagione.
- * Solo capi Amazon: le foto degli altri negozi sono quasi sempre indossate, e nel collage stonano.
- */
-export function buildOutfits(products: Product[], gender: 'uomo' | 'donna', month = new Date().getMonth()): Outfit[] {
-  const cold = isColdSeason(month)
+/** I capi che possono entrare negli outfit di un genere, divisi per categoria. */
+function outfitPool(products: Product[], gender: 'uomo' | 'donna', cold: boolean) {
   const offSeason = cold ? SUMMER_ONLY : WINTER_ONLY
   const pool = new Map<CategoryId, Product[]>()
   const seenModel = new Set<string>()
@@ -221,8 +219,46 @@ export function buildOutfits(products: Product[], gender: 'uomo' | 'donna', mont
     const key = modelKey(p)
     if (seenModel.has(key)) continue
     seenModel.add(key)
-    pool.set(p.category, [...(pool.get(p.category) ?? []), p])
+    const list = pool.get(p.category)
+    if (list) list.push(p)
+    else pool.set(p.category, [p])
   }
+  return pool
+}
+
+/** Il colore di un capo va con gli altri: neutro, oppure l'unico colore acceso dell'outfit. */
+function colorFits(p: Product, others: Product[]) {
+  const color = mainColor(p)
+  if (!color) return false
+  const colors = others.map((o) => mainColor(o)!)
+  return NEUTRAL.has(color) || (!colors.some((c) => !NEUTRAL.has(c)) && !colors.includes(color))
+}
+
+/**
+ * "Cambia un capo": altri capi della stessa categoria che stanno bene con il resto dell'outfit
+ * (stessi controlli di quando l'outfit è stato composto), in un ordine fisso per quel capo.
+ */
+export function swapOptions(outfit: Outfit, index: number, products: Product[], month = new Date().getMonth()): Product[] {
+  const item = outfit.items[index]
+  const others = outfit.items.filter((_, i) => i !== index)
+  const recipe = recipes(isColdSeason(month)).find((r) => r.style === outfit.style)
+  const slot = recipe?.slots.find((s) => s.cats.includes(item.category))
+  const elegant = DRESSY.has(outfit.style)
+  const taken = new Set(outfit.items.map(modelKey))
+  const list = (outfitPool(products, outfit.gender, isColdSeason(month)).get(item.category) ?? []).filter(
+    (p) => !taken.has(modelKey(p)) && (!slot?.fit || slot.fit(p)) && !(elegant && NOT_ELEGANT.test(p.title)) && colorFits(p, others),
+  )
+  const rand = rng(hash(item.id))
+  return list.map((p) => [rand(), p] as const).sort((a, b) => a[0] - b[0]).map(([, p]) => p)
+}
+
+/**
+ * Tutti gli outfit di un genere, sempre gli stessi per lo stesso catalogo e la stessa stagione.
+ * Solo capi Amazon: le foto degli altri negozi sono quasi sempre indossate, e nel collage stonano.
+ */
+export function buildOutfits(products: Product[], gender: 'uomo' | 'donna', month = new Date().getMonth()): Outfit[] {
+  const cold = isColdSeason(month)
+  const pool = outfitPool(products, gender, cold)
   const uses = new Map<string, number>()
   const ids = new Set<string>()
   const outfits: Outfit[] = []
@@ -231,7 +267,7 @@ export function buildOutfits(products: Product[], gender: 'uomo' | 'donna', mont
     .filter((recipe) => recipe.genders.includes(gender))
     .map((recipe) => {
       const rand = rng(hash(`${recipe.style}:${gender}`))
-      const elegant = recipe.style !== 'casual' && recipe.style !== 'sportivo'
+      const elegant = DRESSY.has(recipe.style)
       // I capi adatti a ogni posto si calcolano una volta; poi se ne provano alcuni a caso (veloce anche con migliaia di capi).
       const slotPool = recipe.slots.map((slot) =>
         slot.cats.flatMap((c) => pool.get(c) ?? []).filter((p) => (!slot.fit || slot.fit(p)) && !(elegant && NOT_ELEGANT.test(p.title))),

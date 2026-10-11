@@ -9,7 +9,7 @@ import { StoreLink } from '../components/StoreLink'
 import { UndoMenuView } from '../components/UndoMenu'
 import { universeOf } from '../config/categories'
 import { brandAndStore } from '../config/stores'
-import { STYLE_LABEL, buildOutfits, outfitTotal, type Outfit, type OutfitStyle } from '../lib/outfits'
+import { STYLE_LABEL, buildOutfits, outfitId, outfitTotal, swapOptions, type Outfit, type OutfitStyle } from '../lib/outfits'
 import { AllNone, Chip } from './FiltersPage'
 import { openProduct } from '../lib/productSheet'
 import { shareList } from '../lib/share'
@@ -60,7 +60,15 @@ export function OutfitPage() {
   const tab = hash.startsWith('#/outfit/salvati') ? 'salvati' : hash.startsWith('#/outfit/filtri') ? 'filtri' : 'scopri'
   const [saved, setSavedState] = useState(() => load<SavedOutfit[]>('outfitsSaved', []))
   const [seen, setSeenState] = useState(() => load<string[]>('outfitsSeen', []))
-  const [open, setOpen] = useState<Outfit | null>(null)
+  const [open, setOpenState] = useState<Outfit | null>(null)
+  // L'outfit del mazzo da cui si è partiti (se poi si cambiano dei capi) e i capi già proposti, per non riproporli.
+  const [origin, setOrigin] = useState<string | null>(null)
+  const tried = useRef(new Set<string>())
+  const setOpen = (o: Outfit | null, fromDeck = false) => {
+    setOpenState(o)
+    setOrigin(fromDeck && o ? o.id : null)
+    tried.current = new Set()
+  }
   const [dir, setDir] = useState(1)
   // Le scelte fatte in questa visita, per il tasto "annulla".
   const [history, setHistory] = useState<{ id: string; yes: boolean }[]>([])
@@ -163,7 +171,7 @@ export function OutfitPage() {
             <AnimatePresence custom={dir}>
               {deck
                 .slice(0, 2)
-                .map((o, i) => <OutfitCard key={o.id} outfit={o} index={i} onDecide={(yes) => decide(o, yes)} onOpen={() => setOpen(o)} />)
+                .map((o, i) => <OutfitCard key={o.id} outfit={o} index={i} onDecide={(yes) => decide(o, yes)} onOpen={() => setOpen(o, true)} />)
                 .reverse()}
             </AnimatePresence>
           </div>
@@ -196,6 +204,21 @@ export function OutfitPage() {
           saved={saved.some((s) => s.id === open.id)}
           onSave={() => {
             decide(open, true)
+            // Salvato con dei capi cambiati: l'outfit di partenza esce dal mazzo.
+            if (origin && origin !== open.id) setSeen([...seen, origin])
+          }}
+          onSwap={(i) => {
+            const options = swapOptions(open, i, moda)
+            tried.current.add(open.items[i].id)
+            const next = options.find((p) => !tried.current.has(p.id)) ?? options[0]
+            if (!next) return false
+            const items = open.items.map((p, k) => (k === i ? next : p))
+            const changed = { ...open, id: outfitId(items.map((p) => p.id)), items }
+            // Un outfit salvato resta salvato, con il capo nuovo.
+            if (saved.some((s) => s.id === open.id))
+              setSaved(saved.map((s) => (s.id === open.id ? { ...s, id: changed.id, items: items.map((p) => p.id) } : s)))
+            setOpenState(changed)
+            return true
           }}
           onClose={() => setOpen(null)}
         />
@@ -269,7 +292,7 @@ function OutfitCard({ outfit, index, onDecide, onOpen }: { outfit: Outfit; index
           </span>
           <span className="block text-lg font-bold">{total !== null ? `Totale ${euro(total)}` : 'Vedi i prezzi'}</span>
         </span>
-        <span className="shrink-0 text-sm font-semibold text-rose-500 underline">Vedi capi</span>
+        <span className="shrink-0 text-sm font-semibold text-rose-500 underline">Vedi e cambia</span>
       </div>
     </motion.div>
   )
@@ -297,8 +320,11 @@ function Collage({ items, eager }: { items: Product[]; eager?: boolean }) {
   )
 }
 
-function OutfitSheet({ outfit, saved, onSave, onClose }: { outfit: Outfit; saved: boolean; onSave: () => void; onClose: () => void }) {
+function OutfitSheet(props: { outfit: Outfit; saved: boolean; onSave: () => void; onSwap: (index: number) => boolean; onClose: () => void }) {
+  const { outfit, saved, onSave, onClose } = props
   const { wishlist, actions } = useApp()
+  // Capi per cui non c'è un'altra scelta che si abbini.
+  const [noMore, setNoMore] = useState<string[]>([])
   const total = outfitTotal(outfit.items)
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={onClose}>
@@ -313,6 +339,7 @@ function OutfitSheet({ outfit, saved, onSave, onClose }: { outfit: Outfit; saved
           <div>
             <p className="text-xs font-semibold tracking-wide text-neutral-500 uppercase">Outfit {STYLE_LABEL[outfit.style].toLowerCase()}</p>
             <p className="text-xl font-bold">{total !== null ? `Totale ${euro(total)}` : `${outfit.items.length} capi`}</p>
+            {outfit.items.length > 0 && <p className="text-xs text-neutral-500">Un capo non ti convince? Tocca "Cambia".</p>}
           </div>
           <button type="button" onClick={onClose} aria-label="Chiudi" className="grid size-9 place-items-center rounded-full bg-neutral-100">
             <X className="size-5" />
@@ -320,7 +347,7 @@ function OutfitSheet({ outfit, saved, onSave, onClose }: { outfit: Outfit; saved
         </div>
         {outfit.items.length === 0 && <p className="py-6 text-center text-sm text-neutral-500">I capi di questo outfit non sono più disponibili.</p>}
         <ul className="space-y-3">
-          {outfit.items.map((p) => {
+          {outfit.items.map((p, i) => {
             const liked = wishlist.some((w) => w.product.id === p.id)
             return (
               <li key={p.id} className="flex gap-3 rounded-2xl p-2 ring-1 ring-neutral-100">
@@ -346,6 +373,18 @@ function OutfitSheet({ outfit, saved, onSave, onClose }: { outfit: Outfit; saved
                     >
                       <Heart className={`size-4 ${liked ? 'fill-rose-500 text-rose-500' : ''}`} />
                     </button>
+                    {noMore.includes(p.id) ? (
+                      <span className="text-[11px] text-neutral-500">Nessun'altra scelta</span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => !props.onSwap(i) && setNoMore([...noMore, p.id])}
+                        aria-label={`Cambia ${p.title}`}
+                        className="inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 text-xs font-semibold text-rose-500 ring-1 ring-neutral-200 active:scale-95"
+                      >
+                        <RefreshCw className="size-3.5" /> Cambia
+                      </button>
+                    )}
                   </div>
                 </div>
               </li>

@@ -5,6 +5,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { SECTIONS, UNIVERSES, groupsOf, sectionOf, universeOf, type Universe } from '../src/config/categories.ts'
 import { productUrl, STORES } from '../src/config/stores.ts'
+import { STYLE_LABEL, buildOutfits, outfitTotal, type Outfit, type OutfitStyle } from '../src/lib/outfits.ts'
 import type { Product } from '../src/types/product.ts'
 
 const SITE = 'https://swipeshopping.app'
@@ -57,6 +58,8 @@ interface Page {
   intro: string
   items: Product[]
   group: string
+  /** Pagine degli outfit: look completi al posto della griglia di prodotti */
+  outfits?: Outfit[]
 }
 const pages: Page[] = []
 const add = (page: Omit<Page, 'items'>, list: Product[]) => {
@@ -148,6 +151,38 @@ for (const g of ['donna', 'uomo'] as const) {
   )
 }
 
+// --- Outfit: una pagina per stile e genere, con look completi fatti dai capi del catalogo ---
+const MAX_OUTFITS = 12
+const STYLE_TEXT: Record<OutfitStyle, string> = {
+  casual: 'per tutti i giorni: jeans, sneakers e una felpa o una camicia',
+  smart: 'a metà tra casual ed elegante: camicia o maglione con i jeans e scarpe curate',
+  elegante: 'eleganti: camicia, pantaloni e scarpe eleganti, con cappotto e accessori',
+  ufficio: "da ufficio: camicia, pantaloni, scarpe eleganti e giacca",
+  nero: 'total black: tutto nero, dalla testa ai piedi',
+  vestito: 'con il vestito: abito, scarpe, borsa e giacca abbinati',
+  serata: 'da sera: vestito, scarpe eleganti, borsa e un gioiello',
+  weekend: 'per il weekend: giacca, jeans, scarpe comode e zaino',
+  sportivo: 'sportivi: felpa, pantaloni da tuta o leggings e scarpe da ginnastica',
+}
+for (const g of ['donna', 'uomo'] as const) {
+  const all = buildOutfits(moda, g)
+  for (const style of Object.keys(STYLE_LABEL) as OutfitStyle[]) {
+    const list = all.filter((o) => o.style === style && outfitTotal(o.items) !== null).slice(0, MAX_OUTFITS)
+    if (list.length < 3) continue
+    const label = STYLE_LABEL[style]
+    pages.push({
+      section: 'moda',
+      slug: `outfit-${g}-${slugify(label)}`,
+      group: 'Outfit',
+      title: `Outfit ${label.toLowerCase()} ${g}: idee e look completi | Swipe Shopping`,
+      h1: `Outfit ${label.toLowerCase()} da ${g}`,
+      intro: `Idee di outfit ${STYLE_TEXT[style]}. Look completi da ${g} con capi di marca abbinati per colore, ognuno con il suo prezzo e il link al negozio.`,
+      items: list.flatMap((o) => o.items),
+      outfits: list,
+    })
+  }
+}
+
 // --- Tech, Gadget, Snack: categorie, marche, offerte (niente uomo/donna) ---
 const OTHER = {
   tech: { what: 'prodotti tech', deals: 'Offerte tech di oggi: cuffie, smartphone, gaming', dealsH1: 'Offerte tech di oggi',
@@ -218,6 +253,9 @@ main{max-width:1100px;margin:0 auto;padding:0 16px 32px}h1{font-size:28px;line-h
 .body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}.brand{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600}
 .title{font-size:14px;font-weight:500;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .price{font-weight:700;margin-top:auto}.buy{margin-top:6px;text-align:center;background:var(--text);color:var(--bg);text-decoration:none;font-weight:600;font-size:14px;padding:8px;border-radius:999px}
+.outfits{grid-template-columns:1fr}@media(min-width:640px){.outfits{grid-template-columns:repeat(2,1fr)}}@media(min-width:960px){.outfits{grid-template-columns:repeat(3,1fr)}}
+.ogrid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:6px;background:var(--line)}.oimg{aspect-ratio:1;background:#fff;border-radius:10px;overflow:hidden;display:block}
+.oimg img{width:100%;height:100%;object-fit:contain;padding:6px}.olist{list-style:none;padding:0;margin:4px 0 0;font-size:13px;display:flex;flex-direction:column;gap:4px}
 .links{margin-top:32px}.links h2{font-size:16px;margin:20px 0 8px}.links ul{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
 .links a{display:inline-block;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:13px;text-decoration:none}
 footer{max-width:1100px;margin:0 auto;padding:16px;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}`
@@ -257,6 +295,23 @@ function card(p: Product) {
   return `<li class="card"><a class="img" href="${app}" title="Apri nell'app"><img src="${esc(p.imageUrl!)}" alt="${esc(p.title)}" loading="lazy" decoding="async" width="300" height="300">${pr?.off ? `<span class="off">-${pr.off}%</span>` : ''}</a><div class="body"><span class="brand">${esc(p.brand ?? '')}</span><h3 class="title"><a href="${app}" style="text-decoration:none">${esc(p.title)}</a></h3>${pr ? `<span class="price">${pr.text}</span>` : ''}${url ? `<a class="buy" href="${esc(url)}" rel="sponsored nofollow noopener" target="_blank">Vedi su ${STORES[p.store].name}</a>` : ''}</div></li>`
 }
 
+/** Un look: le foto dei capi affiancate (non modificate), il totale e l'elenco dei capi con i link. */
+function outfitCard(o: Outfit) {
+  const total = outfitTotal(o.items)
+  const thumbs = o.items
+    .map((p) => `<a class="oimg" href="/#/p/${encodeURIComponent(p.id)}" title="${esc(p.title)}"><img src="${esc(p.imageUrl!)}" alt="${esc(p.title)}" loading="lazy" decoding="async" width="150" height="150"></a>`)
+    .join('')
+  const rows = o.items
+    .map((p) => {
+      const pr = price(p)
+      const url = productUrl(p)
+      return `<li><span class="brand">${esc(p.brand ?? '')}</span> ${esc(p.title)}${pr ? ` · <b>${pr.text}</b>` : ''}${url ? ` · <a href="${esc(url)}" rel="sponsored nofollow noopener" target="_blank">Vedi su ${STORES[p.store].name}</a>` : ''}</li>`
+    })
+    .join('')
+  // 4 capi o meno: 2 per riga (niente buchi), altrimenti 3.
+  return `<li class="card outfit"><div class="ogrid" style="grid-template-columns:repeat(${o.items.length <= 4 ? 2 : 3},1fr)">${thumbs}</div><div class="body"><span class="brand">Outfit ${esc(STYLE_LABEL[o.style].toLowerCase())} · ${o.items.length} capi</span>${total !== null ? `<span class="price">Totale ${eur.format(total)}</span>` : ''}<ul class="olist">${rows}</ul></div></li>`
+}
+
 function linksSection(section: Universe, current: string) {
   const groups = new Map<string, Page[]>()
   for (const pg of pages)
@@ -274,10 +329,14 @@ const otherSection = (section: Universe) =>
 for (const pg of pages) {
   const genderLinks = pages.filter((x) => x.section === pg.section && (x.slug === `${pg.slug}-donna` || x.slug === `${pg.slug}-uomo`))
   const body = `<h1>${esc(pg.h1)}</h1><p class="intro">${esc(pg.intro)}</p>
-<p class="note">${pg.items.length} prodotti · prezzi aggiornati il ${builtLabel}${
+<p class="note">${pg.outfits ? `${pg.outfits.length} outfit` : `${pg.items.length} prodotti`} · prezzi aggiornati il ${builtLabel}${
     genderLinks.length ? ` · ${genderLinks.map((x) => `<a href="${pathOf(x)}">${x.slug.endsWith('donna') ? 'Donna' : 'Uomo'}</a>`).join(' · ')}` : ''
   }</p>
-<ul class="grid">${pg.items.map(card).join('')}</ul>${linksSection(pg.section, pg.slug)}`
+${
+    pg.outfits
+      ? `<ul class="grid outfits">${pg.outfits.map(outfitCard).join('')}</ul><p style="margin-top:20px"><a class="cta" href="/#/outfit">Scopri altri outfit nell'app</a></p>`
+      : `<ul class="grid">${pg.items.map(card).join('')}</ul>`
+  }${linksSection(pg.section, pg.slug)}`
   const dir = new URL(`${pg.section}/${pg.slug}/`, dist)
   mkdirSync(dir, { recursive: true })
   writeFileSync(

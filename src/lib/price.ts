@@ -1,4 +1,4 @@
-import { STORES } from '../config/stores'
+import { STORES } from '../config/stores.ts'
 import type { Product } from '../types/product'
 
 const eur = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' })
