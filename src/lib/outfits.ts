@@ -15,7 +15,7 @@ export interface Outfit {
   items: Product[]
 }
 
-export type OutfitStyle = 'casual' | 'smart' | 'elegante' | 'ufficio' | 'nero' | 'vestito' | 'serata' | 'weekend' | 'sportivo'
+export type OutfitStyle = 'casual' | 'smart' | 'elegante' | 'ufficio' | 'nero' | 'vestito' | 'serata' | 'weekend' | 'sportivo' | 'street' | 'viaggio'
 export const STYLE_LABEL: Record<OutfitStyle, string> = {
   casual: 'Casual',
   smart: 'Smart casual',
@@ -26,6 +26,8 @@ export const STYLE_LABEL: Record<OutfitStyle, string> = {
   serata: 'Da sera',
   weekend: 'Weekend',
   sportivo: 'Sportivo',
+  street: 'Streetwear',
+  viaggio: 'In viaggio',
 }
 
 /** fit: per categorie miste (nello "sportivo" ci sono anche top e reggiseni) solo i capi giusti per quel posto */
@@ -35,6 +37,9 @@ const isBlack = (p: Product) => mainColor(p) === 'Nero'
 /** Pantaloni da tuta o leggings (non la tuta intera, che ha già la felpa) */
 const sportBottom = (p: Product) =>
   /\b(jogger\w*|leggings?)\b/i.test(p.title) || (/\bpantalon\w*/i.test(p.title) && (p.category === 'sportivo' || /\b(tuta|sport\w*)\b/i.test(p.title)))
+/** Pantaloni comodi: jeans, pantaloni non eleganti o da tuta */
+const streetBottom = (p: Product) =>
+  p.category === 'sportivo' ? sportBottom(p) : !/\b(elegant\w*|completo|abito|sartorial\w*|cerimonia)\b/i.test(p.title)
 type Recipe = { style: OutfitStyle; genders: ('uomo' | 'donna')[]; slots: Slot[] }
 
 /** Freddo da ottobre ad aprile: cappotti, stivali e maglioni; d'estate niente capi pesanti. */
@@ -135,6 +140,31 @@ function recipes(cold: boolean): Recipe[] {
       ],
     },
     {
+      // Streetwear: felpa o t-shirt larga, jeans o pantaloni cargo/tuta, sneakers e sempre il cappellino.
+      style: 'street',
+      genders: ['uomo', 'donna'],
+      slots: [
+        { cats: cold ? ['felpe', 'giacche'] : ['tshirt', 'felpe'] },
+        { cats: ['jeans', 'pantaloni', 'sportivo'], fit: streetBottom },
+        { cats: ['sneakers'] },
+        { cats: ['cappellini'] },
+        { cats: ['zaini', 'borselli', 'occhiali', 'orologi'], optional: 0.6 },
+      ],
+    },
+    {
+      // In viaggio: comodi, con la borsa da viaggio (o lo zaino) e gli occhiali.
+      style: 'viaggio',
+      genders: ['uomo', 'donna'],
+      slots: [
+        { cats: cold ? ['maglioni', 'felpe'] : ['tshirt', 'camicie', 'felpe'] },
+        { cats: ['jeans', 'pantaloni', 'sportivo'], fit: streetBottom },
+        { cats: ['sneakers', 'scarpe_sportive'] },
+        { cats: ['borse_viaggio'] },
+        { cats: cold ? ['giacche', 'cappotti'] : ['giacche'], optional: cold ? 0.7 : 0.2 },
+        { cats: ['occhiali', 'cappellini', 'orologi'], optional: 0.5 },
+      ],
+    },
+    {
       style: 'sportivo',
       genders: ['uomo', 'donna'],
       slots: [
@@ -150,8 +180,8 @@ function recipes(cold: boolean): Recipe[] {
 /** Colori che stanno bene con tutto: ammesso al massimo un capo di un altro colore. */
 const NEUTRAL = new Set(['Nero', 'Bianco', 'Grigio', 'Beige', 'Marrone', 'Blu'])
 /** Ogni capo compare al massimo in tanti outfit */
-const MAX_USES = 10
-const MAX_PER_STYLE = 1200
+const MAX_USES = 20
+const MAX_PER_STYLE = 1600
 const BATCH = 50
 /** Quanti capi a caso si provano per un posto prima di arrendersi */
 const TRIES = 40

@@ -167,6 +167,8 @@ const STYLE_TEXT: Record<OutfitStyle, string> = {
   serata: 'da sera: vestito, scarpe eleganti, borsa e un gioiello',
   weekend: 'per il weekend: giacca, jeans, scarpe comode e zaino',
   sportivo: 'sportivi: felpa, pantaloni da tuta o leggings e scarpe da ginnastica',
+  street: 'streetwear: felpa, jeans o cargo, sneakers e cappellino',
+  viaggio: 'per viaggiare comodi: maglione o felpa, pantaloni comodi, sneakers e borsa da viaggio',
 }
 for (const g of ['donna', 'uomo'] as const) {
   const all = buildOutfits(moda, g)
