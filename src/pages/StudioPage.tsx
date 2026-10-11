@@ -171,14 +171,14 @@ function Studio() {
       </div>
 
       {!playing && (
-        <div className="absolute inset-x-0 bottom-0 space-y-3 bg-gradient-to-t from-[#000] via-[#000]/90 to-transparent p-4 pt-10 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+        <div className="absolute inset-x-0 bottom-0 space-y-3 rounded-t-3xl border-t border-[#fff]/15 bg-[#0b0b0d] p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-12px_40px_rgba(0,0,0,0.8)]">
           <div className="flex flex-wrap justify-center gap-2">
             {FORMATS.map((f) => (
               <button
                 key={f.id}
                 type="button"
                 onClick={() => setFormat(f.id)}
-                className={`rounded-full px-3 py-1.5 text-sm font-semibold ${format === f.id ? 'bg-[#fff] text-[#111]' : 'bg-[#fff]/15 text-[#fff]'}`}
+                className={`rounded-full px-3 py-1.5 text-sm font-semibold ${format === f.id ? 'bg-[#fff] text-[#111]' : 'bg-[#2a2a30] text-[#fff] ring-1 ring-[#fff]/20'}`}
               >
                 {f.label}
               </button>
@@ -186,7 +186,7 @@ function Studio() {
           </div>
           <div className="flex items-center justify-center gap-2">
             {format !== 'offerte' && format !== 'swipe' && (
-              <div className="flex rounded-full bg-[#fff]/15 p-1 text-sm font-semibold">
+              <div className="flex rounded-full bg-[#2a2a30] p-1 text-sm font-semibold ring-1 ring-[#fff]/20">
                 {(['donna', 'uomo'] as const).map((g) => (
                   <button key={g} type="button" onClick={() => setGender(g)} className={`rounded-full px-3 py-1 capitalize ${gender === g ? 'bg-[#fff] text-[#111]' : 'text-[#fff]'}`}>
                     {g}
@@ -194,17 +194,17 @@ function Studio() {
                 ))}
               </div>
             )}
-            <button type="button" onClick={() => setVariant((v) => v + 1)} className="inline-flex items-center gap-1.5 rounded-full bg-[#fff]/15 px-4 py-2 text-sm font-semibold text-[#fff]">
+            <button type="button" onClick={() => setVariant((v) => v + 1)} className="inline-flex items-center gap-1.5 rounded-full bg-[#2a2a30] px-4 py-2 text-sm font-semibold text-[#fff] ring-1 ring-[#fff]/20">
               <RefreshCw className="size-4" /> Altri
             </button>
             <button type="button" onClick={start} disabled={!slides.length} className="inline-flex items-center gap-1.5 rounded-full bg-[#f43f5e] px-5 py-2 text-sm font-bold text-[#fff] disabled:opacity-40">
               <Play className="size-4 fill-current" /> Avvia
             </button>
-            <a href={routeHref('profilo')} aria-label="Chiudi Studio" className="grid size-9 place-items-center rounded-full bg-[#fff]/15 text-[#fff]">
+            <a href={routeHref('profilo')} aria-label="Chiudi Studio" className="grid size-9 place-items-center rounded-full bg-[#2a2a30] text-[#fff] ring-1 ring-[#fff]/20">
               <X className="size-5" />
             </a>
           </div>
-          <p className="text-center text-xs text-[#fff]/60">
+          <p className="text-center text-xs text-[#fff]/75">
             Avvia la registrazione schermo, poi tocca Avvia. Tocca il video per fermarlo. Contenuti nuovi ogni giorno.
           </p>
         </div>
