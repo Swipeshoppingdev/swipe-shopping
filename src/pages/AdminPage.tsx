@@ -6,6 +6,7 @@ import { reasonLabel, type ReportRow } from '../lib/reports'
 import { openProduct } from '../lib/productSheet'
 import { supabase } from '../lib/supabase'
 import { AdminBroadcast } from '../components/AdminBroadcast'
+import { AdminInsights } from '../components/AdminInsights'
 import { ProductImage } from '../components/ProductImage'
 import { routeHref } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
@@ -22,7 +23,7 @@ interface AdminStats {
   devices_today: number
   devices_7d: number
   devices_period: number
-  totals: Partial<Record<'session' | 'view' | 'like' | 'dislike' | 'click' | 'remove' | 'share', number>>
+  totals: Partial<Record<'session' | 'view' | 'like' | 'dislike' | 'click' | 'remove' | 'share' | 'outfit_like' | 'outfit_dislike' | 'outfit_share', number>>
   daily: { day: string; devices: number; views: number; likes: number; clicks: number }[]
   top_clicked: Ranked[]
   top_liked: Ranked[]
@@ -141,6 +142,11 @@ function AdminStatsView() {
               <Daily rows={stats.daily} />
             </Section>
           )}
+
+          <AdminInsights
+            days={days}
+            current={{ devices: stats.devices_period, views, likes, clicks, shares: (t.share ?? 0) + (t.outfit_share ?? 0) }}
+          />
 
           <Ranking title="Più cliccati" rows={stats.top_clicked} label={titleOf} />
           <Ranking title="Più salvati nei preferiti" rows={stats.top_liked} label={titleOf} />

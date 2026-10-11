@@ -13,6 +13,7 @@ import { brandAndStore } from '../config/stores'
 import { STYLE_LABEL, buildOutfits, outfitId, outfitTotal, swapOptions, type Outfit, type OutfitStyle } from '../lib/outfits'
 import { AllNone, Chip } from './FiltersPage'
 import { openProduct } from '../lib/productSheet'
+import { trackOutfit } from '../lib/analytics'
 import { sharedOutfit } from '../lib/outfitShare'
 import { shareOutfit } from '../lib/share'
 import { social } from '../lib/social'
@@ -128,6 +129,7 @@ export function OutfitPage() {
   }, [hash, ready, byId, gender])
 
   const decide = (o: Outfit, yes: boolean) => {
+    trackOutfit(yes ? 'outfit_like' : 'outfit_dislike', o)
     setDir(yes ? 1 : -1)
     if (yes) setSaved([{ id: o.id, gender: o.gender, style: o.style, items: o.items.map((i) => i.id), savedAt: now() }, ...saved])
     else setSeen([...seen, o.id])
@@ -560,6 +562,7 @@ function OutfitSend({ outfit, className }: { outfit: Outfit; className?: string 
   const name = `Outfit ${STYLE_LABEL[outfit.style].toLowerCase()}`
   const shareOutside = async () => {
     setOpen(false)
+    trackOutfit('outfit_share', outfit)
     if ((await shareOutfit(name, outfit.style, outfit.items)) === 'copied') flash('Link copiato')
   }
   return (

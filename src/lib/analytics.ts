@@ -5,7 +5,7 @@ import { load, remove, save } from './storage'
  * Analytics con consenso. Gli eventi restano anche sul dispositivo (statistiche nella pagina
  * Profilo) e vengono inviati in forma anonima ai sink registrati con `addSink` (Supabase).
  */
-export type EventName = 'view' | 'like' | 'dislike' | 'click' | 'remove' | 'share'
+export type EventName = 'view' | 'like' | 'dislike' | 'click' | 'remove' | 'share' | 'outfit_like' | 'outfit_dislike' | 'outfit_share'
 export interface AnalyticsEvent {
   name: EventName
   productId: string
@@ -47,8 +47,16 @@ export function onConsentChange(fn: (c: Consent) => void) {
 export const addSink = (fn: (e: AnalyticsEvent) => void) => sinks.push(fn)
 
 export function track(name: EventName, p: Product) {
+  emit({ name, productId: p.id, category: p.category, brand: p.brand, store: p.store, at: Date.now() })
+}
+
+/** Sì, no e condivisioni degli outfit: la categoria è lo stile (per vedere quali stili piacciono). */
+export function trackOutfit(name: 'outfit_like' | 'outfit_dislike' | 'outfit_share', outfit: { id: string; style: string }) {
+  emit({ name, productId: outfit.id, category: outfit.style, store: 'outfit', at: Date.now() })
+}
+
+function emit(event: AnalyticsEvent) {
   if (consent !== 'granted') return
-  const event: AnalyticsEvent = { name, productId: p.id, category: p.category, brand: p.brand, store: p.store, at: Date.now() }
   events.push(event)
   if (events.length > MAX_EVENTS) events = events.slice(-MAX_EVENTS)
   sinks.forEach((fn) => fn(event))

@@ -34,8 +34,12 @@ function flush() {
   clearTimeout(timer)
   timer = undefined
   if (!supabase || queue.length === 0 || getConsent() !== 'granted') return
-  const rows = queue
+  // Gli eventi degli outfit vanno a parte: se in Supabase manca ancora schema-13.sql falliscono solo loro.
+  const rows = queue.filter((r) => !r.name.startsWith('outfit_'))
+  const outfitRows = queue.filter((r) => r.name.startsWith('outfit_'))
   queue = []
+  if (outfitRows.length) void supabase.from('events').insert(outfitRows)
+  if (!rows.length) return
   void supabase
     .from('events')
     .insert(rows)
