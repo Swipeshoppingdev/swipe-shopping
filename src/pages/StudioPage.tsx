@@ -32,40 +32,83 @@ const FORMATS: { id: Format; label: string }[] = [
 const WITH_GENDER: Format[] = ['sfida', 'outfit']
 
 /**
- * Frasi dei meme: [sopra, sotto]. {marca}, {sconto} e {prezzo} si riempiono con il prodotto.
- * Quelle con {sconto} si usano solo con prodotti scontati.
+ * Meme in tre stili, tutti con layout nostri (nessun template coperto da diritti):
+ * - classico: scritta sopra e sotto la foto, bianca con il bordo nero;
+ * - pov: barra bianca in alto con il testo nero, come i video di TikTok;
+ * - scelta: due righe "no" / "sì" con le faccine, il prodotto è la scelta giusta.
+ * {marca}, {sconto} e {prezzo} si riempiono con il prodotto; le frasi con {sconto} vanno solo con prodotti scontati.
+ * moda: la frase parla di vestiti, quindi si usa un prodotto della sezione Moda.
  */
-const MEMES: [string, string][] = [
-  ['Io: quest\'anno risparmio', 'Anche io alle 2 di notte:'],
-  ['POV: hai trovato il -{sconto}', 'su {marca}'],
-  ['Il mio conto in banca:', 'Io che vedo questo a {prezzo}:'],
-  ['Nessuno:', 'Io che scorro offerte invece di dormire'],
-  ['"Guardo e basta"', 'Il carrello 5 minuti dopo:'],
-  ['Quando dici "è un investimento"', 'ma è {marca} a {prezzo}'],
-  ['Mia madre: hai già troppe cose', 'Io: ma era scontato del {sconto}'],
-  ['Lunedì mattina', 'ma almeno con questo addosso'],
-  ['Il mio stipendio dopo 3 giorni:', 'Io che apro comunque Swipe Shopping:'],
-  ['Swipe a destra', 'più veloce che su Tinder'],
-  ['Io che dico "solo una cosa"', 'Le 7 cose nel carrello:'],
-  ['Quando il pacco arriva', 'e non ti ricordi di averlo ordinato'],
-  ['-{sconto} su {marca}', 'e tu ancora non l\'hai preso?'],
-  ['Red flag: non ama lo shopping', 'Green flag: ti manda questo'],
-  ['Ragazzi è solo {prezzo}', 'praticamente me lo stanno regalando'],
-  ['Il mio armadio: pieno', 'Io: non ho niente da mettermi'],
-  ['Quando l\'amica ti chiede dove l\'hai preso', 'e tu fai finta di non ricordare'],
-  ['Il prezzo pieno:', 'Il prezzo su Swipe Shopping: {prezzo}'],
-  ['Io prima del caffè', 'Io dopo aver visto questo a {prezzo}'],
-  ['Questa è la mia personalità ora', '{marca}'],
-  ['Il mio budget: 0 €', 'Il mio cuore: {prezzo}'],
-  ['Mandalo a chi te lo deve regalare', '👇'],
-  ['Domenica sera', 'shopping dal divano'],
-  ['Quando trovi {marca} scontato del {sconto}', 'e lo dici a tutti'],
-  ['Io che faccio swipe a sinistra', 'su tutto tranne questo'],
-  ['Tagga chi lo comprerebbe', 'senza pensarci due volte'],
-  ['Natale è vicino', 'e io ho già la lista pronta'],
-  ['Io: devo smettere di comprare', 'Sempre io: aggiungo ai preferiti'],
-  ['Quando dici "lo prendo la prossima volta"', 'e poi finisce lo sconto'],
-  ['Primo appuntamento?', 'Outfit: questo'],
+type MemeStyle = 'classico' | 'pov' | 'scelta'
+interface MemeLine {
+  style: MemeStyle
+  top: string
+  bottom: string
+  moda?: boolean
+}
+const MEME_STYLES: { id: MemeStyle | 'tutti'; label: string }[] = [
+  { id: 'tutti', label: 'Tutti' },
+  { id: 'classico', label: 'Classico' },
+  { id: 'pov', label: 'POV' },
+  { id: 'scelta', label: 'No / Sì' },
+]
+const c = (top: string, bottom: string, moda?: boolean): MemeLine => ({ style: 'classico', top, bottom, moda })
+const pov = (top: string, bottom: string, moda?: boolean): MemeLine => ({ style: 'pov', top, bottom, moda })
+const sc = (top: string, bottom: string, moda?: boolean): MemeLine => ({ style: 'scelta', top, bottom, moda })
+const MEMES: MemeLine[] = [
+  c('Io: quest\'anno risparmio', 'Anche io alle 2 di notte:'),
+  c('Il mio conto in banca:', 'Io che vedo questo a {prezzo}:'),
+  c('Nessuno:', 'Io che scorro offerte invece di dormire'),
+  c('"Guardo e basta"', 'Il carrello 5 minuti dopo:'),
+  c('Quando dici "è un investimento"', 'ma è {marca} a {prezzo}'),
+  c('Mia madre: hai già troppe cose', 'Io: ma era scontato del {sconto}'),
+  c('Lunedì mattina', 'ma almeno con questo addosso', true),
+  c('Il mio stipendio dopo 3 giorni:', 'Io che apro comunque Swipe Shopping:'),
+  c('Swipe a destra', 'più veloce che su Tinder'),
+  c('Io che dico "solo una cosa"', 'Le 7 cose nel carrello:'),
+  c('Quando il pacco arriva', 'e non ti ricordi di averlo ordinato'),
+  c('-{sconto} su {marca}', 'e tu ancora non l\'hai preso?'),
+  c('Ragazzi è solo {prezzo}', 'praticamente me lo stanno regalando'),
+  c('Il mio armadio: pieno', 'Io: non ho niente da mettermi', true),
+  c('Quando l\'amica ti chiede dove l\'hai preso', 'e tu fai finta di non ricordare', true),
+  c('Io prima del caffè', 'Io dopo aver visto questo a {prezzo}'),
+  c('Questa è la mia personalità ora', '{marca}'),
+  c('Il mio budget: 0 €', 'Il mio cuore: {prezzo}'),
+  c('Mandalo a chi te lo deve regalare', '👇'),
+  c('Domenica sera', 'shopping dal divano'),
+  c('Io: devo smettere di comprare', 'Sempre io: aggiungo ai preferiti'),
+  c('Quando dici "lo prendo la prossima volta"', 'e poi finisce lo sconto'),
+  c('Primo appuntamento?', 'Outfit: questo', true),
+  c('Tagga chi lo comprerebbe', 'senza pensarci due volte'),
+  c('Natale è vicino', 'e io ho già la lista pronta'),
+  c('Il corriere quando vede il mio indirizzo', 'di nuovo tu?'),
+  c('Io che controllo il conto', 'Io che chiudo l\'app della banca e apro Swipe Shopping'),
+  c('Quando lo sconto è del {sconto}', 'e il tuo autocontrollo dello 0%'),
+  c('Non mi serve', 'ma lo voglio'),
+  c('Mi vesto in 5 minuti', 'dopo 2 ore a scegliere', true),
+  c('Io a gennaio: basta spese', 'Io a gennaio, il 3:'),
+  pov('POV: hai trovato il -{sconto} su {marca}', 'e non lo dici a nessuno 🤫'),
+  pov('POV: sono le 2 di notte e fai swipe sulle offerte', '"solo un altro" 😅'),
+  pov('POV: la tua amica ti chiede dove l\'hai preso', 'swipeshopping.app 💅', true),
+  pov('POV: è arrivato lo stipendio', 'e il carrello era già pronto 🛒'),
+  pov('POV: hai detto "guardo e basta"', 'eppure… 👀'),
+  pov('POV: {marca} a {prezzo}', 'e tu che pensavi costasse il doppio 😳'),
+  pov('POV: devi uscire tra 10 minuti', 'e hai trovato l\'outfit giusto 🔥', true),
+  pov('POV: tua madre ti chiede cosa vuoi per Natale', 'e tu hai già il link pronto 🎁'),
+  pov('POV: scorri i saldi in pausa pranzo', 'e il pranzo si raffredda 🍝'),
+  pov('POV: hai fatto swipe a destra', 'ed è stato amore a prima vista 😍'),
+  pov('POV: il pacco arriva oggi', 'e non riesci a lavorare 📦'),
+  pov('POV: -{sconto} e nessuno lo sa ancora', 'corri prima che finisca ⏳'),
+  sc('Pagarlo a prezzo pieno', 'Prenderlo scontato del {sconto}'),
+  sc('Girare 3 negozi il sabato', 'Fare swipe dal divano'),
+  sc('Chiedere consiglio al gruppo', 'Fare swipe e decidere in 2 secondi'),
+  sc('Comprare la prima cosa che vedi', '{marca} a {prezzo}'),
+  sc('Dire "non ho niente da mettermi"', 'Trovare questo', true),
+  sc('Aspettare il Black Friday', 'Il -{sconto} di oggi'),
+  sc('Regalo all\'ultimo minuto', 'Lista dei preferiti pronta'),
+  sc('Il solito outfit', 'Questo', true),
+  sc('Spendere tutto in un negozio', 'Lo stesso stile a {prezzo}'),
+  sc('Scorrere per ore senza trovare niente', 'Swipe Shopping'),
 ]
 const OUTFIT_BUDGET = 100
 
@@ -123,6 +166,10 @@ function Studio() {
   // Meme: testo scritto a mano (solo il titolare usa lo Studio); vuoto = frase pronta.
   const [memeTop, setMemeTop] = useState('')
   const [memeBottom, setMemeBottom] = useState('')
+  const [memeStyle, setMemeStyle] = useState<MemeStyle | 'tutti'>('tutti')
+  // "Altra frase" e "Altro prodotto" cambiano solo una delle due cose.
+  const [memeLine, setMemeLine] = useState(0)
+  const [memeProduct, setMemeProduct] = useState(0)
   const brands = useWeeklyBrands(format === 'marche')
 
   const moda = useMemo(() => allProducts.filter((p) => universeOf(p.category) === 'moda'), [allProducts])
@@ -180,16 +227,24 @@ function Studio() {
     const inStock = (p: Product) => p.availability !== 'out_of_stock' && !!p.imageUrl && !!freshPrice(p)
     const discounted = (min: number) => allProducts.filter((p) => inStock(p) && (freshPrice(p)!.discountPct ?? 0) >= min)
     if (format === 'meme') {
-      const [p] = pick(discounted(15), 1, rand)
+      const lineRand = rng(today() * 1000 + variant * 7 + memeLine * 13 + 5)
+      const productRand = rng(today() * 1000 + variant * 7 + memeProduct * 17 + 9)
+      // Prima la frase, poi un prodotto adatto: scontato, della Moda se la frase parla di vestiti.
+      const lines = MEMES.filter((m) => memeStyle === 'tutti' || m.style === memeStyle)
+      const line = pick(lines, 1, lineRand)[0]
+      const needsDeal = `${line.top}${line.bottom}`.includes('{sconto}')
+      const pool = discounted(needsDeal ? 15 : 10).filter((p) => !line.moda || universeOf(p.category) === 'moda')
+      const [p] = pick(pool, 1, productRand)
       if (!p) return []
       const fp = freshPrice(p)!
-      const options = MEMES.filter(([a, b]) => !`${a}${b}`.includes('{sconto}') || fp.discountPct)
-      const [top, bottom] = pick(options, 1, rand)[0]
       const fill = (t: string) =>
         t.replaceAll('{marca}', p.brand ?? 'questo').replaceAll('{sconto}', `${fp.discountPct ?? 0}%`).replaceAll('{prezzo}', formatPrice(fp.price))
-      const cap = `Chi si rivede qui? 😂 Tagga l'amica/o che lo farebbe 👇\n\n${p.brand ?? ''} a ${formatPrice(fp.price)}${fp.discountPct ? ` (-${fp.discountPct}%)` : ''}, oggi.\n\n${FOOTER} #meme #memeitaliani #shoppingaddict`
+      const top = memeTop || fill(line.top)
+      const bottom = memeBottom || fill(line.bottom)
+      const hook = line.style === 'scelta' ? 'Team 🙅 o team 😍? Scrivilo nei commenti 👇' : 'Chi si rivede qui? 😂 Tagga l\'amica/o che lo farebbe 👇'
+      const cap = `${hook}\n\n${p.brand ?? ''} a ${formatPrice(fp.price)}${fp.discountPct ? ` (-${fp.discountPct}%)` : ''}, oggi.\n\n${FOOTER} #meme #memeitaliani #shoppingaddict`
       return withCaption(cap, [
-        { ms: 6000, node: <Meme product={p} top={memeTop || fill(top)} bottom={memeBottom || fill(bottom)} /> },
+        { ms: 6500, node: <Meme product={p} style={line.style} top={top} bottom={bottom} /> },
         { ms: 3000, node: <Outro line="Lo trovi su" /> },
       ])
     }
@@ -249,7 +304,7 @@ function Studio() {
       ...cards.map((p) => ({ ms: 1700, node: <AutoSwipe product={p} yes={rand() > 0.4} /> })),
       { ms: 3000, node: <Outro line="Prova anche tu su" /> },
     ])
-  }, [format, gender, variant, allProducts, moda, outfits, memeTop, memeBottom, brands])
+  }, [format, gender, variant, allProducts, moda, outfits, memeTop, memeBottom, memeStyle, memeLine, memeProduct, brands])
 
   // Riproduzione: un fotogramma dopo l'altro, poi si ferma sull'ultimo.
   useEffect(() => {
@@ -342,6 +397,26 @@ function Studio() {
           {slides.caption && <CaptionBox text={slides.caption} />}
           {format === 'meme' && (
             <div className="space-y-2">
+              <div className="flex flex-wrap justify-center gap-2">
+                {MEME_STYLES.map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => setMemeStyle(m.id)}
+                    className={`rounded-full px-3 py-1 text-xs font-semibold ${memeStyle === m.id ? 'bg-[#facc15] text-[#111]' : 'bg-[#2a2a30] text-[#fff] ring-1 ring-[#fff]/20'}`}
+                  >
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+              <div className="flex justify-center gap-2">
+                <button type="button" onClick={() => setMemeLine((v) => v + 1)} className="rounded-full bg-[#2a2a30] px-3 py-1.5 text-sm font-semibold text-[#fff] ring-1 ring-[#fff]/20">
+                  Altra frase
+                </button>
+                <button type="button" onClick={() => setMemeProduct((v) => v + 1)} className="rounded-full bg-[#2a2a30] px-3 py-1.5 text-sm font-semibold text-[#fff] ring-1 ring-[#fff]/20">
+                  Altro prodotto
+                </button>
+              </div>
               {(
                 [
                   [memeTop, setMemeTop, 'Testo sopra (vuoto = frase pronta)'],
@@ -569,17 +644,90 @@ function useWeeklyBrands(enabled: boolean) {
   return brands
 }
 
-const memeText = 'text-center text-[2rem] leading-[1.1] font-black uppercase [text-shadow:0_3px_0_#000,0_-2px_0_#000,3px_0_0_#000,-3px_0_0_#000,0_6px_18px_rgba(0,0,0,.6)]'
+// Scritta da meme: bianca, maiuscola, con il bordo nero vero (paint-order) e un'ombra di riserva.
+const memeText =
+  'text-center text-[2.1rem] leading-[1.05] font-black uppercase tracking-tight text-[#fff] [-webkit-text-stroke:7px_#000] [paint-order:stroke_fill] [text-shadow:0_4px_14px_rgba(0,0,0,.55)]'
+const punch = { initial: { scale: 2.2, opacity: 0, rotate: -6 }, animate: { scale: 1, opacity: 1, rotate: 0 } }
 
-function Meme({ product, top, bottom }: { product: Product; top: string; bottom: string }) {
+function MemeCredit({ product }: { product: Product }) {
+  return (
+    <p className="text-center text-sm font-bold text-[#fff]/70">
+      {product.brand} · swipeshopping.app
+    </p>
+  )
+}
+
+/** La frase sopra entra subito, la foto subito dopo, la battuta finale "esplode" dopo un attimo. */
+function Meme({ product, style, top, bottom }: { product: Product; style: MemeStyle; top: string; bottom: string }) {
+  if (style === 'pov') {
+    return (
+      <div className="flex flex-1 flex-col justify-center gap-4 px-5">
+        <motion.p
+          initial={{ y: -30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="rounded-2xl bg-[#fff] px-4 py-3 text-center text-[1.45rem] leading-tight font-extrabold text-[#111] shadow-2xl"
+        >
+          {top}
+        </motion.p>
+        <div className="relative">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }}>
+            <ProductImage product={product} eager className="aspect-square w-full overflow-hidden rounded-3xl" />
+          </motion.div>
+          {bottom && (
+            <motion.p
+              {...punch}
+              transition={{ delay: 1.8, type: 'spring', stiffness: 260, damping: 14 }}
+              className="absolute inset-x-3 -bottom-5 mx-auto w-fit max-w-full rotate-[-2deg] rounded-xl bg-[#facc15] px-4 py-2 text-center text-xl font-black text-[#111] shadow-xl"
+            >
+              {bottom}
+            </motion.p>
+          )}
+        </div>
+        <div className="mt-4">
+          <MemeCredit product={product} />
+        </div>
+      </div>
+    )
+  }
+  if (style === 'scelta') {
+    return (
+      <div className="flex flex-1 flex-col justify-center gap-3 px-5">
+        <motion.div
+          initial={{ x: -40, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          className="flex items-center gap-3 rounded-3xl bg-[#2a1215] p-4 ring-2 ring-[#ef4444]/60"
+        >
+          <span className="text-6xl">🙅</span>
+          <p className="flex-1 text-xl leading-tight font-extrabold text-[#fff]/85 line-through decoration-[#ef4444]/80 decoration-[3px]">{top}</p>
+        </motion.div>
+        <motion.div
+          initial={{ x: 40, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 1.6, type: 'spring', stiffness: 220, damping: 16 }}
+          className="space-y-3 rounded-3xl bg-[#0f2a1a] p-4 ring-2 ring-[#22c55e]/70"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-6xl">😍</span>
+            <p className="flex-1 text-2xl leading-tight font-black text-[#fff]">{bottom}</p>
+          </div>
+          <ProductImage product={product} eager className="mx-auto aspect-square w-4/5 overflow-hidden rounded-2xl" />
+        </motion.div>
+        <MemeCredit product={product} />
+      </div>
+    )
+  }
   return (
     <div className="flex flex-1 flex-col justify-center gap-5 px-6">
-      <p className={memeText}>{top}</p>
-      <ProductImage product={product} eager className="aspect-square w-full overflow-hidden rounded-3xl" />
-      <p className={memeText}>{bottom}</p>
-      <p className="text-center text-sm font-bold text-[#fff]/70">
-        {product.brand} · swipeshopping.app
-      </p>
+      <motion.p initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className={memeText}>
+        {top}
+      </motion.p>
+      <motion.div initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }}>
+        <ProductImage product={product} eager className="aspect-square w-full overflow-hidden rounded-3xl" />
+      </motion.div>
+      <motion.p {...punch} transition={{ delay: 1.8, type: 'spring', stiffness: 260, damping: 14 }} className={memeText}>
+        {bottom}
+      </motion.p>
+      <MemeCredit product={product} />
     </div>
   )
 }
