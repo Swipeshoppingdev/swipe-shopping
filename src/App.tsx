@@ -1,3 +1,4 @@
+import { lazy, Suspense, useEffect } from 'react'
 import { BottomNav } from './components/BottomNav'
 import { ConsentBanner } from './components/ConsentBanner'
 import { Header } from './components/Header'
@@ -6,26 +7,49 @@ import { useOutfitMode } from './lib/outfitMode'
 import { useHashRoute } from './lib/useHashRoute'
 import { Welcome } from './components/Welcome'
 import { SocialWatcher } from './components/SocialWatcher'
-import { AdminPage } from './pages/AdminPage'
 import { DiscoverPage } from './pages/DiscoverPage'
-import { FriendProfilePage } from './pages/FriendProfilePage'
-import { FriendsPage } from './pages/FriendsPage'
-import { GiftListPage } from './pages/GiftListPage'
-import { ChatPage } from './pages/ChatPage'
-import { OutfitPage } from './pages/OutfitPage'
-import { PollPage } from './pages/PollPage'
-import { SantaPage } from './pages/SantaPage'
-import { SwipeTogetherPage } from './pages/SwipeTogetherPage'
-import { FiltersPage } from './pages/FiltersPage'
-import { PrivacyPage } from './pages/PrivacyPage'
-import { ProfilePage } from './pages/ProfilePage'
-import { SharedListPage } from './pages/SharedListPage'
-import { WishlistPage } from './pages/WishlistPage'
+
+// Solo Scopri è nel codice iniziale: le altre pagine si scaricano quando servono (e in anticipo, a app ferma).
+const PAGES = {
+  AdminPage: () => import('./pages/AdminPage').then((m) => ({ default: m.AdminPage })),
+  FriendProfilePage: () => import('./pages/FriendProfilePage').then((m) => ({ default: m.FriendProfilePage })),
+  FriendsPage: () => import('./pages/FriendsPage').then((m) => ({ default: m.FriendsPage })),
+  GiftListPage: () => import('./pages/GiftListPage').then((m) => ({ default: m.GiftListPage })),
+  ChatPage: () => import('./pages/ChatPage').then((m) => ({ default: m.ChatPage })),
+  OutfitPage: () => import('./pages/OutfitPage').then((m) => ({ default: m.OutfitPage })),
+  PollPage: () => import('./pages/PollPage').then((m) => ({ default: m.PollPage })),
+  SantaPage: () => import('./pages/SantaPage').then((m) => ({ default: m.SantaPage })),
+  SwipeTogetherPage: () => import('./pages/SwipeTogetherPage').then((m) => ({ default: m.SwipeTogetherPage })),
+  FiltersPage: () => import('./pages/FiltersPage').then((m) => ({ default: m.FiltersPage })),
+  PrivacyPage: () => import('./pages/PrivacyPage').then((m) => ({ default: m.PrivacyPage })),
+  ProfilePage: () => import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
+  SharedListPage: () => import('./pages/SharedListPage').then((m) => ({ default: m.SharedListPage })),
+  WishlistPage: () => import('./pages/WishlistPage').then((m) => ({ default: m.WishlistPage })),
+}
+const AdminPage = lazy(PAGES.AdminPage)
+const FriendProfilePage = lazy(PAGES.FriendProfilePage)
+const FriendsPage = lazy(PAGES.FriendsPage)
+const GiftListPage = lazy(PAGES.GiftListPage)
+const ChatPage = lazy(PAGES.ChatPage)
+const OutfitPage = lazy(PAGES.OutfitPage)
+const PollPage = lazy(PAGES.PollPage)
+const SantaPage = lazy(PAGES.SantaPage)
+const SwipeTogetherPage = lazy(PAGES.SwipeTogetherPage)
+const FiltersPage = lazy(PAGES.FiltersPage)
+const PrivacyPage = lazy(PAGES.PrivacyPage)
+const ProfilePage = lazy(PAGES.ProfilePage)
+const SharedListPage = lazy(PAGES.SharedListPage)
+const WishlistPage = lazy(PAGES.WishlistPage)
+const prefetchPages = () => Object.values(PAGES).forEach((load) => void load().catch(() => {}))
 
 export default function App() {
   const { route, hash } = useHashRoute()
   const isDiscover = route === 'scopri' || route === 'outfit'
   const inOutfit = useOutfitMode()
+  useEffect(() => {
+    const t = setTimeout(prefetchPages, 4000)
+    return () => clearTimeout(t)
+  }, [])
 
   return (
     <div className="flex h-dvh flex-col bg-neutral-50 text-neutral-900">
@@ -36,6 +60,7 @@ export default function App() {
         }`}
       >
         {route === 'scopri' && <DiscoverPage />}
+        <Suspense fallback={null}>
         {route === 'preferiti' && <WishlistPage />}
         {route === 'filtri' && <FiltersPage />}
         {route === 'profilo' && <ProfilePage />}
@@ -50,6 +75,7 @@ export default function App() {
         {route === 'segreto' && <SantaPage key={hash} />}
         {route === 'chat' && <ChatPage key={hash} />}
         {route === 'outfit' && <OutfitPage />}
+        </Suspense>
         {/* Spazio per la barra in basso: un elemento vero, perché Safari ignora il padding in fondo ai contenitori che scorrono. */}
         {!isDiscover && <div aria-hidden className="h-[calc(6rem+env(safe-area-inset-bottom))] shrink-0" />}
       </main>

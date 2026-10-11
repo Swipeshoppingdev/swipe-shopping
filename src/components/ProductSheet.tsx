@@ -13,6 +13,7 @@ import { DiscountBadge } from './DiscountBadge'
 import { NewBadge } from './NewBadge'
 import { PriceTag } from './PriceTag'
 import { ProductImage } from './ProductImage'
+import { ReportProduct } from './ReportProduct'
 import { ShareButton } from './ShareButton'
 import { SendToFriends } from './SocialBits'
 import { StoreLink } from './StoreLink'
@@ -177,6 +178,7 @@ function SheetContent({ product }: { product: Product }) {
             </ul>
           </div>
         )}
+        <ReportProduct product={product} />
         <p className="text-xs text-neutral-400">
           Prezzo e disponibilità possono cambiare: quelli validi sono sul sito di {storeName(product.store)} al momento
           dell'acquisto.

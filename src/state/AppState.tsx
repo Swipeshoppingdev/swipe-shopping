@@ -57,6 +57,8 @@ type Action =
 
 const MAX_DISLIKED = 5000
 const MAX_HISTORY = 30
+/** Dopo quanto si scaricano le altre sezioni (ms) */
+const REST_DELAY_MS = 3000
 
 type OtherSection = Exclude<Universe, 'moda'>
 
@@ -193,9 +195,13 @@ function useAppStore() {
 
   // Prima la sezione aperta (si vede subito), poi le altre in sottofondo (preferiti, link condivisi, cambio sezione).
   const modeRef = useRef(state.mode)
+  // Le altre sezioni si scaricano dopo, a mazzo già pronto (prima le foto delle prime card);
+  // subito se si apre una sezione che manca.
+  const wakeRest = useRef<(() => void) | null>(null)
   useEffect(() => {
     modeRef.current = state.mode
-  }, [state.mode])
+    if (state.catalog.status === 'ready' && !state.catalog.sections.includes(state.mode)) wakeRest.current?.()
+  }, [state.mode, state.catalog])
   const reloadCatalog = useCallback((signal?: AbortSignal) => {
     dispatch({ type: 'catalog', catalog: { status: 'loading' } })
     const first = modeRef.current
@@ -205,6 +211,15 @@ function useAppStore() {
         dispatch({ type: 'catalog', catalog: { status: 'ready', products: r.products, exploreMode: r.exploreMode, sections: r.sections } })
         const others = UNIVERSES.filter((u) => !r.sections.includes(u))
         if (others.length === 0) return
+        await new Promise<void>((resolve) => {
+          const t = setTimeout(resolve, REST_DELAY_MS)
+          wakeRest.current = () => {
+            clearTimeout(t)
+            resolve()
+          }
+        })
+        wakeRest.current = null
+        if (signal?.aborted) return
         const rest = await Promise.all(others.map((u) => loadCatalog(u, signal).catch(() => null)))
         if (signal?.aborted) return
         const products = [...r.products, ...rest.flatMap((x) => x?.products ?? [])]
@@ -236,6 +251,7 @@ function useAppStore() {
     if (sharedProduct) dispatch({ type: 'mode', mode: universeOf(sharedProduct.category) })
   }, [sharedProduct])
 
+  const byId = useMemo(() => new Map(products.map((p) => [p.id, p])), [products])
   const deck = useMemo(() => {
     const seen = new Set([...state.disliked, ...state.wishlist.map((w) => w.product.id)])
     const list = products.filter(
@@ -246,11 +262,11 @@ function useAppStore() {
         matchesFilters(p, activeFilters),
     )
     // Una variante per modello: niente stessa felpa in tre colori di fila. Un modello già scartato o salvato non torna.
-    const byId = new Map(products.map((p) => [p.id, p]))
     const seenModels = new Set([...seen].flatMap((id) => (byId.has(id) ? [modelKey(byId.get(id)!)] : [])))
     const mixed = sortProducts(list, activeFilters.sort, MIX_SEED)
     // I prodotti appena arrivati per primi (sempre mescolati), poi tutti gli altri.
-    const sorted = onePerModel([...mixed.filter((p) => isNew(p)), ...mixed.filter((p) => !isNew(p))], seenModels)
+    const fresh = new Set(mixed.filter((p) => isNew(p)))
+    const sorted = onePerModel([...fresh, ...mixed.filter((p) => !fresh.has(p))], seenModels)
     // Scartati rimessi nel mazzo: in cima (anche se il modello era già stato visto).
     const back = state.restored.flatMap((id) => {
       const p = byId.get(id)
@@ -260,7 +276,7 @@ function useAppStore() {
     const withBack = [...back, ...rest]
     const shared = sharedId ? products.find((p) => p.id === sharedId) : undefined
     return shared ? [shared, ...withBack.filter((p) => p.id !== shared.id)] : withBack
-  }, [products, state.disliked, state.wishlist, state.mode, state.restored, activeFilters, sharedId])
+  }, [products, byId, state.disliked, state.wishlist, state.mode, state.restored, activeFilters, sharedId])
 
   /** Gli scartati della sezione aperta, dal più vecchio al più recente */
   const sectionDisliked = useMemo(() => {

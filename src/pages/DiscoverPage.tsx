@@ -1,6 +1,7 @@
 import { RefreshCw, SlidersHorizontal, Sparkles } from 'lucide-react'
 import { SwipeDeck } from '../components/SwipeDeck'
 import { DeckTabs } from '../components/DeckTabs'
+import { NewArrivals } from '../components/NewArrivals'
 import { routeHref } from '../lib/useHashRoute'
 import { widenSuggestions } from '../lib/widen'
 import { useMemo } from 'react'
@@ -45,7 +46,10 @@ export function DiscoverPage() {
       )}
       <DeckTabs />
       {deck.length > 0 ? (
-        <SwipeDeck />
+        <div className="relative flex min-h-0 flex-1 flex-col">
+          <SwipeDeck />
+          <NewArrivals key={state.mode} />
+        </div>
       ) : products.length === 0 ? (
         <Empty title="Sezione in arrivo" text="Stiamo preparando i prodotti di questa sezione: torna tra qualche ora.">
           <button type="button" onClick={() => actions.setMode('moda')} className={primaryBtn}>

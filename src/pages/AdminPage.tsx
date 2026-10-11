@@ -2,6 +2,8 @@ import { BarChart3, Loader2, Lock } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { ADMIN_EMAIL } from '../config/app'
 import { categoryLabel, isCategoryId } from '../config/categories'
+import { reasonLabel, type ReportRow } from '../lib/reports'
+import { openProduct } from '../lib/productSheet'
 import { supabase } from '../lib/supabase'
 import { AdminBroadcast } from '../components/AdminBroadcast'
 import { routeHref } from '../lib/useHashRoute'
@@ -100,6 +102,7 @@ function AdminStatsView() {
       </div>
 
       <AdminBroadcast />
+      <AdminReports />
 
       {loading && !stats && (
         <p className="flex items-center justify-center gap-2 py-10 text-sm text-neutral-500">
@@ -145,6 +148,55 @@ function AdminStatsView() {
         </div>
       )}
     </div>
+  )
+}
+
+/** Prodotti segnalati dagli utenti, con i motivi. "Sistemato" toglie le segnalazioni di quel prodotto. */
+function AdminReports() {
+  const { allProducts } = useApp()
+  const [rows, setRows] = useState<ReportRow[] | null>(null)
+  const [error, setError] = useState('')
+  useEffect(() => {
+    if (!supabase) return
+    supabase.rpc('admin_reports').then(({ data, error }) => {
+      if (error) setError(error.message.includes('admin_reports') ? 'Manca lo script schema-12.sql in Supabase.' : error.message)
+      else setRows((data as ReportRow[]) ?? [])
+    })
+  }, [])
+  const done = (id: string) => {
+    setRows((r) => r?.filter((x) => x.id !== id) ?? null)
+    void supabase?.rpc('admin_report_done', { p_product_id: id })
+  }
+  if (error) return <p className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">Segnalazioni: {error}</p>
+  if (!rows) return null
+  return (
+    <Section title={`Prodotti segnalati${rows.length ? ` (${rows.length})` : ''}`}>
+      {rows.length === 0 ? (
+        <p className="text-sm text-neutral-500">Nessuna segnalazione.</p>
+      ) : (
+        <ul className="space-y-3 text-sm">
+          {rows.map((r) => {
+            const p = allProducts.find((x) => x.id === r.id)
+            return (
+              <li key={r.id} className="flex items-start justify-between gap-3">
+                <button type="button" disabled={!p} onClick={() => p && openProduct(p)} className="min-w-0 text-left">
+                  <span className="line-clamp-2 font-medium">{p?.title ?? r.id.replace(/^amazon:/, 'ASIN ')}</span>
+                  <span className="text-xs text-neutral-500">
+                    {Object.entries(r.reasons)
+                      .map(([k, n]) => `${reasonLabel(k)}${n > 1 ? ` ×${n}` : ''}`)
+                      .join(' · ')}
+                    {!p && ' · non più nel catalogo'}
+                  </span>
+                </button>
+                <button type="button" onClick={() => done(r.id)} className="shrink-0 rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold active:scale-95">
+                  Sistemato
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+    </Section>
   )
 }
 

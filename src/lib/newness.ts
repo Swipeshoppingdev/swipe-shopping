@@ -16,7 +16,13 @@ export function setNewBaseline(products: Product[]) {
   baseline = min + 24 * 3_600_000
 }
 
+const added = new WeakMap<Product, number>()
+
 export function isNew(p: Product, now = Date.now()) {
-  const t = Date.parse(p.addedAt)
+  let t = added.get(p)
+  if (t === undefined) {
+    t = Date.parse(p.addedAt)
+    added.set(p, t)
+  }
   return t > baseline && now - t < NEW_DAYS * 24 * 3_600_000
 }

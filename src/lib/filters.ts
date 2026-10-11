@@ -33,10 +33,25 @@ function hash(text: string) {
   return h >>> 0
 }
 
+const mixKeys = new Map<string, WeakMap<Product, number>>()
+
 export function sortProducts(list: Product[], sort: Filters['sort'], seed = '') {
   const sorted = [...list]
   // Mix: categorie e marche alternate, così lo swipe non mostra 50 t-shirt di fila.
-  if (sort === 'mix') return sorted.sort((a, b) => hash(seed + a.id) - hash(seed + b.id))
+  if (sort === 'mix') {
+    // Una chiave per prodotto, calcolata una volta sola (il mazzo si riordina a ogni swipe).
+    const cache = mixKeys.get(seed) ?? new WeakMap<Product, number>()
+    mixKeys.set(seed, cache)
+    const key = (p: Product) => {
+      let k = cache.get(p)
+      if (k === undefined) {
+        k = hash(seed + p.id)
+        cache.set(p, k)
+      }
+      return k
+    }
+    return sorted.sort((a, b) => key(a) - key(b))
+  }
   if (sort === 'novita') return sorted.sort((a, b) => b.addedAt.localeCompare(a.addedAt))
   const dir = sort === 'prezzo_asc' ? 1 : -1
   // I prodotti senza prezzo vanno in fondo.

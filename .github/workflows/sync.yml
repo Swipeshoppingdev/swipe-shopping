@@ -52,6 +52,11 @@ jobs:
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      - name: Riepilogo segnalazioni dei prodotti
+        run: npm run reports:summary
+        continue-on-error: true
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
   deploy:
     needs: sync
     uses: ./.github/workflows/deploy.yml
