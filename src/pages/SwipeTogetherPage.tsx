@@ -1,5 +1,6 @@
+import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
 import { Heart, RefreshCw, X } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { PriceTag } from '../components/PriceTag'
 import { ProductImage } from '../components/ProductImage'
 import { Avatar, LoginNeeded, useProductsById } from '../components/SocialBits'
@@ -9,6 +10,7 @@ import { openProduct } from '../lib/productSheet'
 import { hashParam, social, type SwipeSession } from '../lib/social'
 import { routeHref } from '../lib/useHashRoute'
 import { useAuth } from '../state/AuthState'
+import type { Product } from '../types/product'
 
 /** Swipe insieme (#/insieme/<id>): lo stesso mazzo per due amici, alla fine i prodotti piaciuti a entrambi. */
 export function SwipeTogetherPage() {
@@ -16,6 +18,7 @@ export function SwipeTogetherPage() {
   const [id] = useState(() => hashParam('insieme'))
   const [session, setSession] = useState<SwipeSession | null | undefined>(id ? undefined : null)
   const [error, setError] = useState('')
+  const [exitDir, setExitDir] = useState<1 | -1>(1)
   const { products, loading } = useProductsById(session?.product_ids)
   const userId = auth.user?.id
 
@@ -50,6 +53,7 @@ export function SwipeTogetherPage() {
   const done = session.product_ids.length - session.product_ids.filter((pid) => !(pid in session.my_votes)).length
   const vote = async (yes: boolean) => {
     if (!current) return
+    setExitDir(yes ? 1 : -1)
     setSession({ ...session, my_votes: { ...session.my_votes, [current.id]: yes } })
     try {
       await social.swipeVote(session.id, current.id, yes)
@@ -75,18 +79,11 @@ export function SwipeTogetherPage() {
 
       {current ? (
         <div className="space-y-3">
-          <button
-            type="button"
-            onClick={() => openProduct(current)}
-            className="block w-full overflow-hidden rounded-3xl bg-white text-left shadow-sm ring-1 ring-black/5"
-          >
-            <ProductImage product={current} eager className="h-[38dvh] w-full bg-[#fff]" />
-            <div className="space-y-1 p-4">
-              <p className="text-[11px] font-medium tracking-wide text-neutral-500 uppercase">{brandAndStore(current)}</p>
-              <p className="line-clamp-2 font-semibold">{current.title}</p>
-              <PriceTag product={current} />
-            </div>
-          </button>
+          <div className="relative h-[calc(38dvh+8.5rem)]">
+            <AnimatePresence custom={exitDir} initial={false}>
+              <TogetherCard key={current.id} product={current} onSwipe={(dir) => void vote(dir === 1)} />
+            </AnimatePresence>
+          </div>
           <div className="flex gap-3">
             <button
               type="button"
@@ -153,5 +150,59 @@ export function SwipeTogetherPage() {
         Torna ad Amici
       </a>
     </div>
+  )
+}
+
+const SWIPE_DISTANCE = 110
+const SWIPE_VELOCITY = 600
+
+/** La carta di Swipe insieme: si trascina a destra (sì) o a sinistra (no) come nel mazzo; il tocco apre la scheda. */
+function TogetherCard({ product, onSwipe }: { product: Product; onSwipe: (dir: 1 | -1) => void }) {
+  const x = useMotionValue(0)
+  const rotate = useTransform(x, [-300, 0, 300], [-16, 0, 16])
+  const likeOpacity = useTransform(x, [20, SWIPE_DISTANCE], [0, 1])
+  const nopeOpacity = useTransform(x, [-SWIPE_DISTANCE, -20], [1, 0])
+  const dragged = useRef(false)
+  const onDragEnd = (_: unknown, info: PanInfo) => {
+    if (info.offset.x > SWIPE_DISTANCE || info.velocity.x > SWIPE_VELOCITY) onSwipe(1)
+    else if (info.offset.x < -SWIPE_DISTANCE || info.velocity.x < -SWIPE_VELOCITY) onSwipe(-1)
+    setTimeout(() => (dragged.current = false), 0)
+  }
+  return (
+    <motion.div
+      className="absolute inset-0 cursor-grab touch-pan-y overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 active:cursor-grabbing"
+      style={{ x, rotate }}
+      drag="x"
+      dragSnapToOrigin
+      dragElastic={0.9}
+      onDragStart={() => (dragged.current = true)}
+      onDragEnd={onDragEnd}
+      initial={{ scale: 0.96, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      variants={{
+        exit: (dir: 1 | -1) => ({ x: dir * (window.innerWidth + 200), rotate: dir * 22, opacity: 0, transition: { duration: 0.32, ease: 'easeOut' } }),
+      }}
+      exit="exit"
+      onClick={() => !dragged.current && openProduct(product)}
+    >
+      <ProductImage product={product} eager className="pointer-events-none h-[38dvh] w-full bg-[#fff]" />
+      <div className="space-y-1 p-4 text-left">
+        <p className="text-[11px] font-medium tracking-wide text-neutral-500 uppercase">{brandAndStore(product)}</p>
+        <p className="line-clamp-2 font-semibold">{product.title}</p>
+        <PriceTag product={product} />
+      </div>
+      <motion.span
+        style={{ opacity: likeOpacity }}
+        className="pointer-events-none absolute top-5 left-5 -rotate-12 rounded-xl border-4 border-emerald-500 px-3 py-1 text-2xl font-black text-emerald-500"
+      >
+        SÌ
+      </motion.span>
+      <motion.span
+        style={{ opacity: nopeOpacity }}
+        className="pointer-events-none absolute top-5 right-5 rotate-12 rounded-xl border-4 border-rose-500 px-3 py-1 text-2xl font-black text-rose-500"
+      >
+        NO
+      </motion.span>
+    </motion.div>
   )
 }
