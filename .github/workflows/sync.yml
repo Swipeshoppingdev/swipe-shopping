@@ -54,6 +54,9 @@ jobs:
           AMAZON_CREDENTIAL_ID: ${{ secrets.AMAZON_CREDENTIAL_ID }}
           AMAZON_CREDENTIAL_SECRET: ${{ secrets.AMAZON_CREDENTIAL_SECRET }}
           AMAZON_CREDENTIAL_VERSION: ${{ secrets.AMAZON_CREDENTIAL_VERSION }}
+      - name: Pulizia del catalogo (foto rotte e doppioni)
+        run: node scripts/clean-catalog.ts
+        continue-on-error: true
       - run: npm run check:catalog
       - name: Salva il catalogo aggiornato
         run: |
