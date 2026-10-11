@@ -1,11 +1,12 @@
 import { BarChart3, Loader2, Lock } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { ADMIN_EMAIL } from '../config/app'
-import { categoryLabel, isCategoryId } from '../config/categories'
+import { UNIVERSES, categoryLabel, isCategoryId } from '../config/categories'
 import { reasonLabel, type ReportRow } from '../lib/reports'
 import { openProduct } from '../lib/productSheet'
 import { supabase } from '../lib/supabase'
 import { AdminBroadcast } from '../components/AdminBroadcast'
+import { ProductImage } from '../components/ProductImage'
 import { routeHref } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
 import { useAuth } from '../state/AuthState'
@@ -153,7 +154,9 @@ function AdminStatsView() {
 
 /** Prodotti segnalati dagli utenti, con i motivi. "Sistemato" toglie le segnalazioni di quel prodotto. */
 function AdminReports() {
-  const { allProducts } = useApp()
+  const { allProducts, state } = useApp()
+  // Le altre sezioni arrivano qualche secondo dopo: fino ad allora un prodotto mancante non è "sparito".
+  const allLoaded = state.catalog.status === 'ready' && state.catalog.sections.length === UNIVERSES.length
   const [rows, setRows] = useState<ReportRow[] | null>(null)
   const [error, setError] = useState('')
   useEffect(() => {
@@ -179,13 +182,19 @@ function AdminReports() {
             const p = allProducts.find((x) => x.id === r.id)
             return (
               <li key={r.id} className="flex items-start justify-between gap-3">
-                <button type="button" disabled={!p} onClick={() => p && openProduct(p)} className="min-w-0 text-left">
-                  <span className="line-clamp-2 font-medium">{p?.title ?? r.id.replace(/^amazon:/, 'ASIN ')}</span>
-                  <span className="text-xs text-neutral-500">
-                    {Object.entries(r.reasons)
-                      .map(([k, n]) => `${reasonLabel(k)}${n > 1 ? ` ×${n}` : ''}`)
-                      .join(' · ')}
-                    {!p && ' · non più nel catalogo'}
+                {/* Tocca per aprire la scheda del prodotto, come nell'app. */}
+                <button type="button" disabled={!p} onClick={() => p && openProduct(p)} className="flex min-w-0 gap-3 text-left">
+                  {p && <ProductImage product={p} className="size-14 shrink-0 rounded-xl ring-1 ring-black/5" />}
+                  <span className="min-w-0">
+                    <span className="line-clamp-2 font-medium">{p?.title ?? (allLoaded ? 'Non più nel catalogo' : 'Caricamento…')}</span>
+                    <span className="block text-xs text-neutral-500">
+                      {[p?.brand, p && categoryLabel(p.category), r.id.replace(/^amazon:/, 'ASIN ')].filter(Boolean).join(' · ')}
+                    </span>
+                    <span className="block text-xs font-medium text-rose-600">
+                      {Object.entries(r.reasons)
+                        .map(([k, n]) => `${reasonLabel(k)}${n > 1 ? ` ×${n}` : ''}`)
+                        .join(' · ')}
+                    </span>
                   </span>
                 </button>
                 <button type="button" onClick={() => done(r.id)} className="shrink-0 rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold active:scale-95">
