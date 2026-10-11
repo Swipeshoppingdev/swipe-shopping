@@ -9,10 +9,12 @@ import { useHashRoute, type Route } from './useHashRoute'
  */
 const KEY = 'inOutfit'
 const SECTION_PAGES: Route[] = ['scopri', 'preferiti', 'filtri']
+/** Pagine con un mazzo di prodotti (Swipe insieme): mai in veste Outfit, ma senza uscire da Outfit per dopo. */
+const PRODUCT_PAGES: Route[] = ['insieme']
 
 export function useInOutfit() {
   const { route } = useHashRoute()
-  return route === 'outfit' || (!SECTION_PAGES.includes(route) && load<boolean>(KEY, false))
+  return route === 'outfit' || (!SECTION_PAGES.includes(route) && !PRODUCT_PAGES.includes(route) && load<boolean>(KEY, false))
 }
 
 /** Da montare una volta (App): ricorda se si è in Outfit e mette il suo colore. */
