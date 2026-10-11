@@ -10,6 +10,7 @@ import { UndoMenuView } from '../components/UndoMenu'
 import { universeOf } from '../config/categories'
 import { brandAndStore } from '../config/stores'
 import { STYLE_LABEL, buildOutfits, outfitTotal, type Outfit, type OutfitStyle } from '../lib/outfits'
+import { AllNone, Chip } from './FiltersPage'
 import { openProduct } from '../lib/productSheet'
 import { shareList } from '../lib/share'
 import { social } from '../lib/social'
@@ -48,6 +49,12 @@ export function OutfitPage() {
     setPriceState(p)
     save('outfitPrice', p)
   }
+  // Stili esclusi (rossi nei filtri); vuoto = tutti.
+  const [noStyles, setNoStylesState] = useState(() => load<OutfitStyle[]>('outfitNoStyles', []))
+  const setNoStyles = (v: OutfitStyle[]) => {
+    setNoStylesState(v)
+    save('outfitNoStyles', v)
+  }
   // Dalla barra in basso: #/outfit/salvati (Preferiti) e #/outfit/filtri (Filtri).
   const { hash } = useHashRoute()
   const tab = hash.startsWith('#/outfit/salvati') ? 'salvati' : hash.startsWith('#/outfit/filtri') ? 'filtri' : 'scopri'
@@ -77,11 +84,13 @@ export function OutfitPage() {
   const inBudget = useMemo(
     () =>
       all.filter((o) => {
+        if (noStyles.includes(o.style)) return false
         const total = outfitTotal(o.items)
         return total !== null && total >= (price.min ?? 0) && total <= (price.max ?? Infinity)
       }),
-    [all, price],
+    [all, price, noStyles],
   )
+  const styles = useMemo(() => (Object.keys(STYLE_LABEL) as OutfitStyle[]).filter((st) => all.some((o) => o.style === st)), [all])
   const deck = useMemo(() => {
     const skip = new Set([...seen, ...saved.map((s) => s.id)])
     return inBudget.filter((o) => !skip.has(o.id))
@@ -116,7 +125,16 @@ export function OutfitPage() {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
       {tab === 'filtri' ? (
-        <OutfitFilters gender={gender} onGender={setGender} price={price} onPrice={setPrice} matching={deck.length} />
+        <OutfitFilters
+          gender={gender}
+          onGender={setGender}
+          price={price}
+          onPrice={setPrice}
+          styles={styles}
+          noStyles={noStyles}
+          onNoStyles={setNoStyles}
+          matching={deck.length}
+        />
       ) : tab === 'salvati' ? (
         <Saved
           outfits={savedOutfits}
@@ -397,9 +415,13 @@ function OutfitFilters(props: {
   onGender: (g: 'uomo' | 'donna') => void
   price: { min?: number; max?: number }
   onPrice: (p: { min?: number; max?: number }) => void
+  styles: OutfitStyle[]
+  noStyles: OutfitStyle[]
+  onNoStyles: (v: OutfitStyle[]) => void
   matching: number
 }) {
   const active = props.price.min !== undefined || props.price.max !== undefined
+  const off = (st: OutfitStyle) => props.noStyles.includes(st)
   return (
     <div className="min-h-0 flex-1 space-y-6 overflow-y-auto pb-4">
       <div className="flex items-center justify-between">
@@ -423,6 +445,24 @@ function OutfitFilters(props: {
             >
               {g}
             </button>
+          ))}
+        </div>
+      </section>
+      <section className="space-y-3">
+        <div className="flex items-center gap-2">
+          <h2 className="flex-1 font-semibold">Stile</h2>
+          <AllNone
+            all={!props.styles.some(off)}
+            none={props.styles.every(off)}
+            onAll={() => props.onNoStyles([])}
+            onNone={() => props.onNoStyles(props.styles)}
+          />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {props.styles.map((st) => (
+            <Chip key={st} active={!off(st)} onClick={() => props.onNoStyles(off(st) ? props.noStyles.filter((x) => x !== st) : [...props.noStyles, st])}>
+              {STYLE_LABEL[st]}
+            </Chip>
           ))}
         </div>
       </section>

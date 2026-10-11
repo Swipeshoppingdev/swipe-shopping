@@ -15,11 +15,13 @@ export interface Outfit {
   items: Product[]
 }
 
-export type OutfitStyle = 'casual' | 'smart' | 'elegante' | 'vestito' | 'serata' | 'weekend' | 'sportivo'
+export type OutfitStyle = 'casual' | 'smart' | 'elegante' | 'ufficio' | 'nero' | 'vestito' | 'serata' | 'weekend' | 'sportivo'
 export const STYLE_LABEL: Record<OutfitStyle, string> = {
   casual: 'Casual',
   smart: 'Smart casual',
   elegante: 'Elegante',
+  ufficio: 'Da ufficio',
+  nero: 'Total black',
   vestito: 'Con il vestito',
   serata: 'Da sera',
   weekend: 'Weekend',
@@ -28,6 +30,7 @@ export const STYLE_LABEL: Record<OutfitStyle, string> = {
 
 /** fit: per categorie miste (nello "sportivo" ci sono anche top e reggiseni) solo i capi giusti per quel posto */
 type Slot = { cats: CategoryId[]; optional?: number; fit?: (p: Product) => boolean }
+const isBlack = (p: Product) => mainColor(p) === 'Nero'
 
 /** Pantaloni da tuta o leggings (non la tuta intera, che ha già la felpa) */
 const sportBottom = (p: Product) =>
@@ -108,6 +111,30 @@ function recipes(cold: boolean): Recipe[] {
       ],
     },
     {
+      // In ufficio: camicia e pantaloni, scarpe eleganti, giacca o cappotto, borsa o orologio.
+      style: 'ufficio',
+      genders: ['uomo', 'donna'],
+      slots: [
+        { cats: ['camicie'] },
+        { cats: ['pantaloni'] },
+        { cats: ['scarpe_eleganti'] },
+        { cats: cold ? ['cappotti', 'giacche'] : ['giacche'], optional: cold ? 0.8 : 0.4 },
+        { cats: ['borse', 'orologi', 'cinture'], optional: 0.8 },
+      ],
+    },
+    {
+      // Tutto nero, dalla testa ai piedi.
+      style: 'nero',
+      genders: ['uomo', 'donna'],
+      slots: [
+        { cats: cold ? ['maglioni', 'felpe', 'camicie'] : ['tshirt', 'camicie'], fit: isBlack },
+        { cats: ['jeans', 'pantaloni'], fit: isBlack },
+        { cats: cold ? ['stivali', 'sneakers'] : ['sneakers', 'scarpe_eleganti'], fit: isBlack },
+        { cats: cold ? ['giacche', 'cappotti'] : ['giacche'], optional: cold ? 0.8 : 0.3, fit: isBlack },
+        { cats: ['occhiali', 'cappellini', 'borse', 'cinture'], optional: 0.6, fit: isBlack },
+      ],
+    },
+    {
       style: 'sportivo',
       genders: ['uomo', 'donna'],
       slots: [
@@ -123,8 +150,8 @@ function recipes(cold: boolean): Recipe[] {
 /** Colori che stanno bene con tutto: ammesso al massimo un capo di un altro colore. */
 const NEUTRAL = new Set(['Nero', 'Bianco', 'Grigio', 'Beige', 'Marrone', 'Blu'])
 /** Ogni capo compare al massimo in tanti outfit */
-const MAX_USES = 8
-const MAX_PER_STYLE = 700
+const MAX_USES = 10
+const MAX_PER_STYLE = 1200
 const BATCH = 50
 /** Quanti capi a caso si provano per un posto prima di arrendersi */
 const TRIES = 40
@@ -213,9 +240,15 @@ export function buildOutfits(products: Product[], gender: 'uomo' | 'donna', mont
         const list = slotPool[i]
         if (!list.length) return undefined
         const strong = colors.some((c) => !NEUTRAL.has(c))
-        for (let t = 0; t < TRIES; t++) {
-          const p = list[Math.floor(rand() * list.length)]
-          if ((uses.get(p.id) ?? 0) >= MAX_USES) continue
+        for (let t = 0; t < TRIES && list.length; t++) {
+          const k = Math.floor(rand() * list.length)
+          const p = list[k]
+          if ((uses.get(p.id) ?? 0) >= MAX_USES) {
+            // Esaurito: fuori dalla lista, così non si riprova.
+            list[k] = list[list.length - 1]
+            list.pop()
+            continue
+          }
           const color = mainColor(p)!
           if (NEUTRAL.has(color) || (!strong && !colors.includes(color))) return p
         }
@@ -223,8 +256,11 @@ export function buildOutfits(products: Product[], gender: 'uomo' | 'donna', mont
       }
       let made = 0
       let attempt = 0
+      // Tanti tentativi falliti di fila: i capi per questo stile sono finiti.
+      let fails = 0
       return (upTo: number) => {
-        for (; attempt < MAX_PER_STYLE * 3 && made < upTo; attempt++) {
+        for (; attempt < MAX_PER_STYLE * 3 && made < upTo && fails < 100; attempt++) {
+          fails++
           const items: Product[] = []
           let ok = true
           for (const [n, slot] of recipe.slots.entries()) {
@@ -244,6 +280,7 @@ export function buildOutfits(products: Product[], gender: 'uomo' | 'donna', mont
           for (const i of items) uses.set(i.id, (uses.get(i.id) ?? 0) + 1)
           outfits.push({ id, gender, style: recipe.style, items })
           made++
+          fails = 0
         }
       }
     })

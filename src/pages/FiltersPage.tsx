@@ -250,7 +250,7 @@ function Section({ title, hint, actions, children }: { title: string; hint?: str
 }
 
 /** Pulsanti verde/rosso "Includi tutto" e "Escludi tutto" per un gruppo di filtri. */
-function AllNone({ all, none, onAll, onNone }: { all: boolean; none: boolean; onAll: () => void; onNone: () => void }) {
+export function AllNone({ all, none, onAll, onNone }: { all: boolean; none: boolean; onAll: () => void; onNone: () => void }) {
   return (
     <>
       <button
@@ -285,7 +285,7 @@ function Toggle({ label, hint, checked, onChange }: { label: string; hint: strin
   )
 }
 
-function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
+export function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
   return (
     <button
       type="button"
