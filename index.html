@@ -23,6 +23,7 @@
       } catch (e) {}
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />
+    <style>html.dark #root{background:#0e0e10;color:#9d9da4}html.dark #root h1{color:#f4f4f6!important}</style>
     <script>
       // Il catalogo della sezione aperta inizia a scaricarsi subito, in parallelo al codice dell'app.
       // Nell'app (Capacitor) il catalogo arriva dal sito online, non da qui.
@@ -41,22 +42,39 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Swipe Shop" />
-    <meta name="description" content="Scorri, salva e acquista la moda dei migliori marchi, un prodotto alla volta." />
-    <title>Swipe Shopping</title>
+    <meta name="description" content="Scopri moda, beauty, tech, casa e idee outfit dei migliori marchi con uno swipe: scorri, salva i preferiti e trova le offerte del giorno su Amazon e altri negozi." />
+    <title>Swipe Shopping: moda, outfit e offerte di marca con uno swipe</title>
     <link rel="canonical" href="https://swipeshopping.app/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Swipe Shopping" />
-    <meta property="og:title" content="Swipe Shopping" />
-    <meta property="og:description" content="Scorri, salva e acquista la moda dei migliori marchi, un prodotto alla volta." />
+    <meta property="og:title" content="Swipe Shopping: moda, outfit e offerte di marca con uno swipe" />
+    <meta property="og:description" content="Scopri moda, beauty, tech, casa e idee outfit dei migliori marchi con uno swipe: scorri, salva i preferiti e trova le offerte del giorno su Amazon e altri negozi." />
     <meta property="og:url" content="https://swipeshopping.app/" />
     <meta property="og:image" content="https://swipeshopping.app/icons/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="it_IT" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <script type="application/ld+json">
+      {"@context":"https://schema.org","@graph":[
+        {"@type":"Organization","@id":"https://swipeshopping.app/#org","name":"Swipe Shopping","url":"https://swipeshopping.app/","logo":"https://swipeshopping.app/icons/icon-512.png","sameAs":["https://www.instagram.com/swipeshoppingapp/","https://www.tiktok.com/@swipeshoppingapp"]},
+        {"@type":"WebSite","@id":"https://swipeshopping.app/#site","name":"Swipe Shopping","url":"https://swipeshopping.app/","inLanguage":"it-IT","publisher":{"@id":"https://swipeshopping.app/#org"}},
+        {"@type":"WebApplication","name":"Swipe Shopping","url":"https://swipeshopping.app/","applicationCategory":"ShoppingApplication","operatingSystem":"Web, Android, iOS","inLanguage":"it-IT","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}
+      ]}
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Visibile solo finché l'app non parte (e ai motori di ricerca): React la sostituisce. -->
+      <div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;font-family:Inter,-apple-system,Segoe UI,Roboto,sans-serif;color:#737373">
+        <h1 style="margin:0;font-size:26px;font-weight:900;color:#171717">Swipe<span style="color:#f43f5e">Shopping</span></h1>
+        <p style="margin:0;font-size:14px">Moda, beauty, tech e idee outfit di marca: scorri, salva e trova le offerte.</p>
+        <nav style="font-size:12px;line-height:2">
+          <a href="/moda/" style="color:inherit">Moda</a> · <a href="/moda/outfit/" style="color:inherit">Outfit</a> · <a href="/beauty/" style="color:inherit">Beauty</a> · <a href="/tech/" style="color:inherit">Tech</a> · <a href="/casa/" style="color:inherit">Casa</a> · <a href="/gadget/" style="color:inherit">Gadget</a> · <a href="/snack/" style="color:inherit">Snack</a> · <a href="/animali/" style="color:inherit">Animali</a> · <a href="/moda/offerte/" style="color:inherit">Offerte moda</a>
+        </nav>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

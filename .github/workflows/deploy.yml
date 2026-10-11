@@ -33,6 +33,12 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+      # Le pagine nuove o cambiate, da segnalare ai motori di ricerca dopo la pubblicazione.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: indexnow-urls
+          path: dist/indexnow-urls.txt
+          retention-days: 1
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -42,3 +48,21 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+  # IndexNow: avvisa subito Bing, Yandex, Seznam e Naver delle pagine nuove (Google legge la sitemap).
+  # Se non va, la pubblicazione resta valida.
+  indexnow:
+    needs: deploy
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: indexnow-urls
+      - name: Segnala le pagine
+        run: |
+          KEY=e0d33ae511e9ec6bba7fb998c3420519
+          split -l 9000 indexnow-urls.txt part-
+          for f in part-*; do
+            jq -R -s --arg key "$KEY" '{host: "swipeshopping.app", key: $key, keyLocation: ("https://swipeshopping.app/" + $key + ".txt"), urlList: (split("\n") | map(select(length > 0)))}' "$f" > body.json
+            curl -sS -o /dev/null -w "IndexNow $f: HTTP %{http_code}\n" -X POST https://api.indexnow.org/indexnow -H 'Content-Type: application/json; charset=utf-8' --data @body.json
+          done
