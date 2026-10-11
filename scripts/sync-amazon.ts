@@ -6,7 +6,7 @@ import { classify, isJunk } from './classify.ts'
 import { detectColors } from '../src/config/colors.ts'
 import { validateProduct } from '../src/lib/validate.ts'
 import { DETAIL_SHARDS, detailShard, type ProductDetails } from '../src/lib/details.ts'
-import { SEARCH_PLAN, normalizeBrand } from './search-plan.ts'
+import { OUTFIT_PRIORITY, SEARCH_PLAN, normalizeBrand } from './search-plan.ts'
 
 const { AMAZON_CREDENTIAL_ID, AMAZON_CREDENTIAL_SECRET, AMAZON_CREDENTIAL_VERSION, AMAZON_TOKEN_URL } = process.env
 const PARTNER_TAG = process.env.VITE_AMAZON_TAG || 'mrofferta09-21'
@@ -364,9 +364,12 @@ async function searchCatalog(token: string) {
   if (!stopped && deeper.length) {
     const before = found.size
     const start = (Math.floor(Date.now() / (12 * 3_600_000)) * 97) % deeper.length
+    // Prima sempre le categorie che servono agli outfit, poi le altre a rotazione.
+    const rotated = deeper.map((_, i) => deeper[(start + i) % deeper.length])
+    const ordered = [...rotated.filter(([p]) => OUTFIT_PRIORITY.has(p.category)), ...rotated.filter(([p]) => !OUTFIT_PRIORITY.has(p.category))]
     let done = 0
-    for (let i = 0; i < deeper.length && requests < MAX_REQUESTS; i++) {
-      const [plan, gender, brand] = deeper[(start + i) % deeper.length]
+    for (let i = 0; i < ordered.length && requests < MAX_REQUESTS; i++) {
+      const [plan, gender, brand] = ordered[i]
       for (let page = pages + 1; page <= pages + 2 && requests < MAX_REQUESTS; page++) {
         if ((await searchPage(plan, gender, brand, page)) < 10) break
       }

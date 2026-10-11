@@ -51,6 +51,19 @@ export const SEARCH_PLAN: CategoryPlan[] = [
     brands: ['BOSS', 'Calvin Klein', 'Guess', 'Liu Jo', 'Vero Moda', 'Only', 'Jack & Jones', 'Tommy Hilfiger'] },
   { category: 'jeans', keywords: 'jeans', minPrice: 25, genders: BOTH,
     brands: ['G-Star RAW', 'Replay', 'Jack & Jones', 'Only', 'Vero Moda', 'Mustang', 'Lee Cooper', 'Tommy Hilfiger'] },
+  // Ancora capi per gli outfit: pantaloni, jeans, giacche, cappotti e borse sono quelli che finiscono per primi.
+  { category: 'jeans', keywords: 'jeans', minPrice: 25, genders: BOTH,
+    brands: ['Armani Exchange', 'Superdry', 'Carhartt', 'Dickies', 'Desigual', 'Liu Jo', 'Salsa', 'Kaporal'] },
+  { category: 'pantaloni', keywords: 'pantaloni cargo', minPrice: 20, genders: BOTH,
+    brands: ['Carhartt', 'Dickies', 'Jack & Jones', 'Superdry', 'Tommy Jeans', 'Calvin Klein', 'Napapijri', 'G-Star RAW'] },
+  { category: 'pantaloni', keywords: 'pantaloni', minPrice: 20, genders: BOTH,
+    brands: ['Armani Exchange', 'Emporio Armani', 'Lacoste', 'GANT', 'Ralph Lauren', 'Pepe Jeans', 'Desigual', 'Guess'] },
+  { category: 'giacche', keywords: 'giacca di jeans', minPrice: 30, genders: BOTH,
+    brands: ["Levi's", 'Tommy Jeans', 'Calvin Klein', 'Pepe Jeans', 'Only', 'Jack & Jones', 'Wrangler', 'Lee'] },
+  { category: 'cappotti', keywords: 'piumino', minPrice: 50, genders: BOTH,
+    brands: ['The North Face', 'Columbia', 'Napapijri', 'Superdry', 'Tommy Hilfiger', 'Calvin Klein', 'Geox', 'Save The Duck'] },
+  { category: 'borse', keywords: 'borsa a tracolla', minPrice: 30, genders: ['donna'],
+    brands: ['Guess', 'Michael Kors', 'Calvin Klein', 'Tommy Hilfiger', 'Desigual', 'Liu Jo', 'Love Moschino', 'Armani Exchange'] },
   { category: 'camicie', keywords: 'camicia', minPrice: 20, genders: BOTH,
     brands: ['Jack & Jones', 'Vero Moda', 'Only', 'Superdry', 'Napapijri', 'Pepe Jeans', 'Desigual', 'Liu Jo'] },
   { category: 'giacche', keywords: 'giacca', minPrice: 30, genders: BOTH,
@@ -64,6 +77,8 @@ export const SEARCH_PLAN: CategoryPlan[] = [
   // Pantaloni da tuta e leggings: servono agli outfit sportivi, che altrimenti ne trovano pochi.
   { category: 'sportivo', keywords: 'pantaloni tuta', minPrice: 15, genders: BOTH,
     brands: ['Nike', 'adidas', 'Puma', 'Under Armour', 'New Balance', 'Champion', 'The North Face', 'Fila'] },
+  { category: 'sportivo', keywords: 'joggers', minPrice: 15, genders: BOTH,
+    brands: ['Nike', 'adidas', 'Puma', 'Champion', 'Under Armour', 'Reebok', 'Jordan', 'Kappa'] },
   { category: 'sportivo', keywords: 'leggings', minPrice: 15, genders: ['donna'],
     brands: ['Nike', 'adidas', 'Puma', 'Under Armour', 'New Balance', 'ASICS', 'Reebok', 'Calvin Klein'] },
   // Scarpe
@@ -441,3 +456,6 @@ export const normalizeBrand = (b: string) =>
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .replace(/[^a-z0-9]/g, '')
+
+/** Categorie che servono di più agli outfit (finiscono per prime): le loro pagine in più si leggono a ogni giro. */
+export const OUTFIT_PRIORITY = new Set(['jeans', 'pantaloni', 'sportivo', 'giacche', 'cappotti', 'borse'])
