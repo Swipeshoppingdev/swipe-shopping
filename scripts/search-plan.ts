@@ -52,6 +52,11 @@ export const SEARCH_PLAN: CategoryPlan[] = [
     brands: ['Guess', 'Desigual', 'Liu Jo', 'Vero Moda', 'Only', 'Tommy Hilfiger', 'Calvin Klein', "Levi's"] },
   { category: 'sportivo', keywords: 'abbigliamento sportivo', minPrice: 15, genders: BOTH,
     brands: ['Nike', 'adidas', 'Puma', 'Under Armour', 'New Balance', 'ASICS', 'Reebok', 'Champion'] },
+  // Pantaloni da tuta e leggings: servono agli outfit sportivi, che altrimenti ne trovano pochi.
+  { category: 'sportivo', keywords: 'pantaloni tuta', minPrice: 15, genders: BOTH,
+    brands: ['Nike', 'adidas', 'Puma', 'Under Armour', 'New Balance', 'Champion', 'The North Face', 'Fila'] },
+  { category: 'sportivo', keywords: 'leggings', minPrice: 15, genders: ['donna'],
+    brands: ['Nike', 'adidas', 'Puma', 'Under Armour', 'New Balance', 'ASICS', 'Reebok', 'Calvin Klein'] },
   // Scarpe
   { category: 'sneakers', keywords: 'sneakers', minPrice: 35, genders: BOTH,
     brands: ['Nike', 'adidas', 'New Balance', 'Puma', 'Converse', 'Vans', 'Reebok', 'Skechers', 'ASICS', 'Lacoste'] },

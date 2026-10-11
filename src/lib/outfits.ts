@@ -15,12 +15,14 @@ export interface Outfit {
   items: Product[]
 }
 
-export type OutfitStyle = 'casual' | 'smart' | 'elegante' | 'vestito' | 'sportivo'
+export type OutfitStyle = 'casual' | 'smart' | 'elegante' | 'vestito' | 'serata' | 'weekend' | 'sportivo'
 export const STYLE_LABEL: Record<OutfitStyle, string> = {
   casual: 'Casual',
   smart: 'Smart casual',
   elegante: 'Elegante',
   vestito: 'Con il vestito',
+  serata: 'Da sera',
+  weekend: 'Weekend',
   sportivo: 'Sportivo',
 }
 
@@ -70,6 +72,30 @@ function recipes(cold: boolean): Recipe[] {
       ],
     },
     {
+      // Per uscire la sera: vestito, scarpe eleganti, borsa e un gioiello.
+      style: 'serata',
+      genders: ['donna'],
+      slots: [
+        { cats: ['vestiti'] },
+        { cats: cold ? ['scarpe_eleganti', 'stivali'] : ['scarpe_eleganti', 'sandali'] },
+        { cats: ['borse'] },
+        { cats: ['gioielli', 'orologi'] },
+        ...(cold ? [{ cats: ['cappotti'], optional: 0.5 } satisfies Slot] : []),
+      ],
+    },
+    {
+      // Fuori porta: capospalla sempre, scarpe comode, zaino o cappellino.
+      style: 'weekend',
+      genders: ['uomo', 'donna'],
+      slots: [
+        { cats: cold ? ['maglioni', 'felpe'] : ['tshirt', 'camicie'] },
+        { cats: ['jeans', 'pantaloni'] },
+        { cats: cold ? ['stivali', 'sneakers'] : ['sneakers', 'scarpe_sportive'] },
+        { cats: cold ? ['giacche', 'cappotti'] : ['giacche'] },
+        { cats: ['zaini', 'cappellini', 'occhiali'], optional: 0.7 },
+      ],
+    },
+    {
       // A metà tra casual ed elegante: camicia o maglione con i jeans, scarpe curate.
       style: 'smart',
       genders: ['uomo', 'donna'],
@@ -97,8 +123,9 @@ function recipes(cold: boolean): Recipe[] {
 /** Colori che stanno bene con tutto: ammesso al massimo un capo di un altro colore. */
 const NEUTRAL = new Set(['Nero', 'Bianco', 'Grigio', 'Beige', 'Marrone', 'Blu'])
 /** Ogni capo compare al massimo in tanti outfit */
-const MAX_USES = 4
-const MAX_PER_STYLE = 500
+const MAX_USES = 8
+const MAX_PER_STYLE = 700
+const BATCH = 50
 /** Quanti capi a caso si provano per un posto prima di arrendersi */
 const TRIES = 40
 
@@ -122,15 +149,20 @@ const FOR_WOMEN = /\b(donna|donne|women|womens|woman|lady|ragazza|petite)\b/i
 const FOR_MEN = /\b(uomo|uomini|men|mens|man|ragazzo)\b/i
 const WOMEN_BRANDS = new Set(['vero moda', 'only', 'liu jo', 'desigual'])
 /** Mai negli outfit: pantaloncini, costumi, pigiami, capi per bambini */
-const NEVER = /\b(shorts?|bermuda|pantaloncin\w*|costum\w*|pigiama|bambin\w*|kids?|junior|neonat\w*)\b/i
+const NEVER = /\b(calze|calzini|socks|shorts?|bermuda|pantaloncin\w*|costum\w*|pigiama|bambin\w*|kids?|junior|neonat\w*)\b/i
 /** Fuori stagione */
 const SUMMER_ONLY = /\b(lino|linen|canott\w*|smanicat\w*|sandal\w*|infradito|ciabatt\w*)\b/i
 const WINTER_ONLY = /\b(lana|wool|piumin\w*|imbottit\w*|teddy|cashmere|montone|dolcevita)\b/i
 /** Non stanno in un outfit elegante */
-const NOT_ELEGANT = /\b(jogg\w*|tuta|sweat\w*|cargo|fleece|pile|gomma|pioggia|rain|felpa|hoodie|sport\w*|running)\b/i
+const NOT_ELEGANT = /\b(lavoro|workwear|salopett\w*|jogg\w*|tuta|sweat\w*|cargo|fleece|pile|gomma|pioggia|rain|felpa|hoodie|sport\w*|running)\b/i
+
+/** Capi finiti nella categoria sbagliata (una maglietta tra i jeans): il titolo nomina un capo di sopra. */
+const TOP_WORDS = /\b(t-?shirts?|top|maglia|maglion\w*|felpa|camici\w*|body|polo)\b/i
+const BOTTOMS = new Set<CategoryId>(['jeans', 'pantaloni'])
 
 function fits(p: Product, gender: 'uomo' | 'donna') {
   if (NEVER.test(p.title)) return false
+  if (BOTTOMS.has(p.category) && TOP_WORDS.test(p.title)) return false
   if (gender === 'uomo') return !FOR_WOMEN.test(p.title) && !WOMEN_BRANDS.has((p.brand ?? '').toLowerCase())
   return !FOR_MEN.test(p.title)
 }
@@ -167,49 +199,55 @@ export function buildOutfits(products: Product[], gender: 'uomo' | 'donna', mont
   const uses = new Map<string, number>()
   const ids = new Set<string>()
   const outfits: Outfit[] = []
-  for (const recipe of recipes(cold)) {
-    if (!recipe.genders.includes(gender)) continue
-    const rand = rng(hash(`${recipe.style}:${gender}`))
-    const elegant = recipe.style !== 'casual' && recipe.style !== 'sportivo'
-    // I capi adatti a ogni posto si calcolano una volta; poi se ne provano alcuni a caso (veloce anche con migliaia di capi).
-    const slotPool = recipe.slots.map((slot) =>
-      slot.cats.flatMap((c) => pool.get(c) ?? []).filter((p) => (!slot.fit || slot.fit(p)) && !(elegant && NOT_ELEGANT.test(p.title))),
-    )
-    const pick = (i: number, colors: string[]) => {
-      const list = slotPool[i]
-      if (!list.length) return undefined
-      const strong = colors.some((c) => !NEUTRAL.has(c))
-      for (let t = 0; t < TRIES; t++) {
-        const p = list[Math.floor(rand() * list.length)]
-        if ((uses.get(p.id) ?? 0) >= MAX_USES) continue
-        const color = mainColor(p)!
-        if (NEUTRAL.has(color) || (!strong && !colors.includes(color))) return p
-      }
-      return undefined
-    }
-    let made = 0
-    for (let attempt = 0; attempt < MAX_PER_STYLE * 3 && made < MAX_PER_STYLE; attempt++) {
-      const items: Product[] = []
-      let ok = true
-      for (const [n, slot] of recipe.slots.entries()) {
-        if (slot.optional !== undefined && rand() > slot.optional) continue
-        const p = pick(n, items.map((i) => mainColor(i)!))
-        if (!p) {
-          if (slot.optional === undefined) ok = false
-          continue
+  // Tutti gli stili a turno, a blocchi: così uno stile non consuma da solo i capi (es. i pantaloni) che servono agli altri.
+  const makers = recipes(cold)
+    .filter((recipe) => recipe.genders.includes(gender))
+    .map((recipe) => {
+      const rand = rng(hash(`${recipe.style}:${gender}`))
+      const elegant = recipe.style !== 'casual' && recipe.style !== 'sportivo'
+      // I capi adatti a ogni posto si calcolano una volta; poi se ne provano alcuni a caso (veloce anche con migliaia di capi).
+      const slotPool = recipe.slots.map((slot) =>
+        slot.cats.flatMap((c) => pool.get(c) ?? []).filter((p) => (!slot.fit || slot.fit(p)) && !(elegant && NOT_ELEGANT.test(p.title))),
+      )
+      const pick = (i: number, colors: string[]) => {
+        const list = slotPool[i]
+        if (!list.length) return undefined
+        const strong = colors.some((c) => !NEUTRAL.has(c))
+        for (let t = 0; t < TRIES; t++) {
+          const p = list[Math.floor(rand() * list.length)]
+          if ((uses.get(p.id) ?? 0) >= MAX_USES) continue
+          const color = mainColor(p)!
+          if (NEUTRAL.has(color) || (!strong && !colors.includes(color))) return p
         }
-        items.push(p)
+        return undefined
       }
-      // Niente sandali con il cappotto.
-      if (!ok || (items.some((i) => i.category === 'cappotti') && items.some((i) => i.category === 'sandali'))) continue
-      const id = outfitId(items.map((i) => i.id))
-      if (ids.has(id)) continue
-      ids.add(id)
-      for (const i of items) uses.set(i.id, (uses.get(i.id) ?? 0) + 1)
-      outfits.push({ id, gender, style: recipe.style, items })
-      made++
-    }
-  }
+      let made = 0
+      let attempt = 0
+      return (upTo: number) => {
+        for (; attempt < MAX_PER_STYLE * 3 && made < upTo; attempt++) {
+          const items: Product[] = []
+          let ok = true
+          for (const [n, slot] of recipe.slots.entries()) {
+            if (slot.optional !== undefined && rand() > slot.optional) continue
+            const p = pick(n, items.map((i) => mainColor(i)!))
+            if (!p) {
+              if (slot.optional === undefined) ok = false
+              continue
+            }
+            items.push(p)
+          }
+          // Niente sandali con il cappotto.
+          if (!ok || (items.some((i) => i.category === 'cappotti') && items.some((i) => i.category === 'sandali'))) continue
+          const id = outfitId(items.map((i) => i.id))
+          if (ids.has(id)) continue
+          ids.add(id)
+          for (const i of items) uses.set(i.id, (uses.get(i.id) ?? 0) + 1)
+          outfits.push({ id, gender, style: recipe.style, items })
+          made++
+        }
+      }
+    })
+  for (let upTo = BATCH; upTo <= MAX_PER_STYLE; upTo += BATCH) for (const make of makers) make(upTo)
   // Stili mescolati, sempre nello stesso ordine; prima quelli con capi appena arrivati.
   const rand = rng(hash(gender))
   const mixed = outfits.map((o) => [rand(), o] as const).sort((a, b) => a[0] - b[0]).map(([, o]) => o)
