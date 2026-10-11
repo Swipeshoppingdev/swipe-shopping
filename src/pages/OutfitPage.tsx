@@ -13,7 +13,8 @@ import { brandAndStore } from '../config/stores'
 import { STYLE_LABEL, buildOutfits, outfitId, outfitTotal, swapOptions, type Outfit, type OutfitStyle } from '../lib/outfits'
 import { AllNone, Chip } from './FiltersPage'
 import { openProduct } from '../lib/productSheet'
-import { shareList } from '../lib/share'
+import { sharedOutfit } from '../lib/outfitShare'
+import { shareOutfit } from '../lib/share'
 import { social } from '../lib/social'
 import { load, save } from '../lib/storage'
 import { useHashRoute } from '../lib/useHashRoute'
@@ -112,6 +113,19 @@ export function OutfitPage() {
 
   const byId = useMemo(() => new Map(moda.map((p) => [p.id, p])), [moda])
   const savedOutfits = saved.map((s) => ({ ...s, products: s.items.flatMap((id) => (byId.has(id) ? [byId.get(id)!] : [])) }))
+
+  // Outfit arrivato da un link condiviso (#/outfit/v/<stile>/<capi>): si apre con i capi ancora in catalogo.
+  const handledShare = useRef('')
+  useEffect(() => {
+    const shared = sharedOutfit(hash)
+    if (!shared || !ready || handledShare.current === hash) return
+    handledShare.current = hash
+    const items = shared.ids.flatMap((id) => (byId.has(id) ? [byId.get(id)!] : []))
+    const style = (shared.style in STYLE_LABEL ? shared.style : 'casual') as OutfitStyle
+    const g = items.find((p) => p.gender === 'uomo' || p.gender === 'donna')?.gender as 'uomo' | 'donna' | undefined
+    setOpen({ id: outfitId(items.map((p) => p.id)), gender: g ?? gender, style, items })
+    window.history.replaceState(null, '', '#/outfit')
+  }, [hash, ready, byId, gender])
 
   const decide = (o: Outfit, yes: boolean) => {
     setDir(yes ? 1 : -1)
@@ -347,9 +361,12 @@ function OutfitSheet(props: { outfit: Outfit; saved: boolean; onSave: () => void
             <p className="text-xl font-bold">{total !== null ? `Totale ${euro(total)}` : `${outfit.items.length} capi`}</p>
             {outfit.items.length > 0 && <p className="text-xs text-neutral-500">Un capo non ti convince? Tocca "Cambia".</p>}
           </div>
-          <button type="button" onClick={onClose} aria-label="Chiudi" className="grid size-9 place-items-center rounded-full bg-neutral-100">
-            <X className="size-5" />
-          </button>
+          <div className="flex shrink-0 gap-2">
+            {outfit.items.length > 0 && <OutfitSend outfit={outfit} className="size-9 bg-neutral-100 text-neutral-700" />}
+            <button type="button" onClick={onClose} aria-label="Chiudi" className="grid size-9 place-items-center rounded-full bg-neutral-100">
+              <X className="size-5" />
+            </button>
+          </div>
         </div>
         {outfit.items.length === 0 && <p className="py-6 text-center text-sm text-neutral-500">I capi di questo outfit non sono più disponibili.</p>}
         <ul className="space-y-3">
@@ -531,8 +548,8 @@ function OutfitFilters(props: {
 /** Fine del cursore del prezzo totale: oltre, nessun massimo. */
 const OUTFIT_PRICE_LIMIT = 1000
 
-/** Tasto "manda" degli outfit: agli amici arrivano in chat i capi dell'outfit; fuori dall'app va il link della lista. */
-function OutfitSend({ outfit }: { outfit: Outfit }) {
+/** Tasto "manda" degli outfit: agli amici arrivano in chat i capi dell'outfit; fuori dall'app va il link dell'outfit con l'anteprima. */
+function OutfitSend({ outfit, className }: { outfit: Outfit; className?: string }) {
   const auth = useAuth()
   const [open, setOpen] = useState(false)
   const [toast, setToast] = useState('')
@@ -543,7 +560,7 @@ function OutfitSend({ outfit }: { outfit: Outfit }) {
   const name = `Outfit ${STYLE_LABEL[outfit.style].toLowerCase()}`
   const shareOutside = async () => {
     setOpen(false)
-    if ((await shareList(name, outfit.items)) === 'copied') flash('Link copiato')
+    if ((await shareOutfit(name, outfit.style, outfit.items)) === 'copied') flash('Link copiato')
   }
   return (
     <>
@@ -552,9 +569,9 @@ function OutfitSend({ outfit }: { outfit: Outfit }) {
         aria-label="Manda l'outfit"
         title="Manda a un amico"
         onClick={() => (auth.user ? setOpen(true) : void shareOutside())}
-        className="relative grid size-11 place-items-center rounded-full bg-white text-neutral-600 shadow-md ring-1 ring-black/5 transition active:scale-90"
+        className={`relative grid place-items-center rounded-full transition active:scale-90 ${className ?? 'size-11 bg-white text-neutral-600 shadow-md ring-1 ring-black/5'}`}
       >
-        <Send className="size-5" />
+        <Send className={className ? 'size-4' : 'size-5'} />
         {toast && (
           <span className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-full bg-neutral-900 px-2 py-1 text-xs whitespace-nowrap text-white">
             {toast}

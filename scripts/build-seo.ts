@@ -8,6 +8,7 @@ import { SOCIAL_LINKS } from '../src/config/app.ts'
 import { DETAIL_SHARDS, type ProductDetails } from '../src/lib/details.ts'
 import { productUrl, STORES } from '../src/config/stores.ts'
 import { STYLE_LABEL, buildOutfits, outfitTotal, type Outfit, type OutfitStyle } from '../src/lib/outfits.ts'
+import { outfitAppHash, outfitSharePath } from '../src/lib/outfitShare.ts'
 import { shareCode } from '../src/lib/shareCode.ts'
 import type { Product } from '../src/types/product.ts'
 
@@ -626,6 +627,57 @@ for (const p of products) {
   writeFileSync(new URL('index.html', dir), sharePage(p))
 }
 
+// Outfit condivisi dall'app (/o/<stile>/<capi>/): anteprima con la foto del primo capo, stile, numero di capi
+// e totale; poi l'outfit si apre nell'app. Pagine pronte per gli outfit del mazzo; se un capo è stato cambiato
+// la pagina non c'è e ci pensa la 404, che apre comunque l'outfit (senza anteprima).
+const sharePreview = (o: { title: string; desc: string; path: string; image: string; app: string }) => `<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(o.title)}</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="${esc(o.desc)}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Swipe Shopping">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="${esc(o.title)}">
+<meta property="og:description" content="${esc(o.desc)}">
+<meta property="og:url" content="${SITE}${o.path}">
+<meta property="og:image" content="${esc(o.image)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#6366f1">
+<link rel="icon" type="image/png" href="/icons/favicon-64.png">
+<script>location.replace(${JSON.stringify(`/${o.app}`)})</script>
+</head>
+<body style="font-family:system-ui,sans-serif;text-align:center;padding:40px 16px">
+<p><a href="/${esc(o.app)}">${esc(o.title)}: apri su Swipe Shopping</a></p>
+</body>
+</html>
+`
+let outfitShares = 0
+for (const g of ['donna', 'uomo'] as const) {
+  for (const o of buildOutfits(moda, g)) {
+    const ids = o.items.map((p) => p.id)
+    const total = outfitTotal(o.items)
+    const path = outfitSharePath(o.style, ids)
+    const dir = new URL(path.slice(1), dist)
+    mkdirSync(dir, { recursive: true })
+    writeFileSync(
+      new URL('index.html', dir),
+      sharePreview({
+        title: `Outfit ${STYLE_LABEL[o.style].toLowerCase()} da ${g} · ${o.items.length} capi`,
+        desc: `${total !== null ? `Totale ${eur.format(total)} · ` : ''}${[...new Set(o.items.map((p) => p.brand).filter(Boolean))].slice(0, 4).join(', ')}. Vedilo e salvalo su Swipe Shopping`,
+        path,
+        image: o.items[0].imageUrl!,
+        app: outfitAppHash(o.style, ids),
+      }),
+    )
+    outfitShares++
+  }
+}
+console.log(`Anteprime per i link condivisi: ${products.length} prodotti e ${outfitShares} outfit.`)
+
 // Pagina 404 di GitHub Pages: un prodotto non più in catalogo porta comunque alle sezioni.
 writeFileSync(
   new URL('404.html', dist),
@@ -640,7 +692,7 @@ writeFileSync(
     // Link condiviso di un prodotto che non ha più la sua paginetta: si apre comunque l'app su quel prodotto.
     .replace(
       '</head>',
-      `<script>(function(){var m=location.pathname.match(/^\\/s\\/([^/]+)/);if(!m)return;var c=decodeURIComponent(m[1]);var id=c.indexOf('-')>=0?c.replace('-',':'):'amazon:'+c;location.replace('/#/p/'+encodeURIComponent(id))})()</script>\n</head>`,
+      `<script>(function(){var p=location.pathname,o=p.match(/^\\/o\\/([a-z]+)\\/([^/]+)/);if(o)return location.replace('/#/outfit/v/'+o[1]+'/'+o[2]);var m=p.match(/^\\/s\\/([^/]+)/);if(!m)return;var c=decodeURIComponent(m[1]);var id=c.indexOf('-')>=0?c.replace('-',':'):'amazon:'+c;location.replace('/#/p/'+encodeURIComponent(id))})()</script>\n</head>`,
     ),
 )
 

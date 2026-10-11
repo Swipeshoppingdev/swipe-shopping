@@ -1,5 +1,6 @@
 import type { Product } from '../types/product'
 import { track } from './analytics'
+import { outfitSharePath } from './outfitShare'
 import { shareCode } from './shareCode'
 
 const SITE = 'https://swipeshopping.app/'
@@ -16,6 +17,22 @@ export async function shareProduct(p: Product): Promise<'shared' | 'copied' | 'c
   const url = productShareUrl(p)
   const text = `Guarda cosa ho trovato su Swipe Shopping: ${p.brand ? `${p.brand} – ` : ''}${p.title}`
   track('share', p)
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Swipe Shopping', text, url })
+      return 'shared'
+    } catch {
+      return 'cancelled'
+    }
+  }
+  await navigator.clipboard?.writeText(`${text}\n${url}`)
+  return 'copied'
+}
+
+/** Condivide un outfit: il link mostra l'anteprima e apre l'outfit nell'app, dove si può salvare. */
+export async function shareOutfit(name: string, style: string, items: Product[]): Promise<'shared' | 'copied' | 'cancelled'> {
+  const url = `${SITE.slice(0, -1)}${outfitSharePath(style, items.map((p) => p.id))}`
+  const text = `Guarda questo outfit su Swipe Shopping: ${name.toLowerCase()}, ${items.length} capi`
   if (navigator.share) {
     try {
       await navigator.share({ title: 'Swipe Shopping', text, url })
