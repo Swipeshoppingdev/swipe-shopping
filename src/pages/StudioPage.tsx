@@ -90,6 +90,17 @@ interface Slide {
   ms: number
   node: ReactNode
 }
+/** I fotogrammi e la didascalia pronta per il post */
+type Slides = Slide[] & { caption?: string }
+const withCaption = (caption: string, slides: Slide[]): Slides => Object.assign(slides, { caption })
+
+const TAGS = '#swipeshopping #shoppingonline #moda #offerte #outfit'
+/** In fondo a ogni post: dove trovare l'app e la dicitura obbligatoria per i link di affiliazione. */
+const FOOTER = `👉 Link in bio: swipeshopping.app\n\n#pubblicità ${TAGS}`
+
+/** Calendario: un formato per giorno della settimana (0 = domenica), più le storie ogni giorno. */
+const WEEK: Format[] = ['marche', 'offerte', 'sfida', 'prezzo', 'outfit', 'meme', 'sconto']
+const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
 
 export function StudioPage() {
   const auth = useAuth()
@@ -102,7 +113,9 @@ export function StudioPage() {
 
 function Studio() {
   const { allProducts } = useApp()
-  const [format, setFormat] = useState<Format>('offerte')
+  const [format, setFormat] = useState<Format>(() => WEEK[new Date().getDay()])
+  // Comandi nascosti per guardare l'anteprima intera: si riaprono toccando il palco.
+  const [panel, setPanel] = useState(true)
   const [gender, setGender] = useState<'donna' | 'uomo'>('donna')
   const [variant, setVariant] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -115,7 +128,7 @@ function Studio() {
   const moda = useMemo(() => allProducts.filter((p) => universeOf(p.category) === 'moda'), [allProducts])
   const outfits = useMemo(() => buildOutfits(moda, gender), [moda, gender])
 
-  const slides = useMemo<Slide[]>(() => {
+  const slides = useMemo<Slides>(() => {
     const rand = rng(today() * 1000 + variant * 7 + (gender === 'uomo' ? 1 : 0) + format.length)
     if (format === 'offerte') {
       const deals = allProducts
@@ -128,11 +141,13 @@ function Studio() {
         if (chosen.length < 5 && !chosen.some((c) => c.category === p.category)) chosen.push(p)
       }
       chosen.sort((a, b) => freshPrice(a)!.discountPct! - freshPrice(b)!.discountPct!)
-      return [
+      const best = chosen.at(-1)
+      const cap = `Le 5 offerte più pazze di oggi 🔥${best ? ` La numero 1? ${best.brand} a -${freshPrice(best)!.discountPct}%` : ''}\n\nQuale prendi? Scrivilo nei commenti 👇 I prezzi cambiano ogni giorno, corri!\n\n${FOOTER} #sconti #affari`
+      return withCaption(cap, [
         { ms: 2200, node: <Title kicker="Le migliori di oggi" title="TOP 5 OFFERTE" sub="Prezzi verificati oggi" /> },
         ...chosen.map((p, i) => ({ ms: 3200, node: <DealSlide product={p} rank={chosen.length - i} /> })),
         { ms: 3000, node: <Outro line="Tutte le offerte su" /> },
-      ]
+      ])
     }
     if (format === 'outfit') {
       const cheap = outfits.filter((o) => {
@@ -141,23 +156,26 @@ function Studio() {
       })
       const o = pick(cheap.length ? cheap : outfits, 1, rand)[0]
       if (!o) return []
-      return [
+      const sum = outfitTotal(o.items)
+      const cap = `Outfit ${STYLE_LABEL[o.style].toLowerCase()} da ${o.gender} completo${sum !== null ? ` a ${formatPrice(sum)}` : ''} 👀 ${[...new Set(o.items.map((i) => i.brand).filter(Boolean))].slice(0, 4).join(', ')}.\n\nLo indosseresti? Sì o no nei commenti 👇 Salvalo per dopo!\n\n${FOOTER} #outfitdelgiorno #ootd #lookdelgiorno`
+      return withCaption(cap, [
         { ms: 2000, node: <Title kicker={`Outfit ${STYLE_LABEL[o.style].toLowerCase()}`} title={`SOTTO ${OUTFIT_BUDGET} €`} sub={`Look completo da ${o.gender}`} /> },
         ...o.items.map((_, i) => ({ ms: 1300, node: <OutfitBuild outfit={o} shown={i + 1} /> })),
         { ms: 3200, node: <OutfitBuild outfit={o} shown={o.items.length} total /> },
         { ms: 3000, node: <Outro line="Altri outfit su" /> },
-      ]
+      ])
     }
     if (format === 'sfida') {
       const ok = outfits.filter((o) => outfitTotal(o.items) !== null && o.items.length >= 3 && o.items.length <= 4)
       const [a] = pick(ok, 1, rand)
       const b = a && pick(ok.filter((o) => o.style === a.style && o.id !== a.id), 1, rand)[0]
       if (!a || !b) return []
-      return [
+      const cap = `Questo o quello? Outfit ${STYLE_LABEL[a.style].toLowerCase()} da ${a.gender} 🤔\n\nA o B? Scrivilo nei commenti e tagga chi sceglierebbe l'altro 👇\n\n${FOOTER} #questoquello #ootd #stile`
+      return withCaption(cap, [
         { ms: 1800, node: <Title kicker={`Outfit ${STYLE_LABEL[a.style].toLowerCase()}`} title="QUESTO O QUELLO?" sub="Scegli prima di scorrere" /> },
         { ms: 7000, node: <Versus a={a} b={b} /> },
         { ms: 3000, node: <Outro line="Scrivi A o B nei commenti 👇" /> },
-      ]
+      ])
     }
     const inStock = (p: Product) => p.availability !== 'out_of_stock' && !!p.imageUrl && !!freshPrice(p)
     const discounted = (min: number) => allProducts.filter((p) => inStock(p) && (freshPrice(p)!.discountPct ?? 0) >= min)
@@ -169,10 +187,11 @@ function Studio() {
       const [top, bottom] = pick(options, 1, rand)[0]
       const fill = (t: string) =>
         t.replaceAll('{marca}', p.brand ?? 'questo').replaceAll('{sconto}', `${fp.discountPct ?? 0}%`).replaceAll('{prezzo}', formatPrice(fp.price))
-      return [
+      const cap = `Chi si rivede qui? 😂 Tagga l'amica/o che lo farebbe 👇\n\n${p.brand ?? ''} a ${formatPrice(fp.price)}${fp.discountPct ? ` (-${fp.discountPct}%)` : ''}, oggi.\n\n${FOOTER} #meme #memeitaliani #shoppingaddict`
+      return withCaption(cap, [
         { ms: 6000, node: <Meme product={p} top={memeTop || fill(top)} bottom={memeBottom || fill(bottom)} /> },
         { ms: 3000, node: <Outro line="Lo trovi su" /> },
-      ]
+      ])
     }
     if (format === 'prezzo') {
       const items = pick(
@@ -180,30 +199,33 @@ function Studio() {
         3,
         rand,
       )
-      return [
+      const cap = `Indovina il prezzo! 💸 3 prodotti, ferma il video e scrivi la tua risposta prima del via.\n\nQuanti ne hai indovinati? 0, 1, 2 o 3? Commenta 👇\n\n${FOOTER} #indovinailprezzo #challenge #gioco`
+      return withCaption(cap, [
         { ms: 2000, node: <Title kicker="Gioco" title="INDOVINA IL PREZZO" sub="Scrivi la tua risposta prima del via" /> },
         ...items.flatMap((p, i) => [
           ...[3, 2, 1].map((n) => ({ ms: 900, node: <Guess product={p} index={i + 1} count={n} /> })),
           { ms: 2800, node: <Guess product={p} index={i + 1} /> },
         ]),
         { ms: 3000, node: <Outro line="Quanti ne hai indovinati? Scrivilo nei commenti 👇 Gioca su" /> },
-      ]
+      ])
     }
     if (format === 'sconto') {
       const items = pick(discounted(30), 3, rand)
-      return [
+      const cap = `Prima e dopo lo sconto 😱 ${items.map((p) => `${p.brand}: -${freshPrice(p)!.discountPct}%`).join(' · ')}\n\nQuale ti ha sorpreso di più? 👇 Prezzi di oggi, possono cambiare.\n\n${FOOTER} #sconti #primaedopo #affari`
+      return withCaption(cap, [
         { ms: 1800, node: <Title kicker="Prima e dopo" title="LO SCONTO" sub="Prezzo pieno contro prezzo di oggi" /> },
         ...items.flatMap((p) => [
           { ms: 1600, node: <BeforeAfter product={p} /> },
           { ms: 2800, node: <BeforeAfter product={p} after /> },
         ]),
         { ms: 3000, node: <Outro line="Altre offerte su" /> },
-      ]
+      ])
     }
     if (format === 'marche') {
       if (!brands?.length) return []
       const top = brands.slice(0, 5)
-      return [
+      const cap = `Le marche più amate della settimana su Swipe Shopping 🏆 1. ${top[0]?.id}${top[1] ? `, 2. ${top[1].id}` : ''}${top[2] ? `, 3. ${top[2].id}` : ''}. Classifica fatta con i Sì veri di chi usa l'app.\n\nLa tua preferita è in classifica? 👇\n\n${FOOTER} #classifica #brand #topbrand`
+      return withCaption(cap, [
         { ms: 2200, node: <Title kicker="Classifica della settimana" title="LE MARCHE PIÙ AMATE" sub="Dai Sì veri di chi usa l'app" /> },
         ...[...top].reverse().map((b, i) => {
           const photo = pick(
@@ -214,7 +236,7 @@ function Studio() {
           return { ms: 2600, node: <BrandRank rank={top.length - i} brand={b.id} likePct={b.like} product={photo} /> }
         }),
         { ms: 3000, node: <Outro line="Vota anche tu su" /> },
-      ]
+      ])
     }
     // Swipe in diretta: carte che vanno da sole a destra o a sinistra, come se qualcuno usasse l'app.
     const cards = pick(
@@ -222,10 +244,11 @@ function Studio() {
       8,
       rand,
     )
-    return [
+    const cap = `Sì o no? 👀 Il modo più veloce per fare shopping: uno swipe e via. Quale avresti tenuto?\n\n${FOOTER} #swipe #shoppingtime #tendenze`
+    return withCaption(cap, [
       ...cards.map((p) => ({ ms: 1700, node: <AutoSwipe product={p} yes={rand() > 0.4} /> })),
       { ms: 3000, node: <Outro line="Prova anche tu su" /> },
-    ]
+    ])
   }, [format, gender, variant, allProducts, moda, outfits, memeTop, memeBottom, brands])
 
   // Riproduzione: un fotogramma dopo l'altro, poi si ferma sull'ultimo.
@@ -252,7 +275,7 @@ function Studio() {
       {/* Il palco: 9:16, grande quanto lo schermo del telefono */}
       <div
         className="relative h-full max-h-[calc(100vw*16/9)] w-full max-w-[calc(100dvh*9/16)] overflow-hidden bg-gradient-to-b from-[#1a0b14] via-[#14080f] to-[#000] text-[#fff]"
-        onClick={() => playing && stop()}
+        onClick={() => (playing ? stop() : setPanel((v) => !v))}
       >
         <div className="pointer-events-none absolute -top-32 -left-24 size-96 rounded-full bg-[#f43f5e]/25 blur-3xl" />
         <div className="pointer-events-none absolute -right-24 -bottom-32 size-96 rounded-full bg-[#6366f1]/25 blur-3xl" />
@@ -281,8 +304,8 @@ function Studio() {
         )}
       </div>
 
-      {!playing && (
-        <div className="absolute inset-x-0 bottom-0 space-y-3 rounded-t-3xl border-t border-[#fff]/15 bg-[#0b0b0d] p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-12px_40px_rgba(0,0,0,0.8)]">
+      {!playing && panel && (
+        <div className="absolute inset-x-0 bottom-0 max-h-[70dvh] overflow-y-auto space-y-3 rounded-t-3xl border-t border-[#fff]/15 bg-[#0b0b0d] p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-12px_40px_rgba(0,0,0,0.8)]">
           <div className="flex flex-wrap justify-center gap-2">
             {FORMATS.map((f) => (
               <button
@@ -315,6 +338,8 @@ function Studio() {
               <X className="size-5" />
             </a>
           </div>
+          <Calendar current={format} onPick={setFormat} />
+          {slides.caption && <CaptionBox text={slides.caption} />}
           {format === 'meme' && (
             <div className="space-y-2">
               {(
@@ -334,7 +359,7 @@ function Studio() {
             </div>
           )}
           <p className="text-center text-xs text-[#fff]/75">
-            Avvia la registrazione schermo, poi tocca Avvia. Tocca il video per fermarlo. Contenuti nuovi ogni giorno.
+            Avvia la registrazione schermo, poi tocca Avvia. Tocca il video per fermarlo. Tocca l'anteprima per nascondere o mostrare i comandi.
           </p>
         </div>
       )}
@@ -633,6 +658,60 @@ function BrandRank({ rank, brand, likePct, product }: { rank: number; brand: str
         <b className="text-[#fff]">{likePct}%</b> di Sì questa settimana
       </p>
       {product && <ProductImage product={product} eager className="aspect-square w-3/4 overflow-hidden rounded-3xl" />}
+    </div>
+  )
+}
+
+/** La settimana: cosa pubblicare ogni giorno (oggi evidenziato). Tocca un giorno per aprire quel formato. */
+function Calendar({ current, onPick }: { current: Format; onPick: (f: Format) => void }) {
+  const day = new Date().getDay()
+  const label = (f: Format) => FORMATS.find((x) => x.id === f)!.label
+  return (
+    <div className="space-y-1.5">
+      <p className="text-center text-xs text-[#fff]/75">
+        Oggi pubblica: <b className="text-[#fff]">{label(WEEK[day])}</b> · nelle storie: Swipe in diretta
+      </p>
+      <div className="grid grid-cols-7 gap-1">
+        {[1, 2, 3, 4, 5, 6, 0].map((d) => (
+          <button
+            key={d}
+            type="button"
+            onClick={() => onPick(WEEK[d])}
+            title={label(WEEK[d])}
+            className={`rounded-lg py-1 text-[10px] leading-tight font-semibold ${
+              d === day ? 'bg-[#f43f5e] text-[#fff]' : current === WEEK[d] ? 'bg-[#fff] text-[#111]' : 'bg-[#2a2a30] text-[#fff]/80'
+            }`}
+          >
+            {DAY_NAMES[d]}
+            <span className="block truncate px-0.5 font-normal opacity-80">{label(WEEK[d]).split(' ')[0]}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/** Didascalia pronta per il post, da copiare con un tocco. */
+function CaptionBox({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false)
+  const [open, setOpen] = useState(false)
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1800)
+    } catch {
+      setOpen(true)
+    }
+  }
+  return (
+    <div className="rounded-xl bg-[#1c1c21] p-2.5 ring-1 ring-[#fff]/15">
+      <button type="button" onClick={() => setOpen(!open)} className={`w-full text-left text-xs whitespace-pre-line text-[#fff]/85 ${open ? 'max-h-40 overflow-y-auto' : 'line-clamp-2'}`}>
+        {text}
+      </button>
+      <button type="button" onClick={copy} className="mt-2 w-full rounded-lg bg-[#fff] py-1.5 text-sm font-bold text-[#111] active:scale-95">
+        {copied ? 'Copiata ✓' : 'Copia didascalia'}
+      </button>
     </div>
   )
 }
