@@ -1,4 +1,4 @@
-import { BarChart3, ChevronRight, RotateCcw, ShieldCheck, Trash2, Undo2, UserRound } from 'lucide-react'
+import { BarChart3, Clapperboard, ChevronRight, RotateCcw, ShieldCheck, Trash2, Undo2, UserRound } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { AccountActions, AccountCard } from '../components/AccountCard'
 import { InstallCard } from '../components/InstallCard'
@@ -67,6 +67,17 @@ export function ProfilePage() {
         >
           <span className="flex items-center gap-2">
             <BarChart3 className="size-5" /> Statistiche dell'app
+          </span>
+          <ChevronRight className="size-5" />
+        </a>
+      )}
+      {isAdmin && (
+        <a
+          href={routeHref('studio')}
+          className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-rose-500 to-indigo-500 p-4 font-semibold text-[#fff] shadow-sm"
+        >
+          <span className="flex items-center gap-2">
+            <Clapperboard className="size-5" /> Studio: video per Instagram e TikTok
           </span>
           <ChevronRight className="size-5" />
         </a>

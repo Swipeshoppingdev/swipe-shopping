@@ -19,6 +19,7 @@ const PAGES = {
   OutfitPage: () => import('./pages/OutfitPage').then((m) => ({ default: m.OutfitPage })),
   PollPage: () => import('./pages/PollPage').then((m) => ({ default: m.PollPage })),
   SantaPage: () => import('./pages/SantaPage').then((m) => ({ default: m.SantaPage })),
+  StudioPage: () => import('./pages/StudioPage').then((m) => ({ default: m.StudioPage })),
   SwipeTogetherPage: () => import('./pages/SwipeTogetherPage').then((m) => ({ default: m.SwipeTogetherPage })),
   FiltersPage: () => import('./pages/FiltersPage').then((m) => ({ default: m.FiltersPage })),
   PrivacyPage: () => import('./pages/PrivacyPage').then((m) => ({ default: m.PrivacyPage })),
@@ -34,6 +35,7 @@ const ChatPage = lazy(PAGES.ChatPage)
 const OutfitPage = lazy(PAGES.OutfitPage)
 const PollPage = lazy(PAGES.PollPage)
 const SantaPage = lazy(PAGES.SantaPage)
+const StudioPage = lazy(PAGES.StudioPage)
 const SwipeTogetherPage = lazy(PAGES.SwipeTogetherPage)
 const FiltersPage = lazy(PAGES.FiltersPage)
 const PrivacyPage = lazy(PAGES.PrivacyPage)
@@ -75,6 +77,7 @@ export default function App() {
         {route === 'segreto' && <SantaPage key={hash} />}
         {route === 'chat' && <ChatPage key={hash} />}
         {route === 'outfit' && <OutfitPage />}
+        {route === 'studio' && <StudioPage />}
         </Suspense>
         {/* Spazio per la barra in basso: un elemento vero, perché Safari ignora il padding in fondo ai contenitori che scorrono. */}
         {!isDiscover && <div aria-hidden className="h-[calc(6rem+env(safe-area-inset-bottom))] shrink-0" />}

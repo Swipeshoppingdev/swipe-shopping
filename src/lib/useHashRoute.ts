@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 /** Routing via hash: funziona su qualsiasi hosting statico e dentro Capacitor. */
-export const ROUTES = ['scopri', 'preferiti', 'filtri', 'profilo', 'privacy', 'admin', 'lista', 'amici', 'u', 'sondaggio', 'regalo', 'insieme', 'segreto', 'chat', 'outfit'] as const
+export const ROUTES = ['scopri', 'preferiti', 'filtri', 'profilo', 'privacy', 'admin', 'lista', 'amici', 'u', 'sondaggio', 'regalo', 'insieme', 'segreto', 'chat', 'outfit', 'studio'] as const
 export type Route = (typeof ROUTES)[number]
 
 const parse = (hash: string): Route => {
