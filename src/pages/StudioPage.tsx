@@ -51,7 +51,7 @@ export function StudioPage() {
   const auth = useAuth()
   if (!auth.ready) return null
   if (auth.user?.email?.toLowerCase() !== ADMIN_EMAIL) {
-    return <p className="py-16 text-center text-sm text-neutral-500">Questa pagina è riservata.</p>
+    return <p className="py-16 text-center text-sm text-[#737373]">Questa pagina è riservata.</p>
   }
   return <Studio />
 }
@@ -141,14 +141,14 @@ function Studio() {
   const current = slides[playing ? step : format === 'swipe' ? 0 : Math.min(1, slides.length - 1)]
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black">
+    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-[#000]">
       {/* Il palco: 9:16, grande quanto lo schermo del telefono */}
       <div
-        className="relative h-full max-h-[calc(100vw*16/9)] w-full max-w-[calc(100dvh*9/16)] overflow-hidden bg-gradient-to-b from-[#1a0b14] via-[#14080f] to-black text-white"
+        className="relative h-full max-h-[calc(100vw*16/9)] w-full max-w-[calc(100dvh*9/16)] overflow-hidden bg-gradient-to-b from-[#1a0b14] via-[#14080f] to-[#000] text-[#fff]"
         onClick={() => playing && stop()}
       >
-        <div className="pointer-events-none absolute -top-32 -left-24 size-96 rounded-full bg-rose-500/25 blur-3xl" />
-        <div className="pointer-events-none absolute -right-24 -bottom-32 size-96 rounded-full bg-indigo-500/25 blur-3xl" />
+        <div className="pointer-events-none absolute -top-32 -left-24 size-96 rounded-full bg-[#f43f5e]/25 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 -bottom-32 size-96 rounded-full bg-[#6366f1]/25 blur-3xl" />
         <AnimatePresence mode="wait">
           <motion.div
             key={`${format}-${variant}-${playing ? step : 'preview'}`}
@@ -164,21 +164,21 @@ function Studio() {
         {playing && step < slides.length - 1 && (
           <div className="absolute inset-x-6 top-[max(1rem,env(safe-area-inset-top))] flex gap-1">
             {slides.map((_, i) => (
-              <div key={i} className={`h-1 flex-1 rounded-full ${i <= step ? 'bg-white/90' : 'bg-white/25'}`} />
+              <div key={i} className={`h-1 flex-1 rounded-full ${i <= step ? 'bg-[#fff]/90' : 'bg-[#fff]/25'}`} />
             ))}
           </div>
         )}
       </div>
 
       {!playing && (
-        <div className="absolute inset-x-0 bottom-0 space-y-3 bg-gradient-to-t from-black via-black/90 to-transparent p-4 pt-10 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+        <div className="absolute inset-x-0 bottom-0 space-y-3 bg-gradient-to-t from-[#000] via-[#000]/90 to-transparent p-4 pt-10 pb-[calc(1rem+env(safe-area-inset-bottom))]">
           <div className="flex flex-wrap justify-center gap-2">
             {FORMATS.map((f) => (
               <button
                 key={f.id}
                 type="button"
                 onClick={() => setFormat(f.id)}
-                className={`rounded-full px-3 py-1.5 text-sm font-semibold ${format === f.id ? 'bg-white text-black' : 'bg-white/15 text-white'}`}
+                className={`rounded-full px-3 py-1.5 text-sm font-semibold ${format === f.id ? 'bg-[#fff] text-[#111]' : 'bg-[#fff]/15 text-[#fff]'}`}
               >
                 {f.label}
               </button>
@@ -186,25 +186,25 @@ function Studio() {
           </div>
           <div className="flex items-center justify-center gap-2">
             {format !== 'offerte' && format !== 'swipe' && (
-              <div className="flex rounded-full bg-white/15 p-1 text-sm font-semibold">
+              <div className="flex rounded-full bg-[#fff]/15 p-1 text-sm font-semibold">
                 {(['donna', 'uomo'] as const).map((g) => (
-                  <button key={g} type="button" onClick={() => setGender(g)} className={`rounded-full px-3 py-1 capitalize ${gender === g ? 'bg-white text-black' : 'text-white'}`}>
+                  <button key={g} type="button" onClick={() => setGender(g)} className={`rounded-full px-3 py-1 capitalize ${gender === g ? 'bg-[#fff] text-[#111]' : 'text-[#fff]'}`}>
                     {g}
                   </button>
                 ))}
               </div>
             )}
-            <button type="button" onClick={() => setVariant((v) => v + 1)} className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white">
+            <button type="button" onClick={() => setVariant((v) => v + 1)} className="inline-flex items-center gap-1.5 rounded-full bg-[#fff]/15 px-4 py-2 text-sm font-semibold text-[#fff]">
               <RefreshCw className="size-4" /> Altri
             </button>
-            <button type="button" onClick={start} disabled={!slides.length} className="inline-flex items-center gap-1.5 rounded-full bg-rose-500 px-5 py-2 text-sm font-bold text-white disabled:opacity-40">
+            <button type="button" onClick={start} disabled={!slides.length} className="inline-flex items-center gap-1.5 rounded-full bg-[#f43f5e] px-5 py-2 text-sm font-bold text-[#fff] disabled:opacity-40">
               <Play className="size-4 fill-current" /> Avvia
             </button>
-            <a href={routeHref('profilo')} aria-label="Chiudi Studio" className="grid size-9 place-items-center rounded-full bg-white/15 text-white">
+            <a href={routeHref('profilo')} aria-label="Chiudi Studio" className="grid size-9 place-items-center rounded-full bg-[#fff]/15 text-[#fff]">
               <X className="size-5" />
             </a>
           </div>
-          <p className="text-center text-xs text-white/60">
+          <p className="text-center text-xs text-[#fff]/60">
             Avvia la registrazione schermo, poi tocca Avvia. Tocca il video per fermarlo. Contenuti nuovi ogni giorno.
           </p>
         </div>
@@ -216,9 +216,9 @@ function Studio() {
 function Title({ kicker, title, sub }: { kicker: string; title: string; sub?: string }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-3 px-8 text-center">
-      <p className="text-sm font-bold tracking-[0.3em] text-rose-400 uppercase">{kicker}</p>
+      <p className="text-sm font-bold tracking-[0.3em] text-[#fb7185] uppercase">{kicker}</p>
       <h1 className="text-5xl leading-none font-black tracking-tight">{title}</h1>
-      {sub && <p className="text-base text-white/70">{sub}</p>}
+      {sub && <p className="text-base text-[#fff]/70">{sub}</p>}
       <Logo className="mt-6 opacity-80" />
     </div>
   )
@@ -227,7 +227,7 @@ function Title({ kicker, title, sub }: { kicker: string; title: string; sub?: st
 function Logo({ className = '' }: { className?: string }) {
   return (
     <p className={`text-2xl font-black tracking-tight ${className}`}>
-      Swipe<span className="text-rose-500">Shopping</span>
+      Swipe<span className="text-[#f43f5e]">Shopping</span>
     </p>
   )
 }
@@ -235,11 +235,11 @@ function Logo({ className = '' }: { className?: string }) {
 function Outro({ line }: { line: string }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
-      <img src="icons/icon-512.png" alt="" className="size-24 rounded-3xl shadow-2xl shadow-rose-500/30" />
-      <p className="text-lg text-white/80">{line}</p>
+      <img src="icons/icon-512.png" alt="" className="size-24 rounded-3xl shadow-2xl shadow-[#f43f5e]/30" />
+      <p className="text-lg text-[#fff]/80">{line}</p>
       <Logo className="text-4xl" />
-      <p className="rounded-full bg-white px-5 py-2 text-lg font-bold text-black">swipeshopping.app</p>
-      <p className="text-sm text-white/60">Link in bio · gratis, senza registrazione</p>
+      <p className="rounded-full bg-[#fff] px-5 py-2 text-lg font-bold text-[#111]">swipeshopping.app</p>
+      <p className="text-sm text-[#fff]/60">Link in bio · gratis, senza registrazione</p>
     </div>
   )
 }
@@ -253,7 +253,7 @@ function Price({ product, big }: { product: Product; big?: boolean }) {
         {fp.from ? 'da ' : ''}
         {formatPrice(fp.price)}
       </span>
-      {fp.originalPrice && <span className={`${big ? 'text-xl' : 'text-sm'} text-white/50 line-through`}>{formatPrice(fp.originalPrice)}</span>}
+      {fp.originalPrice && <span className={`${big ? 'text-xl' : 'text-sm'} text-[#fff]/50 line-through`}>{formatPrice(fp.originalPrice)}</span>}
     </div>
   )
 }
@@ -262,7 +262,7 @@ function DealSlide({ product, rank }: { product: Product; rank: number }) {
   const pct = freshPrice(product)?.discountPct
   return (
     <div className="flex flex-1 flex-col justify-center gap-5 px-7">
-      <p className="text-6xl font-black text-white/15">#{rank}</p>
+      <p className="text-6xl font-black text-[#fff]/15">#{rank}</p>
       <div className="relative">
         <ProductImage product={product} eager className="aspect-square w-full overflow-hidden rounded-3xl" />
         {pct && (
@@ -270,14 +270,14 @@ function DealSlide({ product, rank }: { product: Product; rank: number }) {
             initial={{ scale: 0, rotate: -20 }}
             animate={{ scale: 1, rotate: -8 }}
             transition={{ delay: 0.4, type: 'spring', stiffness: 260, damping: 14 }}
-            className="absolute -top-4 -right-3 rounded-2xl bg-rose-500 px-4 py-2 text-3xl font-black shadow-xl"
+            className="absolute -top-4 -right-3 rounded-2xl bg-[#f43f5e] px-4 py-2 text-3xl font-black shadow-xl"
           >
             -{pct}%
           </motion.span>
         )}
       </div>
       <div className="space-y-1">
-        <p className="text-sm font-bold tracking-widest text-rose-400 uppercase">{product.brand}</p>
+        <p className="text-sm font-bold tracking-widest text-[#fb7185] uppercase">{product.brand}</p>
         <p className="line-clamp-2 text-xl font-semibold">{product.title}</p>
         <Price product={product} big />
       </div>
@@ -299,7 +299,7 @@ function OutfitGrid({ outfit, shown = outfit.items.length }: { outfit: Outfit; s
         >
           <ProductImage product={p} eager className="aspect-square w-full overflow-hidden rounded-2xl" />
           {i < shown && freshPrice(p) && (
-            <span className="absolute bottom-1.5 left-1.5 rounded-full bg-black/80 px-2 py-0.5 text-xs font-bold">{formatPrice(freshPrice(p)!.price)}</span>
+            <span className="absolute bottom-1.5 left-1.5 rounded-full bg-[#000]/80 px-2 py-0.5 text-xs font-bold">{formatPrice(freshPrice(p)!.price)}</span>
           )}
         </motion.div>
       ))}
@@ -315,13 +315,13 @@ function OutfitBuild({ outfit, shown, total }: { outfit: Outfit; shown: number; 
       <OutfitGrid outfit={outfit} shown={shown} />
       {total ? (
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center">
-          <p className="text-sm font-bold tracking-[0.3em] text-rose-400 uppercase">Totale look</p>
+          <p className="text-sm font-bold tracking-[0.3em] text-[#fb7185] uppercase">Totale look</p>
           <p className="text-6xl font-black">{sum !== null ? formatPrice(sum) : ''}</p>
         </motion.div>
       ) : (
         last && (
           <div className="min-h-24 text-center">
-            <p className="text-sm font-bold tracking-widest text-rose-400 uppercase">{last.brand}</p>
+            <p className="text-sm font-bold tracking-widest text-[#fb7185] uppercase">{last.brand}</p>
             <p className="line-clamp-2 text-lg font-semibold">{last.title}</p>
           </div>
         )
@@ -339,9 +339,9 @@ function Versus({ a, b }: { a: Outfit; b: Outfit }) {
           initial={{ x: i ? 80 : -80, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: i * 0.5, type: 'spring', stiffness: 160, damping: 18 }}
-          className="relative rounded-3xl bg-white/5 p-2 ring-1 ring-white/10"
+          className="relative rounded-3xl bg-[#fff]/5 p-2 ring-1 ring-[#fff]/10"
         >
-          <span className={`absolute -top-3 z-10 grid size-12 place-items-center rounded-full text-2xl font-black shadow-xl ${i ? 'right-3 bg-indigo-500' : 'left-3 bg-rose-500'}`}>
+          <span className={`absolute -top-3 z-10 grid size-12 place-items-center rounded-full text-2xl font-black shadow-xl ${i ? 'right-3 bg-[#6366f1]' : 'left-3 bg-[#f43f5e]'}`}>
             {i ? 'B' : 'A'}
           </span>
           <div className="grid grid-cols-4 gap-1.5">
@@ -365,11 +365,11 @@ function AutoSwipe({ product, yes }: { product: Product; yes: boolean }) {
         initial={{ x: 0, rotate: 0, opacity: 1 }}
         animate={{ x: [0, 0, dir * 40, dir * 520], rotate: [0, 0, dir * 4, dir * 24], opacity: [1, 1, 1, 0] }}
         transition={{ duration: 1.6, times: [0, 0.45, 0.7, 1], ease: 'easeIn' }}
-        className="relative overflow-hidden rounded-3xl bg-white text-neutral-900 shadow-2xl"
+        className="relative overflow-hidden rounded-3xl bg-[#fff] text-[#111] shadow-2xl"
       >
         <ProductImage product={product} eager className="aspect-[4/5] w-full" />
         <div className="space-y-0.5 p-4">
-          <p className="text-[11px] font-semibold tracking-wide text-neutral-500 uppercase">{product.brand}</p>
+          <p className="text-[11px] font-semibold tracking-wide text-[#737373] uppercase">{product.brand}</p>
           <p className="line-clamp-1 font-semibold">{product.title}</p>
           {freshPrice(product) && <p className="text-lg font-black">{formatPrice(freshPrice(product)!.price)}</p>}
         </div>
@@ -378,17 +378,17 @@ function AutoSwipe({ product, yes }: { product: Product; yes: boolean }) {
           animate={{ opacity: [0, 0, 1] }}
           transition={{ duration: 1.1, times: [0, 0.6, 1] }}
           className={`absolute top-6 rounded-xl border-4 px-3 py-1 text-3xl font-black ${
-            yes ? 'left-6 -rotate-12 border-emerald-500 text-emerald-500' : 'right-6 rotate-12 border-rose-500 text-rose-500'
+            yes ? 'left-6 -rotate-12 border-[#10b981] text-[#10b981]' : 'right-6 rotate-12 border-[#f43f5e] text-[#f43f5e]'
           }`}
         >
           {yes ? 'SÌ' : 'NO'}
         </motion.span>
       </motion.div>
       <div className="mt-6 flex justify-center gap-6">
-        <span className={`grid size-16 place-items-center rounded-full bg-white/10 text-3xl font-black ${!yes ? 'ring-4 ring-rose-500' : ''}`}>
+        <span className={`grid size-16 place-items-center rounded-full bg-[#fff]/10 text-3xl font-black ${!yes ? 'ring-4 ring-[#f43f5e]' : ''}`}>
           <X className="size-8" />
         </span>
-        <span className={`grid size-16 place-items-center rounded-full bg-rose-500 ${yes ? 'ring-4 ring-white' : ''}`}>
+        <span className={`grid size-16 place-items-center rounded-full bg-[#f43f5e] ${yes ? 'ring-4 ring-[#fff]' : ''}`}>
           <Heart className="size-8 fill-current" />
         </span>
       </div>
