@@ -206,8 +206,18 @@ export function outfitTotal(items: Product[]) {
   return total
 }
 
-/** I capi che possono entrare negli outfit di un genere, divisi per categoria. */
+/** I capi che possono entrare negli outfit di un genere, divisi per categoria (calcolati una volta per catalogo). */
 function outfitPool(products: Product[], gender: 'uomo' | 'donna', cold: boolean) {
+  let byKey = pools.get(products)
+  if (!byKey) pools.set(products, (byKey = new Map()))
+  const key = `${gender}:${cold}`
+  let pool = byKey.get(key)
+  if (!pool) byKey.set(key, (pool = buildPool(products, gender, cold)))
+  return pool
+}
+const pools = new WeakMap<Product[], Map<string, Map<CategoryId, Product[]>>>()
+
+function buildPool(products: Product[], gender: 'uomo' | 'donna', cold: boolean) {
   const offSeason = cold ? SUMMER_ONLY : WINTER_ONLY
   const pool = new Map<CategoryId, Product[]>()
   const seenModel = new Set<string>()
@@ -230,8 +240,8 @@ function outfitPool(products: Product[], gender: 'uomo' | 'donna', cold: boolean
 function colorFits(p: Product, others: Product[]) {
   const color = mainColor(p)
   if (!color) return false
-  const colors = others.map((o) => mainColor(o)!)
-  return NEUTRAL.has(color) || (!colors.some((c) => !NEUTRAL.has(c)) && !colors.includes(color))
+  const colors = others.map((o) => mainColor(o))
+  return NEUTRAL.has(color) || (colors.every((c) => c !== undefined && NEUTRAL.has(c)) && !colors.includes(color))
 }
 
 /**
@@ -250,6 +260,57 @@ export function swapOptions(outfit: Outfit, index: number, products: Product[], 
   )
   const rand = rng(hash(item.id))
   return list.map((p) => [rand(), p] as const).sort((a, b) => a[0] - b[0]).map(([, p]) => p)
+}
+
+/** Per "Completa il look": prima gli stili più facili da indossare. */
+const LOOK_ORDER: OutfitStyle[] = ['casual', 'smart', 'weekend', 'elegante', 'ufficio', 'vestito', 'serata', 'sportivo', 'nero']
+
+/**
+ * "Completa il look": un outfit costruito attorno a un capo della Moda, con gli stessi abbinamenti
+ * degli outfit (colori, stagione, stile). `variant` sceglie un'altra combinazione. Null se il capo non si presta.
+ */
+export function completeLook(item: Product, products: Product[], gender: 'uomo' | 'donna', variant = 0, month = new Date().getMonth()): Outfit | null {
+  // Un capo senza colore riconosciuto si abbina solo a capi neutri (vedi colorFits).
+  if (NEVER.test(item.title)) return null
+  const cold = isColdSeason(month)
+  const pool = outfitPool(products, gender, cold)
+  const rand = rng(hash(`${item.id}:${variant}`))
+  const all = recipes(cold).filter((r) => r.genders.includes(gender))
+  const fitting = LOOK_ORDER.flatMap((st) => all.filter((r) => r.style === st)).filter((r) =>
+    r.slots.some((sl) => sl.cats.includes(item.category) && (!sl.fit || sl.fit(item))) && !(DRESSY.has(r.style) && NOT_ELEGANT.test(item.title)),
+  )
+  if (!fitting.length) return null
+  // Più tentativi: stili diversi a turno, poi combinazioni diverse dello stesso stile.
+  for (let attempt = 0; attempt < 30; attempt++) {
+    const recipe = fitting[(variant + attempt) % fitting.length]
+    const mine = recipe.slots.findIndex((sl) => sl.cats.includes(item.category) && (!sl.fit || sl.fit(item)))
+    const items: Product[] = [item]
+    const taken = new Set([modelKey(item)])
+    let ok = true
+    for (const [n, slot] of recipe.slots.entries()) {
+      if (n === mine) continue
+      if (slot.optional !== undefined && rand() > slot.optional) continue
+      const list = slot.cats.flatMap((c) => pool.get(c) ?? [])
+      let found: Product | undefined
+      for (let t = 0; t < 40 && list.length; t++) {
+        const p = list[Math.floor(rand() * list.length)]
+        if (taken.has(modelKey(p)) || (slot.fit && !slot.fit(p)) || (DRESSY.has(recipe.style) && NOT_ELEGANT.test(p.title)) || !colorFits(p, items)) continue
+        found = p
+        break
+      }
+      if (found) {
+        items.push(found)
+        taken.add(modelKey(found))
+      } else if (slot.optional === undefined) ok = false
+    }
+    if (!ok || items.length < 3) continue
+    if (items.some((i) => i.category === 'cappotti') && items.some((i) => i.category === 'sandali')) continue
+    // Nell'ordine dell'outfit: il capo scelto al suo posto.
+    const order = (p: Product) => recipe.slots.findIndex((sl) => sl.cats.includes(p.category))
+    items.sort((a, b) => order(a) - order(b))
+    return { id: outfitId(items.map((i) => i.id)), gender, style: recipe.style, items }
+  }
+  return null
 }
 
 /**

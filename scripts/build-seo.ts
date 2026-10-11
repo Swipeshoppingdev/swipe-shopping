@@ -266,7 +266,7 @@ footer{max-width:1100px;margin:0 auto;padding:16px;color:var(--muted);font-size:
 .pimg{background:#fff;border-radius:20px;border:1px solid var(--line);aspect-ratio:1;display:flex}.pimg img{width:100%;height:100%;object-fit:contain;padding:20px}
 .pinfo h1{font-size:24px}.big{font-size:26px;font-weight:800}.was{color:var(--muted);text-decoration:line-through;margin-left:8px;font-weight:400;font-size:16px}
 .btns{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}.btns a{flex:1;min-width:150px;text-align:center}.ghost{border:1px solid var(--line);background:var(--card);text-decoration:none;font-weight:600;padding:10px 18px;border-radius:999px;font-size:14px}
-.feat{padding-left:20px;margin:8px 0}.feat li{margin:4px 0}.meta{color:var(--muted);font-size:14px;margin:0}`
+.day h2{font-size:18px;margin:18px 0 8px}.feat{padding-left:20px;margin:8px 0}.feat li{margin:4px 0}.meta{color:var(--muted);font-size:14px;margin:0}`
 
 /** Briciole di pane: Home › Sezione › Pagina, visibili e per Google (BreadcrumbList). */
 type Crumb = { name: string; path: string }
@@ -338,7 +338,7 @@ function layout(opts: {
 <body>
 <header><a class="logo" href="/">Swipe<span>Shopping</span></a><a class="cta" href="/${opts.section === 'moda' ? '' : `?sezione=${opts.section}`}#/scopri">Apri l'app</a></header>
 <main>${nav}${opts.body}</main>
-<footer><p>${SECTIONS.map((x) => `<a href="/${x.id}/">${x.label}</a>`).join(' · ')} · <a href="/moda/outfit/">Outfit</a></p>I link verso i negozi sono link di affiliazione: se acquisti, potremmo ricevere una commissione senza costi aggiuntivi per te. In qualità di Affiliato Amazon, ricevo un guadagno dagli acquisti idonei. Prezzi e disponibilità sono indicativi e possono cambiare: fa fede quello mostrato dal negozio al momento dell'acquisto. · <a href="/#/privacy">Privacy e termini</a></footer>
+<footer><p>${SECTIONS.map((x) => `<a href="/${x.id}/">${x.label}</a>`).join(' · ')} · <a href="/moda/outfit/">Outfit</a> · <a href="/outfit-del-giorno/">Outfit del giorno</a></p>I link verso i negozi sono link di affiliazione: se acquisti, potremmo ricevere una commissione senza costi aggiuntivi per te. In qualità di Affiliato Amazon, ricevo un guadagno dagli acquisti idonei. Prezzi e disponibilità sono indicativi e possono cambiare: fa fede quello mostrato dal negozio al momento dell'acquisto. · <a href="/#/privacy">Privacy e termini</a></footer>
 </body>
 </html>
 `
@@ -574,9 +574,64 @@ for (const section of UNIVERSES) {
       section: 'moda',
       crumbs: [sectionCrumb('moda'), { name: 'Outfit', path: '/moda/outfit/' }],
       body: `<h1>Idee outfit</h1><p class="intro">Look completi da uomo e da donna, composti con capi di marca abbinati per colore e stagione. Scegli uno stile, oppure apri l'app e scorri gli outfit uno alla volta: se un capo non ti convince, lo cambi con un tocco.</p>
-<nav class="links">${(['donna', 'uomo'] as const)
+<p><a class="cta" href="/outfit-del-giorno/">Outfit del giorno</a></p><nav class="links">${(['donna', 'uomo'] as const)
         .map((g) => `<h2>Outfit ${g}</h2><ul>${outfitPages.filter((pg) => pg.slug.startsWith(`outfit-${g}-`)).map((pg) => `<li><a href="${pathOf(pg)}">${esc(pg.h1)}</a></li>`).join('')}</ul>`)
         .join('')}</nav><p style="margin-top:20px"><a class="cta" href="/#/outfit">Apri gli outfit nell'app</a></p>`,
+    }),
+  )
+}
+
+// Outfit del giorno: uno da donna e uno da uomo, diversi ogni giorno. Dentro ci sono anche quelli di domani:
+// se il sito non si aggiorna dopo mezzanotte, la pagina mostra comunque quello giusto (data italiana).
+const romeDay = (t: number) => new Date(t).toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' })
+const dayNumber = (d: string) => Math.round(Date.parse(`${d}T12:00:00Z`) / 86_400_000)
+{
+  const days = [romeDay(now), romeDay(now + 86_400_000)]
+  const pool = Object.fromEntries(
+    (['donna', 'uomo'] as const).map((g) => [g, buildOutfits(moda, g).filter((o) => o.style !== 'sportivo' && outfitTotal(o.items) !== null)]),
+  ) as Record<'donna' | 'uomo', Outfit[]>
+  const pickFor = (g: 'donna' | 'uomo', d: string) => {
+    const list = pool[g]
+    return list.length ? list[(dayNumber(d) * 7919 + (g === 'uomo' ? 104729 : 0)) % list.length] : null
+  }
+  const label = (d: string) => new Date(`${d}T12:00:00Z`).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' })
+  const blocks = days
+    .map((d, i) => {
+      const looks = (['donna', 'uomo'] as const).flatMap((g) => {
+        const o = pickFor(g, d)
+        return o ? [`<h2>${g === 'donna' ? 'Per lei' : 'Per lui'}</h2><ul class="grid outfits">${outfitCard(o)}</ul>`] : []
+      })
+      return `<section class="day" data-day="${d}"${i ? ' hidden' : ''}><p class="note">Outfit del giorno · ${label(d)}</p>${looks.join('')}</section>`
+    })
+    .join('')
+  const first = pickFor('donna', days[0]) ?? pickFor('uomo', days[0])
+  mkdirSync(new URL('outfit-del-giorno/', dist), { recursive: true })
+  writeFileSync(
+    new URL('outfit-del-giorno/index.html', dist),
+    layout({
+      title: 'Outfit del giorno: un look da donna e uno da uomo ogni giorno | Swipe Shopping',
+      description: "Ogni giorno un outfit completo da donna e uno da uomo, con capi di marca abbinati, prezzi aggiornati e link ai negozi. Torna domani per quello nuovo.",
+      path: '/outfit-del-giorno/',
+      section: 'moda',
+      image: first?.items[0]?.imageUrl,
+      crumbs: [sectionCrumb('moda'), { name: 'Outfit', path: '/moda/outfit/' }, { name: 'Outfit del giorno', path: '/outfit-del-giorno/' }],
+      body: `<h1>Outfit del giorno</h1><p class="intro">Ogni giorno un look completo da donna e uno da uomo, con capi di marca abbinati per colore e stagione.</p>
+<p class="btns" style="max-width:520px"><a class="cta" id="share" href="https://swipeshopping.app/outfit-del-giorno/">Condividi</a><a class="ghost" href="/#/outfit">Altri outfit nell'app</a></p>
+${blocks}
+<script>
+(function () {
+  var today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' })
+  var days = document.querySelectorAll('.day')
+  var match = Array.prototype.some.call(days, function (s) { return s.getAttribute('data-day') === today })
+  if (match) days.forEach(function (s) { s.hidden = s.getAttribute('data-day') !== today })
+  var b = document.getElementById('share')
+  b.addEventListener('click', function (e) {
+    if (!navigator.share) return
+    e.preventDefault()
+    navigator.share({ title: 'Outfit del giorno', text: 'Guarda l’outfit di oggi su Swipe Shopping', url: b.href }).catch(function () {})
+  })
+})()
+</script>`,
     }),
   )
 }
@@ -600,6 +655,7 @@ const urls: { path: string; images: string[]; product?: Product }[] = [
   { path: '/', images: [] },
   ...UNIVERSES.map((u) => ({ path: `/${u}/`, images: [] })),
   { path: '/moda/outfit/', images: [] },
+  { path: '/outfit-del-giorno/', images: [] },
   ...pages.map((pg) => ({ path: pathOf(pg), images: [] })),
   ...[...paged.values()].map((p) => ({ path: productPath(p), images: [p.imageUrl!], product: p })),
 ]

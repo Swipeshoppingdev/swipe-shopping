@@ -1,4 +1,4 @@
-import { Check, ChevronDown, Cookie, Cpu, Gift, LayoutGrid, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun } from 'lucide-react'
+import { CalendarDays, Check, ChevronDown, Cookie, Cpu, Gift, LayoutGrid, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun } from 'lucide-react'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { APP_NAME } from '../config/app'
 import { SECTIONS, sectionOf, type Universe } from '../config/categories'
@@ -150,6 +150,14 @@ function SectionMenu() {
               <span className="block truncate text-xs text-neutral-500">Look completi pronti, dalle scarpe alla giacca</span>
             </span>
             {onOutfit && <Check className="size-4 shrink-0" />}
+          </a>
+          {/* Pagina pubblica che cambia ogni giorno, da condividere sui social. */}
+          <a
+            href="https://swipeshopping.app/outfit-del-giorno/"
+            onClick={() => setOpen(false)}
+            className="mb-1 flex items-center gap-2 rounded-xl px-2.5 py-2 text-sm font-medium text-[#4f46e5] active:bg-neutral-100"
+          >
+            <CalendarDays className="size-4" /> Outfit del giorno
           </a>
           {SECTIONS.map((s) => {
             const SIcon = ICONS[s.id]

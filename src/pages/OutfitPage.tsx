@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
 import { Check, Heart, RefreshCw, Send, Trash2, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { OUTFITS_SAVED_EVENT } from '../components/CompleteLook'
 import { PriceRange } from '../components/PriceRange'
 import { PriceTag } from '../components/PriceTag'
 import { ProductImage } from '../components/ProductImage'
@@ -72,6 +73,11 @@ export function OutfitPage() {
   const [dir, setDir] = useState(1)
   // Le scelte fatte in questa visita, per il tasto "annulla".
   const [history, setHistory] = useState<{ id: string; yes: boolean }[]>([])
+  useEffect(() => {
+    const reload = () => setSavedState(load<SavedOutfit[]>('outfitsSaved', []))
+    window.addEventListener(OUTFITS_SAVED_EVENT, reload)
+    return () => window.removeEventListener(OUTFITS_SAVED_EVENT, reload)
+  }, [])
   const setSaved = (s: SavedOutfit[]) => {
     setSavedState(s)
     save('outfitsSaved', s)
