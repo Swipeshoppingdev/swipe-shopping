@@ -10,13 +10,18 @@ import { StoreLink } from './StoreLink'
 import { UndoMenu } from './UndoMenu'
 import { SwipeCard, type SwipeDir } from './SwipeCard'
 
-const preloaded = new Set<string>()
+// Foto delle prossime carte scaricate e già decodificate in anticipo: quando una carta arriva
+// in cima la foto c'è già e lo swipe non scatta. Si tengono vive solo le ultime, per la memoria.
+const AHEAD = 8
+const preloaded = new Map<string, HTMLImageElement>()
 function preload(url?: string) {
   if (!url || preloaded.has(url)) return
-  preloaded.add(url)
   const img = new Image()
   img.decoding = 'async'
   img.src = url
+  img.decode?.().catch(() => {})
+  preloaded.set(url, img)
+  if (preloaded.size > 40) preloaded.delete(preloaded.keys().next().value!)
 }
 
 export function SwipeDeck() {
@@ -43,7 +48,15 @@ export function SwipeDeck() {
   }, [top])
 
   useEffect(() => {
-    deck.slice(1, 6).forEach((p) => preload(productImageUrl(p) ?? undefined))
+    // Prima le carte più vicine; il resto quando il telefono è libero, per non rallentare quella in cima.
+    deck.slice(1, 3).forEach((p) => preload(productImageUrl(p) ?? undefined))
+    const later = () => deck.slice(3, 1 + AHEAD).forEach((p) => preload(productImageUrl(p) ?? undefined))
+    if ('requestIdleCallback' in window) {
+      const id = requestIdleCallback(later, { timeout: 800 })
+      return () => cancelIdleCallback(id)
+    }
+    const t = setTimeout(later, 300)
+    return () => clearTimeout(t)
   }, [deck])
 
   useEffect(() => {

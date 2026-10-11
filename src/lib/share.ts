@@ -1,10 +1,15 @@
 import type { Product } from '../types/product'
 import { track } from './analytics'
+import { shareCode } from './shareCode'
 
 const SITE = 'https://swipeshopping.app/'
 
-/** Link all'app che apre direttamente quel prodotto (non al negozio: così chi lo riceve scopre l'app). */
-export const productShareUrl = (p: Product) => `${SITE}#/p/${encodeURIComponent(p.id)}`
+/**
+ * Link all'app che apre direttamente quel prodotto (non al negozio: così chi lo riceve scopre l'app).
+ * Passa da /s/<codice>/, una paginetta con foto, nome e prezzo per l'anteprima in WhatsApp & co.
+ * che poi apre l'app su #/p/<id>.
+ */
+export const productShareUrl = (p: Product) => `${SITE}s/${encodeURIComponent(shareCode(p.id))}/`
 
 /** Usa il pannello di condivisione del telefono; dove non c'è copia il link. Ritorna 'copied' se ha copiato. */
 export async function shareProduct(p: Product): Promise<'shared' | 'copied' | 'cancelled'> {

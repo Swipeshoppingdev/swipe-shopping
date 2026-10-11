@@ -8,6 +8,7 @@ import { SOCIAL_LINKS } from '../src/config/app.ts'
 import { DETAIL_SHARDS, type ProductDetails } from '../src/lib/details.ts'
 import { productUrl, STORES } from '../src/config/stores.ts'
 import { STYLE_LABEL, buildOutfits, outfitTotal, type Outfit, type OutfitStyle } from '../src/lib/outfits.ts'
+import { shareCode } from '../src/lib/shareCode.ts'
 import type { Product } from '../src/types/product.ts'
 
 const SITE = 'https://swipeshopping.app'
@@ -583,6 +584,48 @@ for (const section of UNIVERSES) {
 
 writeFileSync(new URL('seo.css', dist), CSS.trim())
 
+// Link condivisi dall'app (/s/<codice>/): anteprima con foto, nome e prezzo in WhatsApp, Telegram, iMessage…
+// poi chi lo apre finisce nell'app su quel prodotto. Non vanno su Google (noindex, fuori dalla sitemap).
+const sharePage = (p: Product) => {
+  const pr = price(p)
+  const app = `/#/p/${encodeURIComponent(p.id)}`
+  const title = `${p.brand && !p.title.toLowerCase().startsWith(p.brand.toLowerCase()) ? `${p.brand} – ` : ''}${p.title}`
+  const desc = `${pr ? `${pr.text}${pr.off ? ` (-${pr.off}%)` : ''} su ${STORES[p.store].name} · ` : ''}Scoprilo con uno swipe su Swipe Shopping`
+  const canonical = paged.has(p.id) ? `${SITE}${productPath(p)}` : `${SITE}/`
+  return `<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(title)}</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="${canonical}">
+<meta name="description" content="${esc(desc)}">
+<meta property="og:type" content="product">
+<meta property="og:site_name" content="Swipe Shopping">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(desc)}">
+<meta property="og:url" content="${SITE}/s/${encodeURIComponent(shareCode(p.id))}/">
+<meta property="og:image" content="${esc(p.imageUrl!)}">
+<meta property="og:image:alt" content="${esc(p.title)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#f43f5e">
+<link rel="icon" type="image/png" href="/icons/favicon-64.png">
+<script>location.replace(${JSON.stringify(app)})</script>
+</head>
+<body style="font-family:system-ui,sans-serif;text-align:center;padding:40px 16px">
+<p><a href="${app}">Apri ${esc(p.title)} su Swipe Shopping</a></p>
+</body>
+</html>
+`
+}
+for (const p of products) {
+  const dir = new URL(`s/${shareCode(p.id)}/`, dist)
+  mkdirSync(dir, { recursive: true })
+  writeFileSync(new URL('index.html', dir), sharePage(p))
+}
+
 // Pagina 404 di GitHub Pages: un prodotto non più in catalogo porta comunque alle sezioni.
 writeFileSync(
   new URL('404.html', dist),
@@ -592,7 +635,13 @@ writeFileSync(
     path: '/404.html',
     section: 'moda',
     body: `<h1>Pagina non trovata</h1><p class="intro">Il prodotto potrebbe essere esaurito o non più in catalogo. Ecco dove trovare tutto il resto.</p><nav class="links">${otherSection('moda').replace('Altre sezioni', 'Sezioni')}<h2>Outfit</h2><ul><li><a href="/moda/outfit/">Idee outfit</a></li></ul></nav>`,
-  }).replace('<meta name="robots" content="index,follow,max-image-preview:large">', '<meta name="robots" content="noindex">'),
+  })
+    .replace('<meta name="robots" content="index,follow,max-image-preview:large">', '<meta name="robots" content="noindex">')
+    // Link condiviso di un prodotto che non ha più la sua paginetta: si apre comunque l'app su quel prodotto.
+    .replace(
+      '</head>',
+      `<script>(function(){var m=location.pathname.match(/^\\/s\\/([^/]+)/);if(!m)return;var c=decodeURIComponent(m[1]);var id=c.indexOf('-')>=0?c.replace('-',':'):'amazon:'+c;location.replace('/#/p/'+encodeURIComponent(id))})()</script>\n</head>`,
+    ),
 )
 
 // Sitemap con le immagini (Google Immagini porta molte visite per la moda)

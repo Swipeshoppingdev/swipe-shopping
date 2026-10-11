@@ -91,7 +91,8 @@ export function SwipeCard({
             key={photos[photo] ?? 'main'}
             product={product}
             src={isTop ? photos[photo] : undefined}
-            eager={index < 2}
+            eager={index < 3}
+            priority={isTop}
             className="size-full"
           />
         </div>

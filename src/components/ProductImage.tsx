@@ -7,11 +7,14 @@ import type { Product } from '../types/product'
 export function ProductImage({
   product,
   eager,
+  priority,
   className,
   src: srcOverride,
 }: {
   product: Product
   eager?: boolean
+  /** Foto più importante della pagina (la carta in cima): il browser la scarica per prima */
+  priority?: boolean
   className?: string
   /** Foto diversa da quella principale (galleria) */
   src?: string
@@ -33,7 +36,8 @@ export function ProductImage({
       <img
         src={src}
         alt={product.title}
-        loading={eager ? 'eager' : 'lazy'}
+        loading={eager || priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : undefined}
         decoding="async"
         draggable={false}
         onError={() => setFailed(true)}
