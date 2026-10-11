@@ -25,7 +25,18 @@ export function Header() {
           </span>
           <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{inOutfit ? 'Outfit' : sectionOf(state.mode).label}</span>
         </a>
-        <span className="w-18" aria-hidden />
+        {/* Scorciatoia sempre in vista per gli outfit; dentro Outfit resta lo spazio vuoto per tenere il logo centrato. */}
+        {inOutfit ? (
+          <span className="w-18" aria-hidden />
+        ) : (
+          <a
+            href="#/outfit"
+            aria-label="Apri gli outfit"
+            className="flex h-9 w-18 items-center justify-center gap-1 rounded-full bg-[#4f46e5] text-xs font-bold text-[#fff] active:scale-95"
+          >
+            <LayoutGrid className="size-3.5" /> Outfit
+          </a>
+        )}
         <button
           type="button"
           onClick={toggle}
@@ -120,6 +131,26 @@ function SectionMenu() {
       </button>
       {open && (
         <div role="menu" className="absolute top-12 left-0 z-30 w-72 overflow-hidden rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-neutral-200">
+          {/* In cima e in evidenza: gli outfit completi, fatti con i capi della Moda. */}
+          <a
+            href="#/outfit"
+            role="menuitemradio"
+            aria-checked={onOutfit}
+            onClick={() => setOpen(false)}
+            className="mb-1 flex w-full items-center gap-3 rounded-xl bg-[#4f46e5]/10 p-2.5 text-left ring-1 ring-[#4f46e5]/20 active:scale-[0.98]"
+          >
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#4f46e5] text-[#fff]">
+              <LayoutGrid className="size-4.5" />
+            </span>
+            <span className="min-w-0 flex-1 leading-tight">
+              <span className="flex items-center gap-1.5 font-semibold">
+                Outfit
+                {!outfitSeen && <span className="rounded-full bg-[#4f46e5] px-1.5 py-px text-[10px] font-bold uppercase text-[#fff]">Nuovo</span>}
+              </span>
+              <span className="block truncate text-xs text-neutral-500">Look completi pronti, dalle scarpe alla giacca</span>
+            </span>
+            {onOutfit && <Check className="size-4 shrink-0" />}
+          </a>
           {SECTIONS.map((s) => {
             const SIcon = ICONS[s.id]
             const active = s.id === state.mode && !onOutfit
@@ -155,28 +186,6 @@ function SectionMenu() {
                 </span>
                 {active && <Check className="size-4 shrink-0" style={{ color: s.color }} />}
               </button>
-              {/* Subito dopo la Moda: gli outfit completi, fatti con i capi della Moda. */}
-              {s.id === 'moda' && (
-                <a
-                  href="#/outfit"
-                  role="menuitemradio"
-                  aria-checked={onOutfit}
-                  onClick={() => setOpen(false)}
-                  className={`flex w-full items-center gap-3 rounded-xl p-2.5 text-left active:bg-neutral-100 ${onOutfit ? 'bg-neutral-100' : ''}`}
-                >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#4f46e5] text-[#fff]">
-                    <LayoutGrid className="size-4.5" />
-                  </span>
-                  <span className="min-w-0 flex-1 leading-tight">
-                    <span className="flex items-center gap-1.5 font-semibold">
-                      Outfit
-                      {!outfitSeen && <span className="rounded-full bg-[#4f46e5] px-1.5 py-px text-[10px] font-bold uppercase text-[#fff]">Nuovo</span>}
-                    </span>
-                    <span className="block truncate text-xs text-neutral-500">Look completi da scarpe a giacca</span>
-                  </span>
-                  {onOutfit && <Check className="size-4 shrink-0" />}
-                </a>
-              )}
               </Fragment>
             )
           })}

@@ -15,8 +15,14 @@ export interface Outfit {
   items: Product[]
 }
 
-export type OutfitStyle = 'casual' | 'elegante' | 'vestito' | 'sportivo'
-export const STYLE_LABEL: Record<OutfitStyle, string> = { casual: 'Casual', elegante: 'Elegante', vestito: 'Con il vestito', sportivo: 'Sportivo' }
+export type OutfitStyle = 'casual' | 'smart' | 'elegante' | 'vestito' | 'sportivo'
+export const STYLE_LABEL: Record<OutfitStyle, string> = {
+  casual: 'Casual',
+  smart: 'Smart casual',
+  elegante: 'Elegante',
+  vestito: 'Con il vestito',
+  sportivo: 'Sportivo',
+}
 
 /** fit: per categorie miste (nello "sportivo" ci sono anche top e reggiseni) solo i capi giusti per quel posto */
 type Slot = { cats: CategoryId[]; optional?: number; fit?: (p: Product) => boolean }
@@ -50,7 +56,7 @@ function recipes(cold: boolean): Recipe[] {
         { cats: ['pantaloni'] },
         { cats: cold ? ['scarpe_eleganti', 'stivali'] : ['scarpe_eleganti'] },
         ...(cold ? [{ cats: ['cappotti'], optional: 0.7 } satisfies Slot] : []),
-        { cats: ['cinture', 'orologi', 'borse'], optional: 0.6 },
+        { cats: ['cinture', 'orologi', 'borse', 'gioielli'], optional: 0.6 },
       ],
     },
     {
@@ -61,6 +67,18 @@ function recipes(cold: boolean): Recipe[] {
         { cats: cold ? ['stivali', 'scarpe_eleganti', 'sneakers'] : ['sandali', 'scarpe_eleganti', 'sneakers'] },
         { cats: ['borse'] },
         { cats: cold ? ['giacche', 'cappotti'] : ['giacche'], optional: cold ? 0.7 : 0.2 },
+      ],
+    },
+    {
+      // A metà tra casual ed elegante: camicia o maglione con i jeans, scarpe curate.
+      style: 'smart',
+      genders: ['uomo', 'donna'],
+      slots: [
+        { cats: cold ? ['camicie', 'maglioni'] : ['camicie'] },
+        { cats: ['jeans', 'pantaloni'] },
+        { cats: cold ? ['stivali', 'scarpe_eleganti', 'sneakers'] : ['scarpe_eleganti', 'sneakers'] },
+        { cats: cold ? ['cappotti', 'giacche'] : ['giacche'], optional: cold ? 0.7 : 0.2 },
+        { cats: ['cinture', 'orologi', 'gioielli', 'occhiali'], optional: 0.6 },
       ],
     },
     {
@@ -79,8 +97,10 @@ function recipes(cold: boolean): Recipe[] {
 /** Colori che stanno bene con tutto: ammesso al massimo un capo di un altro colore. */
 const NEUTRAL = new Set(['Nero', 'Bianco', 'Grigio', 'Beige', 'Marrone', 'Blu'])
 /** Ogni capo compare al massimo in tanti outfit */
-const MAX_USES = 2
-const MAX_PER_STYLE = 120
+const MAX_USES = 4
+const MAX_PER_STYLE = 500
+/** Quanti capi a caso si provano per un posto prima di arrendersi */
+const TRIES = 40
 
 function rng(seed: number) {
   return () => {
@@ -145,28 +165,35 @@ export function buildOutfits(products: Product[], gender: 'uomo' | 'donna', mont
     pool.set(p.category, [...(pool.get(p.category) ?? []), p])
   }
   const uses = new Map<string, number>()
+  const ids = new Set<string>()
   const outfits: Outfit[] = []
   for (const recipe of recipes(cold)) {
     if (!recipe.genders.includes(gender)) continue
     const rand = rng(hash(`${recipe.style}:${gender}`))
-    const pick = (slot: Slot, colors: string[]) => {
-      const strong = colors.filter((c) => !NEUTRAL.has(c)).length
-      const candidates = slot.cats.flatMap((c) => pool.get(c) ?? []).filter((p) => {
-        if ((uses.get(p.id) ?? 0) >= MAX_USES) return false
-        if (slot.fit && !slot.fit(p)) return false
-        if (recipe.style !== 'casual' && recipe.style !== 'sportivo' && NOT_ELEGANT.test(p.title)) return false
+    const elegant = recipe.style !== 'casual' && recipe.style !== 'sportivo'
+    // I capi adatti a ogni posto si calcolano una volta; poi se ne provano alcuni a caso (veloce anche con migliaia di capi).
+    const slotPool = recipe.slots.map((slot) =>
+      slot.cats.flatMap((c) => pool.get(c) ?? []).filter((p) => (!slot.fit || slot.fit(p)) && !(elegant && NOT_ELEGANT.test(p.title))),
+    )
+    const pick = (i: number, colors: string[]) => {
+      const list = slotPool[i]
+      if (!list.length) return undefined
+      const strong = colors.some((c) => !NEUTRAL.has(c))
+      for (let t = 0; t < TRIES; t++) {
+        const p = list[Math.floor(rand() * list.length)]
+        if ((uses.get(p.id) ?? 0) >= MAX_USES) continue
         const color = mainColor(p)!
-        return NEUTRAL.has(color) || (strong === 0 && !colors.includes(color))
-      })
-      return candidates.length ? candidates[Math.floor(rand() * candidates.length)] : undefined
+        if (NEUTRAL.has(color) || (!strong && !colors.includes(color))) return p
+      }
+      return undefined
     }
     let made = 0
     for (let attempt = 0; attempt < MAX_PER_STYLE * 3 && made < MAX_PER_STYLE; attempt++) {
       const items: Product[] = []
       let ok = true
-      for (const slot of recipe.slots) {
+      for (const [n, slot] of recipe.slots.entries()) {
         if (slot.optional !== undefined && rand() > slot.optional) continue
-        const p = pick(slot, items.map((i) => mainColor(i)!))
+        const p = pick(n, items.map((i) => mainColor(i)!))
         if (!p) {
           if (slot.optional === undefined) ok = false
           continue
@@ -175,8 +202,11 @@ export function buildOutfits(products: Product[], gender: 'uomo' | 'donna', mont
       }
       // Niente sandali con il cappotto.
       if (!ok || (items.some((i) => i.category === 'cappotti') && items.some((i) => i.category === 'sandali'))) continue
+      const id = outfitId(items.map((i) => i.id))
+      if (ids.has(id)) continue
+      ids.add(id)
       for (const i of items) uses.set(i.id, (uses.get(i.id) ?? 0) + 1)
-      outfits.push({ id: outfitId(items.map((i) => i.id)), gender, style: recipe.style, items })
+      outfits.push({ id, gender, style: recipe.style, items })
       made++
     }
   }
