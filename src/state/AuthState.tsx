@@ -13,6 +13,7 @@ function friendlyError(message: string) {
   if (m.includes('password should be at least')) return 'La password deve avere almeno 6 caratteri.'
   if (m.includes('rate limit')) return 'Troppi tentativi. Riprova tra qualche minuto.'
   if (m.includes('sending') && m.includes('email')) return "Non siamo riusciti a inviare l'email. Riprova tra qualche minuto."
+  if (m.includes('provider is not enabled') || m.includes('unsupported provider')) return "L'accesso con Google non è ancora attivo."
   if (m.includes('invalid email') || m.includes('unable to validate email')) return "L'indirizzo email non è valido."
   return message
 }
@@ -70,6 +71,8 @@ function useAppAuthLinks(onError: (message: string) => void) {
     let cancelled = false
     const handle = async (url: string | undefined) => {
       if (!url?.startsWith(APP_AUTH_URL)) return
+      // Ritorno dall'accesso con Google: chiudiamo la pagina di Google se è ancora aperta.
+      void import('@capacitor/browser').then(({ Browser }) => Browser.close()).catch(() => {})
       // Si apre il Profilo: lì si vede l'accesso fatto, il modulo per la nuova password o l'errore.
       window.location.hash = '#/profilo'
       // Parametri sia dopo ? sia dopo # (Supabase mette gli errori nel #).
@@ -144,6 +147,22 @@ function useAuthStore() {
           }),
         )
         pendingSignup = { email, password, until: Date.now() + PENDING_MS }
+      },
+      /**
+       * Accesso (o registrazione) con Google. Sul sito si va su Google e si torna qui con ?code=.
+       * Nell'app Google si apre nel browser e torna all'app con app.swipeshopping://auth?code= (useAppAuthLinks).
+       */
+      signInWithGoogle: async () => {
+        if (!isNative) {
+          return run(() => supabase!.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: authRedirectUrl() } }))
+        }
+        const { data, error } = await supabase!.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: APP_AUTH_URL, skipBrowserRedirect: true },
+        })
+        if (error || !data.url) throw new Error(friendlyError(error?.message ?? 'Qualcosa è andato storto.'))
+        const { Browser } = await import('@capacitor/browser')
+        await Browser.open({ url: data.url })
       },
       signIn: (email: string, password: string) => run(() => supabase!.auth.signInWithPassword({ email, password })),
       signOut: async () => {

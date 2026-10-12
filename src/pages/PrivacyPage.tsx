@@ -34,7 +34,8 @@ export function PrivacyPage() {
           </li>
           <li>
             <strong>Con un account:</strong> indirizzo email, password (salvata in forma cifrata, non la vediamo mai),
-            preferiti, prodotti scartati e filtri, per ritrovarli su ogni dispositivo.
+            preferiti, prodotti scartati e filtri, per ritrovarli su ogni dispositivo. Se accedi con Google, Google ci
+            comunica solo la tua email e il tuo nome: non riceviamo la password di Google.
           </li>
           <li>
             <strong>Statistiche d'uso:</strong> solo se le attivi. Prodotti visti, like, click e condivisioni, legati a un codice
@@ -83,6 +84,9 @@ export function PrivacyPage() {
           </li>
           <li>
             <strong>Resend</strong>: invio delle email (conferma dell'account, recupero password, avvisi di prezzo, comunicazioni).
+          </li>
+          <li>
+            <strong>Google</strong>: solo se scegli "Continua con Google", per verificare chi sei.
           </li>
           <li>
             <strong>GitHub Pages</strong> (GitHub Inc.): pubblicazione del sito.

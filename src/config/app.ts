@@ -34,4 +34,6 @@ export const FEATURES = {
   birthdays: false,
   /** "X ha salvato N prodotti" in "Cosa fanno i tuoi amici" (tolto il 10/10/2026: restano le tendenze) */
   feedSaves: false,
+  /** "Continua con Google": si accende quando Google è attivo in Supabase (Authentication → Providers). */
+  googleLogin: false,
 }
