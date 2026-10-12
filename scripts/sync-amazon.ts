@@ -73,8 +73,11 @@ async function callApi(op: string, token: string, payload: Record<string, unknow
   }
 }
 
-/** Tetto di richieste per esecuzione: Amazon concede 8640 richieste al giorno e il catalogo si aggiorna due volte. */
-const MAX_REQUESTS = Number(process.env.AMAZON_MAX_REQUESTS ?? 3200)
+/**
+ * Tetto di richieste per esecuzione: Amazon concede 8640 richieste al giorno e il catalogo si aggiorna due volte,
+ * quindi 4200 a giro (8400 al giorno) usa quasi tutto il limite. Più richieste = più pagine di ricerca = più prodotti.
+ */
+const MAX_REQUESTS = Number(process.env.AMAZON_MAX_REQUESTS ?? 4200)
 let requests = 0
 
 const OFFER_RESOURCES = ['offersV2.listings.price', 'offersV2.listings.availability', 'offersV2.listings.isBuyBoxWinner']

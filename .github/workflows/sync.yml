@@ -36,7 +36,8 @@ jobs:
     needs: check
     if: needs.check.outputs.run == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # 4200 richieste a una al secondo: circa 80 minuti, più pulizia e pubblicazione.
+    timeout-minutes: 120
     steps:
       # L'ultimo main, non il commit che ha avviato il giro: un aggiornamento in coda parte dal catalogo
       # salvato da quello prima (altrimenti il push finisce in conflitto).
