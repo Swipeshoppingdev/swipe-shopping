@@ -304,7 +304,7 @@ function useAppStore() {
       return p && list.includes(p) ? [p] : []
     })
     const rest0 = back.length ? sorted.filter((p) => !back.includes(p)) : sorted
-    // "Questo o quello": la categoria scelta va in cima per un po'.
+    // "Cosa ti va?": la categoria scelta va in cima per un po'.
     const rest = boostCat ? [...rest0.filter((p) => p.category === boostCat), ...rest0.filter((p) => p.category !== boostCat)] : rest0
     const withBack = [...back, ...rest]
     const shared = sharedId ? products.find((p) => p.id === sharedId) : undefined

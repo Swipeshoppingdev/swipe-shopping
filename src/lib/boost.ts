@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react'
 
 /**
- * "Cosa vuoi vedere adesso?": la categoria scelta nella pausa "Questo o quello" passa in cima al mazzo
+ * "Cosa vuoi vedere adesso?": la categoria scelta nella pausa "Cosa ti va?" passa in cima al mazzo
  * per i prossimi `left` swipe. Solo in memoria (vale per questa visita), una sezione alla volta.
  */
 export interface Boost {

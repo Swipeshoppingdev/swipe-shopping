@@ -12,8 +12,8 @@ import { DuelView, pickPair } from './DuelView'
 import { ProductImage } from './ProductImage'
 
 /** Ogni quanti swipe arriva una pausa di gioco. */
-const EVERY = 6
-/** Rotazione: Indovina il prezzo e Questo o quello (i preferiti) tornano più spesso. */
+const EVERY = 10
+/** Rotazione: Indovina il prezzo e Cosa ti va (i preferiti) tornano più spesso. */
 const NO_LOGO = new Set(['scarpe_eleganti', 'stivali', 'camicie', 'cappotti', 'vestiti', 'maglioni', 'giacche', 'pantaloni'])
 const KINDS = ['prezzo', 'scelta', 'caro', 'prezzo', 'scelta', 'marca', 'duello'] as const
 type Break =
@@ -85,16 +85,16 @@ function buildBreak(kind: (typeof KINDS)[number], deck: Product[]): Break | null
     if (d.length < 2) return null
     return { kind, product, price, options: [price, ...d].sort(() => Math.random() - 0.5) }
   }
-  // Questo o quello: due categorie con abbastanza prodotti nel mazzo.
+  // Cosa ti va: due categorie con abbastanza prodotti nel mazzo.
   const counts = new Map<string, Product[]>()
   for (const p of deck.slice(1, 150)) if (looksLike(p)) counts.set(p.category, [...(counts.get(p.category) ?? []), p])
-  const cats = [...counts].filter(([, l]) => l.length >= 4).sort(() => Math.random() - 0.5).slice(0, 2)
-  if (cats.length < 2) return null
+  const cats = [...counts].filter(([, l]) => l.length >= 4).sort(() => Math.random() - 0.5).slice(0, 4)
+  if (cats.length < 4) return null
   return { kind: 'scelta', options: cats.map(([category, l]) => ({ category, product: l[0] })) }
 }
 
 /**
- * Pause di gioco nel mazzo, ogni 6 swipe, a rotazione: Indovina il prezzo, Questo o quello, Più caro, Indovina la marca, Duello.
+ * Pause di gioco nel mazzo, ogni 10 swipe, a rotazione: Indovina il prezzo, Cosa ti va, Più caro, Indovina la marca, Duello.
  * Spezzano la ripetizione dello swipe; si possono sempre saltare.
  */
 export function Breaks() {
@@ -214,27 +214,27 @@ function PriceGuess({ product, price, options, onDone }: { product: Product; pri
   )
 }
 
-/** Questo o quello: "Cosa vuoi vedere adesso?". La categoria scelta passa in cima al mazzo per 15 swipe. */
+/** Cosa ti va: "Cosa vuoi vedere adesso?". La categoria scelta passa in cima al mazzo per 15 swipe. */
 function ThisOrThat({ options, onDone }: { options: { category: string; product: Product }[]; onDone: () => void }) {
   const { state } = useApp()
   const [chosen, setChosen] = useState<string | null>(null)
   const label = (c: string) => categoryLabel(c as CategoryId)
   return (
-    <motion.div {...fade} className={frame} role="dialog" aria-label="Questo o quello" data-break>
+    <motion.div {...fade} className={frame} role="dialog" aria-label="Cosa ti va" data-break>
       <div className="pt-1 text-center">
         <p className="flex items-center justify-center gap-2 text-xl font-black">
-          <Shuffle className="size-5 text-rose-500" /> Questo o quello?
+          <Shuffle className="size-5 text-rose-500" /> Cosa ti va?
         </p>
-        <p className="text-sm text-neutral-500">Cosa vuoi vedere adesso?</p>
+        <p className="text-sm text-neutral-500">Scegli cosa vedere nei prossimi swipe</p>
       </div>
-      <div className="grid min-h-0 flex-1 grid-rows-2 gap-2">
+      <div className="grid min-h-0 flex-1 grid-cols-2 grid-rows-2 gap-2">
         {options.map((o, i) => {
           const on = chosen === o.category
           return (
             <motion.button
               key={o.category}
               type="button"
-              initial={{ y: i === 0 ? -30 : 30, opacity: 0 }}
+              initial={{ y: i < 2 ? -30 : 30, opacity: 0 }}
               animate={{ y: 0, opacity: chosen && !on ? 0.35 : 1, scale: on ? 1.03 : 1 }}
               onClick={() => {
                 if (chosen) return
@@ -243,12 +243,12 @@ function ThisOrThat({ options, onDone }: { options: { category: string; product:
                 navigator.vibrate?.(15)
                 setTimeout(onDone, 900)
               }}
-              className={`relative flex min-h-0 items-center gap-3 overflow-hidden rounded-2xl bg-white p-2 text-left shadow-md ring-2 ${on ? 'ring-rose-500' : 'ring-transparent'}`}
+              className={`relative flex min-h-0 flex-col overflow-hidden rounded-2xl bg-white p-2 text-center shadow-md ring-2 ${on ? 'ring-rose-500' : 'ring-transparent'}`}
             >
-              <div className="relative h-full w-2/5 shrink-0 bg-[#fff]">
+              <div className="relative min-h-0 w-full flex-1 bg-[#fff]">
                 <ProductImage product={o.product} eager className="absolute inset-0 size-full object-contain" />
               </div>
-              <span className="text-2xl leading-tight font-black">{label(o.category)}</span>
+              <span className="pt-1 text-base leading-tight font-black">{label(o.category)}</span>
             </motion.button>
           )
         })}
