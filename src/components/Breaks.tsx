@@ -14,6 +14,7 @@ import { ProductImage } from './ProductImage'
 /** Ogni quanti swipe arriva una pausa di gioco. */
 const EVERY = 6
 /** Rotazione: Indovina il prezzo e Questo o quello (i preferiti) tornano più spesso. */
+const NO_LOGO = new Set(['scarpe_eleganti', 'stivali', 'camicie', 'cappotti', 'vestiti', 'maglioni', 'giacche', 'pantaloni'])
 const KINDS = ['prezzo', 'scelta', 'caro', 'prezzo', 'scelta', 'marca', 'duello'] as const
 type Break =
   | { kind: 'duello'; pair: [Product, Product] }
@@ -21,6 +22,26 @@ type Break =
   | { kind: 'marca'; product: Product; options: string[] }
   | { kind: 'prezzo'; product: Product; options: number[]; price: number }
   | { kind: 'scelta'; options: { category: string; product: Product }[] }
+
+/**
+ * Il prodotto "sembra" della sua categoria: il titolo contiene una parola del nome della categoria
+ * (Monitor → "monitor"). Evita foto sbagliate nei giochi quando Amazon classifica male un prodotto.
+ */
+const STOP = new Set(['della', 'delle', 'degli', 'per', 'cura', 'piccoli', 'oggetti', 'gadget', 'accessori'])
+const stems = new Map<string, string[]>()
+function looksLike(p: Product) {
+  let st = stems.get(p.category)
+  if (!st) {
+    st = categoryLabel(p.category as CategoryId)
+      .toLowerCase()
+      .split(/[^a-zàèéìòù]+/)
+      .filter((w) => w.length > 4 && !STOP.has(w))
+      .map((w) => w.slice(0, -1))
+    stems.set(p.category, st)
+  }
+  const t = p.title.toLowerCase()
+  return st.some((w) => t.includes(w))
+}
 
 /** Due prezzi finti credibili (circa -40% e +50%), arrotondati come quelli veri. */
 function decoys(price: number) {
@@ -37,7 +58,7 @@ function buildBreak(kind: (typeof KINDS)[number], deck: Product[]): Break | null
   }
   if (kind === 'caro') {
     // Due prodotti della stessa categoria con prezzi aggiornati e ben diversi (almeno il 25%).
-    const list = deck.slice(1, 60).filter((p) => freshPrice(p) && !p.priceFrom)
+    const list = deck.slice(1, 80).filter((p) => freshPrice(p) && !p.priceFrom && looksLike(p))
     for (const a of list)
       for (const b of list) {
         if (a === b || a.category !== b.category || a.gender !== b.gender || a.brand === b.brand) continue
@@ -47,7 +68,8 @@ function buildBreak(kind: (typeof KINDS)[number], deck: Product[]): Break | null
     return null
   }
   if (kind === 'marca') {
-    const withBrand = deck.slice(1, 80).filter((p) => p.brand)
+    // Solo capi dove il logo di solito non si vede in foto (sneakers, borse e tech lo mostrano quasi sempre).
+    const withBrand = deck.slice(1, 120).filter((p) => p.brand && NO_LOGO.has(p.category))
     const product = withBrand[0]
     if (!product) return null
     const others = [...new Set(withBrand.map((p) => p.brand!).filter((b) => b.toLowerCase() !== product.brand!.toLowerCase()))]
@@ -65,8 +87,8 @@ function buildBreak(kind: (typeof KINDS)[number], deck: Product[]): Break | null
   }
   // Questo o quello: due categorie con abbastanza prodotti nel mazzo.
   const counts = new Map<string, Product[]>()
-  for (const p of deck.slice(1, 150)) counts.set(p.category, [...(counts.get(p.category) ?? []), p])
-  const cats = [...counts].filter(([, l]) => l.length >= 5).sort(() => Math.random() - 0.5).slice(0, 2)
+  for (const p of deck.slice(1, 150)) if (looksLike(p)) counts.set(p.category, [...(counts.get(p.category) ?? []), p])
+  const cats = [...counts].filter(([, l]) => l.length >= 4).sort(() => Math.random() - 0.5).slice(0, 2)
   if (cats.length < 2) return null
   return { kind: 'scelta', options: cats.map(([category, l]) => ({ category, product: l[0] })) }
 }
@@ -77,7 +99,7 @@ function buildBreak(kind: (typeof KINDS)[number], deck: Product[]): Break | null
  */
 export function Breaks() {
   const { state, deck } = useApp()
-  const swipes = state.history.length
+  const swipes = state.swipes
   const last = useRef(swipes)
   const [current, setCurrent] = useState<Break | null>(null)
 

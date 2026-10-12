@@ -1,9 +1,8 @@
-import { BarChart3, Clapperboard, ChevronRight, RotateCcw, ShieldCheck, Sparkles, Trash2, Undo2, UserRound } from 'lucide-react'
+import { BarChart3, Clapperboard, ChevronRight, RotateCcw, ShieldCheck, Trash2, Undo2, UserRound } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { AccountActions, AccountCard } from '../components/AccountCard'
 import { InstallCard } from '../components/InstallCard'
 import { MyProfileCard } from '../components/MyProfileCard'
-import { StyleCard } from '../components/StyleCard'
 import { ADMIN_EMAIL, AMAZON_DISCLOSURE, APP_NAME, GENERIC_DISCLOSURE } from '../config/app'
 import { categoryLabel, isCategoryId } from '../config/categories'
 import { setConsent, summary } from '../lib/analytics'
@@ -60,9 +59,6 @@ export function ProfilePage() {
       <h1 className="text-2xl font-bold">Profilo</h1>
 
       <MyProfileCard />
-      <Card icon={<Sparkles className="size-5" />} title="Il tuo stile">
-        <StyleCard />
-      </Card>
 
       {isAdmin && (
         <a

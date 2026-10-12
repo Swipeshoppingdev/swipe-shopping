@@ -40,6 +40,8 @@ interface State {
   disliked: string[]
   /** Ultimi swipe, per annullarli uno alla volta (il più recente in fondo) */
   history: { type: 'like' | 'dislike'; product: Product }[]
+  /** Swipe fatti in questa visita (non si azzera con l'undo né col limite della cronologia): ritmo dei giochi */
+  swipes: number
   /** Scartati rimessi nel mazzo: tornano in cima, il più recente per primo */
   restored: string[]
 }
@@ -105,12 +107,14 @@ function reducer(state: State, action: Action): State {
         ...state,
         wishlist: [{ product: snapshot(action.product), savedAt: Date.now() }, ...state.wishlist],
         history: [...state.history, { type: 'like' as const, product: action.product }].slice(-MAX_HISTORY),
+        swipes: state.swipes + 1,
       }
     case 'dislike':
       return {
         ...state,
         disliked: [...state.disliked, action.product.id].slice(-MAX_DISLIKED),
         history: [...state.history, { type: 'dislike' as const, product: action.product }].slice(-MAX_HISTORY),
+        swipes: state.swipes + 1,
       }
     case 'undo': {
       const last = state.history.at(-1)
@@ -178,6 +182,7 @@ function useAppStore() {
     wishlist: stripPrices(load<WishItem[]>('wishlist', [])),
     disliked: load<string[]>('disliked', []),
     history: [],
+    swipes: 0,
     restored: [],
   }))
 
