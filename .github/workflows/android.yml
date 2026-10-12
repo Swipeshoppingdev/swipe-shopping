@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['src/**', 'android/**', 'index.html', 'package.json', 'capacitor.config.ts', '.github/workflows/android.yml']
+    paths: ['src/**', 'android/**', 'index.html', 'package.json', 'capacitor.config.ts', '.github/workflows/android.yml', 'android/upload.jks.gpg']
 
 concurrency:
   group: android
@@ -36,9 +36,16 @@ jobs:
       - name: Chiave di firma
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
           if [ -n "$KEYSTORE_BASE64" ]; then
             echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"
+          elif [ -f android/upload.jks.gpg ] && [ -n "$PASSWORD" ]; then
+            # Chiave creata da "Crea chiave Google Play": cifrata nel repository, si apre con la password.
+            printf '%s' "$PASSWORD" > "$RUNNER_TEMP/pass"
+            gpg --batch --quiet --pinentry-mode loopback --passphrase-file "$RUNNER_TEMP/pass" -d -o "$RUNNER_TEMP/upload.jks" android/upload.jks.gpg
+            rm "$RUNNER_TEMP/pass"
             echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"
           else
             echo "::notice::Chiave per Google Play non ancora configurata: costruisco solo l'APK di prova."
@@ -50,8 +57,8 @@ jobs:
           ANDROID_VERSION_CODE: ${{ github.run_number }}
           ANDROID_VERSION_NAME: 1.0.${{ github.run_number }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || 'upload' }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
           chmod +x gradlew
           mkdir -p ../out

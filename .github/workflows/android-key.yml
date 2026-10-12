@@ -1,0 +1,50 @@
+# Crea UNA VOLTA la chiave di caricamento per Google Play, senza computer (scelta di Kevin, 2026-10-12).
+# Serve solo il segreto ANDROID_KEYSTORE_PASSWORD (una password lunga scelta dal titolare).
+# La chiave viene cifrata con quella password (AES256) e salvata nel repository come android/upload.jks.gpg:
+# senza la password è inutilizzabile. Google Play firma poi l'app con la sua chiave (Play App Signing),
+# quindi se questa andasse persa si può chiedere a Google di sostituirla.
+name: Crea chiave Google Play
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  key:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Crea e cifra la chiave
+        env:
+          PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -f android/upload.jks.gpg ]; then
+            echo "::error::La chiave esiste già (android/upload.jks.gpg): non la ricreo, Google Play accetta solo quella."
+            exit 1
+          fi
+          if [ ${#PASSWORD} -lt 16 ]; then
+            echo "::error::Manca il segreto ANDROID_KEYSTORE_PASSWORD o è più corto di 16 caratteri."
+            exit 1
+          fi
+          keytool -genkeypair -storetype PKCS12 -keystore "$RUNNER_TEMP/upload.jks" -alias upload \
+            -keyalg RSA -keysize 4096 -validity 10000 \
+            -storepass:env PASSWORD -keypass:env PASSWORD \
+            -dname "CN=Swipe Shopping, O=Swipe Shopping, C=IT"
+          printf '%s' "$PASSWORD" > "$RUNNER_TEMP/pass"
+          gpg --batch --yes --pinentry-mode loopback --passphrase-file "$RUNNER_TEMP/pass" \
+            --symmetric --cipher-algo AES256 -o android/upload.jks.gpg "$RUNNER_TEMP/upload.jks"
+          rm "$RUNNER_TEMP/upload.jks" "$RUNNER_TEMP/pass"
+      - name: Salva
+        run: |
+          git config user.name "catalog-bot"
+          git config user.email "catalog-bot@users.noreply.github.com"
+          git add android/upload.jks.gpg
+          git commit -m "Chiave di caricamento Google Play (cifrata)"
+          git pull --no-rebase origin main
+          git push
