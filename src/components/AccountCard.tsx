@@ -1,5 +1,6 @@
 import { CheckCircle2, CloudOff, Loader2, LogOut, Mail, Trash2, UserRound } from 'lucide-react'
 import { useState, type FormEvent, type ReactNode } from 'react'
+import { GoogleButton } from './GoogleButton'
 import { EmailAlertsToggle, EmailNewsToggle } from './EmailAlertsToggle'
 import { FEATURES } from '../config/app'
 import { useApp, type SyncStatus } from '../state/AppState'
@@ -222,15 +223,20 @@ export function AuthForm({ initialMode = 'accedi' }: { initialMode?: Mode }) {
       )}
       {FEATURES.googleLogin && mode !== 'recupera' && (
         <>
-          <button
-            type="button"
-            onClick={google}
-            disabled={busy}
-            className="flex h-11 w-full items-center justify-center gap-2.5 rounded-full border border-neutral-300 bg-white font-semibold text-neutral-800 disabled:opacity-50"
-          >
-            <GoogleLogo />
-            Continua con Google
-          </button>
+          <GoogleButton
+            onError={setError}
+            fallback={
+              <button
+                type="button"
+                onClick={google}
+                disabled={busy}
+                className="flex h-11 w-full items-center justify-center gap-2.5 rounded-full border border-neutral-300 bg-white font-semibold text-neutral-800 disabled:opacity-50"
+              >
+                <GoogleLogo />
+                Continua con Google
+              </button>
+            }
+          />
           <div className="flex items-center gap-3 text-xs text-neutral-400">
             <span className="h-px flex-1 bg-neutral-200" />
             oppure con email

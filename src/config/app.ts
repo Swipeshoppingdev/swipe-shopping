@@ -37,3 +37,11 @@ export const FEATURES = {
   /** "Continua con Google": si accende quando Google è attivo in Supabase (Authentication → Providers). */
   googleLogin: true,
 }
+
+/**
+ * Client ID OAuth "Web" di Google (pubblico, è lo stesso messo in Supabase → Google).
+ * Sul sito serve al pulsante ufficiale di Google, che mostra "Accedi a swipeshopping.app"
+ * invece dell'indirizzo di Supabase. Vuoto = si usa il vecchio giro passando da Supabase.
+ */
+export const GOOGLE_CLIENT_ID = '104770095773-o6avbplvppk8lkgvq5ogc9trcj5uc55m.apps.googleusercontent.com'
+

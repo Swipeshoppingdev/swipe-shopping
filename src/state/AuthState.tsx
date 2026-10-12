@@ -164,6 +164,9 @@ function useAuthStore() {
         const { Browser } = await import('@capacitor/browser')
         await Browser.open({ url: data.url })
       },
+      /** Accesso con il token del pulsante ufficiale di Google (solo sito, vedi GoogleButton). */
+      signInWithGoogleToken: (token: string, nonce: string) =>
+        run(() => supabase!.auth.signInWithIdToken({ provider: 'google', token, nonce })),
       signIn: (email: string, password: string) => run(() => supabase!.auth.signInWithPassword({ email, password })),
       signOut: async () => {
         pendingSignup = null
