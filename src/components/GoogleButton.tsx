@@ -91,5 +91,6 @@ export function GoogleButton({ fallback, onError }: { fallback: ReactNode; onErr
   }, [usable])
 
   if (!usable || failed) return <>{fallback}</>
-  return <div ref={box} className="flex min-h-11 w-full justify-center" />
+  // color-scheme light: col tema scuro il browser altrimenti dipinge un riquadro bianco dietro l'iframe di Google.
+  return <div ref={box} className="flex min-h-11 w-full justify-center [color-scheme:light]" />
 }
