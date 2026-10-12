@@ -1,0 +1,36 @@
+# App iPhone: costruisce l'app dal codice del sito su un Mac di GitHub.
+# Per ora solo una prova di compilazione (simulatore, senza firma). Quando ci sarà l'account Apple Developer
+# si aggiunge la firma e il caricamento su TestFlight con una chiave API di App Store Connect nei segreti.
+name: App iPhone
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['ios/**', 'capacitor.config.ts', '.github/workflows/ios.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build:app
+      - name: Compila per il simulatore (senza firma)
+        run: |
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO build | tail -n 40
+          test -d build/Build/Products/Debug-iphonesimulator/App.app
