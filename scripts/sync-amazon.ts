@@ -390,7 +390,7 @@ async function searchCatalog(token: string) {
 
 /** Taglia di Amazon ("39.5 EU", "M", "W32 L34") nel formato dei filtri, o null. */
 const sizeOf = (value: string, category: string) => splitSize(`Taglia del prodotto, ${value}`, category)?.size ?? null
-const SIZES_MAX_AGE = 3 * 24 * 3_600_000
+const SIZES_MAX_AGE = 10 * 24 * 3_600_000
 
 /**
  * Tutte le taglie disponibili dei capi e delle scarpe (getVariations): la ricerca dà una sola variante per taglia,
@@ -490,7 +490,7 @@ try {
   )
   if (kept.length) annotate('notice', `Tenuti dal giro precedente: ${kept.length} prodotti.`)
   const others = catalog.filter((p) => p.store !== 'amazon')
-  // Le taglie lette nei giri precedenti restano per 3 giorni (poi si rileggono).
+  // Le taglie lette nei giri precedenti restano fino a 10 giorni (si rileggono prima le più vecchie).
   const previous = new Map(catalog.map((p) => [p.id, p]))
   for (const p of searched) {
     const old = previous.get(p.id)
