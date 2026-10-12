@@ -1,4 +1,5 @@
 import { useBoost } from '../lib/boost'
+import { pickDrop, useDropDay, useDropOn } from '../lib/drop'
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import { UNIVERSES, isUniverse, universeOf, type Universe } from '../config/categories'
 import { track } from '../lib/analytics'
@@ -257,7 +258,22 @@ function useAppStore() {
   const boost = useBoost()
   // Solo la categoria (non i giri rimasti): il mazzo non si ricalcola a ogni swipe.
   const boostCat = boost && boost.section === state.mode ? boost.category : null
-  const deck = useMemo(() => {
+  // "Drop di oggi": i 10 del giorno restano gli stessi anche dopo averli swipati (si conta 3/10).
+  const dropDay = useDropDay()
+  const dropOn = useDropOn()
+  const dropList = useMemo(() => {
+    const f = { ...activeFilters, onlyDeals: undefined }
+    return pickDrop(
+      products.filter((p) => p.availability !== 'out_of_stock' && universeOf(p.category) === state.mode && matchesFilters(p, f)),
+      `${dropDay}:${state.mode}`,
+    )
+  }, [products, state.mode, activeFilters, dropDay])
+  const dropDeck = useMemo(() => {
+    const seen = new Set([...state.disliked, ...state.wishlist.map((w) => w.product.id)])
+    return dropList.filter((p) => !seen.has(p.id))
+  }, [dropList, state.disliked, state.wishlist])
+
+  const fullDeck = useMemo(() => {
     const seen = new Set([...state.disliked, ...state.wishlist.map((w) => w.product.id)])
     const list = products.filter(
       (p) =>
@@ -289,6 +305,7 @@ function useAppStore() {
     const shared = sharedId ? products.find((p) => p.id === sharedId) : undefined
     return shared ? [shared, ...withBack.filter((p) => p.id !== shared.id)] : withBack
   }, [products, byId, state.disliked, state.wishlist, state.mode, state.restored, activeFilters, sharedId, boostCat])
+  const deck = dropOn && !sharedId ? dropDeck : fullDeck
 
   /** Gli scartati della sezione aperta, dal più vecchio al più recente */
   const sectionDisliked = useMemo(() => {
@@ -366,7 +383,7 @@ function useAppStore() {
   const view = useMemo(() => ({ ...state, filters: activeFilters }), [state, activeFilters])
   /** Prodotti della sezione aperta (per i filtri) */
   const sectionProducts = useMemo(() => products.filter((p) => universeOf(p.category) === state.mode), [products, state.mode])
-  return { state: view, products: sectionProducts, allProducts: products, deck, sectionDisliked, wishlist, actions, sync, unseenDeals, markDealsSeen }
+  return { state: view, products: sectionProducts, allProducts: products, deck, drop: { day: dropDay, on: dropOn, total: dropList.length, left: dropDeck.length }, sectionDisliked, wishlist, actions, sync, unseenDeals, markDealsSeen }
 }
 
 export type SyncStatus = 'off' | 'loading' | 'synced' | 'saving' | 'error'
