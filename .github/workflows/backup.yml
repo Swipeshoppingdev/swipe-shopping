@@ -1,7 +1,8 @@
 name: Backup database Supabase
 
 # Ogni notte una copia completa del database (dati dell'app e account), cifrata con BACKUP_PASSWORD
-# perché il repository è pubblico. Si scarica dalla pagina del giro (Artifacts) e si tiene 7 giorni.
+# perché il repository è pubblico. Si scarica dalla pagina del giro (Artifacts) e si tiene 3 giorni
+# (meno tempo per chi volesse provare a indovinare la password: deve essere lunga e casuale).
 # Segreti: SUPABASE_DB_URL (Connect → Session pooler, con la password del database) e BACKUP_PASSWORD.
 # Per aprirlo: gpg --decrypt backup.dump.gpg > backup.dump, poi pg_restore.
 on:
@@ -47,7 +48,7 @@ jobs:
             --schema=public --schema=auth --file=backup.dump
           size=$(du -h backup.dump | cut -f1)
           gpg --batch --yes --pinentry-mode loopback --symmetric --cipher-algo AES256 \
-            --passphrase "$PASSWORD" --output backup.dump.gpg backup.dump
+            --passphrase-fd 3 --output backup.dump.gpg backup.dump 3<<< "$PASSWORD"
           rm backup.dump
           echo "::notice::Backup fatto ($size prima della cifratura)."
       - name: Salva il backup
@@ -56,4 +57,4 @@ jobs:
         with:
           name: supabase-backup-${{ github.run_number }}
           path: backup.dump.gpg
-          retention-days: 7
+          retention-days: 3

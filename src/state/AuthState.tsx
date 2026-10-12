@@ -84,7 +84,8 @@ function useAppAuthLinks(onError: (message: string) => void) {
         if (!error) pendingSignup = null
         else onError(friendlyError(error.message))
       } else if (err) {
-        onError(/expired|invalid/i.test(err) ? 'Il link è scaduto o già usato. Prova ad accedere.' : err)
+        // Mai il testo del link così com'è: chiunque può aprire app.swipeshopping://auth con un messaggio inventato.
+        onError(/expired|invalid/i.test(err) ? 'Il link è scaduto o già usato. Prova ad accedere.' : 'Accesso non riuscito. Riprova.')
       }
     }
     void import('@capacitor/app').then(async ({ App }) => {

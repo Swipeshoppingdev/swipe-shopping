@@ -24,4 +24,5 @@ for (const r of data ?? []) {
   byProduct.set(r.product_id, m)
 }
 console.log(`::notice::Segnalazioni: ${data?.length ?? 0} su ${byProduct.size} prodotti.`)
-for (const [id, reasons] of byProduct) console.log(`  ${id}: ${Object.entries(reasons).map(([k, n]) => `${k}×${n}`).join(' ')}`)
+// Codici puliti: arrivano da chiunque e nel log "::comando::" verrebbe eseguito da GitHub.
+for (const [id, reasons] of byProduct) console.log(`  ${id.replace(/[^\w.:-]/g, '?')}: ${Object.entries(reasons).map(([k, n]) => `${k}×${n}`).join(' ')}`)

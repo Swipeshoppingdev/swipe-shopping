@@ -10,6 +10,7 @@
 // oppure `-- --test=indirizzo@email.it` per mandare solo un'email di esempio a quell'indirizzo).
 import { readFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
+const mask = (e: string) => e.replace(/^(.).*@/, '$1***@') // log pubblici: niente email intere
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hlsqxxcztysnlijznjng.supabase.co'
 const { SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY } = process.env
@@ -105,7 +106,7 @@ async function send(to: string, count: number) {
 
 if (TEST_TO !== undefined) {
   const ok = await send(TEST_TO, 2)
-  console.log(ok ? `Email di prova inviata a ${TEST_TO}.` : 'Email di prova non inviata.')
+  console.log(ok ? `Email di prova inviata a ${mask(TEST_TO)}.` : 'Email di prova non inviata.')
   process.exit(ok ? 0 : 1)
 }
 
@@ -146,7 +147,7 @@ for (const u of users) {
   if (error || !to || !data.user.email_confirmed_at) continue
 
   if (DRY) {
-    console.log(`[prova] ${to}: ${email(count).subject}`)
+    console.log(`[prova] ${mask(to)}: ${email(count).subject}`)
     continue
   }
   if (!(await send(to, count))) {

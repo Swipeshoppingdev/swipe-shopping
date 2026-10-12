@@ -9,6 +9,9 @@ on:
     branches: [main]
     paths: ['src/**', 'android/**', 'index.html', 'package.json', 'capacitor.config.ts', '.github/workflows/android.yml', 'android/upload.jks.gpg']
 
+permissions:
+  contents: read
+
 concurrency:
   group: android
   cancel-in-progress: true
@@ -73,3 +76,4 @@ jobs:
         with:
           name: swipe-shopping-android-${{ github.run_number }}
           path: out/
+          retention-days: 14

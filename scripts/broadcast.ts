@@ -11,6 +11,7 @@ const DRY = process.argv.includes('--dry')
 const FROM = 'Swipe Shopping <noreply@swipeshopping.app>'
 const APP_URL = 'https://swipeshopping.app'
 const ADMIN_EMAIL = 'kevinconti0118@gmail.com'
+const mask = (e: string) => e.replace(/^(.).*@/, '$1***@') // log pubblici: niente email intere
 
 if (!SUPABASE_SERVICE_ROLE_KEY || (!RESEND_API_KEY && !DRY)) {
   console.log('::notice::Comunicazioni non attive: mancano i secrets SUPABASE_SERVICE_ROLE_KEY e/o RESEND_API_KEY.')
@@ -112,7 +113,7 @@ for (const b of queue) {
   const todo = all.filter((r) => !done.has(r.id))
   console.log(`Comunicazione ${b.id}${b.test ? ' (prova)' : ''}: "${b.subject}" → ${todo.length} da inviare su ${all.length}.`)
   if (DRY) {
-    for (const r of todo.slice(0, 20)) console.log(`[prova] ${r.email}`)
+    for (const r of todo.slice(0, 20)) console.log(`[prova] ${mask(r.email)}`)
     continue
   }
   await update(b.id, { status: 'sending', total: all.length })
