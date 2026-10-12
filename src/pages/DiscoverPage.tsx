@@ -2,7 +2,6 @@ import { Flame, RefreshCw, SlidersHorizontal, Sparkles } from 'lucide-react'
 import { SwipeDeck } from '../components/SwipeDeck'
 import { DeckTabs } from '../components/DeckTabs'
 import { Breaks } from '../components/Breaks'
-import { StyleReveal } from '../components/StyleCard'
 import { NewArrivals } from '../components/NewArrivals'
 import { routeHref } from '../lib/useHashRoute'
 import { widenSuggestions } from '../lib/widen'
@@ -53,7 +52,6 @@ export function DiscoverPage() {
           <SwipeDeck />
           <NewArrivals key={state.mode} />
           <Breaks key={`breaks:${state.mode}`} />
-          <StyleReveal />
         </div>
       ) : drop.on ? (
         <DropDone total={drop.total} />

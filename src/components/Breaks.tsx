@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { Check, Heart, Shuffle, Tag, X } from 'lucide-react'
+import { BadgeCheck, Check, Euro, Heart, Shuffle, Tag, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { categoryLabel, type CategoryId } from '../config/categories'
 import { brandAndStore } from '../config/stores'
@@ -12,10 +12,13 @@ import { DuelView, pickPair } from './DuelView'
 import { ProductImage } from './ProductImage'
 
 /** Ogni quanti swipe arriva una pausa di gioco. */
-const EVERY = 8
-const KINDS = ['duello', 'prezzo', 'scelta'] as const
+const EVERY = 6
+/** Rotazione: Indovina il prezzo e Questo o quello (i preferiti) tornano più spesso. */
+const KINDS = ['prezzo', 'scelta', 'caro', 'prezzo', 'scelta', 'marca', 'duello'] as const
 type Break =
   | { kind: 'duello'; pair: [Product, Product] }
+  | { kind: 'caro'; pair: [Product, Product] }
+  | { kind: 'marca'; product: Product; options: string[] }
   | { kind: 'prezzo'; product: Product; options: number[]; price: number }
   | { kind: 'scelta'; options: { category: string; product: Product }[] }
 
@@ -31,6 +34,26 @@ function buildBreak(kind: (typeof KINDS)[number], deck: Product[]): Break | null
   if (kind === 'duello') {
     const pair = pickPair(deck)
     return pair && { kind, pair }
+  }
+  if (kind === 'caro') {
+    // Due prodotti della stessa categoria con prezzi aggiornati e ben diversi (almeno il 25%).
+    const list = deck.slice(1, 60).filter((p) => freshPrice(p) && !p.priceFrom)
+    for (const a of list)
+      for (const b of list) {
+        if (a === b || a.category !== b.category || a.gender !== b.gender || a.brand === b.brand) continue
+        const pa = freshPrice(a)!.price, pb = freshPrice(b)!.price
+        if (Math.max(pa, pb) >= Math.min(pa, pb) * 1.25) return { kind, pair: [a, b] }
+      }
+    return null
+  }
+  if (kind === 'marca') {
+    const withBrand = deck.slice(1, 80).filter((p) => p.brand)
+    const product = withBrand[0]
+    if (!product) return null
+    const others = [...new Set(withBrand.map((p) => p.brand!).filter((b) => b.toLowerCase() !== product.brand!.toLowerCase()))]
+    if (others.length < 2) return null
+    const options = [product.brand!, ...others.sort(() => Math.random() - 0.5).slice(0, 2)].sort(() => Math.random() - 0.5)
+    return { kind, product, options }
   }
   if (kind === 'prezzo') {
     const product = deck.slice(1, 30).find((p) => freshPrice(p) && !p.priceFrom)
@@ -49,7 +72,7 @@ function buildBreak(kind: (typeof KINDS)[number], deck: Product[]): Break | null
 }
 
 /**
- * Pause di gioco nel mazzo, ogni 8 swipe, a rotazione: Duello, Indovina il prezzo, Questo o quello.
+ * Pause di gioco nel mazzo, ogni 6 swipe, a rotazione: Indovina il prezzo, Questo o quello, Più caro, Indovina la marca, Duello.
  * Spezzano la ripetizione dello swipe; si possono sempre saltare.
  */
 export function Breaks() {
@@ -87,6 +110,8 @@ export function Breaks() {
     <AnimatePresence>
       {current?.kind === 'duello' && <DuelView key="d" pair={current.pair} onDone={done} />}
       {current?.kind === 'prezzo' && <PriceGuess key="p" {...current} onDone={done} />}
+      {current?.kind === 'caro' && <WhichCostsMore key="c" pair={current.pair} onDone={done} />}
+      {current?.kind === 'marca' && <BrandGuess key="m" product={current.product} options={current.options} onDone={done} />}
       {current?.kind === 'scelta' && <ThisOrThat key="s" options={current.options} onDone={done} />}
     </AnimatePresence>
   )
@@ -212,6 +237,143 @@ function ThisOrThat({ options, onDone }: { options: { category: string; product:
       <button type="button" onClick={onDone} className="mx-auto mb-1 h-10 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
         Va bene tutto, salta
       </button>
+    </motion.div>
+  )
+}
+
+/** Più caro? Due prodotti simili: tocca quello che costa di più. Poi si vedono i prezzi veri. */
+function WhichCostsMore({ pair, onDone }: { pair: [Product, Product]; onDone: () => void }) {
+  const { actions } = useApp()
+  const [picked, setPicked] = useState<Product | null>(null)
+  const price = (p: Product) => freshPrice(p)!.price
+  const dearer = price(pair[0]) > price(pair[1]) ? pair[0] : pair[1]
+  return (
+    <motion.div {...fade} className={frame} role="dialog" aria-label="Più caro" data-break>
+      <div className="pt-1 text-center">
+        <p className="flex items-center justify-center gap-2 text-xl font-black">
+          <Euro className="size-5 text-rose-500" /> Quale costa di più?
+        </p>
+        <p className="text-sm text-neutral-500">Fidati dell'occhio: tocca il più caro</p>
+      </div>
+      <div className="grid min-h-0 flex-1 grid-cols-2 gap-2">
+        {pair.map((p) => {
+          const st = picked === null ? 'idle' : p === dearer ? 'right' : picked === p ? 'wrong' : 'off'
+          return (
+            <motion.button
+              key={p.id}
+              type="button"
+              disabled={picked !== null}
+              onClick={() => {
+                setPicked(p)
+                navigator.vibrate?.(p === dearer ? [10, 40, 10] : 30)
+              }}
+              animate={st === 'wrong' ? { x: [0, -6, 6, -4, 4, 0] } : st === 'right' ? { scale: [1, 1.04, 1] } : {}}
+              className={`relative flex min-h-0 flex-col overflow-hidden rounded-2xl bg-white text-left shadow-md ring-2 ${
+                st === 'right' ? 'ring-emerald-500' : st === 'wrong' ? 'ring-neutral-300' : 'ring-transparent'
+              }`}
+            >
+              <div className="relative min-h-0 flex-1 bg-[#fff]">
+                <ProductImage product={p} eager className="absolute inset-0 size-full object-contain p-2" />
+              </div>
+              <div className="space-y-0.5 p-2">
+                <p className="line-clamp-2 text-xs font-medium">{p.title}</p>
+                <p className={`h-6 text-lg font-black ${st === 'right' ? 'text-emerald-600' : ''}`}>{picked ? formatPrice(price(p)) : '?'}</p>
+              </div>
+            </motion.button>
+          )
+        })}
+      </div>
+      <p className="h-5 text-center text-sm font-semibold">
+        {picked === null ? '' : picked === dearer ? '💸 Giusto! Hai il fiuto per i prezzi' : 'Eh no! È l\'altro il più caro'}
+      </p>
+      <div className="flex justify-center gap-2 pb-1">
+        {picked !== null && (
+          <button
+            type="button"
+            onClick={() => {
+              actions.like(dearer)
+              onDone()
+            }}
+            className="flex h-11 items-center gap-2 rounded-full bg-rose-500 px-5 text-sm font-semibold text-[#fff] active:scale-95"
+          >
+            <Heart className="size-4 fill-current" /> Salva il più caro
+          </button>
+        )}
+        <button type="button" onClick={onDone} className="h-11 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
+          {picked === null ? 'Salta' : 'Avanti'}
+        </button>
+      </div>
+    </motion.div>
+  )
+}
+
+/** Indovina la marca: una foto e tre marche, una è quella giusta. */
+function BrandGuess({ product, options, onDone }: { product: Product; options: string[]; onDone: () => void }) {
+  const { actions } = useApp()
+  const [picked, setPicked] = useState<string | null>(null)
+  const real = product.brand!
+  return (
+    <motion.div {...fade} className={frame} role="dialog" aria-label="Indovina la marca" data-break>
+      <div className="pt-1 text-center">
+        <p className="flex items-center justify-center gap-2 text-xl font-black">
+          <BadgeCheck className="size-5 text-rose-500" /> Indovina la marca
+        </p>
+        <p className="text-sm text-neutral-500">Di chi è questo?</p>
+      </div>
+      <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl bg-[#fff] shadow-md">
+        <ProductImage product={product} eager className="absolute inset-0 size-full object-contain p-3" />
+      </div>
+      <div className="grid gap-2 px-1">
+        {options.map((o) => {
+          const isReal = o === real
+          const st = picked === null ? 'idle' : isReal ? 'right' : picked === o ? 'wrong' : 'off'
+          return (
+            <motion.button
+              key={o}
+              type="button"
+              disabled={picked !== null}
+              onClick={() => {
+                setPicked(o)
+                navigator.vibrate?.(isReal ? [10, 40, 10] : 30)
+              }}
+              animate={st === 'wrong' ? { x: [0, -6, 6, -4, 4, 0] } : st === 'right' ? { scale: [1, 1.04, 1] } : {}}
+              className={`flex h-11 items-center justify-center gap-1 truncate rounded-2xl px-3 text-base font-bold ring-1 transition ${
+                st === 'right'
+                  ? 'bg-emerald-500 text-[#fff] ring-emerald-500'
+                  : st === 'wrong'
+                    ? 'bg-neutral-200 text-neutral-400 line-through ring-neutral-200'
+                    : st === 'off'
+                      ? 'bg-white text-neutral-300 ring-neutral-200'
+                      : 'bg-white text-neutral-900 ring-neutral-200 active:scale-95'
+              }`}
+            >
+              {st === 'right' && <Check className="size-4 shrink-0" />}
+              {st === 'wrong' && <X className="size-4 shrink-0" />}
+              {o}
+            </motion.button>
+          )
+        })}
+      </div>
+      <p className="h-5 text-center text-sm font-semibold">
+        {picked === null ? '' : picked === real ? '🕵️ Esatto! Riconosci le marche al volo' : `Era ${real}!`}
+      </p>
+      <div className="flex justify-center gap-2 pb-1">
+        {picked !== null && (
+          <button
+            type="button"
+            onClick={() => {
+              actions.like(product)
+              onDone()
+            }}
+            className="flex h-11 items-center gap-2 rounded-full bg-rose-500 px-5 text-sm font-semibold text-[#fff] active:scale-95"
+          >
+            <Heart className="size-4 fill-current" /> Lo voglio
+          </button>
+        )}
+        <button type="button" onClick={onDone} className="h-11 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
+          {picked === null ? 'Salta' : 'Avanti'}
+        </button>
+      </div>
     </motion.div>
   )
 }
