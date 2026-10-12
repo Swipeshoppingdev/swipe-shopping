@@ -2,6 +2,7 @@ import { CheckCircle2, CloudOff, Loader2, LogOut, Mail, Trash2, UserRound } from
 import { useState, type FormEvent, type ReactNode } from 'react'
 import { GoogleButton } from './GoogleButton'
 import { EmailAlertsToggle, EmailNewsToggle } from './EmailAlertsToggle'
+import { PushToggle } from './PushToggle'
 import { FEATURES } from '../config/app'
 import { useApp, type SyncStatus } from '../state/AppState'
 import { useAuth } from '../state/AuthState'
@@ -79,6 +80,7 @@ function LoggedIn({ email, sync, children }: { email: string; sync: SyncStatus; 
       </p>
       {SYNC_LABEL[sync] && <p className="flex items-center gap-2 text-neutral-600">{SYNC_LABEL[sync]}</p>}
       <EmailAlertsToggle />
+      <PushToggle plain />
       <EmailNewsToggle />
       {children}
     </div>

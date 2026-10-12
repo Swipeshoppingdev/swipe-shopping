@@ -3,7 +3,8 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { ProductImage } from '../components/ProductImage'
 import { Avatar, FriendPicker, LoginNeeded, ProductPicker, ProductStrip, ReactionBar, useProductsById } from '../components/SocialBits'
 import { openProduct } from '../lib/productSheet'
-import { disablePush, enablePush, pushAvailable, pushEnabledHere, pushPermission } from '../lib/push'
+import { enablePush, pushAvailable, pushEnabledHere, pushPermission } from '../lib/push'
+import { PushToggle } from '../components/PushToggle'
 import { load, save } from '../lib/storage'
 import {
   GIFT_TEMPLATES,
@@ -448,7 +449,7 @@ function PushCard() {
       <p className="flex-1 text-sm">
         {state === 'denied'
           ? 'Notifiche bloccate: attivale dalle impostazioni del telefono per sapere quando un amico ti manda qualcosa.'
-          : 'Attiva le notifiche: ti avvisiamo quando un amico ti chiede un parere o ti manda qualcosa.'}
+          : 'Attiva le notifiche: ti avvisiamo quando un amico ti manda qualcosa o un tuo preferito è in offerta.'}
       </p>
       {state === 'ask' && (
         <button
@@ -571,37 +572,6 @@ function ChatList({ chats, noFriends }: { chats: ChatSummary[] | null; noFriends
         </a>
       ))}
     </section>
-  )
-}
-
-function PushToggle() {
-  const [on, setOn] = useState(pushEnabledHere)
-  const [busy, setBusy] = useState(false)
-  if (!pushAvailable) return null
-  return (
-    <label className="flex items-center justify-between gap-3 rounded-2xl bg-white p-4 text-sm shadow-sm ring-1 ring-black/5">
-      <span className="flex items-center gap-2">
-        <Bell className="size-5 text-rose-500" /> Notifiche dagli amici su questo telefono
-      </span>
-      <input
-        type="checkbox"
-        checked={on}
-        disabled={busy}
-        onChange={async (e) => {
-          setBusy(true)
-          try {
-            if (e.target.checked) setOn(await enablePush())
-            else {
-              await disablePush()
-              setOn(false)
-            }
-          } finally {
-            setBusy(false)
-          }
-        }}
-        className="size-5 accent-rose-500"
-      />
-    </label>
   )
 }
 

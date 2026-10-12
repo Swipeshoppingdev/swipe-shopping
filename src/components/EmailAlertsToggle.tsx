@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react'
+import { pushAvailable } from '../lib/push'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../state/AuthState'
 
-/** Preferenza "avvisami via email quando un preferito è in offerta" (colonna user_data.email_alerts). */
+/** Preferenza "avvisami (notifica o email) quando un preferito è in offerta" (colonna user_data.email_alerts). */
 export function EmailAlertsToggle() {
   return (
-    <EmailPrefToggle column="email_alerts" label="Avvisami via email quando un preferito è in offerta" hint="Al massimo un'email ogni 3 giorni." />
+    <EmailPrefToggle
+      column="email_alerts"
+      label="Avvisami quando un preferito è in offerta"
+      hint={pushAvailable ? 'Con una notifica (se attive) o via email, al massimo ogni 3 giorni.' : "Via email (nell'app Android con una notifica), al massimo ogni 3 giorni."}
+    />
   )
 }
 

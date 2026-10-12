@@ -5,7 +5,7 @@ import { supabase } from './supabase'
 
 /**
  * Notifiche push nell'app Android (Firebase Cloud Messaging). Le manda scripts/push.ts quando un amico
- * ti manda qualcosa in "Per te". Attive solo se l'app è stata costruita con google-services.json
+ * ti manda qualcosa in "Per te", e scripts/price-alerts.ts quando un preferito è in offerta. Attive solo se l'app è stata costruita con google-services.json
  * (android.yml imposta VITE_PUSH=1).
  */
 export const pushAvailable = isNative && Capacitor.getPlatform() === 'android' && import.meta.env.VITE_PUSH === '1'
@@ -31,6 +31,7 @@ async function listen() {
   const push = await plugin()
   // Canale delle notifiche (lo stesso indicato in AndroidManifest.xml).
   await push.createChannel({ id: 'amici', name: 'Amici', description: 'Consigli, sondaggi e liste dai tuoi amici', importance: 4 }).catch(() => {})
+  await push.createChannel({ id: 'offerte', name: 'Offerte sui preferiti', description: 'Quando un tuo preferito è scontato (al massimo ogni 3 giorni)', importance: 3 }).catch(() => {})
   await push.addListener('registration', ({ value }) => {
     save(TOKEN_KEY, value)
     // .then() fa partire davvero la richiesta.

@@ -68,12 +68,13 @@ jobs:
           git commit -m "Catalogo aggiornato da Amazon"
           git pull --rebase -X theirs origin main
           git push origin HEAD:main
-      - name: Avvisa via email chi ha un preferito in offerta
+      - name: Avvisa chi ha un preferito in offerta (notifica sul telefono o email)
         run: npm run alerts:price
         continue-on-error: true
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          FCM_SERVICE_ACCOUNT: ${{ secrets.FCM_SERVICE_ACCOUNT }}
       - name: Riepilogo segnalazioni dei prodotti
         run: npm run reports:summary
         continue-on-error: true

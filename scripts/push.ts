@@ -6,7 +6,7 @@
 // - Le novità più vecchie di 2 ore non vengono mandate (solo segnate come fatte).
 // - I telefoni che non esistono più vengono tolti.
 // Uso: `node scripts/push.ts` (con `--dry` mostra cosa manderebbe, senza inviare).
-import { createSign } from 'node:crypto'
+import { FCM_SCOPE, accessToken, fcmSender, type PushMessage, type ServiceAccount } from './google.ts'
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hlsqxxcztysnlijznjng.supabase.co'
 const { SUPABASE_SERVICE_ROLE_KEY, FCM_SERVICE_ACCOUNT } = process.env
@@ -96,47 +96,12 @@ function message(i: Item): { title: string; body: string; url: string } {
   }
 }
 
-// --- Firebase: token di accesso dall'account di servizio (JWT firmato RS256) ---
-const b64url = (s: string | Buffer) => Buffer.from(s).toString('base64url')
-async function accessToken(sa: { client_email: string; private_key: string }) {
-  const now = Math.floor(Date.now() / 1000)
-  const claims = { iss: sa.client_email, scope: 'https://www.googleapis.com/auth/firebase.messaging', aud: 'https://oauth2.googleapis.com/token', iat: now, exp: now + 3600 }
-  const unsigned = `${b64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }))}.${b64url(JSON.stringify(claims))}`
-  const signature = createSign('RSA-SHA256').update(unsigned).sign(sa.private_key).toString('base64url')
-  const res = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: `${unsigned}.${signature}` }),
-  })
-  if (!res.ok) throw new Error(`Accesso a Firebase non riuscito: HTTP ${res.status} ${(await res.text()).slice(0, 200)}`)
-  return ((await res.json()) as { access_token: string }).access_token
-}
-
-let send: (token: string, m: { title: string; body: string; url: string }) => Promise<'ok' | 'gone' | 'error'>
+let send: (token: string, m: PushMessage) => Promise<'ok' | 'gone' | 'error'>
 if (DRY) {
   send = async (token, m) => (console.log(`[prova] ${token.slice(0, 12)}… → ${m.title} (${m.url})`), 'ok')
 } else {
-  const sa = JSON.parse(FCM_SERVICE_ACCOUNT!) as { project_id: string; client_email: string; private_key: string }
-  const bearer = await accessToken(sa)
-  send = async (token, m) => {
-    const res = await fetch(`https://fcm.googleapis.com/v1/projects/${sa.project_id}/messages:send`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${bearer}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: {
-          token,
-          notification: { title: m.title, body: m.body },
-          data: { url: m.url },
-          android: { priority: 'high', notification: { channel_id: 'amici', tag: 'amici' } },
-        },
-      }),
-    })
-    if (res.ok) return 'ok'
-    const text = await res.text()
-    if (res.status === 404 || text.includes('UNREGISTERED')) return 'gone'
-    console.log(`::warning::Invio non riuscito: HTTP ${res.status} ${text.slice(0, 200)}`)
-    return 'error'
-  }
+  const sa = JSON.parse(FCM_SERVICE_ACCOUNT!) as ServiceAccount
+  send = fcmSender(sa, await accessToken(sa, FCM_SCOPE), 'amici')
 }
 
 let sent = 0

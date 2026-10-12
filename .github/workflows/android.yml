@@ -1,10 +1,20 @@
 # App Android: costruisce l'app dal codice del sito.
 # - swipe-shopping.apk: da installare direttamente su un telefono Android per provarla
 # - swipe-shopping.aab: il file da caricare su Google Play, solo quando la chiave di firma è nei segreti
+# Avviata a mano (Run workflow) carica anche l'.aab su Google Play, nel test chiuso (scripts/play-upload.ts).
 name: App Android
 
 on:
   workflow_dispatch:
+    inputs:
+      play:
+        description: 'Carica la nuova versione su Google Play (test chiuso)'
+        type: boolean
+        default: true
+      notes:
+        description: 'Note di rilascio per i tester (facoltative)'
+        type: string
+        default: ''
   push:
     branches: [main]
     paths: ['src/**', 'android/**', 'index.html', 'package.json', 'capacitor.config.ts', '.github/workflows/android.yml', 'android/upload.jks.gpg']
@@ -77,3 +87,11 @@ jobs:
           name: swipe-shopping-android-${{ github.run_number }}
           path: out/
           retention-days: 14
+
+      - name: Carica su Google Play
+        if: github.event_name == 'workflow_dispatch' && inputs.play && hashFiles('out/swipe-shopping.aab') != ''
+        run: node scripts/play-upload.ts out/swipe-shopping.aab
+        env:
+          PLAY_SERVICE_ACCOUNT: ${{ secrets.PLAY_SERVICE_ACCOUNT }}
+          FCM_SERVICE_ACCOUNT: ${{ secrets.FCM_SERVICE_ACCOUNT }}
+          PLAY_NOTES: ${{ inputs.notes }}

@@ -1,4 +1,6 @@
-// Email "preferito in offerta": avvisa chi ha un preferito che oggi è scontato sul negozio.
+// Avviso "preferito in offerta": avvisa chi ha un preferito che oggi è scontato sul negozio.
+// Chi ha l'app Android con le notifiche attive riceve una notifica sul telefono (solo dalle 9 alle 21),
+// gli altri un'email. Mai entrambe: il limite di un avviso ogni 3 giorni vale per tutti e due.
 // Non confrontiamo con prezzi vecchi: le regole Amazon non permettono di conservarli oltre 24 ore.
 // Gira su GitHub Actions dopo l'aggiornamento del catalogo. Regole:
 // - al massimo un'email ogni 3 giorni per persona, mai due volte per la stessa offerta
@@ -10,10 +12,11 @@
 // oppure `-- --test=indirizzo@email.it` per mandare solo un'email di esempio a quell'indirizzo).
 import { readFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
+import { FCM_SCOPE, accessToken, fcmSender, type ServiceAccount } from './google.ts'
 const mask = (e: string) => e.replace(/^(.).*@/, '$1***@') // log pubblici: niente email intere
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hlsqxxcztysnlijznjng.supabase.co'
-const { SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY } = process.env
+const { SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, FCM_SERVICE_ACCOUNT } = process.env
 const DRY = process.argv.includes('--dry')
 const TEST_TO = process.argv.find((a) => a.startsWith('--test='))?.slice('--test='.length).trim()
 const FROM = 'Swipe Shopping <noreply@swipeshopping.app>'
@@ -119,7 +122,44 @@ const sentLog = new Map(
   ),
 )
 
+// Telefoni con le notifiche attive (schema-6.sql). Senza tabella o senza chiave Firebase: solo email.
+const phones = new Map<string, string[]>()
+let push: ReturnType<typeof fcmSender> | null = null
+if (FCM_SERVICE_ACCOUNT) {
+  try {
+    for (const t of await all<{ token: string; user_id: string }>('push_tokens', 'token, user_id'))
+      phones.set(t.user_id, [...(phones.get(t.user_id) ?? []), t.token])
+    if (!DRY) {
+      const sa = JSON.parse(FCM_SERVICE_ACCOUNT) as ServiceAccount
+      push = fcmSender(sa, await accessToken(sa, FCM_SCOPE))
+    }
+  } catch (e) {
+    console.log(`::notice::Notifiche offerte non disponibili: ${e instanceof Error ? e.message : e}`)
+    phones.clear()
+  }
+}
+const romeHour = Number(new Intl.DateTimeFormat('it-IT', { hour: 'numeric', hourCycle: 'h23', timeZone: 'Europe/Rome' }).format(now))
+const quiet = romeHour < 9 || romeHour >= 21
+
+/** Notifica sul telefono, testo fisso. true se è arrivata ad almeno un telefono. */
+async function notifyPhones(userId: string, count: number) {
+  const m = {
+    title: count === 1 ? 'Un tuo preferito è in offerta' : `${count} tuoi preferiti sono in offerta`,
+    body: 'Guardali prima che lo sconto finisca',
+    url: '#/preferiti',
+  }
+  if (DRY || !push) return (console.log(`[prova] notifica: ${m.title}`), true)
+  let ok = false
+  for (const token of phones.get(userId) ?? []) {
+    const r = await push(token, m)
+    if (r === 'ok') ok = true
+    if (r === 'gone') await db.from('push_tokens').delete().eq('token', token)
+  }
+  return ok
+}
+
 let sent = 0
+let pushed = 0
 let failed = 0
 for (const u of users) {
   const log = sentLog.get(u.user_id)
@@ -142,24 +182,35 @@ for (const u of users) {
     continue
   }
 
-  const { data, error } = await db.auth.admin.getUserById(u.user_id)
-  const to = data?.user?.email
-  if (error || !to || !data.user.email_confirmed_at) continue
-
-  if (DRY) {
-    console.log(`[prova] ${mask(to)}: ${email(count).subject}`)
-    continue
+  let viaPhone = false
+  if (phones.has(u.user_id)) {
+    // Di notte niente notifiche: si aspetta il prossimo aggiornamento del catalogo.
+    if (quiet) continue
+    viaPhone = await notifyPhones(u.user_id, count)
   }
-  if (!(await send(to, count))) {
-    failed++
-    continue
+  if (viaPhone) {
+    if (DRY) continue
+    pushed++
+  } else {
+    const { data, error } = await db.auth.admin.getUserById(u.user_id)
+    const to = data?.user?.email
+    if (error || !to || !data.user.email_confirmed_at) continue
+
+    if (DRY) {
+      console.log(`[prova] ${mask(to)}: ${email(count).subject}`)
+      continue
+    }
+    if (!(await send(to, count))) {
+      failed++
+      continue
+    }
+    sent++
+    await new Promise((r) => setTimeout(r, 600)) // Resend: max 2 richieste al secondo
   }
   const { error: upsertError } = await db
     .from('price_alerts')
     .upsert({ user_id: u.user_id, last_sent_at: new Date().toISOString(), notified: { deals: { ...active, ...fresh } } })
   if (upsertError) console.log(`::warning::price_alerts: ${upsertError.message}`)
-  sent++
-  await new Promise((r) => setTimeout(r, 600)) // Resend: max 2 richieste al secondo
 }
 
-console.log(`Avvisi offerte: ${sent} email inviate${failed ? `, ${failed} non riuscite` : ''} (${users.length} account con avvisi attivi).`)
+console.log(`Avvisi offerte: ${pushed} notifiche, ${sent} email inviate${failed ? `, ${failed} non riuscite` : ''} (${users.length} account con avvisi attivi).`)
