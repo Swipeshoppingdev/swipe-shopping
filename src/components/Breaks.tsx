@@ -8,11 +8,14 @@ import { brandAndStore } from '../config/stores'
 import { setBoost, spendBoost } from '../lib/boost'
 import { formatPrice, freshPrice } from '../lib/price'
 import { load, save } from '../lib/storage'
+import { decoys } from '../lib/priceGame'
 import { useApp } from '../state/AppState'
 import type { Product } from '../types/product'
 import { DuelView, pickPair } from './DuelView'
 import { ProductImage } from './ProductImage'
 import { StoreLink } from './StoreLink'
+import { ChallengeStarter } from './ChallengeStarter'
+import { useAuth } from '../state/AuthState'
 
 /** Ogni quanti swipe arriva una pausa di gioco. */
 const EVERY = 10
@@ -50,14 +53,6 @@ function looksLike(p: Product) {
   }
   const t = p.title.toLowerCase()
   return st.some((w) => t.includes(w))
-}
-
-/** Due prezzi finti credibili (circa -40% e +50%), arrotondati come quelli veri. */
-function decoys(price: number) {
-  const round = (x: number) => (x >= 20 ? Math.round(x) - 0.01 : Math.round(x * 2) / 2 - 0.01)
-  const low = round(price * (0.55 + Math.random() * 0.15))
-  const high = round(price * (1.4 + Math.random() * 0.3))
-  return [low, high].filter((x) => x > 1 && Math.abs(x - price) > 1)
 }
 
 function buildBreak(kind: (typeof KINDS)[number], deck: Product[], all: Product[], gender: 'uomo' | 'donna'): Break | null {
@@ -235,7 +230,9 @@ const fade = { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity
 /** Indovina il prezzo: tre prezzi, uno è quello vero. Poi "Lo voglio" o "Avanti". */
 function PriceGuess({ product, price, options, onDone }: { product: Product; price: number; options: number[]; onDone: () => void }) {
   const { actions } = useApp()
+  const { user } = useAuth()
   const [picked, setPicked] = useState<number | null>(null)
+  const [challenge, setChallenge] = useState(false)
   const right = picked === price
   return (
     <motion.div {...fade} className={frame} role="dialog" aria-label="Indovina il prezzo" data-break>
@@ -283,6 +280,12 @@ function PriceGuess({ product, price, options, onDone }: { product: Product; pri
       <p className="h-5 text-center text-sm font-semibold">
         {picked === null ? '' : right ? '🎯 Esatto! Occhio da intenditore' : `Quasi! Costa ${formatPrice(price)}`}
       </p>
+      {picked !== null && user && (
+        <button type="button" onClick={() => setChallenge(true)} className="mx-auto -my-1 text-sm font-bold text-rose-500 underline">
+          🎯 Sfida un amico sui prezzi
+        </button>
+      )}
+      {challenge && <ChallengeStarter onClose={() => setChallenge(false)} />}
       <div className="flex justify-center gap-2 pb-1">
         {picked !== null && (
           <button

@@ -22,6 +22,7 @@ const PAGES = {
   SantaPage: () => import('./pages/SantaPage').then((m) => ({ default: m.SantaPage })),
   StudioPage: () => import('./pages/StudioPage').then((m) => ({ default: m.StudioPage })),
   SwipeTogetherPage: () => import('./pages/SwipeTogetherPage').then((m) => ({ default: m.SwipeTogetherPage })),
+  ChallengePage: () => import('./pages/ChallengePage').then((m) => ({ default: m.ChallengePage })),
   FiltersPage: () => import('./pages/FiltersPage').then((m) => ({ default: m.FiltersPage })),
   PrivacyPage: () => import('./pages/PrivacyPage').then((m) => ({ default: m.PrivacyPage })),
   ProfilePage: () => import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
@@ -39,6 +40,7 @@ const PollPage = lazy(PAGES.PollPage)
 const SantaPage = lazy(PAGES.SantaPage)
 const StudioPage = lazy(PAGES.StudioPage)
 const SwipeTogetherPage = lazy(PAGES.SwipeTogetherPage)
+const ChallengePage = lazy(PAGES.ChallengePage)
 const FiltersPage = lazy(PAGES.FiltersPage)
 const PrivacyPage = lazy(PAGES.PrivacyPage)
 const ProfilePage = lazy(PAGES.ProfilePage)
@@ -76,6 +78,7 @@ export default function App() {
         {route === 'sondaggio' && <PollPage key={hash} />}
         {route === 'regalo' && <GiftListPage key={hash} />}
         {route === 'insieme' && <SwipeTogetherPage key={hash} />}
+        {route === 'sfida' && <ChallengePage key={hash} />}
         {route === 'segreto' && <SantaPage key={hash} />}
         {route === 'chat' && <ChatPage key={hash} />}
         {route === 'outfit' && <OutfitPage />}

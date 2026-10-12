@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 /** Routing via hash: funziona su qualsiasi hosting statico e dentro Capacitor. */
-export const ROUTES = ['scopri', 'preferiti', 'filtri', 'profilo', 'privacy', 'admin', 'lista', 'amici', 'u', 'sondaggio', 'regalo', 'insieme', 'segreto', 'chat', 'outfit', 'studio', 'regali'] as const
+export const ROUTES = ['scopri', 'preferiti', 'filtri', 'profilo', 'privacy', 'admin', 'lista', 'amici', 'u', 'sondaggio', 'regalo', 'insieme', 'segreto', 'chat', 'outfit', 'studio', 'regali', 'sfida'] as const
 export type Route = (typeof ROUTES)[number]
 
 const parse = (hash: string): Route => {
@@ -11,7 +11,7 @@ const parse = (hash: string): Route => {
   if (r.startsWith('outfit/')) return 'outfit' // #/outfit/salvati
   if (r.startsWith('regali/')) return 'regali' // #/regali/salvati, #/regali/filtri
   // Social: profilo di un amico, sondaggio, lista regalo, Swipe insieme, Babbo Natale segreto (#/u/<codice>, #/sondaggio/<id>…)
-  for (const prefix of ['u', 'sondaggio', 'regalo', 'insieme', 'segreto', 'chat'] as const) if (r.startsWith(`${prefix}/`)) return prefix
+  for (const prefix of ['u', 'sondaggio', 'regalo', 'insieme', 'segreto', 'chat', 'sfida'] as const) if (r.startsWith(`${prefix}/`)) return prefix
   return (ROUTES as readonly string[]).includes(r) ? (r as Route) : 'scopri'
 }
 

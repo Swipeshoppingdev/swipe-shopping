@@ -56,9 +56,9 @@ export function PrivacyPage() {
             chi ti segue vede le tue liste regalo e i sondaggi, e i preferiti che salvi solo se lo attivi tu (che contano anche, senza il tuo nome, tra i prodotti "di tendenza" dei tuoi amici). Chi ha il link di
             una lista o di un sondaggio li vede e può votare o segnare "lo prendo io". Puoi rimuovere o bloccare chi ti segue.
             Se lo inserisci, chi ti segue vede il giorno e il mese del tuo compleanno (non l'anno). Gli amici possono mandarti solo
-            contenuti prestabiliti (un prodotto, un sondaggio, una lista, un invito a Swipe insieme, una reazione con emoji, un invito al
+            contenuti prestabiliti (un prodotto, un sondaggio, una lista, un invito a Swipe insieme, una sfida sui prezzi, una reazione con emoji, un invito al
             Babbo Natale segreto): non ci sono messaggi scritti. Nella Chat tu e un amico vedete i prodotti, i sondaggi e gli inviti che vi siete mandati e le emoji di risposta. Nel Babbo Natale segreto ognuno vede solo la persona a cui fa
-            il regalo, mai chi lo fa a lui.
+            il regalo, mai chi lo fa a lui. Nelle sfide sui prezzi salviamo solo il punteggio di chi gioca, visibile agli altri giocatori della stessa sfida.
           </li>
           <li>
             <strong>Dati tecnici:</strong> come ogni sito, il servizio di hosting registra indirizzo IP e tipo di browser per

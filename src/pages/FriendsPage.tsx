@@ -1,4 +1,5 @@
-import { BarChart3, Bell, Cake, Flame, Gift, Inbox, Layers, Search, Share2, Snowflake, Trash2, UserPlus, Users, X } from 'lucide-react'
+import { BarChart3, Bell, Cake, Flame, Gift, Inbox, Layers, Search, Share2, Snowflake, Target, Trash2, UserPlus, Users, X } from 'lucide-react'
+import { challengeProducts } from '../lib/priceGame'
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { ProductImage } from '../components/ProductImage'
 import { Avatar, FriendPicker, LoginNeeded, ProductPicker, ProductStrip, ReactionBar, useProductsById } from '../components/SocialBits'
@@ -18,6 +19,7 @@ import {
   type Birthday,
   type FeedItem,
   type InboxItem,
+  type PriceChallengeSummary,
   type GiftListSummary,
   type GiftTemplate,
   type MyProfile,
@@ -49,6 +51,8 @@ interface Data {
   trending: { product_id: string; friends: number }[]
   /** null finché supabase/schema-11.sql non è eseguito */
   chats: ChatSummary[] | null
+  /** null finché supabase/schema-15.sql non è eseguito */
+  challenges: PriceChallengeSummary[] | null
 }
 
 type Tab = 'perte' | 'chat' | 'crea' | 'amici'
@@ -74,7 +78,7 @@ export function FriendsPage() {
   const reload = useCallback(async () => {
     try {
       const me = await social.me()
-      const [mine, feed, friends, inbox, birthdays, swipes, santas, trending, chats] = await Promise.all([
+      const [mine, feed, friends, inbox, birthdays, swipes, santas, trending, chats, challenges] = await Promise.all([
         social.mine(),
         social.feed(),
         social.friends(),
@@ -85,8 +89,9 @@ export function FriendsPage() {
         social.santas().catch(() => []),
         social.trending().catch(() => []),
         social.chats().catch(() => null),
+        social.challenges().catch(() => null),
       ])
-      setData({ me, ...mine, feed, ...friends, inbox, birthdays, swipes, santas, trending, chats })
+      setData({ me, ...mine, feed, ...friends, inbox, birthdays, swipes, santas, trending, chats, challenges })
       setError('')
       // Aperta la scheda, le novità contano come viste (il pallino si spegne).
       if (inbox.some((i) => !i.seen && i.kind !== 'consiglio')) void social.inboxSeen().then(refreshUnseen)
@@ -140,7 +145,7 @@ export function FriendsPage() {
 function Loaded(props: { tab: Tab; setTab: (t: Tab) => void; data: Data; reload: () => Promise<void>; setData: (d: Data) => void }) {
   const { tab, data, reload, setData } = props
   const { deck, products } = useApp()
-  const [picker, setPicker] = useState<null | 'poll' | 'list' | 'swipe' | 'santa'>(null)
+  const [picker, setPicker] = useState<null | 'poll' | 'list' | 'swipe' | 'santa' | 'sfida'>(null)
   const [template, setTemplate] = useState<GiftTemplate>('compleanno')
   const [busy, setBusy] = useState(false)
   const [notice, setNotice] = useState('')
@@ -304,6 +309,32 @@ function Loaded(props: { tab: Tab; setTab: (t: Tab) => void; data: Data; reload:
             ))}
           </Section>
 
+          {data.challenges && (
+            <Section
+              icon={<Target className="size-5" />}
+              title="Sfida sui prezzi"
+              action={
+                <button type="button" disabled={busy} onClick={() => setPicker('sfida')} className={smallBtn}>
+                  Nuova
+                </button>
+              }
+            >
+              <p className="text-sm text-neutral-500">
+                Indovina il prezzo con gli stessi 5 prodotti per te e i tuoi amici: chi ne indovina di più vince.
+              </p>
+              {data.challenges.map((c) => (
+                <Row
+                  key={c.id}
+                  ids={c.product_ids}
+                  title={c.is_creator ? 'La tua sfida' : `Sfida di ${c.creator.handle}`}
+                  subtitle={`${c.my_score === null ? 'Tocca a te' : `Hai fatto ${c.my_score}/${c.product_ids.length}`} · ${c.played} ${c.played === 1 ? 'ha giocato' : 'hanno giocato'}`}
+                  href={`#/sfida/${c.id}`}
+                  onDelete={c.is_creator ? () => window.confirm('Eliminare la sfida?') && act(() => social.deleteChallenge(c.id)) : undefined}
+                />
+              ))}
+            </Section>
+          )}
+
           {FEATURES.secretSanta && (
           <Section
             icon={<Snowflake className="size-5" />}
@@ -404,6 +435,21 @@ function Loaded(props: { tab: Tab; setTab: (t: Tab) => void; data: Data; reload:
         </ProductPicker>
       )}
       {picker === 'santa' && <SantaCreator onClose={() => setPicker(null)} />}
+      {picker === 'sfida' && (
+        <FriendPicker
+          title="Sfida sui prezzi con…"
+          confirmLabel="Sfida"
+          onClose={() => setPicker(null)}
+          onConfirm={async (codes) => {
+            // 5 prodotti a caso dalla sezione aperta, con prezzo aggiornato e prezzi ben diversi tra loro.
+            const ids = challengeProducts(shuffle(deck.length >= 30 ? deck : products)).map((p) => p.id)
+            if (ids.length < 3) throw new Error('Pochi prezzi aggiornati in questa sezione: cambia sezione e riprova.')
+            const id = await social.createChallenge(codes, ids)
+            setPicker(null)
+            window.location.hash = `#/sfida/${id}`
+          }}
+        />
+      )}
       {picker === 'swipe' && (
         <FriendPicker
           title="Swipe insieme con…"
@@ -597,6 +643,8 @@ function InboxRow({ item, onDelete }: { item: InboxItem; onDelete: () => void })
           ? `ti ha mandato la lista ${t ? `${t.emoji} ${t.label}` : ''}`
           : item.kind === 'swipe'
             ? 'ti invita a Swipe insieme'
+            : item.kind === 'sfida'
+              ? 'ti sfida a Indovina il prezzo 🎯'
             : item.kind === 'segreto'
               ? 'ti invita al Babbo Natale segreto 🎅'
               : item.kind === 'estrazione'
@@ -609,6 +657,8 @@ function InboxRow({ item, onDelete }: { item: InboxItem; onDelete: () => void })
         ? `#/regalo/${item.ref_id}`
         : item.kind === 'swipe'
           ? `#/insieme/${item.ref_id}`
+          : item.kind === 'sfida'
+            ? `#/sfida/${item.ref_id}`
           : item.kind === 'segreto' || item.kind === 'estrazione'
             ? `#/segreto/${item.ref_id}`
             : null
@@ -722,7 +772,7 @@ function Section({ icon, title, action, children }: { icon: ReactNode; title: st
   )
 }
 
-function Row(props: { ids: string[]; title: string; subtitle: string; href: string; onDelete: () => void }) {
+function Row(props: { ids: string[]; title: string; subtitle: string; href: string; onDelete?: () => void }) {
   return (
     <div className="relative border-t border-neutral-100 pt-3">
       <a href={props.href} className="block space-y-2">
@@ -732,9 +782,11 @@ function Row(props: { ids: string[]; title: string; subtitle: string; href: stri
         </div>
         <ProductStrip ids={props.ids} />
       </a>
-      <button type="button" onClick={props.onDelete} className="absolute top-3 right-0 text-neutral-400" aria-label="Elimina">
-        <Trash2 className="size-4" />
-      </button>
+      {props.onDelete && (
+        <button type="button" onClick={props.onDelete} className="absolute top-3 right-0 text-neutral-400" aria-label="Elimina">
+          <Trash2 className="size-4" />
+        </button>
+      )}
     </div>
   )
 }

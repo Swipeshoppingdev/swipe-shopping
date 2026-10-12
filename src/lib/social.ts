@@ -73,7 +73,7 @@ export interface Poll extends PollSummary {
 
 export interface InboxItem {
   id: number
-  kind: 'consiglio' | 'sondaggio' | 'lista' | 'swipe' | 'reazione' | 'segreto' | 'estrazione'
+  kind: 'consiglio' | 'sondaggio' | 'lista' | 'swipe' | 'reazione' | 'segreto' | 'estrazione' | 'sfida'
   product_id: string | null
   ref_id: string | null
   ref_kind: 'poll' | 'list' | null
@@ -289,6 +289,33 @@ export const social = {
   santaDraw: (id: string) => rpc<void>('santa_draw', { p_id: id }),
   santaInvite: (id: string, codes: string[]) => rpc<number>('santa_invite', { p_id: id, p_codes: codes }),
   deleteSanta: (id: string) => rpc<void>('santa_delete', { p_id: id }),
+  createChallenge: (codes: string[], productIds: string[]) => rpc<string>('challenge_create', { p_codes: codes, p_product_ids: productIds }),
+  challenge: (id: string) => rpc<PriceChallenge | null>('challenge_get', { p_id: id }),
+  challengePlay: (id: string, score: number) => rpc<void>('challenge_play', { p_id: id, p_score: score }),
+  challenges: () => rpc<PriceChallengeSummary[]>('challenge_list'),
+  deleteChallenge: (id: string) => rpc<void>('challenge_delete', { p_id: id }),
+}
+
+/** Sfida "Indovina il prezzo" (supabase/schema-15.sql) */
+export interface PriceChallenge {
+  id: string
+  product_ids: string[]
+  created_at: string
+  is_creator: boolean
+  creator: SocialCard
+  my_score: number | null
+  invited: number
+  /** Classifica: solo dopo aver giocato */
+  players: (SocialCard & { score: number; me: boolean })[] | null
+}
+export interface PriceChallengeSummary {
+  id: string
+  created_at: string
+  product_ids: string[]
+  is_creator: boolean
+  creator: SocialCard
+  my_score: number | null
+  played: number
 }
 
 /** Amici a cui mandare cose: chi seguo e chi mi segue, senza doppioni. */
