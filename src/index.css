@@ -5,24 +5,6 @@
 }
 
 html,
-/* Regali: rosso Natale, ben diverso dal rosa della Moda. Dopo le sezioni e più specifico:
-   in Regali resta attiva anche la classe della sezione aperta (es. .casa). */
-:root:root.regali {
-  --color-rose-50: #fef2f2;
-  --color-rose-100: #fee2e2;
-  --color-rose-300: #fca5a5;
-  --color-rose-400: #ef4444;
-  --color-rose-500: #c81414;
-  --color-rose-600: #a50f0f;
-  --color-rose-700: #7f0d0d;
-}
-:root:root.regali.dark {
-  --color-rose-50: #3b0a0a;
-  --color-rose-100: #5a0e0e;
-  --color-rose-500: #e11d1d;
-  --color-rose-700: #fca5a5;
-}
-
 body {
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
@@ -199,4 +181,22 @@ body {
   background: #3a1414;
   color: #fca5a5;
   --tw-ring-color: #dc2626;
+}
+
+/* Regali: rosso Natale, ben diverso dal rosa della Moda. Dopo le sezioni e più specifico:
+   in Regali resta attiva anche la classe della sezione aperta (es. .casa). */
+:root:root.regali {
+  --color-rose-50: #fef2f2;
+  --color-rose-100: #fee2e2;
+  --color-rose-300: #fca5a5;
+  --color-rose-400: #ef4444;
+  --color-rose-500: #c81414;
+  --color-rose-600: #a50f0f;
+  --color-rose-700: #7f0d0d;
+}
+:root:root.regali.dark {
+  --color-rose-50: #3b0a0a;
+  --color-rose-100: #5a0e0e;
+  --color-rose-500: #e11d1d;
+  --color-rose-700: #fca5a5;
 }

@@ -148,26 +148,6 @@ function SectionMenu() {
             </span>
             {onOutfit && <Check className="size-4 shrink-0" />}
           </a>
-          {/* Regali: mazzo con tutte le sezioni, per chi lo riceve e per budget (Black Friday e Natale). */}
-          <a
-            href="#/regali"
-            role="menuitemradio"
-            aria-checked={onGifts}
-            onClick={() => setOpen(false)}
-            className="mb-1 flex w-full items-center gap-3 rounded-xl bg-[#dc2626]/10 p-2.5 text-left ring-1 ring-[#dc2626]/20 active:scale-[0.98]"
-          >
-            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#dc2626] text-[#fff]">
-              <TreePine className="size-4.5" />
-            </span>
-            <span className="min-w-0 flex-1 leading-tight">
-              <span className="flex items-center gap-1.5 font-semibold">
-                {giftSeason().title}
-                {!giftsSeen && <span className="rounded-full bg-[#dc2626] px-1.5 py-px text-[10px] font-bold uppercase text-[#fff]">Nuovo</span>}
-              </span>
-              <span className="block truncate text-xs text-neutral-500">Regali per tutti, per budget e in offerta</span>
-            </span>
-            {onGifts && <Check className="size-4 shrink-0" />}
-          </a>
           {SECTIONS.map((s) => {
             const SIcon = ICONS[s.id]
             const active = s.id === state.mode && !onOutfit && !onGifts
@@ -206,6 +186,26 @@ function SectionMenu() {
               </Fragment>
             )
           })}
+          {/* Regali: mazzo con tutte le sezioni, per chi lo riceve e per budget (Black Friday e Natale). */}
+          <a
+            href="#/regali"
+            role="menuitemradio"
+            aria-checked={onGifts}
+            onClick={() => setOpen(false)}
+            className="mt-1 flex w-full items-center gap-3 rounded-xl bg-[#dc2626]/10 p-2.5 text-left ring-1 ring-[#dc2626]/20 active:scale-[0.98]"
+          >
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#dc2626] text-[#fff]">
+              <TreePine className="size-4.5" />
+            </span>
+            <span className="min-w-0 flex-1 leading-tight">
+              <span className="flex items-center gap-1.5 font-semibold">
+                {giftSeason().title}
+                {!giftsSeen && <span className="rounded-full bg-[#dc2626] px-1.5 py-px text-[10px] font-bold uppercase text-[#fff]">Nuovo</span>}
+              </span>
+              <span className="block truncate text-xs text-neutral-500">Regali per tutti, per budget e in offerta</span>
+            </span>
+            {onGifts && <Check className="size-4 shrink-0" />}
+          </a>
           <div className="mt-1 border-t border-neutral-100 pt-1">
             <SocialLinks />
           </div>
