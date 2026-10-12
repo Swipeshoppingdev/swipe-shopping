@@ -1,7 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowDown, ArrowUp, BadgeCheck, Check, Euro, Heart, Percent, Shuffle, Tag, TrendingUp, X } from 'lucide-react'
+import { ArrowDown, ArrowUp, ArrowUpDown, BadgeCheck, Disc3, Footprints, Check, Euro, Heart, Percent, Shuffle, Tag, TrendingUp, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { categoryLabel, type CategoryId } from '../config/categories'
+import { categoryLabel, universeOf, type CategoryId } from '../config/categories'
+import { OUTFITS_SAVED_EVENT } from './CompleteLook'
+import { STYLE_LABEL, completeLook, outfitId, swapOptions, type Outfit } from '../lib/outfits'
 import { brandAndStore } from '../config/stores'
 import { setBoost, spendBoost } from '../lib/boost'
 import { formatPrice, freshPrice } from '../lib/price'
@@ -16,12 +18,16 @@ import { StoreLink } from './StoreLink'
 const EVERY = 10
 /** Rotazione: Indovina il prezzo e Cosa ti va (i preferiti) tornano più spesso. */
 const NO_LOGO = new Set(['scarpe_eleganti', 'stivali', 'camicie', 'cappotti', 'vestiti', 'maglioni', 'giacche', 'pantaloni'])
-const KINDS = ['prezzo', 'scelta', 'piumeno', 'gratta', 'prezzo', 'scelta', 'caro', 'piumeno', 'marca', 'gratta', 'duello'] as const
+const KINDS = ['prezzo', 'scelta', 'piumeno', 'ordina', 'gratta', 'pezzo', 'prezzo', 'scelta', 'ruota', 'caro', 'piumeno', 'marca', 'ordina', 'gratta', 'pezzo', 'duello'] as const
+const SHOES = ['sneakers', 'scarpe_eleganti', 'stivali', 'scarpe_sportive', 'sandali']
 type Break =
   | { kind: 'duello'; pair: [Product, Product] }
   | { kind: 'caro'; pair: [Product, Product] }
   | { kind: 'piumeno'; chain: Product[] }
   | { kind: 'gratta'; product: Product }
+  | { kind: 'ordina'; products: Product[] }
+  | { kind: 'ruota'; options: { category: string; product: Product }[] }
+  | { kind: 'pezzo'; outfit: Outfit; missing: number; options: Product[] }
   | { kind: 'marca'; product: Product; options: string[] }
   | { kind: 'prezzo'; product: Product; options: number[]; price: number }
   | { kind: 'scelta'; options: { category: string; product: Product }[] }
@@ -54,7 +60,38 @@ function decoys(price: number) {
   return [low, high].filter((x) => x > 1 && Math.abs(x - price) > 1)
 }
 
-function buildBreak(kind: (typeof KINDS)[number], deck: Product[]): Break | null {
+function buildBreak(kind: (typeof KINDS)[number], deck: Product[], all: Product[], gender: 'uomo' | 'donna'): Break | null {
+  if (kind === 'ordina') {
+    // 4 prodotti con prezzi aggiornati, tutti ben distanti tra loro (almeno 15%).
+    const picked: Product[] = []
+    for (const p of deck.slice(1, 120)) {
+      const fp = freshPrice(p)
+      if (!fp || fp.from) continue
+      if (picked.some((q) => Math.max(fp.price, freshPrice(q)!.price) < Math.min(fp.price, freshPrice(q)!.price) * 1.15)) continue
+      picked.push(p)
+      if (picked.length === 4) return { kind, products: picked }
+    }
+    return null
+  }
+  if (kind === 'ruota') {
+    const cats = categoryOptions(deck, 6)
+    return cats ? { kind, options: cats } : null
+  }
+  if (kind === 'pezzo') {
+    // Solo Moda: un outfit vero costruito attorno a un capo del mazzo, con un pezzo (meglio le scarpe) da scegliere.
+    for (const base of deck.slice(1, 40)) {
+      if (universeOf(base.category) !== 'moda' || SHOES.includes(base.category)) continue
+      const g = base.gender === 'uomo' || base.gender === 'donna' ? base.gender : gender
+      const outfit = completeLook(base, all, g)
+      if (!outfit || outfit.items.length < 3) continue
+      let missing = outfit.items.findIndex((p) => SHOES.includes(p.category))
+      if (missing < 0) missing = outfit.items.length - 1
+      const alts = swapOptions(outfit, missing, all).slice(0, 2)
+      if (alts.length < 2) continue
+      return { kind, outfit, missing, options: [outfit.items[missing], ...alts].sort(() => Math.random() - 0.5) }
+    }
+    return null
+  }
   if (kind === 'duello') {
     const pair = pickPair(deck)
     return pair && { kind, pair }
@@ -111,21 +148,25 @@ function buildBreak(kind: (typeof KINDS)[number], deck: Product[]): Break | null
     if (d.length < 2) return null
     return { kind, product, price, options: [price, ...d].sort(() => Math.random() - 0.5) }
   }
-  // Cosa ti va: due categorie con abbastanza prodotti nel mazzo.
+  const options = categoryOptions(deck, 4)
+  return options && { kind: 'scelta', options }
+}
+
+/** n categorie con abbastanza prodotti "veri" nel mazzo, ognuna con un prodotto da mostrare. */
+function categoryOptions(deck: Product[], n: number) {
   const counts = new Map<string, Product[]>()
   for (const p of deck.slice(1, 150)) if (looksLike(p)) counts.set(p.category, [...(counts.get(p.category) ?? []), p])
-  const cats = [...counts].filter(([, l]) => l.length >= 4).sort(() => Math.random() - 0.5).slice(0, 4)
-  if (cats.length < 4) return null
-  return { kind: 'scelta', options: cats.map(([category, l]) => ({ category, product: l[0] })) }
+  const cats = [...counts].filter(([, l]) => l.length >= 4).sort(() => Math.random() - 0.5).slice(0, n)
+  return cats.length < n ? null : cats.map(([category, l]) => ({ category, product: l[0] }))
 }
 
 /**
  * Pause di gioco nel mazzo, ogni 10 swipe, a rotazione: Indovina il prezzo, Cosa ti va, Più o meno, Gratta lo sconto,
- * Più caro, Indovina la marca, Duello.
+ * Ordina per prezzo, Ruota della fortuna, Il pezzo che manca (solo Moda), Più caro, Indovina la marca, Duello.
  * Spezzano la ripetizione dello swipe; si possono sempre saltare.
  */
 export function Breaks() {
-  const { state, deck } = useApp()
+  const { state, deck, allProducts } = useApp()
   const swipes = state.swipes
   const last = useRef(swipes)
   const [current, setCurrent] = useState<Break | null>(null)
@@ -133,6 +174,11 @@ export function Breaks() {
   // offerte, boost) e prima ogni ricalcolo annullava il gioco appena programmato, che così si perdeva.
   const deckRef = useRef(deck)
   deckRef.current = deck
+  const allRef = useRef(allProducts)
+  allRef.current = allProducts
+  const gender = state.filters.gender === 'uomo' ? 'uomo' : 'donna'
+  const genderRef = useRef<'uomo' | 'donna'>(gender)
+  genderRef.current = gender
   const openRef = useRef(false)
   openRef.current = current !== null
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
@@ -149,7 +195,7 @@ export function Breaks() {
     if (next < EVERY) return
     const start = load<number>('breakKind', 0)
     for (let i = 0; i < KINDS.length; i++) {
-      const b = buildBreak(KINDS[(start + i) % KINDS.length], deckRef.current)
+      const b = buildBreak(KINDS[(start + i) % KINDS.length], deckRef.current, allRef.current, genderRef.current)
       if (!b) continue
       save('breakKind', (start + i + 1) % KINDS.length)
       // Dopo l'uscita della carta; il conteggio riparte solo quando il gioco compare davvero.
@@ -171,6 +217,9 @@ export function Breaks() {
       {current?.kind === 'marca' && <BrandGuess key="m" product={current.product} options={current.options} onDone={done} />}
       {current?.kind === 'piumeno' && <HigherLower key="h" chain={current.chain} onDone={done} />}
       {current?.kind === 'gratta' && <ScratchDeal key="g" product={current.product} onDone={done} />}
+      {current?.kind === 'ordina' && <SortByPrice key="o" products={current.products} onDone={done} />}
+      {current?.kind === 'ruota' && <Wheel key="r" options={current.options} onDone={done} />}
+      {current?.kind === 'pezzo' && <MissingPiece key="z" {...current} onDone={done} />}
       {current?.kind === 'scelta' && <ThisOrThat key="s" options={current.options} onDone={done} />}
     </AnimatePresence>
   )
@@ -598,6 +647,235 @@ function ScratchDeal({ product, onDone }: { product: Product; onDone: () => void
         )}
         <button type="button" onClick={onDone} className="h-11 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
           {open ? 'Avanti' : 'Salta'}
+        </button>
+      </div>
+    </motion.div>
+  )
+}
+
+/** Ordina per prezzo: si toccano i 4 prodotti dal meno caro al più caro, poi si vedono i prezzi veri. */
+function SortByPrice({ products, onDone }: { products: Product[]; onDone: () => void }) {
+  const [order, setOrder] = useState<string[]>([])
+  const price = (p: Product) => freshPrice(p)!.price
+  const right = [...products].sort((a, b) => price(a) - price(b)).map((p) => p.id)
+  const done = order.length === products.length
+  const score = done ? order.filter((id, i) => right[i] === id).length : 0
+  return (
+    <motion.div {...fade} className={frame} role="dialog" aria-label="Ordina per prezzo" data-break>
+      <div className="pt-1 text-center">
+        <p className="flex items-center justify-center gap-2 text-xl font-black">
+          <ArrowUpDown className="size-5 text-rose-500" /> Ordina per prezzo
+        </p>
+        <p className="text-sm text-neutral-500">Tocca dal meno caro al più caro</p>
+      </div>
+      <div className="grid min-h-0 flex-1 grid-cols-2 grid-rows-2 gap-2">
+        {products.map((p) => {
+          const pos = order.indexOf(p.id)
+          const ok = done && right[pos] === p.id
+          return (
+            <motion.button
+              key={p.id}
+              type="button"
+              disabled={pos >= 0}
+              onClick={() => {
+                navigator.vibrate?.(10)
+                setOrder([...order, p.id])
+              }}
+              animate={done && !ok ? { x: [0, -5, 5, -3, 3, 0] } : {}}
+              className={`relative flex min-h-0 flex-col overflow-hidden rounded-2xl bg-white p-1.5 text-left shadow-md ring-2 ${
+                done ? (ok ? 'ring-emerald-500' : 'ring-rose-400') : pos >= 0 ? 'ring-neutral-900' : 'ring-transparent'
+              }`}
+            >
+              <div className="relative min-h-0 flex-1 bg-[#fff]">
+                <ProductImage product={p} eager className="absolute inset-0 size-full object-contain" />
+              </div>
+              <p className="truncate pt-1 text-[11px] font-medium">{p.title}</p>
+              <p className="h-5 text-sm font-black">{done ? formatPrice(price(p)) : ''}</p>
+              {pos >= 0 && (
+                <span className={`absolute top-1.5 left-1.5 grid size-7 place-items-center rounded-full text-sm font-black text-[#fff] ${done ? (ok ? 'bg-emerald-500' : 'bg-rose-500') : 'bg-neutral-900'}`}>
+                  {pos + 1}
+                </span>
+              )}
+            </motion.button>
+          )
+        })}
+      </div>
+      <p className="h-5 text-center text-sm font-semibold">
+        {!done ? '' : score === 4 ? '🏆 Perfetto! Tutti al posto giusto' : score >= 2 ? `Non male: ${score} su 4 al posto giusto` : `Solo ${score} su 4: i prezzi ingannano!`}
+      </p>
+      <div className="flex justify-center gap-2 pb-1">
+        {!done && order.length > 0 && (
+          <button type="button" onClick={() => setOrder([])} className="h-11 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
+            Ricomincia
+          </button>
+        )}
+        <button type="button" onClick={onDone} className="h-11 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
+          {done ? 'Avanti' : 'Salta'}
+        </button>
+      </div>
+    </motion.div>
+  )
+}
+
+/** Nome corto per la fetta: "Abbigliamento sportivo" → "Sportivo", "Occhiali da sole" → "Occhiali". */
+const wheelLabel = (l: string) => {
+  if (l.length <= 14) return l
+  const w = l.split(' ')
+  return w[0] === 'Abbigliamento' ? w.at(-1)!.replace(/^./, (c) => c.toUpperCase()) : w[0]
+}
+
+const WHEEL_COLORS = ['#f43f5e', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#a855f7']
+
+/** Ruota della fortuna: gira e la categoria che esce passa in cima al mazzo per 15 swipe. */
+function Wheel({ options, onDone }: { options: { category: string; product: Product }[]; onDone: () => void }) {
+  const { state } = useApp()
+  const [angle, setAngle] = useState(0)
+  const [won, setWon] = useState<string | null>(null)
+  const n = options.length
+  const slice = 360 / n
+  const spin = () => {
+    if (angle) return
+    const pick = Math.floor(Math.random() * n)
+    // Il centro della fetta scelta finisce sotto la freccia in alto (più qualche giro completo).
+    setAngle(360 * 5 + (360 - (pick * slice + slice / 2)))
+    navigator.vibrate?.(10)
+    setTimeout(() => {
+      setWon(options[pick].category)
+      setBoost({ section: state.mode, category: options[pick].category, left: 15 })
+      navigator.vibrate?.([10, 40, 10])
+      setTimeout(onDone, 1600)
+    }, 3200)
+  }
+  const label = (c: string) => categoryLabel(c as CategoryId)
+  const r = 100
+  const point = (deg: number) => [r + r * Math.sin((deg * Math.PI) / 180), r - r * Math.cos((deg * Math.PI) / 180)]
+  return (
+    <motion.div {...fade} className={frame} role="dialog" aria-label="Ruota della fortuna" data-break>
+      <div className="pt-1 text-center">
+        <p className="flex items-center justify-center gap-2 text-xl font-black">
+          <Disc3 className="size-5 text-rose-500" /> Ruota della fortuna
+        </p>
+        <p className="text-sm text-neutral-500">Gira: quello che esce lo vedi nei prossimi swipe</p>
+      </div>
+      <div className="relative flex min-h-0 flex-1 items-center justify-center">
+        <div className="relative aspect-square h-full max-h-80 max-w-full">
+          <span className="absolute -top-1 left-1/2 z-10 -translate-x-1/2 text-3xl leading-none drop-shadow">🔻</span>
+          <motion.svg
+            viewBox="0 0 200 200"
+            className="size-full drop-shadow-lg"
+            animate={{ rotate: angle }}
+            transition={{ duration: 3.1, ease: [0.15, 0.85, 0.25, 1] }}
+          >
+            {options.map((o, i) => {
+              const [x1, y1] = point(i * slice)
+              const [x2, y2] = point((i + 1) * slice)
+              const mid = i * slice + slice / 2
+              return (
+                <g key={o.category}>
+                  <path d={`M100 100 L${x1} ${y1} A100 100 0 0 1 ${x2} ${y2} Z`} fill={WHEEL_COLORS[i % WHEEL_COLORS.length]} stroke="#fff" strokeWidth="1.5" />
+                  <text
+                    x="100"
+                    y="30"
+                    transform={`rotate(${mid} 100 100)`}
+                    textAnchor="middle"
+                    fontSize="9.5"
+                    fontWeight="800"
+                    fill="#fff"
+                  >
+                    {wheelLabel(label(o.category))}
+                  </text>
+                </g>
+              )
+            })}
+            <circle cx="100" cy="100" r="16" fill="#fff" />
+          </motion.svg>
+        </div>
+      </div>
+      <p className="h-5 text-center text-sm font-semibold text-rose-500">{won ? `🎉 È uscito: ${label(won)}!` : ''}</p>
+      <div className="flex justify-center gap-2 pb-1">
+        <button
+          type="button"
+          onClick={spin}
+          disabled={angle !== 0}
+          className="h-11 rounded-full bg-rose-500 px-8 text-sm font-bold text-[#fff] active:scale-95 disabled:opacity-50"
+        >
+          Gira!
+        </button>
+        {!angle && (
+          <button type="button" onClick={onDone} className="h-11 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
+            Salta
+          </button>
+        )}
+      </div>
+    </motion.div>
+  )
+}
+
+/** Il pezzo che manca: un outfit vero con un buco (di solito le scarpe) e 3 capi tra cui scegliere. */
+function MissingPiece({ outfit, missing, options, onDone }: { outfit: Outfit; missing: number; options: Product[]; onDone: () => void }) {
+  const [chosen, setChosen] = useState<Product | null>(null)
+  const [saved, setSaved] = useState(false)
+  const items = outfit.items.map((p, i) => (i === missing ? chosen : p))
+  const saveOutfit = () => {
+    if (!chosen) return
+    const ids = outfit.items.map((p, i) => (i === missing ? chosen.id : p.id))
+    const list = load<{ id: string }[]>('outfitsSaved', [])
+    const id = outfitId(ids)
+    if (!list.some((s) => s.id === id)) {
+      save('outfitsSaved', [{ id, gender: outfit.gender, style: outfit.style, items: ids, savedAt: Date.now() }, ...list])
+      window.dispatchEvent(new Event(OUTFITS_SAVED_EVENT))
+    }
+    setSaved(true)
+    navigator.vibrate?.(15)
+    setTimeout(onDone, 900)
+  }
+  return (
+    <motion.div {...fade} className={frame} role="dialog" aria-label="Il pezzo che manca" data-break>
+      <div className="pt-1 text-center">
+        <p className="flex items-center justify-center gap-2 text-xl font-black">
+          <Footprints className="size-5 text-rose-500" /> Il pezzo che manca
+        </p>
+        <p className="text-sm text-neutral-500">Outfit {STYLE_LABEL[outfit.style].toLowerCase()}: cosa ci metti?</p>
+      </div>
+      <div className={`grid min-h-0 flex-1 gap-1.5 ${items.length <= 4 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+        {items.map((p, i) => (
+          <div
+            key={i}
+            className={`relative min-h-0 overflow-hidden rounded-xl ${p ? 'bg-[#fff] shadow-sm' : 'grid place-items-center border-2 border-dashed border-neutral-300'}`}
+          >
+            {p ? <ProductImage product={p} eager className="absolute inset-0 size-full object-contain p-1" /> : <span className="text-3xl font-black text-neutral-300">?</span>}
+          </div>
+        ))}
+      </div>
+      <div className="grid h-28 shrink-0 grid-cols-3 gap-2">
+        {options.map((p) => (
+          <motion.button
+            key={p.id}
+            type="button"
+            onClick={() => {
+              setChosen(p)
+              navigator.vibrate?.(10)
+            }}
+            animate={{ scale: chosen?.id === p.id ? 1.05 : 1 }}
+            className={`relative overflow-hidden rounded-2xl bg-[#fff] shadow-md ring-2 ${chosen?.id === p.id ? 'ring-rose-500' : 'ring-transparent'}`}
+          >
+            <ProductImage product={p} eager className="absolute inset-0 size-full object-contain p-1.5" />
+          </motion.button>
+        ))}
+      </div>
+      <div className="flex justify-center gap-2 pb-1">
+        {chosen && (
+          <button
+            type="button"
+            onClick={saveOutfit}
+            disabled={saved}
+            className="flex h-11 items-center gap-2 rounded-full bg-rose-500 px-5 text-sm font-semibold text-[#fff] active:scale-95"
+          >
+            <Heart className="size-4 fill-current" /> {saved ? 'Salvato!' : "Salva l'outfit"}
+          </button>
+        )}
+        <button type="button" onClick={onDone} className="h-11 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
+          {chosen ? 'Avanti' : 'Salta'}
         </button>
       </div>
     </motion.div>

@@ -108,7 +108,7 @@ export function ProfilePage() {
         <label className="flex items-center justify-between gap-4 text-sm">
           <span>
             Giochi tra uno swipe e l'altro
-            <span className="block text-xs text-neutral-500">Indovina il prezzo, Cosa ti va, Più o meno e gli altri, ogni 10 swipe.</span>
+            <span className="block text-xs text-neutral-500">Indovina il prezzo, Cosa ti va, la Ruota della fortuna e gli altri, ogni 10 swipe.</span>
           </span>
           <input
             type="checkbox"
