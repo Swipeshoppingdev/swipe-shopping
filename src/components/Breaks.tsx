@@ -128,30 +128,38 @@ export function Breaks() {
   const swipes = state.swipes
   const last = useRef(swipes)
   const [current, setCurrent] = useState<Break | null>(null)
+  // Mazzo e gioco aperto letti al momento dello swipe: il mazzo si ricalcola spesso (sincronizzazione,
+  // offerte, boost) e prima ogni ricalcolo annullava il gioco appena programmato, che così si perdeva.
+  const deckRef = useRef(deck)
+  deckRef.current = deck
+  const openRef = useRef(false)
+  openRef.current = current !== null
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  useEffect(() => () => clearTimeout(timer.current), [])
 
   useEffect(() => {
     const added = swipes - last.current
     last.current = swipes
     if (added <= 0) return
     spendBoost(added)
-    if (current || load<boolean>('gamesOff', false)) return
+    if (openRef.current || timer.current || load<boolean>('gamesOff', false)) return
     const next = load<number>('breakCount', 0) + added
-    if (next < EVERY) {
-      save('breakCount', next)
-      return
-    }
+    save('breakCount', next)
+    if (next < EVERY) return
     const start = load<number>('breakKind', 0)
     for (let i = 0; i < KINDS.length; i++) {
-      const b = buildBreak(KINDS[(start + i) % KINDS.length], deck)
+      const b = buildBreak(KINDS[(start + i) % KINDS.length], deckRef.current)
       if (!b) continue
-      save('breakCount', 0)
       save('breakKind', (start + i + 1) % KINDS.length)
-      // Dopo l'uscita della carta.
-      const t = setTimeout(() => setCurrent(b), 450)
-      return () => clearTimeout(t)
+      // Dopo l'uscita della carta; il conteggio riparte solo quando il gioco compare davvero.
+      timer.current = setTimeout(() => {
+        timer.current = undefined
+        save('breakCount', 0)
+        setCurrent(b)
+      }, 450)
+      return
     }
-    save('breakCount', next)
-  }, [swipes, deck, current])
+  }, [swipes])
 
   const done = () => setCurrent(null)
   return (

@@ -314,8 +314,8 @@ export type Universe = 'moda' | 'tech' | 'gadget' | 'snack' | 'beauty' | 'casa' 
  */
 export const SECTIONS: { id: Universe; label: string; hint: string; color: string; gender?: boolean; colors?: boolean }[] = [
   { id: 'moda', label: 'Moda', hint: 'Vestiti, scarpe, borse, orologi', color: '#f43f5e', gender: true, colors: true },
-  { id: 'beauty', label: 'Beauty', hint: 'Profumi, trucco, viso, capelli', color: '#c026d3', gender: true },
   { id: 'tech', label: 'Tech', hint: 'Cuffie, smartphone, gaming', color: '#f97316' },
+  { id: 'beauty', label: 'Beauty', hint: 'Profumi, trucco, viso, capelli', color: '#c026d3', gender: true },
   { id: 'casa', label: 'Casa', hint: 'Cucina, design, casa smart', color: '#2563eb' },
   { id: 'gadget', label: 'Gadget', hint: 'Idee regalo e oggetti curiosi', color: '#8b5cf6' },
   { id: 'snack', label: 'Snack', hint: 'Dolci, salati, proteici, caffè', color: '#0d9488' },
