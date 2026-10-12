@@ -192,7 +192,7 @@ function SectionMenu() {
             role="menuitemradio"
             aria-checked={onGifts}
             onClick={() => setOpen(false)}
-            className="mt-1 flex w-full items-center gap-3 rounded-xl bg-[#dc2626]/10 p-2.5 text-left ring-1 ring-[#dc2626]/20 active:scale-[0.98]"
+            className={`flex w-full items-center gap-3 rounded-xl p-2.5 text-left active:bg-neutral-100 ${onGifts ? 'bg-neutral-100' : ''}`}
           >
             <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#dc2626] text-[#fff]">
               <TreePine className="size-4.5" />
@@ -204,7 +204,7 @@ function SectionMenu() {
               </span>
               <span className="block truncate text-xs text-neutral-500">Regali per tutti, per budget e in offerta</span>
             </span>
-            {onGifts && <Check className="size-4 shrink-0" />}
+            {onGifts && <Check className="size-4 shrink-0 text-[#dc2626]" />}
           </a>
           <div className="mt-1 border-t border-neutral-100 pt-1">
             <SocialLinks />
