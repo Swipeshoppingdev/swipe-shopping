@@ -1,4 +1,4 @@
-import { BadgePercent, Folder, FolderInput, Heart, Share2, Trash2 } from 'lucide-react'
+import { BadgePercent, FolderInput, Heart, Share2, Trash2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { FolderPicker } from '../components/FolderPicker'
 import { NewBadge } from '../components/NewBadge'
@@ -9,6 +9,7 @@ import { PriceTag } from '../components/PriceTag'
 import { ProductImage } from '../components/ProductImage'
 import { StoreLink } from '../components/StoreLink'
 import { AMAZON_DISCLOSURE } from '../config/app'
+import { compareFolders, folderLabel, isPresetFolder } from '../config/folders'
 import { universeOf } from '../config/categories'
 import { brandAndStore } from '../config/stores'
 import { discountBadge, freshPrice } from '../lib/price'
@@ -38,7 +39,7 @@ export function WishlistPage() {
   const folders = useMemo(() => {
     const count = new Map<string, number>()
     for (const w of wishlist) if (w.folder) count.set(w.folder, (count.get(w.folder) ?? 0) + 1)
-    return [...count].sort((a, b) => a[0].localeCompare(b[0], 'it'))
+    return [...count].sort((a, b) => compareFolders(a[0], b[0]))
   }, [wishlist])
   // Cartella eliminata o svuotata: si torna a "Tutti".
   const current = folder && folders.some(([f]) => f === folder) ? folder : null
@@ -104,36 +105,25 @@ export function WishlistPage() {
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]">
         <FolderChip active={!current} onClick={() => setFolder(null)} label="Tutti" count={wishlist.length} />
         {folders.map(([name, n]) => (
-          <FolderChip key={name} active={current === name} onClick={() => setFolder(name)} label={name} count={n} folder />
+          <FolderChip key={name} active={current === name} onClick={() => setFolder(name)} label={folderLabel(name)} count={n} />
         ))}
       </div>
-      {shown.length > 0 && <ListShare name={current} products={shown.map((w) => w.product)} />}
+      {shown.length > 0 && <ListShare name={current && isPresetFolder(current) ? current : null} products={shown.map((w) => w.product)} />}
       <div className="flex items-center justify-between gap-3 text-sm">
         {current ? (
           <span className="flex gap-3">
             <button
               type="button"
-              className="font-medium text-neutral-600 underline"
-              onClick={() => {
-                const name = window.prompt('Nuovo nome della cartella', current)
-                if (name?.trim()) {
-                  actions.renameFolder(current, name)
-                  setFolder(name.trim())
-                }
-              }}
-            >
-              Rinomina
-            </button>
-            <button
-              type="button"
               className="font-medium text-rose-600 underline"
-              onClick={() => window.confirm(`Eliminare la cartella "${current}"? I prodotti restano nei preferiti.`) && actions.renameFolder(current)}
+              onClick={() => window.confirm(`Svuotare la cartella "${current}"? I prodotti restano nei preferiti.`) && actions.renameFolder(current)}
             >
-              Elimina cartella
+              Svuota cartella
             </button>
           </span>
         ) : (
-          <span className="text-xs text-neutral-500">Tocca la cartella su un prodotto per organizzarlo.</span>
+          <span className="flex items-center gap-1 text-xs text-neutral-500">
+            Tocca <FolderInput className="inline size-3.5 shrink-0" /> per le cartelle
+          </span>
         )}
         <select
           value={sort}
@@ -221,7 +211,7 @@ export function WishlistPage() {
   )
 }
 
-function FolderChip(props: { active: boolean; onClick: () => void; label: string; count: number; folder?: boolean }) {
+function FolderChip(props: { active: boolean; onClick: () => void; label: string; count: number }) {
   return (
     <button
       type="button"
@@ -231,8 +221,7 @@ function FolderChip(props: { active: boolean; onClick: () => void; label: string
         props.active ? 'bg-neutral-900 text-white ring-neutral-900' : 'bg-white text-neutral-700 ring-neutral-200'
       }`}
     >
-      {props.folder && <Folder className="size-3.5" />}
-      {props.label}
+            {props.label}
       <span className={props.active ? 'opacity-70' : 'text-neutral-400'}>{props.count}</span>
     </button>
   )

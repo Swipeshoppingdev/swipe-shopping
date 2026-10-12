@@ -4,6 +4,7 @@ import { DiscountBadge } from '../components/DiscountBadge'
 import { PriceTag } from '../components/PriceTag'
 import { ProductImage } from '../components/ProductImage'
 import { StoreLink } from '../components/StoreLink'
+import { folderLabel, isPresetFolder } from '../config/folders'
 import { brandAndStore } from '../config/stores'
 import { openProduct } from '../lib/productSheet'
 import { sharedList } from '../lib/share'
@@ -30,7 +31,7 @@ export function SharedListPage() {
     for (const p of items) {
       if (saved.has(p.id)) continue
       actions.like(p)
-      actions.setFolder(p, list.name)
+      if (isPresetFolder(list.name)) actions.setFolder(p, list.name)
     }
   }
 
@@ -38,7 +39,7 @@ export function SharedListPage() {
     <div className="space-y-4 pb-8">
       <div className="space-y-1 pt-2">
         <p className="text-xs font-semibold tracking-wide text-rose-500 uppercase">Lista condivisa</p>
-        <h1 className="text-2xl font-bold">{list.name}</h1>
+        <h1 className="text-2xl font-bold">{isPresetFolder(list.name) ? folderLabel(list.name) : 'I suoi preferiti'}</h1>
         <p className="text-sm text-neutral-500">
           {loading ? 'Caricamento prodotti…' : `${items.length} prodotti`}
           {!loading && missing > 0 && ` · ${missing} non più disponibili`}
@@ -52,7 +53,7 @@ export function SharedListPage() {
           className="flex w-full items-center justify-center gap-2 rounded-full bg-rose-500 py-3 font-semibold text-[#fff] active:scale-[0.98] disabled:opacity-60"
         >
           <Heart className="size-5 fill-current" />
-          {allSaved ? 'Tutti salvati nei preferiti' : `Salva tutto nei preferiti, in "${list.name}"`}
+          {allSaved ? 'Tutti salvati nei preferiti' : isPresetFolder(list.name) ? `Salva tutto nei preferiti, in "${list.name}"` : 'Salva tutto nei preferiti'}
         </button>
       )}
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
