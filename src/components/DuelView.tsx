@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Heart, Swords } from 'lucide-react'
+import { Heart, Swords, Trophy } from 'lucide-react'
 import { useState } from 'react'
 import { brandAndStore } from '../config/stores'
 import { modelKey } from '../lib/dedupe'
@@ -21,16 +21,14 @@ export function pickPair(deck: Product[]): [Product, Product] | null {
   return b ? [a, b] : null
 }
 
-/** Duello: due prodotti uno contro l'altro, "Quale prenderesti?". Il vincitore va nei preferiti, l'altro resta nel mazzo. */
+/** Duello: due prodotti uno contro l'altro, "Quale prenderesti?". Il vincitore si può salvare nei preferiti (non in automatico). */
 export function DuelView({ pair, onDone }: { pair: [Product, Product]; onDone: () => void }) {
   const { actions } = useApp()
   const [winner, setWinner] = useState<Product | null>(null)
   const choose = (p: Product) => {
     if (winner) return
     setWinner(p)
-    actions.like(p)
     navigator.vibrate?.(15)
-    setTimeout(onDone, 1100)
   }
 
   return (
@@ -67,7 +65,7 @@ export function DuelView({ pair, onDone }: { pair: [Product, Product]; onDone: (
                     <ProductImage product={p} eager className="absolute inset-0 size-full object-contain p-2" />
                     {won && (
                       <motion.span initial={{ scale: 0 }} animate={{ scale: [0, 1.3, 1] }} className="absolute inset-0 grid place-items-center">
-                        <Heart className="size-16 fill-rose-500 text-rose-500 drop-shadow-lg" />
+                        <Trophy className="size-16 fill-amber-400 text-amber-500 drop-shadow-lg" />
                       </motion.span>
                     )}
                   </div>
@@ -83,14 +81,23 @@ export function DuelView({ pair, onDone }: { pair: [Product, Product]; onDone: (
               VS
             </span>
           </div>
-          <p className="h-5 text-center text-sm font-semibold text-rose-500">{winner ? 'Salvato nei preferiti 💖' : ''}</p>
-          <button
-            type="button"
-            onClick={onDone}
-            className="mx-auto mb-1 h-10 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100"
-          >
-            Nessuno dei due, salta
-          </button>
+          <div className="flex justify-center gap-2 pb-1">
+            {winner && (
+              <button
+                type="button"
+                onClick={() => {
+                  actions.like(winner)
+                  onDone()
+                }}
+                className="flex h-11 items-center gap-2 rounded-full bg-rose-500 px-5 text-sm font-semibold text-[#fff] active:scale-95"
+              >
+                <Heart className="size-4 fill-current" /> Salva nei preferiti
+              </button>
+            )}
+            <button type="button" onClick={onDone} className="h-11 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
+              {winner ? 'Avanti' : 'Nessuno dei due, salta'}
+            </button>
+          </div>
         </motion.div>
   )
 }
