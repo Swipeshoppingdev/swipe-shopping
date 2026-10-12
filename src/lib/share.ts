@@ -89,3 +89,18 @@ export function sharedList(hash = window.location.hash): { name: string; ids: st
     return null
   }
 }
+
+/** Condivide "Il tuo stile" (testo fisso con le percentuali calcolate). */
+export async function shareText(text: string): Promise<'shared' | 'copied' | 'cancelled'> {
+  const url = SITE
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Swipe Shopping', text, url })
+      return 'shared'
+    } catch {
+      return 'cancelled'
+    }
+  }
+  await navigator.clipboard?.writeText(`${text}\n${url}`)
+  return 'copied'
+}

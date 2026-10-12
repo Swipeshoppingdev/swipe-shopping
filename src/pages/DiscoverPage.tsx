@@ -1,6 +1,8 @@
 import { RefreshCw, SlidersHorizontal, Sparkles } from 'lucide-react'
 import { SwipeDeck } from '../components/SwipeDeck'
 import { DeckTabs } from '../components/DeckTabs'
+import { Duel } from '../components/Duel'
+import { StyleReveal } from '../components/StyleCard'
 import { NewArrivals } from '../components/NewArrivals'
 import { routeHref } from '../lib/useHashRoute'
 import { widenSuggestions } from '../lib/widen'
@@ -49,6 +51,8 @@ export function DiscoverPage() {
         <div className="relative flex min-h-0 flex-1 flex-col">
           <SwipeDeck />
           <NewArrivals key={state.mode} />
+          <Duel key={`duel:${state.mode}`} />
+          <StyleReveal />
         </div>
       ) : products.length === 0 ? (
         <Empty title="Sezione in arrivo" text="Stiamo preparando i prodotti di questa sezione: torna tra qualche ora.">
