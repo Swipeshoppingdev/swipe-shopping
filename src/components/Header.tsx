@@ -25,20 +25,8 @@ export function Header() {
           </span>
           <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{inOutfit ? 'Outfit' : sectionOf(state.mode).label}</span>
         </a>
-        {/* Scorciatoia sempre in vista per gli outfit; dentro Outfit resta lo spazio vuoto per tenere il logo centrato.
-            Sui telefoni stretti (sotto 390px) resta solo l'icona, altrimenti la riga esce dallo schermo. */}
-        {inOutfit ? (
-          <span className="w-18 max-[389px]:w-9" aria-hidden />
-        ) : (
-          <a
-            href="#/outfit"
-            aria-label="Apri gli outfit"
-            className="flex h-9 w-18 shrink-0 items-center justify-center gap-1 rounded-full bg-[#4f46e5] text-xs font-bold text-[#fff] active:scale-95 max-[389px]:w-9"
-          >
-            <LayoutGrid className="size-3.5 max-[389px]:size-4" />
-            <span className="max-[389px]:hidden">Outfit</span>
-          </a>
-        )}
+        {/* Spazio vuoto a destra per tenere il logo centrato (Outfit si apre dal menu Sezioni, scelta di Kevin). */}
+        <span className="w-18 max-[389px]:w-9" aria-hidden />
         <button
           type="button"
           onClick={toggle}
