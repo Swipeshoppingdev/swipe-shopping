@@ -683,7 +683,7 @@ function SortByPrice({ products, onDone }: { products: Product[]; onDone: () => 
               }}
               animate={done && !ok ? { x: [0, -5, 5, -3, 3, 0] } : {}}
               className={`relative flex min-h-0 flex-col overflow-hidden rounded-2xl bg-white p-1.5 text-left shadow-md ring-2 ${
-                done ? (ok ? 'ring-emerald-500' : 'ring-rose-400') : pos >= 0 ? 'ring-neutral-900' : 'ring-transparent'
+                done ? (ok ? 'ring-emerald-500' : 'ring-rose-400') : pos >= 0 ? 'ring-[#4f46e5]' : 'ring-transparent'
               }`}
             >
               <div className="relative min-h-0 flex-1 bg-[#fff]">
@@ -692,9 +692,13 @@ function SortByPrice({ products, onDone }: { products: Product[]; onDone: () => 
               <p className="truncate pt-1 text-[11px] font-medium">{p.title}</p>
               <p className="h-5 text-sm font-black">{done ? formatPrice(price(p)) : ''}</p>
               {pos >= 0 && (
-                <span className={`absolute top-1.5 left-1.5 grid size-7 place-items-center rounded-full text-sm font-black text-[#fff] ${done ? (ok ? 'bg-emerald-500' : 'bg-rose-500') : 'bg-neutral-900'}`}>
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: [0, 1.25, 1] }}
+                  className={`absolute top-2 left-2 grid size-11 place-items-center rounded-full text-xl font-black text-[#fff] shadow-lg ring-2 ring-[#fff] ${done ? (ok ? 'bg-emerald-500' : 'bg-rose-500') : 'bg-[#4f46e5]'}`}
+                >
                   {pos + 1}
-                </span>
+                </motion.span>
               )}
             </motion.button>
           )
