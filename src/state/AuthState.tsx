@@ -10,7 +10,7 @@ function friendlyError(message: string) {
   if (m.includes('invalid login credentials')) return 'Email o password non corretti.'
   if (m.includes('email not confirmed')) return "Conferma prima l'email: ti abbiamo mandato un link."
   if (m.includes('already registered')) return 'Esiste già un account con questa email. Prova ad accedere.'
-  if (m.includes('password should be at least')) return 'La password deve avere almeno 6 caratteri.'
+  if (m.includes('password should be at least')) return 'La password deve avere almeno 8 caratteri.'
   if (m.includes('rate limit')) return 'Troppi tentativi. Riprova tra qualche minuto.'
   if (m.includes('sending') && m.includes('email')) return "Non siamo riusciti a inviare l'email. Riprova tra qualche minuto."
   if (m.includes('provider is not enabled') || m.includes('unsupported provider')) return "L'accesso con Google non è ancora attivo."

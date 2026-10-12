@@ -1,3 +1,6 @@
+import { SIZE_HINT, SizePicker } from '../components/SizePicker'
+import { facetValues } from '../lib/filters'
+import { fitSizes } from '../lib/sizes'
 import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
 import { Check, Heart, RefreshCw, Send, Trash2, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -107,10 +110,16 @@ export function OutfitPage() {
     [all, price, noStyles],
   )
   const styles = useMemo(() => (Object.keys(STYLE_LABEL) as OutfitStyle[]).filter((st) => all.some((o) => o.style === st)), [all])
+  // "La tua taglia" (la stessa dei filtri Moda): prima gli outfit con più capi nella tua taglia confermata.
+  const mySizes = state.filters.sizes
   const deck = useMemo(() => {
     const skip = new Set([...seen, ...saved.map((s) => s.id)])
-    return inBudget.filter((o) => !skip.has(o.id))
-  }, [inBudget, seen, saved])
+    const list = inBudget.filter((o) => !skip.has(o.id))
+    if (!mySizes.length) return list
+    const fit = new Map(list.map((o) => [o, o.items.filter((p) => fitSizes(p.sizes, mySizes).length).length]))
+    return [...list].sort((a, b) => fit.get(b)! - fit.get(a)!)
+  }, [inBudget, seen, saved, mySizes])
+  const sizeValues = useMemo(() => facetValues(moda).sizes, [moda])
 
   const byId = useMemo(() => new Map(moda.map((p) => [p.id, p])), [moda])
   const savedOutfits = saved.map((s) => ({ ...s, products: s.items.flatMap((id) => (byId.has(id) ? [byId.get(id)!] : [])) }))
@@ -164,6 +173,9 @@ export function OutfitPage() {
           noStyles={noStyles}
           onNoStyles={setNoStyles}
           matching={deck.length}
+          sizes={sizeValues}
+          mySizes={mySizes}
+          onSizes={(sizes) => actions.setFilters({ ...state.filters, sizes })}
         />
       ) : tab === 'salvati' ? (
         <Saved
@@ -473,7 +485,7 @@ function Saved(props: {
   )
 }
 
-/** Filtri degli outfit (#/outfit/filtri): solo genere e prezzo totale. Si applicano subito. */
+/** Filtri degli outfit (#/outfit/filtri): genere, stile, taglia e prezzo totale. Si applicano subito. */
 function OutfitFilters(props: {
   gender: 'uomo' | 'donna'
   onGender: (g: 'uomo' | 'donna') => void
@@ -483,6 +495,9 @@ function OutfitFilters(props: {
   noStyles: OutfitStyle[]
   onNoStyles: (v: OutfitStyle[]) => void
   matching: number
+  sizes: string[]
+  mySizes: string[]
+  onSizes: (v: string[]) => void
 }) {
   const active = props.price.min !== undefined || props.price.max !== undefined
   const off = (st: OutfitStyle) => props.noStyles.includes(st)
@@ -530,6 +545,15 @@ function OutfitFilters(props: {
           ))}
         </div>
       </section>
+      {props.sizes.length > 0 && (
+        <section className="space-y-3">
+          <div>
+            <h2 className="font-semibold">La tua taglia</h2>
+            <p className="text-xs text-neutral-500">{SIZE_HINT}</p>
+          </div>
+          <SizePicker values={props.sizes} selected={props.mySizes} onChange={props.onSizes} />
+        </section>
+      )}
       <section className="space-y-3">
         <div>
           <h2 className="font-semibold">Prezzo</h2>

@@ -1,3 +1,4 @@
+import { SIZE_HINT, SizePicker } from '../components/SizePicker'
 import { Check, X } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { NO_CATEGORY, categoryIdsOf, groupsOf, sectionOf, type CategoryId } from '../config/categories'
@@ -188,7 +189,9 @@ export function FiltersPage() {
         </Section>
       )}
       {facets.sizes.length > 0 && (
-        <ChipSection title="Taglia" values={facets.sizes} selected={f.sizes} onToggle={(v) => set({ sizes: flipKeepOne(f.sizes, v, facets.sizes) })} />
+        <Section title="La tua taglia" hint={SIZE_HINT}>
+          <SizePicker values={facets.sizes} selected={f.sizes} onChange={(sizes) => set({ sizes })} />
+        </Section>
       )}
       {section.colors && facets.colors.length > 0 && (
         <Section
@@ -299,25 +302,5 @@ export function Chip({ active, onClick, children }: { active: boolean; onClick: 
       {active ? <Check className="size-3.5" /> : <X className="size-3.5" />}
       {children}
     </button>
-  )
-}
-
-function ChipSection(props: {
-  title: string
-  values: string[]
-  selected: string[]
-  label?: (v: string) => string
-  onToggle: (v: string) => void
-}) {
-  return (
-    <Section title={props.title}>
-      <div className="flex flex-wrap gap-2">
-        {props.values.map((v) => (
-          <Chip key={v} active={isIn(props.selected, v)} onClick={() => props.onToggle(v)}>
-            {props.label?.(v) ?? v}
-          </Chip>
-        ))}
-      </div>
-    </Section>
   )
 }

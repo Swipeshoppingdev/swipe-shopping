@@ -2,8 +2,11 @@
 // - Foto rotta: l'indirizzo non risponde, non è un'immagine o è minuscola (Amazon a volte dà un GIF 1x1).
 // - Doppioni: stessa foto, oppure stesso negozio, marca e titolo. Si tiene il prodotto migliore
 //   (disponibile, con prezzo aggiornato, il primo arrivato).
+// - Taglie: le varianti di taglia dello stesso articolo (stessa foto, titolo che finisce con ", M") diventano
+//   un solo prodotto con l'elenco delle taglie viste disponibili (src/lib/sizes.ts).
 // Se troppe foto risultano rotte insieme è un problema di rete, non delle foto: allora non si toglie niente per le foto.
 import { readFileSync, writeFileSync } from 'node:fs'
+import { sortSizes, splitSize } from '../src/lib/sizes.ts'
 import type { Product } from '../src/types/product.ts'
 
 const file = new URL('../public/catalog.json', import.meta.url)
@@ -66,6 +69,20 @@ const better = (a: Product, b: Product) => {
   return Date.parse(a.addedAt) <= Date.parse(b.addedAt) ? a : b
 }
 
+/** Toglie la taglia dal titolo e la aggiunge alle taglie del prodotto. Ritorna quante ne ha trovate. */
+function readSizes(products: Product[]) {
+  let n = 0
+  for (const p of products) {
+    if (p.store !== 'amazon') continue
+    const split = splitSize(p.title, p.category)
+    if (!split) continue
+    p.title = split.base
+    p.sizes = sortSizes([...(p.sizes ?? []), split.size])
+    n++
+  }
+  return n
+}
+
 function dedupe(products: Product[]) {
   const keep = new Map<string, Product>()
   const keyOf = new Map<Product, string[]>()
@@ -85,9 +102,16 @@ function dedupe(products: Product[]) {
     if (keyOf.get(p)!.every((k) => winner.get(k) === p)) keep.set(p.id, p)
     else removed.push(p)
   }
+  // Le taglie dei doppioni passano al prodotto tenuto (sono varianti di taglia dello stesso articolo).
+  for (const p of removed) {
+    if (!p.sizes?.length) continue
+    const to = keyOf.get(p)!.map((k) => winner.get(k)!).find((w) => keep.has(w.id) && w.category === p.category)
+    if (to) to.sizes = sortSizes([...(to.sizes ?? []), ...p.sizes])
+  }
   return { kept: products.filter((p) => keep.has(p.id)), removed }
 }
 
+const withSize = readSizes(catalog)
 const { kept: unique, removed: dups } = dedupe(catalog)
 const { checked, broken, unknown } = process.env.CLEAN_SKIP_IMAGES ? { checked: 0, broken: new Set<string>(), unknown: 0 } : await checkImages(unique)
 const tooMany = broken.size > checked * MAX_BROKEN_SHARE
@@ -100,5 +124,7 @@ annotate(
   'notice',
   `Pulizia: ${dups.length} doppioni e ${noPhoto} prodotti con la foto rotta tolti (${checked} foto controllate, ${unknown} senza risposta). Restano ${final.length} prodotti.`,
 )
+const sized = final.filter((p) => p.sizes?.length)
+annotate('notice', `Taglie: ${withSize} varianti con taglia nel titolo, ${sized.length} prodotti con taglie (${sized.filter((p) => p.sizes!.length > 1).length} con più di una).`)
 if (dups.length) console.log('Doppioni tolti:', dups.slice(0, 30).map((p) => `${p.id} ${p.title.slice(0, 50)}`).join(' | '))
 if (noPhoto && !tooMany) console.log('Foto rotte:', [...broken].slice(0, 30).join(' '))

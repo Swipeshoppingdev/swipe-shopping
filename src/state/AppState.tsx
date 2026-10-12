@@ -5,6 +5,7 @@ import { loadCatalog } from '../lib/catalog'
 import { fetchUserData, mergeUserData, saveUserData } from '../lib/cloudSync'
 import { matchesFilters, normalizeFilters, sortProducts } from '../lib/filters'
 import { isNew, setNewBaseline } from '../lib/newness'
+import { fitSizes } from '../lib/sizes'
 import { modelKey, onePerModel } from '../lib/dedupe'
 import { discountBadge } from '../lib/price'
 import { sharedProductId } from '../lib/share'
@@ -266,7 +267,12 @@ function useAppStore() {
     const mixed = sortProducts(list, activeFilters.sort, MIX_SEED)
     // I prodotti appena arrivati per primi (sempre mescolati), poi tutti gli altri.
     const fresh = new Set(mixed.filter((p) => isNew(p)))
-    const sorted = onePerModel([...fresh, ...mixed.filter((p) => !fresh.has(p))], seenModels)
+    // Con "La tua taglia": prima i capi con la taglia confermata, poi le novità, poi il resto.
+    const fit = new Set(activeFilters.sizes.length ? mixed.filter((p) => fitSizes(p.sizes, activeFilters.sizes).length) : [])
+    const sorted = onePerModel(
+      [...mixed.filter((p) => fit.has(p) && fresh.has(p)), ...mixed.filter((p) => fit.has(p) && !fresh.has(p)), ...mixed.filter((p) => !fit.has(p) && fresh.has(p)), ...mixed.filter((p) => !fit.has(p) && !fresh.has(p))],
+      seenModels,
+    )
     // Scartati rimessi nel mazzo: in cima (anche se il modello era già stato visto).
     const back = state.restored.flatMap((id) => {
       const p = byId.get(id)

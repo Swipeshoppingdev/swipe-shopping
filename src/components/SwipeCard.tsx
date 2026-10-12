@@ -8,6 +8,7 @@ import { openProduct } from '../lib/productSheet'
 import { useDetails } from '../lib/useDetails'
 import { DiscountBadge } from './DiscountBadge'
 import { NewBadge } from './NewBadge'
+import { SizeBadge } from './SizeBadge'
 import { PriceTag } from './PriceTag'
 import { ProductImage } from './ProductImage'
 import { StoreLink } from './StoreLink'
@@ -121,6 +122,7 @@ export function SwipeCard({
         )}
         <DiscountBadge product={product} />
         <NewBadge product={product} />
+        <SizeBadge product={product} />
         {product.searchQuery && (
           <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-neutral-900/80 px-3 py-1 text-xs font-medium text-white">
             Esplora la categoria

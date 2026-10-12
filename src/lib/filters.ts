@@ -2,13 +2,14 @@ import { NO_CATEGORY, categoryIdsOf, isCategoryId, universeOf } from '../config/
 import { COLOR_ORDER } from '../config/colors'
 import type { Filters, Product } from '../types/product'
 import { discountBadge, freshPrice } from './price'
+import { sizeChip, sortSizes } from './sizes'
 
 export function matchesFilters(p: Product, f: Filters) {
   if (f.gender !== 'tutti' && p.gender !== f.gender && p.gender !== 'unisex') return false
   if (f.categories.length && !f.categories.includes(p.category)) return false
   if (f.brands.length && (!p.brand || !f.brands.includes(p.brand))) return false
   if (f.stores.length && !f.stores.includes(p.store)) return false
-  if (f.sizes.length && !p.sizes?.some((s) => f.sizes.includes(s))) return false
+  // La taglia non nasconde niente: i capi con la taglia confermata vanno solo per primi (vedi AppState).
   if (f.colors.length) {
     // Prodotti senza colore riconosciuto: restano se l'utente ha escluso solo pochi colori (più verdi che rossi).
     if (!p.colors?.length) {
@@ -90,12 +91,12 @@ export function facetValues(products: Product[]) {
   for (const p of products) {
     if (p.brand) brandCount.set(p.brand, (brandCount.get(p.brand) ?? 0) + 1)
     stores.add(p.store)
-    p.sizes?.forEach((s) => sizes.add(s))
+    p.sizes?.forEach((s) => sizes.add(sizeChip(s)))
     p.colors?.forEach((c) => colors.add(c))
   }
   // Marche dalla più presente: le prime sono quelle che l'utente cerca più spesso.
   const brands = [...brandCount].sort((a, b) => b[1] - a[1]).map(([b]) => b)
-  return { brands, stores: [...stores], sizes: [...sizes], colors: [...colors].sort((a, b) => colorRank(a) - colorRank(b) || a.localeCompare(b)) }
+  return { brands, stores: [...stores], sizes: sortSizes(sizes), colors: [...colors].sort((a, b) => colorRank(a) - colorRank(b) || a.localeCompare(b)) }
 }
 
 /**

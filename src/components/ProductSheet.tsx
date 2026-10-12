@@ -120,6 +120,13 @@ function SheetContent({ product }: { product: Product }) {
           <PriceTag product={product} size="lg" />
         </div>
 
+        {product.sizes && product.sizes.length > 0 && (
+          <p className="text-sm text-neutral-600">
+            <span className="font-semibold text-neutral-800">Taglie disponibili all'ultimo controllo:</span> {product.sizes.join(' · ')}
+            <span className="block text-xs text-neutral-500">Su Amazon puoi vedere e scegliere tutte le taglie.</span>
+          </p>
+        )}
+
         <div className="flex gap-2">
           <StoreLink
             product={product}
