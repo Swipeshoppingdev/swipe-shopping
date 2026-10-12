@@ -10,6 +10,7 @@ import { useApp } from '../state/AppState'
 import type { Product } from '../types/product'
 import { DuelView, pickPair } from './DuelView'
 import { ProductImage } from './ProductImage'
+import { StoreLink } from './StoreLink'
 
 /** Ogni quanti swipe arriva una pausa di gioco. */
 const EVERY = 10
@@ -583,10 +584,17 @@ function ScratchDeal({ product, onDone }: { product: Product; onDone: () => void
               actions.like(product)
               onDone()
             }}
-            className="flex h-11 items-center gap-2 rounded-full bg-rose-500 px-5 text-sm font-semibold text-[#fff] active:scale-95"
+            aria-label="Lo voglio"
+            className="grid size-11 shrink-0 place-items-center rounded-full bg-rose-500 text-[#fff] active:scale-95"
           >
-            <Heart className="size-4 fill-current" /> Lo voglio
+            <Heart className="size-5 fill-current" />
           </button>
+        )}
+        {open && (
+          <StoreLink
+            product={product}
+            className="flex h-11 items-center gap-2 rounded-full bg-neutral-900 px-5 text-sm font-semibold whitespace-nowrap text-white active:scale-95"
+          />
         )}
         <button type="button" onClick={onDone} className="h-11 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
           {open ? 'Avanti' : 'Salta'}
