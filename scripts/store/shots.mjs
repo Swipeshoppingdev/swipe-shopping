@@ -38,23 +38,31 @@ let p = await page('moda')
 await p.goto(`${BASE}/#/scopri`)
 await ready(p)
 await shot(p, '1-moda')
-// 2. Scheda prodotto
+// 3. Scheda prodotto (con "Completa il look" per la moda)
 await p.getByRole('button', { name: /^Dettagli di/ }).first().click().catch(() => p.mouse.click(180, 300))
-await p.waitForTimeout(1500)
-await shot(p, '2-scheda')
+await p.waitForTimeout(2500)
+await shot(p, '3-scheda')
 await p.close()
 
-// 3. Menu delle sezioni
+// 2. Outfit già pronti
+p = await page('moda')
+await p.goto(`${BASE}/#/outfit`)
+await ready(p)
+await p.waitForTimeout(2500)
+await shot(p, '2-outfit')
+await p.close()
+
+// 4. Menu delle sezioni
 p = await page('moda')
 await p.goto(`${BASE}/#/scopri`)
 await ready(p)
 await p.getByRole('button', { name: /cambia sezione/ }).click()
 await p.waitForTimeout(500)
-await shot(p, '3-sezioni')
+await shot(p, '4-sezioni')
 await p.close()
 
-// 4-7. Beauty, Tech, Casa, Animali (Google Play accetta al massimo 8 screenshot)
-for (const [n, mode] of [[4, 'beauty'], [5, 'tech'], [6, 'casa'], [7, 'animali']]) {
+// 5-7. Beauty, Tech, Casa (Google Play accetta al massimo 8 screenshot)
+for (const [n, mode] of [[5, 'beauty'], [6, 'tech'], [7, 'casa']]) {
   p = await page(mode)
   await p.goto(`${BASE}/#/scopri`)
   await ready(p)
@@ -78,12 +86,12 @@ await p.close()
 // --- Screenshot con titolo, 1080x1920 ---
 const SLIDES = [
   ['1-moda', 'Scorri. Ti piace? Salvalo.', '#f43f5e'],
-  ['2-scheda', 'Foto, dettagli e prezzo aggiornato', '#f43f5e'],
-  ['3-sezioni', 'Moda, beauty, tech, casa e tanto altro', '#171717'],
-  ['4-beauty', 'Profumi, trucco e skincare', '#c026d3'],
-  ['5-tech', 'Le offerte tech di ogni giorno', '#f97316'],
-  ['6-casa', 'Cucina, design e smart home', '#2563eb'],
-  ['7-animali', 'Tutto per cani e gatti', '#a16207'],
+  ['2-outfit', 'Migliaia di outfit già pronti', '#6366f1'],
+  ['3-scheda', 'Foto, dettagli e prezzo aggiornato', '#f43f5e'],
+  ['4-sezioni', 'Moda, beauty, tech, casa e tanto altro', '#171717'],
+  ['5-beauty', 'Profumi, trucco e skincare', '#c026d3'],
+  ['6-tech', 'Le offerte tech di ogni giorno', '#f97316'],
+  ['7-casa', 'Cucina, design e smart home', '#2563eb'],
   ['8-preferiti', 'Tutti i tuoi preferiti in un posto', '#f43f5e'],
 ]
 mkdirSync(new URL('screenshot/', OUT), { recursive: true })
