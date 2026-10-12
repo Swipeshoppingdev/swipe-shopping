@@ -30,7 +30,10 @@ export interface Product {
   priceCheckedAt?: string
   /** Link affiliato completo (obbligatorio per i negozi non Amazon, es. link Awin) */
   affiliateUrl?: string
+  /** Taglie disponibili (vedi src/lib/sizes.ts) */
   sizes?: string[]
+  /** ISO date: quando sono state lette tutte le taglie da Amazon (senza: solo quella vista nella ricerca) */
+  sizesAt?: string
   colors?: string[]
   availability: Availability
   /** ISO date: quando il prodotto è entrato in catalogo (ordinamento "novità") */

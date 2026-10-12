@@ -47,6 +47,12 @@ export const sortSizes = (sizes: Iterable<string>) => [...new Set(sizes)].sort((
  */
 export function splitSize(title: string, category: string): { base: string; size: string } | null {
   if (!hasSizes(category)) return null
+  // Alcune scarpe Geox e simili: "… Moccasins Black 39.5_EU", senza virgola.
+  const eu = SHOE_CATEGORIES.has(category) ? title.match(/^(.{10,}?)\s+(\d{2})(?:[.,](5))?_EU$/) : null
+  if (eu) {
+    const n = Number(eu[2])
+    return n >= 34 && n <= 49 ? { base: eu[1].trim(), size: eu[3] ? `${n}.5` : String(n) } : null
+  }
   const at = title.lastIndexOf(',')
   if (at < 10) return null
   const tail = title.slice(at + 1).trim().replace(/\s+(donna|uomo|unisex)$/i, '').replace(/[()]/g, '').trim()

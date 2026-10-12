@@ -122,8 +122,17 @@ function SheetContent({ product }: { product: Product }) {
 
         {product.sizes && product.sizes.length > 0 && (
           <p className="text-sm text-neutral-600">
-            <span className="font-semibold text-neutral-800">Taglie disponibili all'ultimo controllo:</span> {product.sizes.join(' · ')}
-            <span className="block text-xs text-neutral-500">Su Amazon puoi vedere e scegliere tutte le taglie.</span>
+            {product.sizesAt ? (
+              <>
+                <span className="font-semibold text-neutral-800">Taglie disponibili:</span> {product.sizes.join(' · ')}
+                <span className="block text-xs text-neutral-500">Controllate su Amazon all'ultimo aggiornamento: scegli la taglia sul negozio.</span>
+              </>
+            ) : (
+              <>
+                <span className="font-semibold text-neutral-800">{product.sizes.length === 1 ? 'Taglia disponibile' : 'Taglie disponibili'}:</span> {product.sizes.join(' · ')}
+                <span className="block text-xs text-neutral-500">Altre taglie potrebbero esserci: le vedi su Amazon.</span>
+              </>
+            )}
           </p>
         )}
 

@@ -7,6 +7,7 @@ import { detectColors } from '../src/config/colors.ts'
 import { validateProduct } from '../src/lib/validate.ts'
 import { DETAIL_SHARDS, detailShard, type ProductDetails } from '../src/lib/details.ts'
 import { OUTFIT_PRIORITY, SEARCH_PLAN, normalizeBrand } from './search-plan.ts'
+import { hasSizes, sortSizes, splitSize } from '../src/lib/sizes.ts'
 
 const { AMAZON_CREDENTIAL_ID, AMAZON_CREDENTIAL_SECRET, AMAZON_CREDENTIAL_VERSION, AMAZON_TOKEN_URL } = process.env
 const PARTNER_TAG = process.env.VITE_AMAZON_TAG || 'mrofferta09-21'
@@ -79,6 +80,9 @@ async function callApi(op: string, token: string, payload: Record<string, unknow
  */
 const MAX_REQUESTS = Number(process.env.AMAZON_MAX_REQUESTS ?? 4200)
 let requests = 0
+/** Richieste riservate alle taglie (getVariations): la ricerca si ferma prima, così ne restano per loro. */
+const SIZE_REQUESTS = Math.min(Number(process.env.AMAZON_SIZE_REQUESTS ?? 800), MAX_REQUESTS)
+const SEARCH_LIMIT = MAX_REQUESTS - SIZE_REQUESTS
 
 const OFFER_RESOURCES = ['offersV2.listings.price', 'offersV2.listings.availability', 'offersV2.listings.isBuyBoxWinner']
 
@@ -351,8 +355,8 @@ async function searchCatalog(token: string) {
     for (const gender of plan.genders) {
       for (const brand of plan.brands) {
         for (let page = 1; page <= pages; page++) {
-          if (requests >= MAX_REQUESTS) {
-            annotate('warning', `Raggiunto il tetto di ${MAX_REQUESTS} richieste: ricerca interrotta a ${plan.category}.`)
+          if (requests >= SEARCH_LIMIT) {
+            annotate('warning', `Raggiunto il tetto di ${SEARCH_LIMIT} richieste: ricerca interrotta a ${plan.category}.`)
             stopped = true
             break outer
           }
@@ -371,9 +375,9 @@ async function searchCatalog(token: string) {
     const rotated = deeper.map((_, i) => deeper[(start + i) % deeper.length])
     const ordered = [...rotated.filter(([p]) => OUTFIT_PRIORITY.has(p.category)), ...rotated.filter(([p]) => !OUTFIT_PRIORITY.has(p.category))]
     let done = 0
-    for (let i = 0; i < ordered.length && requests < MAX_REQUESTS; i++) {
+    for (let i = 0; i < ordered.length && requests < SEARCH_LIMIT; i++) {
       const [plan, gender, brand] = ordered[i]
-      for (let page = pages + 1; page <= pages + 2 && requests < MAX_REQUESTS; page++) {
+      for (let page = pages + 1; page <= pages + 2 && requests < SEARCH_LIMIT; page++) {
         if ((await searchPage(plan, gender, brand, page)) < 10) break
       }
       done++
@@ -382,6 +386,80 @@ async function searchCatalog(token: string) {
   }
   annotate('notice', `Ricerca: ${found.size} prodotti trovati, ${rejectedBrand} scartati per marca, ${rejectedPrice} per prezzo/disponibilità, ${rejectedReviews} per recensioni.`)
   return [...found.values()]
+}
+
+/** Taglia di Amazon ("39.5 EU", "M", "W32 L34") nel formato dei filtri, o null. */
+const sizeOf = (value: string, category: string) => splitSize(`Taglia del prodotto, ${value}`, category)?.size ?? null
+const SIZES_MAX_AGE = 3 * 24 * 3_600_000
+
+/**
+ * Tutte le taglie disponibili dei capi e delle scarpe (getVariations): la ricerca dà una sola variante per taglia,
+ * qui si legge la famiglia intera e si tengono le taglie disponibili dello stesso colore. Prima i prodotti mai
+ * controllati, poi i controlli più vecchi; una famiglia letta vale per tutti i suoi prodotti in catalogo.
+ */
+async function refreshSizes(token: string, products: Record<string, any>[]) {
+  const byAsin = new Map(products.filter((p) => p.store === 'amazon').map((p) => [p.externalId as string, p]))
+  const candidates = products
+    .filter((p) => p.store === 'amazon' && hasSizes(p.category) && p.availability !== 'out_of_stock')
+    .sort((a, b) => (a.sizesAt ? Date.parse(a.sizesAt) : 0) - (b.sizesAt ? Date.parse(b.sizesAt) : 0))
+  const done = new Set<string>()
+  let families = 0
+  let updated = 0
+  for (const p of candidates) {
+    if (requests >= MAX_REQUESTS) break
+    if (done.has(p.externalId)) continue
+    if (p.sizesAt && Date.now() - Date.parse(p.sizesAt) < 20 * 3_600_000) break // tutti già controllati da poco
+    const variants: { asin: string; color: string; size: string | null; ok: boolean }[] = []
+    try {
+      for (let page = 1; page <= 3 && requests < MAX_REQUESTS; page++) {
+        const body = await callApi('getVariations', token, {
+          asin: p.externalId,
+          variationCount: 10,
+          variationPage: page,
+          resources: ['offersV2.listings.availability', 'offersV2.listings.price'],
+        })
+        const result = body?.variationsResult
+        for (const item of result?.items ?? []) {
+          const attrs: { name?: string; value?: string }[] = item?.variationAttributes ?? []
+          const size = attrs.find((a) => a.name === 'size_name')?.value
+          const color = attrs.find((a) => a.name === 'color_name')?.value ?? ''
+          variants.push({ asin: item?.asin, color, size: size ? sizeOf(size, p.category) : null, ok: isUsable(readListing(item)) })
+        }
+        if (page >= (result?.variationSummary?.pageCount ?? 1)) break
+      }
+    } catch (e) {
+      // Prodotto senza varianti (taglia unica) o non più accessibile: lo segniamo e andiamo avanti.
+      if (!/HTTP 4\d\d/.test(String(e))) annotate('warning', `Taglie ${p.externalId}: ${e instanceof Error ? e.message : String(e)}`)
+      p.sizesAt = now
+      done.add(p.externalId)
+      continue
+    }
+    families++
+    // Le taglie di ogni colore, per tutti i prodotti di questa famiglia che abbiamo in catalogo.
+    const colorOf = new Map(variants.map((v) => [v.asin, v.color]))
+    const members = [p, ...variants.map((v) => byAsin.get(v.asin)).filter((m): m is Record<string, any> => !!m && m !== p)]
+    for (const m of members) {
+      done.add(m.externalId)
+      const color = colorOf.get(m.externalId)
+      const sizes = variants.filter((v) => v.ok && v.size && (color === undefined || v.color === color)).map((v) => v.size!)
+      m.sizesAt = now
+      if (sizes.length) {
+        m.sizes = sortSizes(sizes)
+        updated++
+      }
+    }
+  }
+  annotate('notice', `Taglie da Amazon: ${families} famiglie lette, ${updated} prodotti con tutte le taglie disponibili.`)
+}
+
+if (process.env.AMAZON_SIZES_ONLY) {
+  // Prova: solo le taglie sul catalogo attuale, senza ricerca (stampa un esempio, non salva).
+  const token = await getToken()
+  await refreshSizes(token, catalog)
+  const sample = catalog.filter((p) => p.sizesAt && p.sizes?.length).slice(0, 8)
+  for (const p of sample) console.log(`${p.externalId} ${p.category}: ${p.sizes.join(' ')}`)
+  console.log(`${requests} richieste.`)
+  process.exit(0)
 }
 
 try {
@@ -412,7 +490,21 @@ try {
   )
   if (kept.length) annotate('notice', `Tenuti dal giro precedente: ${kept.length} prodotti.`)
   const others = catalog.filter((p) => p.store !== 'amazon')
+  // Le taglie lette nei giri precedenti restano per 3 giorni (poi si rileggono).
+  const previous = new Map(catalog.map((p) => [p.id, p]))
+  for (const p of searched) {
+    const old = previous.get(p.id)
+    if (old?.sizesAt && Date.now() - Date.parse(old.sizesAt) < SIZES_MAX_AGE) {
+      p.sizesAt = old.sizesAt
+      if (old.sizes?.length) p.sizes = old.sizes
+    }
+  }
   const next = [...curated, ...others, ...searched, ...kept]
+  try {
+    await refreshSizes(token, next)
+  } catch (e) {
+    annotate('warning', `Taglie non aggiornate: ${e instanceof Error ? e.message : String(e)}`)
+  }
   writeFileSync(file, JSON.stringify(next, null, 1) + '\n')
   annotate('notice', `Catalogo: ${next.length} prodotti (${searched.length} dalla ricerca), ${requests} richieste ad Amazon.`)
 } catch (e) {
