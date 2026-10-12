@@ -1,6 +1,7 @@
 import { Check, ChevronDown, Cookie, Cpu, Gift, LayoutGrid, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun, TreePine } from 'lucide-react'
 import { giftSeason } from '../pages/GiftsPage'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Reorder, useDragControls } from 'framer-motion'
+import { useEffect, useRef, useState, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react'
 import { APP_NAME } from '../config/app'
 import { SECTIONS, sectionOf, type Universe } from '../config/categories'
 import { load, save } from '../lib/storage'
@@ -100,6 +101,33 @@ function SectionMenu() {
     }
   }, [open])
 
+  const [order, setOrderState] = useState(loadMenuOrder)
+  const setOrder = (next: MenuId[]) => {
+    setOrderState(next)
+    save('menuOrder', next)
+  }
+
+  const entries = {} as Record<MenuId, MenuEntry>
+  for (const s of SECTIONS) {
+    entries[s.id] = {
+      label: s.label,
+      hint: s.hint,
+      color: s.color,
+      Icon: ICONS[s.id],
+      isNew: isNew(s.id),
+      active: s.id === state.mode && !onOutfit && !onGifts,
+      onSelect: () => {
+        if (!visited.includes(s.id)) setVisited([...visited, s.id])
+        // Da Outfit/Regali: prima si lascia la pagina, poi si cambia sezione (Outfit rimette la Moda finché è aperta).
+        if (onOutfit || onGifts) window.location.hash = '#/scopri'
+        actions.setMode(s.id)
+      },
+    }
+  }
+  entries.outfit = { label: 'Outfit', hint: 'Look completi pronti, dalle scarpe alla giacca', color: '#4f46e5', Icon: LayoutGrid, isNew: !outfitSeen, active: onOutfit, href: '#/outfit' }
+  // Regali: mazzo con tutte le sezioni, per chi lo riceve e per budget (Black Friday e Natale).
+  entries.regali = { label: giftSeason().title, hint: 'Regali per tutti, per budget e in offerta', color: '#dc2626', Icon: TreePine, isNew: !giftsSeen, active: onGifts, href: '#/regali' }
+
   return (
     <div ref={ref} className="relative">
       <button
@@ -127,87 +155,13 @@ function SectionMenu() {
         <ChevronDown className={`size-3.5 shrink-0 transition ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div role="menu" className="absolute top-12 left-0 z-30 w-72 overflow-hidden rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-neutral-200">
-          {SECTIONS.map((s) => {
-            const SIcon = ICONS[s.id]
-            const active = s.id === state.mode && !onOutfit && !onGifts
-            return (
-              <Fragment key={s.id}>
-              <button
-                type="button"
-                role="menuitemradio"
-                aria-checked={active}
-                onClick={() => {
-                  if (!visited.includes(s.id)) setVisited([...visited, s.id])
-                  // Da Outfit: prima si lascia la pagina, poi si cambia sezione (Outfit rimette la Moda finché è aperta).
-                  if (onOutfit || onGifts) window.location.hash = '#/scopri'
-                  actions.setMode(s.id)
-                  setOpen(false)
-                }}
-                className={`flex w-full items-center gap-3 rounded-xl p-2.5 text-left active:bg-neutral-100 ${active ? 'bg-neutral-100' : ''}`}
-              >
-                {/* Colori fissi: ogni sezione mostra il suo colore, qualunque sia quella aperta. */}
-                <span className="grid size-9 shrink-0 place-items-center rounded-full text-[#fff]" style={{ background: s.color }}>
-                  <SIcon className="size-4.5" />
-                </span>
-                <span className="min-w-0 flex-1 leading-tight">
-                  <span className="flex items-center gap-1.5 font-semibold">
-                    {s.label}
-                    {isNew(s.id) && (
-                      <span className="rounded-full px-1.5 py-px text-[10px] font-bold uppercase text-[#fff]" style={{ background: s.color }}>
-                        Nuovo
-                      </span>
-                    )}
-                  </span>
-                  <span className="block truncate text-xs text-neutral-500">{s.hint}</span>
-                </span>
-                {active && <Check className="size-4 shrink-0" style={{ color: s.color }} />}
-              </button>
-              {/* Outfit subito dopo la Moda (ordine scelto da Kevin), stile uguale alle altre voci. */}
-              {s.id === 'moda' && (
-                <a
-                  href="#/outfit"
-                  role="menuitemradio"
-                  aria-checked={onOutfit}
-                  onClick={() => setOpen(false)}
-                  className={`flex w-full items-center gap-3 rounded-xl p-2.5 text-left active:bg-neutral-100 ${onOutfit ? 'bg-neutral-100' : ''}`}
-                >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#4f46e5] text-[#fff]">
-                    <LayoutGrid className="size-4.5" />
-                  </span>
-                  <span className="min-w-0 flex-1 leading-tight">
-                    <span className="flex items-center gap-1.5 font-semibold">
-                      Outfit
-                      {!outfitSeen && <span className="rounded-full bg-[#4f46e5] px-1.5 py-px text-[10px] font-bold uppercase text-[#fff]">Nuovo</span>}
-                    </span>
-                    <span className="block truncate text-xs text-neutral-500">Look completi pronti, dalle scarpe alla giacca</span>
-                  </span>
-                  {onOutfit && <Check className="size-4 shrink-0 text-[#4f46e5]" />}
-                </a>
-              )}
-              </Fragment>
-            )
-          })}
-          {/* Regali: mazzo con tutte le sezioni, per chi lo riceve e per budget (Black Friday e Natale). */}
-          <a
-            href="#/regali"
-            role="menuitemradio"
-            aria-checked={onGifts}
-            onClick={() => setOpen(false)}
-            className={`flex w-full items-center gap-3 rounded-xl p-2.5 text-left active:bg-neutral-100 ${onGifts ? 'bg-neutral-100' : ''}`}
-          >
-            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#dc2626] text-[#fff]">
-              <TreePine className="size-4.5" />
-            </span>
-            <span className="min-w-0 flex-1 leading-tight">
-              <span className="flex items-center gap-1.5 font-semibold">
-                {giftSeason().title}
-                {!giftsSeen && <span className="rounded-full bg-[#dc2626] px-1.5 py-px text-[10px] font-bold uppercase text-[#fff]">Nuovo</span>}
-              </span>
-              <span className="block truncate text-xs text-neutral-500">Regali per tutti, per budget e in offerta</span>
-            </span>
-            {onGifts && <Check className="size-4 shrink-0 text-[#dc2626]" />}
-          </a>
+        <div role="menu" className="absolute top-12 left-0 z-30 max-h-[calc(100dvh-5rem)] w-72 overflow-y-auto rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-neutral-200">
+          {/* Tenendo premuta una voce la si trascina su o giù (nessun tasto: chi lo sa lo usa, gli altri non lo notano). */}
+          <Reorder.Group as="div" axis="y" values={order} onReorder={setOrder}>
+            {order.map((id) => (
+              <MenuItem key={id} id={id} entry={entries[id]} onPick={() => setOpen(false)} />
+            ))}
+          </Reorder.Group>
           <div className="mt-1 border-t border-neutral-100 pt-1">
             <SocialLinks />
           </div>
@@ -216,3 +170,119 @@ function SectionMenu() {
     </div>
   )
 }
+
+/** Voci del menu: le sezioni più Outfit e Regali. Ognuno può riordinarle (salvato sul telefono). */
+type MenuId = Universe | 'outfit' | 'regali'
+type MenuEntry = { label: string; hint: string; color: string; Icon: typeof Shirt; isNew: boolean; active: boolean; href?: string; onSelect?: () => void }
+
+/** Ordine di partenza scelto da Kevin: Moda, Outfit, Tech, poi le altre e Regali in fondo. */
+const DEFAULT_ORDER: MenuId[] = [...SECTIONS.flatMap((s): MenuId[] => (s.id === 'moda' ? ['moda', 'outfit'] : [s.id])), 'regali']
+
+/** Ordine salvato; le voci nuove (aggiunte dopo) entrano nella loro posizione di partenza. */
+function loadMenuOrder(): MenuId[] {
+  const saved = load<MenuId[]>('menuOrder', []).filter((id) => DEFAULT_ORDER.includes(id))
+  const out = [...new Set(saved)]
+  DEFAULT_ORDER.forEach((id, i) => {
+    if (out.includes(id)) return
+    const before = DEFAULT_ORDER.slice(0, i).filter((x) => out.includes(x)).pop()
+    out.splice(before ? out.indexOf(before) + 1 : 0, 0, id)
+  })
+  return out
+}
+
+/** Una voce del menu: tocco = apre, pressione lunga = si trascina. */
+function MenuItem({ id, entry: e, onPick }: { id: MenuId; entry: MenuEntry; onPick: () => void }) {
+  const controls = useDragControls()
+  const [dragging, setDragging] = useState(false)
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const start = useRef<{ x: number; y: number } | null>(null)
+  const moved = useRef(false)
+
+  const cancel = () => {
+    clearTimeout(timer.current)
+    start.current = null
+  }
+  const onPointerDown = (ev: RPointerEvent<HTMLElement>) => {
+    moved.current = false
+    start.current = { x: ev.clientX, y: ev.clientY }
+    const native = ev.nativeEvent
+    timer.current = setTimeout(() => {
+      moved.current = true
+      setDragging(true)
+      navigator.vibrate?.(15)
+      // Durante il trascinamento il menu non deve scorrere (iOS).
+      const block = (t: TouchEvent) => t.preventDefault()
+      const stop = () => {
+        document.removeEventListener('touchmove', block)
+        document.removeEventListener('pointerup', stop)
+        document.removeEventListener('pointercancel', stop)
+        setDragging(false)
+      }
+      document.addEventListener('touchmove', block, { passive: false })
+      document.addEventListener('pointerup', stop)
+      document.addEventListener('pointercancel', stop)
+      controls.start(native)
+    }, LONG_PRESS_MS)
+  }
+  const onPointerMove = (ev: RPointerEvent<HTMLElement>) => {
+    // Se il dito si muove prima del tempo è uno scorrimento, non una pressione lunga.
+    if (start.current && Math.hypot(ev.clientX - start.current.x, ev.clientY - start.current.y) > 8) cancel()
+  }
+  const onClick = (ev: RMouseEvent) => {
+    if (moved.current) {
+      ev.preventDefault()
+      moved.current = false
+      return
+    }
+    e.onSelect?.()
+    onPick()
+  }
+
+  const inner = (
+    <>
+      {/* Colori fissi: ogni voce mostra il suo colore, qualunque sia la sezione aperta. */}
+      <span className="grid size-9 shrink-0 place-items-center rounded-full text-[#fff]" style={{ background: e.color }}>
+        <e.Icon className="size-4.5" />
+      </span>
+      <span className="min-w-0 flex-1 leading-tight">
+        <span className="flex items-center gap-1.5 font-semibold">
+          {e.label}
+          {e.isNew && (
+            <span className="rounded-full px-1.5 py-px text-[10px] font-bold uppercase text-[#fff]" style={{ background: e.color }}>
+              Nuovo
+            </span>
+          )}
+        </span>
+        <span className="block truncate text-xs text-neutral-500">{e.hint}</span>
+      </span>
+      {e.active && <Check className="size-4 shrink-0" style={{ color: e.color }} />}
+    </>
+  )
+  const cls = `flex w-full items-center gap-3 rounded-xl p-2.5 text-left select-none [-webkit-touch-callout:none] active:bg-neutral-100 ${
+    dragging ? 'bg-white shadow-lg ring-1 ring-neutral-200' : e.active ? 'bg-neutral-100' : ''
+  }`
+  const handlers = { onPointerDown, onPointerMove, onPointerUp: cancel, onPointerCancel: cancel, onContextMenu: (ev: RMouseEvent) => ev.preventDefault(), onClick }
+  return (
+    <Reorder.Item
+      as="div"
+      value={id}
+      dragListener={false}
+      dragControls={controls}
+      animate={{ scale: dragging ? 1.03 : 1 }}
+      className="relative"
+      style={{ zIndex: dragging ? 1 : 0 }}
+    >
+      {e.href ? (
+        <a href={e.href} role="menuitemradio" aria-checked={e.active} draggable={false} className={cls} {...handlers}>
+          {inner}
+        </a>
+      ) : (
+        <button type="button" role="menuitemradio" aria-checked={e.active} className={cls} {...handlers}>
+          {inner}
+        </button>
+      )}
+    </Reorder.Item>
+  )
+}
+
+const LONG_PRESS_MS = 400
