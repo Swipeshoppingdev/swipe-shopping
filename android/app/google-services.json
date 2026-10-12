@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1060390047490",
+    "project_id": "swipe-shopping-5ecf2",
+    "storage_bucket": "swipe-shopping-5ecf2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1060390047490:android:62e1bd348d3dd081cb3c1b",
+        "android_client_info": {
+          "package_name": "app.swipeshopping"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvgZt4WLCJSukbIxi6I1bjVtMgVYQlCQw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
