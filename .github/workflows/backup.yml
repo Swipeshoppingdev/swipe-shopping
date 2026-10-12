@@ -5,10 +5,22 @@ name: Backup database Supabase
 # (meno tempo per chi volesse provare a indovinare la password: deve essere lunga e casuale).
 # Segreti: SUPABASE_DB_URL (Connect → Session pooler, con la password del database) e BACKUP_PASSWORD.
 # Per aprirlo: gpg --decrypt backup.dump.gpg > backup.dump, poi pg_restore.
+# Ogni notte arriva anche una mail a Kevin (Resend) con il backup cifrato e una copia del codice del repository
+# (senza catalogo e file generati, che si rifanno da soli): così ne resta una fuori da GitHub per sempre.
 on:
   schedule:
     - cron: '53 2 * * *'
   workflow_dispatch:
+    inputs:
+      mail:
+        description: Manda la mail anche se oggi non toccherebbe
+        type: boolean
+        default: false
+
+env:
+  # 'weekly' = solo il lunedì, 'daily' = ogni notte, 'off' = mai.
+  BACKUP_MAIL: daily
+  BACKUP_MAIL_TO: kevinconti0118@gmail.com
 
 permissions:
   contents: read
@@ -18,6 +30,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - uses: actions/checkout@v4
+        with:
+          path: repo
       - name: Controlla i segreti
         id: secrets
         env:
@@ -58,3 +73,30 @@ jobs:
           name: supabase-backup-${{ github.run_number }}
           path: backup.dump.gpg
           retention-days: 3
+      - name: Manda il backup per mail
+        if: steps.secrets.outputs.ok == 'true'
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          FORCE: ${{ inputs.mail }}
+        run: |
+          set -euo pipefail
+          if [ "$FORCE" != "true" ]; then
+            [ "$BACKUP_MAIL" = "off" ] && exit 0
+            [ "$BACKUP_MAIL" = "weekly" ] && [ "$(date -u +%u)" != "1" ] && exit 0
+          fi
+          if [ -z "$RESEND_API_KEY" ]; then echo "::warning::Manca RESEND_API_KEY: mail non inviata."; exit 0; fi
+          day=$(date -u +%Y-%m-%d)
+          git -C repo archive --format=zip --output="$PWD/code.zip" HEAD -- . ':!public/catalog.json' ':!public/details' \
+            ':!android/app/src/main/assets/public' ':!ios/App/App/public' ':!public/play'
+          sha=$(git -C repo rev-parse --short HEAD)
+          jq -n --arg to "$BACKUP_MAIL_TO" --arg day "$day" --arg sha "$sha" --rawfile data <(base64 -w0 backup.dump.gpg) --rawfile code <(base64 -w0 code.zip) '{
+            from: "Swipe Shopping <noreply@swipeshopping.app>", to: [$to],
+            subject: ("Backup Swipe Shopping " + $day),
+            text: ("Backup del " + $day + ".\n\n- Database (dati dell app e account): file .dump.gpg, cifrato con la password BACKUP_PASSWORD.\n- Codice del sito e dell app (versione " + $sha + "): file .zip.\n\nTienili, servono solo in caso di emergenza. Per il ripristino chiedi a Claude nel progetto."),
+            attachments: [{ filename: ("swipe-shopping-database-" + $day + ".dump.gpg"), content: $data },
+                          { filename: ("swipe-shopping-codice-" + $day + ".zip"), content: $code }]
+          }' > mail.json
+          code=$(curl -sS -o resp.txt -w '%{http_code}' https://api.resend.com/emails \
+            -H "Authorization: Bearer $RESEND_API_KEY" -H 'Content-Type: application/json' --data @mail.json)
+          rm mail.json code.zip
+          if [ "$code" = "200" ]; then echo "::notice::Backup mandato per mail."; else echo "::warning::Mail non inviata ($code): $(head -c 300 resp.txt)"; fi
