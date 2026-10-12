@@ -162,6 +162,7 @@ function SectionMenu() {
               <MenuItem key={id} id={id} entry={entries[id]} onPick={() => setOpen(false)} />
             ))}
           </Reorder.Group>
+          <p className="px-2.5 pt-1 pb-0.5 text-center text-[10px] text-neutral-400">Tieni premuto e trascina per riordinare le voci</p>
           <div className="mt-1 border-t border-neutral-100 pt-1">
             <SocialLinks />
           </div>
