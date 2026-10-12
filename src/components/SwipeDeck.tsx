@@ -26,7 +26,7 @@ function preload(url?: string) {
 }
 
 /** Il mazzo della sezione aperta, oppure `cards` (es. Regali, con prodotti di tutte le sezioni: lì niente "annulla"). */
-export function SwipeDeck({ cards }: { cards?: Product[] } = {}) {
+export function SwipeDeck({ cards, onLike }: { cards?: Product[]; onLike?: (p: Product) => void } = {}) {
   const app = useApp()
   const { actions } = app
   const deck = cards ?? app.deck
@@ -40,10 +40,11 @@ export function SwipeDeck({ cards }: { cards?: Product[] } = {}) {
       setExitDir(dir)
       if (dir === 1) {
         actions.like(top)
+        onLike?.(top)
         navigator.vibrate?.(12)
       } else actions.dislike(top)
     },
-    [top, actions],
+    [top, actions, onLike],
   )
 
   // Una "visualizzazione" per ogni card che arriva in cima.

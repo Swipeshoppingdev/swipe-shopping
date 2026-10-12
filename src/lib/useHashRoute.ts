@@ -9,6 +9,7 @@ const parse = (hash: string): Route => {
   if (r.startsWith('p/')) return 'scopri' // prodotto condiviso: si apre in Scopri
   if (r.startsWith('lista/')) return 'lista' // cartella di preferiti condivisa
   if (r.startsWith('outfit/')) return 'outfit' // #/outfit/salvati
+  if (r.startsWith('regali/')) return 'regali' // #/regali/salvati, #/regali/filtri
   // Social: profilo di un amico, sondaggio, lista regalo, Swipe insieme, Babbo Natale segreto (#/u/<codice>, #/sondaggio/<id>…)
   for (const prefix of ['u', 'sondaggio', 'regalo', 'insieme', 'segreto', 'chat'] as const) if (r.startsWith(`${prefix}/`)) return prefix
   return (ROUTES as readonly string[]).includes(r) ? (r as Route) : 'scopri'

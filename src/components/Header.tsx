@@ -1,6 +1,5 @@
 import { Check, ChevronDown, Cookie, Cpu, Gift, LayoutGrid, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun, TreePine } from 'lucide-react'
 import { giftSeason } from '../pages/GiftsPage'
-import { useHashRoute } from '../lib/useHashRoute'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { APP_NAME } from '../config/app'
 import { SECTIONS, sectionOf, type Universe } from '../config/categories'
@@ -8,25 +7,24 @@ import { load, save } from '../lib/storage'
 import { useTheme } from '../lib/theme'
 import { SocialLinks } from './SocialLinks'
 import { useApp } from '../state/AppState'
-import { useInOutfit } from '../lib/outfitMode'
+import { useSpecial } from '../lib/outfitMode'
 
 /** Barra in alto: menu delle sezioni a sinistra, logo al centro, tema chiaro/scuro a destra. */
 export function Header() {
   const { theme, toggle } = useTheme()
   const { state } = useApp()
-  const inOutfit = useInOutfit()
-  const onGifts = useHashRoute().route === 'regali'
+  const special = useSpecial()
   return (
     // Sticky con sfondo pieno: iOS 26 riconosce la barra e usa il suo colore sotto l'ora invece di sfocare il contenuto.
     <header className="sticky top-0 z-20 shrink-0 bg-neutral-50 pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex h-14 max-w-md items-center gap-2 px-2 sm:max-w-2xl">
         <SectionMenu />
-        <a href="#/scopri" className="flex min-w-0 flex-1 flex-col items-center leading-none">
+        <a href={special ? `#/${special}` : '#/scopri'} className="flex min-w-0 flex-1 flex-col items-center leading-none">
           <span className="text-lg font-black tracking-tight">
             {APP_NAME.split(' ')[0]}
             <span className="text-rose-500">{APP_NAME.split(' ').slice(1).join(' ')}</span>
           </span>
-          <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{inOutfit ? 'Outfit' : onGifts ? 'Regali' : sectionOf(state.mode).label}</span>
+          <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{special === 'outfit' ? 'Outfit' : special === 'regali' ? 'Regali' : sectionOf(state.mode).label}</span>
         </a>
         {/* Spazio vuoto a destra per tenere il logo centrato (Outfit si apre dal menu Sezioni, scelta di Kevin). */}
         <span className="w-18 max-[389px]:w-9" aria-hidden />
@@ -60,8 +58,9 @@ const NEW_SECTIONS: Universe[] = ['beauty', 'casa', 'gadget', 'snack', 'animali'
 /** Menu delle sezioni: ognuna è come un'app a sé, con filtri e preferiti suoi. */
 function SectionMenu() {
   const { state, actions } = useApp()
-  const onOutfit = useInOutfit()
-  const onGifts = useHashRoute().route === 'regali'
+  const special = useSpecial()
+  const onOutfit = special === 'outfit'
+  const onGifts = special === 'regali'
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const current = onOutfit ? { ...sectionOf('moda'), label: 'Outfit' } : onGifts ? { ...sectionOf(state.mode), label: 'Regali' } : sectionOf(state.mode)

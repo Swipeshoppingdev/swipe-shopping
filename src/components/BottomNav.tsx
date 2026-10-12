@@ -2,6 +2,7 @@ import { Flame, Heart, SlidersHorizontal, BadgePercent, User, Users } from 'luci
 import { universeOf } from '../config/categories'
 import { useEffect, useState } from 'react'
 import { subscribeUnseen } from '../lib/social'
+import type { Special } from '../lib/outfitMode'
 import { routeHref, type Route } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
 
@@ -13,12 +14,17 @@ const ITEMS = [
   { route: 'profilo', label: 'Profilo', Icon: User },
 ] as const
 
-export function BottomNav({ current, hash, inOutfit }: { current: Route; hash: string; inOutfit: boolean }) {
-  // In Outfit Scopri, Preferiti e Filtri portano agli outfit, agli outfit salvati e ai filtri degli outfit.
-  const onOutfit = inOutfit
-  const hrefOf = (r: Route) => (!onOutfit ? routeHref(r) : r === 'scopri' ? '#/outfit' : r === 'preferiti' ? '#/outfit/salvati' : r === 'filtri' ? '#/outfit/filtri' : routeHref(r))
+export function BottomNav({ current, hash, special }: { current: Route; hash: string; special: Special | null }) {
+  // In Outfit (o Regali) Scopri, Preferiti e Filtri portano al suo mazzo, ai suoi salvati e ai suoi filtri.
+  const onOutfit = special !== null
+  const hrefOf = (r: Route) =>
+    !special ? routeHref(r) : r === 'scopri' ? `#/${special}` : r === 'preferiti' ? `#/${special}/salvati` : r === 'filtri' ? `#/${special}/filtri` : routeHref(r)
   const isActive = (r: Route) =>
-    current !== 'outfit' ? current === r : r === 'scopri' ? !/^#\/outfit\/(salvati|filtri)/.test(hash) : hash.startsWith(hrefOf(r))
+    current !== 'outfit' && current !== 'regali'
+      ? current === r
+      : r === 'scopri'
+        ? !new RegExp(`^#/${current}/(salvati|filtri)`).test(hash)
+        : (r === 'preferiti' || r === 'filtri') && hash.startsWith(hrefOf(r))
   const { wishlist, state, unseenDeals } = useApp()
   const [unseenSocial, setUnseenSocial] = useState(0)
   useEffect(() => subscribeUnseen(setUnseenSocial), [])

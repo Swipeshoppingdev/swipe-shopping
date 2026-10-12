@@ -3,7 +3,7 @@ import { BottomNav } from './components/BottomNav'
 import { ConsentBanner } from './components/ConsentBanner'
 import { Header } from './components/Header'
 import { ProductSheet } from './components/ProductSheet'
-import { useOutfitMode } from './lib/outfitMode'
+import { useSpecialMode } from './lib/outfitMode'
 import { useHashRoute } from './lib/useHashRoute'
 import { Welcome } from './components/Welcome'
 import { SocialWatcher } from './components/SocialWatcher'
@@ -48,8 +48,8 @@ const prefetchPages = () => Object.values(PAGES).forEach((load) => void load().c
 
 export default function App() {
   const { route, hash } = useHashRoute()
-  const isDiscover = route === 'scopri' || route === 'outfit' || route === 'regali'
-  const inOutfit = useOutfitMode()
+  const isDiscover = route === 'scopri' || route === 'outfit' || (route === 'regali' && !/^#\/regali\/(salvati|filtri)/.test(hash))
+  const special = useSpecialMode()
   useEffect(() => {
     const t = setTimeout(prefetchPages, 4000)
     return () => clearTimeout(t)
@@ -89,7 +89,7 @@ export default function App() {
       <Welcome />
       <ProductSheet />
       <SocialWatcher />
-      <BottomNav current={route} hash={hash} inOutfit={inOutfit} />
+      <BottomNav current={route} hash={hash} special={special} />
     </div>
   )
 }
