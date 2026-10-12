@@ -1,3 +1,4 @@
+import { useBoost } from '../lib/boost'
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import { UNIVERSES, isUniverse, universeOf, type Universe } from '../config/categories'
 import { track } from '../lib/analytics'
@@ -253,6 +254,9 @@ function useAppStore() {
   }, [sharedProduct])
 
   const byId = useMemo(() => new Map(products.map((p) => [p.id, p])), [products])
+  const boost = useBoost()
+  // Solo la categoria (non i giri rimasti): il mazzo non si ricalcola a ogni swipe.
+  const boostCat = boost && boost.section === state.mode ? boost.category : null
   const deck = useMemo(() => {
     const seen = new Set([...state.disliked, ...state.wishlist.map((w) => w.product.id)])
     const list = products.filter(
@@ -278,11 +282,13 @@ function useAppStore() {
       const p = byId.get(id)
       return p && list.includes(p) ? [p] : []
     })
-    const rest = back.length ? sorted.filter((p) => !back.includes(p)) : sorted
+    const rest0 = back.length ? sorted.filter((p) => !back.includes(p)) : sorted
+    // "Questo o quello": la categoria scelta va in cima per un po'.
+    const rest = boostCat ? [...rest0.filter((p) => p.category === boostCat), ...rest0.filter((p) => p.category !== boostCat)] : rest0
     const withBack = [...back, ...rest]
     const shared = sharedId ? products.find((p) => p.id === sharedId) : undefined
     return shared ? [shared, ...withBack.filter((p) => p.id !== shared.id)] : withBack
-  }, [products, byId, state.disliked, state.wishlist, state.mode, state.restored, activeFilters, sharedId])
+  }, [products, byId, state.disliked, state.wishlist, state.mode, state.restored, activeFilters, sharedId, boostCat])
 
   /** Gli scartati della sezione aperta, dal più vecchio al più recente */
   const sectionDisliked = useMemo(() => {

@@ -1,19 +1,15 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Heart, Swords } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { brandAndStore } from '../config/stores'
 import { modelKey } from '../lib/dedupe'
-import { load, save } from '../lib/storage'
 import { useApp } from '../state/AppState'
 import type { Product } from '../types/product'
 import { PriceTag } from './PriceTag'
 import { ProductImage } from './ProductImage'
 
-/** Ogni quanti swipe arriva un duello. */
-const EVERY = 12
-
 /** Due prodotti dello stesso tipo tra i prossimi del mazzo, possibilmente di marche diverse. */
-function pickPair(deck: Product[]): [Product, Product] | null {
+export function pickPair(deck: Product[]): [Product, Product] | null {
   const pool = deck.slice(1, 40)
   const byCat = new Map<string, Product[]>()
   for (const p of pool) byCat.set(p.category, [...(byCat.get(p.category) ?? []), p])
@@ -25,48 +21,19 @@ function pickPair(deck: Product[]): [Product, Product] | null {
   return b ? [a, b] : null
 }
 
-/**
- * Duello: ogni tanto, tra uno swipe e l'altro, due prodotti uno contro l'altro: "Quale prenderesti?".
- * Il vincitore va nei preferiti, l'altro resta nel mazzo. Si può saltare.
- */
-export function Duel() {
-  const { state, deck, actions } = useApp()
-  const swipes = state.history.length
-  const last = useRef(swipes)
-  const [pair, setPair] = useState<[Product, Product] | null>(null)
+/** Duello: due prodotti uno contro l'altro, "Quale prenderesti?". Il vincitore va nei preferiti, l'altro resta nel mazzo. */
+export function DuelView({ pair, onDone }: { pair: [Product, Product]; onDone: () => void }) {
+  const { actions } = useApp()
   const [winner, setWinner] = useState<Product | null>(null)
-
-  useEffect(() => {
-    const added = swipes - last.current
-    last.current = swipes
-    if (added <= 0 || pair) return
-    const next = load<number>('duelCount', 0) + added
-    if (next >= EVERY) {
-      const p = pickPair(deck)
-      if (p) {
-        save('duelCount', 0)
-        // Dopo l'uscita della carta.
-        const t = setTimeout(() => setPair(p), 450)
-        return () => clearTimeout(t)
-      }
-    }
-    save('duelCount', next)
-  }, [swipes, deck, pair])
-
   const choose = (p: Product) => {
     if (winner) return
     setWinner(p)
     actions.like(p)
     navigator.vibrate?.(15)
-    setTimeout(() => {
-      setPair(null)
-      setWinner(null)
-    }, 1100)
+    setTimeout(onDone, 1100)
   }
 
   return (
-    <AnimatePresence>
-      {pair && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -74,6 +41,7 @@ export function Duel() {
           className="absolute inset-0 z-30 flex flex-col gap-3 rounded-3xl bg-neutral-50 p-1"
           role="dialog"
           aria-label="Duello"
+          data-break
         >
           <div className="pt-1 text-center">
             <p className="flex items-center justify-center gap-2 text-xl font-black">
@@ -118,13 +86,11 @@ export function Duel() {
           <p className="h-5 text-center text-sm font-semibold text-rose-500">{winner ? 'Salvato nei preferiti 💖' : ''}</p>
           <button
             type="button"
-            onClick={() => setPair(null)}
+            onClick={onDone}
             className="mx-auto mb-1 h-10 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100"
           >
             Nessuno dei due, salta
           </button>
         </motion.div>
-      )}
-    </AnimatePresence>
   )
 }

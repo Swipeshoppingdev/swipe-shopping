@@ -148,7 +148,7 @@ export function StyleReveal() {
     if (!due || open) return
     // Dopo lo swipe, non durante (la carta ha il tempo di uscire), e mai sopra un duello.
     const t = setInterval(() => {
-      if (!document.querySelector('[aria-label="Duello"]')) {
+      if (!document.querySelector('[data-break]')) {
         clearInterval(t)
         setOpen(true)
       }
