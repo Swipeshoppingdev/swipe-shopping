@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { BadgeCheck, Check, Euro, Heart, Shuffle, Tag, X } from 'lucide-react'
+import { ArrowDown, ArrowUp, BadgeCheck, Check, Euro, Heart, Percent, Shuffle, Tag, TrendingUp, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { categoryLabel, type CategoryId } from '../config/categories'
 import { brandAndStore } from '../config/stores'
@@ -15,10 +15,12 @@ import { ProductImage } from './ProductImage'
 const EVERY = 10
 /** Rotazione: Indovina il prezzo e Cosa ti va (i preferiti) tornano più spesso. */
 const NO_LOGO = new Set(['scarpe_eleganti', 'stivali', 'camicie', 'cappotti', 'vestiti', 'maglioni', 'giacche', 'pantaloni'])
-const KINDS = ['prezzo', 'scelta', 'caro', 'prezzo', 'scelta', 'marca', 'duello'] as const
+const KINDS = ['prezzo', 'scelta', 'piumeno', 'gratta', 'prezzo', 'scelta', 'caro', 'piumeno', 'marca', 'gratta', 'duello'] as const
 type Break =
   | { kind: 'duello'; pair: [Product, Product] }
   | { kind: 'caro'; pair: [Product, Product] }
+  | { kind: 'piumeno'; chain: Product[] }
+  | { kind: 'gratta'; product: Product }
   | { kind: 'marca'; product: Product; options: string[] }
   | { kind: 'prezzo'; product: Product; options: number[]; price: number }
   | { kind: 'scelta'; options: { category: string; product: Product }[] }
@@ -67,6 +69,29 @@ function buildBreak(kind: (typeof KINDS)[number], deck: Product[]): Break | null
       }
     return null
   }
+  if (kind === 'piumeno') {
+    // Una catena di prodotti con prezzi aggiornati, ognuno almeno 10% diverso dal precedente.
+    const chain: Product[] = []
+    for (const p of deck.slice(1, 120)) {
+      const fp = freshPrice(p)
+      if (!fp || fp.from) continue
+      const prev = chain.at(-1)
+      if (prev) {
+        const a = freshPrice(prev)!.price
+        if (Math.max(a, fp.price) < Math.min(a, fp.price) * 1.1) continue
+      }
+      chain.push(p)
+      if (chain.length === 12) break
+    }
+    return chain.length >= 6 ? { kind, chain } : null
+  }
+  if (kind === 'gratta') {
+    const product = deck.slice(1, 80).find((p) => {
+      const fp = freshPrice(p)
+      return fp && !fp.from && (fp.discountPct ?? 0) >= 15
+    })
+    return product ? { kind, product } : null
+  }
   if (kind === 'marca') {
     // Solo capi dove il logo di solito non si vede in foto (sneakers, borse e tech lo mostrano quasi sempre).
     const withBrand = deck.slice(1, 120).filter((p) => p.brand && NO_LOGO.has(p.category))
@@ -94,7 +119,8 @@ function buildBreak(kind: (typeof KINDS)[number], deck: Product[]): Break | null
 }
 
 /**
- * Pause di gioco nel mazzo, ogni 10 swipe, a rotazione: Indovina il prezzo, Cosa ti va, Più caro, Indovina la marca, Duello.
+ * Pause di gioco nel mazzo, ogni 10 swipe, a rotazione: Indovina il prezzo, Cosa ti va, Più o meno, Gratta lo sconto,
+ * Più caro, Indovina la marca, Duello.
  * Spezzano la ripetizione dello swipe; si possono sempre saltare.
  */
 export function Breaks() {
@@ -134,6 +160,8 @@ export function Breaks() {
       {current?.kind === 'prezzo' && <PriceGuess key="p" {...current} onDone={done} />}
       {current?.kind === 'caro' && <WhichCostsMore key="c" pair={current.pair} onDone={done} />}
       {current?.kind === 'marca' && <BrandGuess key="m" product={current.product} options={current.options} onDone={done} />}
+      {current?.kind === 'piumeno' && <HigherLower key="h" chain={current.chain} onDone={done} />}
+      {current?.kind === 'gratta' && <ScratchDeal key="g" product={current.product} onDone={done} />}
       {current?.kind === 'scelta' && <ThisOrThat key="s" options={current.options} onDone={done} />}
     </AnimatePresence>
   )
@@ -394,6 +422,166 @@ function BrandGuess({ product, options, onDone }: { product: Product; options: s
         )}
         <button type="button" onClick={onDone} className="h-11 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
           {picked === null ? 'Salta' : 'Avanti'}
+        </button>
+      </div>
+    </motion.div>
+  )
+}
+
+/** Più o meno: il prossimo costa di più o di meno? Si va avanti finché non si sbaglia; il record resta sul telefono. */
+function HigherLower({ chain, onDone }: { chain: Product[]; onDone: () => void }) {
+  const { actions } = useApp()
+  const [i, setI] = useState(0)
+  const [result, setResult] = useState<'ok' | 'ko' | 'end' | null>(null)
+  const [best] = useState(() => load<number>('piumenoBest', 0))
+  const price = (p: Product) => freshPrice(p)!.price
+  const a = chain[i]
+  const b = chain[i + 1]
+  const streak = result === 'ko' ? i : i + (result === 'end' ? 1 : 0)
+  const guess = (up: boolean) => {
+    const right = up === price(b) > price(a)
+    navigator.vibrate?.(right ? [10, 40, 10] : 30)
+    if (!right) {
+      setResult('ko')
+      if (i > best) save('piumenoBest', i)
+      return
+    }
+    setResult('ok')
+    setTimeout(() => {
+      if (i + 2 >= chain.length) {
+        setResult('end')
+        if (i + 1 > best) save('piumenoBest', i + 1)
+      } else {
+        setI(i + 1)
+        setResult(null)
+      }
+    }, 900)
+  }
+  const over = result === 'ko' || result === 'end'
+  const card = (p: Product, show: boolean, tone = '') => (
+    <div className={`relative flex min-h-0 flex-1 items-center gap-3 overflow-hidden rounded-2xl bg-white p-2 shadow-md ring-2 ${tone || 'ring-transparent'}`}>
+      <div className="relative h-full w-2/5 shrink-0 bg-[#fff]">
+        <ProductImage product={p} eager className="absolute inset-0 size-full object-contain" />
+      </div>
+      <div className="min-w-0 space-y-1">
+        <p className="line-clamp-3 text-xs font-medium">{p.title}</p>
+        <p className="text-2xl font-black">{show ? formatPrice(price(p)) : '? €'}</p>
+      </div>
+    </div>
+  )
+  return (
+    <motion.div {...fade} className={frame} role="dialog" aria-label="Più o meno" data-break>
+      <div className="pt-1 text-center">
+        <p className="flex items-center justify-center gap-2 text-xl font-black">
+          <TrendingUp className="size-5 text-rose-500" /> Più o meno?
+        </p>
+        <p className="text-sm text-neutral-500">
+          Di fila: <strong className="text-neutral-900">{streak}</strong> · Record: {Math.max(best, over ? streak : 0)}
+        </p>
+      </div>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.div key={a.id} initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -40, opacity: 0 }} className="flex min-h-0 flex-1 flex-col gap-2">
+          {card(a, true)}
+          {card(b, result !== null, result === 'ko' ? 'ring-neutral-300' : result ? 'ring-emerald-500' : '')}
+        </motion.div>
+      </AnimatePresence>
+      {!over ? (
+        <div className="grid grid-cols-2 gap-2 px-1 pb-1">
+          <button type="button" disabled={result !== null} onClick={() => guess(true)} className="flex h-12 items-center justify-center gap-1 rounded-2xl bg-white text-base font-bold ring-1 ring-neutral-200 active:scale-95">
+            <ArrowUp className="size-5 text-emerald-600" /> Di più
+          </button>
+          <button type="button" disabled={result !== null} onClick={() => guess(false)} className="flex h-12 items-center justify-center gap-1 rounded-2xl bg-white text-base font-bold ring-1 ring-neutral-200 active:scale-95">
+            <ArrowDown className="size-5 text-rose-500" /> Di meno
+          </button>
+          <button type="button" onClick={onDone} className="col-span-2 h-9 text-sm font-semibold text-neutral-500">
+            Basta così
+          </button>
+        </div>
+      ) : (
+        <>
+          <p className="text-center text-sm font-semibold">
+            {result === 'end' ? `🏆 Tutti giusti! ${streak} di fila` : streak > best ? `🎉 Nuovo record: ${streak} di fila!` : `Peccato! ${streak} di fila`}
+          </p>
+          <div className="flex justify-center gap-2 pb-1">
+            <button
+              type="button"
+              onClick={() => {
+                actions.like(b)
+                onDone()
+              }}
+              className="flex h-11 items-center gap-2 rounded-full bg-rose-500 px-5 text-sm font-semibold text-[#fff] active:scale-95"
+            >
+              <Heart className="size-4 fill-current" /> Salva l'ultimo
+            </button>
+            <button type="button" onClick={onDone} className="h-11 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
+              Avanti
+            </button>
+          </div>
+        </>
+      )}
+    </motion.div>
+  )
+}
+
+/** Gratta lo sconto: si gratta (o si tocca) l'etichetta argentata e appare lo sconto vero di oggi. */
+function ScratchDeal({ product, onDone }: { product: Product; onDone: () => void }) {
+  const { actions } = useApp()
+  const fp = freshPrice(product)!
+  const [scratched, setScratched] = useState(0)
+  const open = scratched >= 1
+  const scratch = (amount: number) =>
+    setScratched((v) => {
+      const n = Math.min(1, v + amount)
+      if (n >= 1 && v < 1) navigator.vibrate?.([10, 40, 10])
+      return n
+    })
+  return (
+    <motion.div {...fade} className={frame} role="dialog" aria-label="Gratta lo sconto" data-break>
+      <div className="pt-1 text-center">
+        <p className="flex items-center justify-center gap-2 text-xl font-black">
+          <Percent className="size-5 text-rose-500" /> Gratta lo sconto
+        </p>
+        <p className="text-sm text-neutral-500">Quanto è scontato oggi?</p>
+      </div>
+      <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl bg-[#fff] shadow-md">
+        <ProductImage product={product} eager className="absolute inset-0 size-full object-contain p-3" />
+      </div>
+      <p className="line-clamp-2 px-2 text-center text-sm font-medium">{product.title}</p>
+      <div
+        className="relative mx-auto flex h-24 w-64 touch-none items-center justify-center overflow-hidden rounded-2xl bg-rose-500 text-[#fff] select-none"
+        onPointerMove={(e) => e.buttons && scratch(0.04)}
+        onClick={() => scratch(0.34)}
+        role="button"
+        aria-label={open ? `Sconto ${fp.discountPct}%` : 'Gratta qui'}
+      >
+        <motion.div initial={false} animate={open ? { scale: [1, 1.15, 1] } : {}} className="text-center">
+          <p className="text-4xl leading-none font-black">-{fp.discountPct}%</p>
+          <p className="mt-1 text-sm font-semibold">
+            <span className="line-through opacity-80">{formatPrice(product.originalPrice!)}</span> {formatPrice(fp.price)}
+          </p>
+        </motion.div>
+        <motion.div
+          animate={{ opacity: 1 - scratched }}
+          className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[repeating-linear-gradient(45deg,#c9cdd2_0_8px,#b6bbc1_8px_16px)] text-sm font-bold text-neutral-600"
+        >
+          <span className="rounded-full bg-[#e5e7ea] px-3 py-1 text-[#4b5563]">✋ Gratta qui</span>
+        </motion.div>
+      </div>
+      <div className="flex justify-center gap-2 pb-1">
+        {open && (
+          <button
+            type="button"
+            onClick={() => {
+              actions.like(product)
+              onDone()
+            }}
+            className="flex h-11 items-center gap-2 rounded-full bg-rose-500 px-5 text-sm font-semibold text-[#fff] active:scale-95"
+          >
+            <Heart className="size-4 fill-current" /> Lo voglio
+          </button>
+        )}
+        <button type="button" onClick={onDone} className="h-11 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
+          {open ? 'Avanti' : 'Salta'}
         </button>
       </div>
     </motion.div>
