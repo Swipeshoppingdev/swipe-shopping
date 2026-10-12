@@ -5,6 +5,8 @@ import { track } from '../lib/analytics'
 import { useApp } from '../state/AppState'
 import { productImageUrl, storeLinkLabel } from '../config/stores'
 import { CoachMarks } from './CoachMarks'
+import { HeartBurst, type Burst } from './HeartBurst'
+import { discountBadge } from '../lib/price'
 import { SendButton } from './SendButton'
 import { StoreLink } from './StoreLink'
 import { UndoMenu } from './UndoMenu'
@@ -31,6 +33,7 @@ export function SwipeDeck({ cards, onLike }: { cards?: Product[]; onLike?: (p: P
   const { actions } = app
   const deck = cards ?? app.deck
   const [exitDir, setExitDir] = useState<SwipeDir>(1)
+  const [bursts, setBursts] = useState<Burst[]>([])
   const top = deck[0]
   const visible = deck.slice(0, 3)
 
@@ -41,7 +44,12 @@ export function SwipeDeck({ cards, onLike }: { cards?: Product[]; onLike?: (p: P
       if (dir === 1) {
         actions.like(top)
         onLike?.(top)
-        navigator.vibrate?.(12)
+        // Cuori che esplodono; più grandi (e vibrazione più forte) per gli sconti veri dal 30% in su.
+        const discount = discountBadge(top)
+        const id = Date.now()
+        setBursts((b) => [...b.slice(-2), { id, discount }])
+        setTimeout(() => setBursts((b) => b.filter((x) => x.id !== id)), 1400)
+        navigator.vibrate?.((discount ?? 0) >= 30 ? [15, 40, 25, 40, 35] : 15)
       } else actions.dislike(top)
     },
     [top, actions, onLike],
@@ -83,6 +91,7 @@ export function SwipeDeck({ cards, onLike }: { cards?: Product[]; onLike?: (p: P
             .map((p, i) => <SwipeCard key={p.id} product={p} index={i} onSwipe={swipe} />)
             .reverse()}
         </AnimatePresence>
+        <HeartBurst bursts={bursts} />
         <CoachMarks />
       </div>
 

@@ -62,6 +62,8 @@ type Action =
 
 const MAX_DISLIKED = 5000
 const MAX_HISTORY = 30
+/** No di fila (senza Sì) in una categoria, negli ultimi MAX_HISTORY swipe, perché vada in fondo al mazzo */
+const TIRED_AFTER = 6
 /** Dopo quanto si scaricano le altre sezioni (ms) */
 const REST_DELAY_MS = 3000
 
@@ -278,6 +280,18 @@ function useAppStore() {
     return dropList.filter((p) => !seen.has(p.id))
   }, [dropList, state.disliked, state.wishlist])
 
+  // Categorie "stancanti": tanti No e nessun Sì negli ultimi swipe. Vanno in fondo al mazzo (non spariscono)
+  // e tornano da sole quando quei No escono dagli ultimi 30 swipe: magari dopo si ha voglia d'altro.
+  const tiredKey = useMemo(() => {
+    const no = new Map<string, number>()
+    const yes = new Set<string>()
+    for (const h of state.history) {
+      if (h.type === 'like') yes.add(h.product.category)
+      else no.set(h.product.category, (no.get(h.product.category) ?? 0) + 1)
+    }
+    return [...no].filter(([c, n]) => n >= TIRED_AFTER && !yes.has(c)).map(([c]) => c).sort().join('|')
+  }, [state.history])
+
   const fullDeck = useMemo(() => {
     const seen = new Set([...state.disliked, ...state.wishlist.map((w) => w.product.id)])
     const list = products.filter(
@@ -305,11 +319,13 @@ function useAppStore() {
     })
     const rest0 = back.length ? sorted.filter((p) => !back.includes(p)) : sorted
     // "Cosa ti va?": la categoria scelta va in cima per un po'.
-    const rest = boostCat ? [...rest0.filter((p) => p.category === boostCat), ...rest0.filter((p) => p.category !== boostCat)] : rest0
+    const rest1 = boostCat ? [...rest0.filter((p) => p.category === boostCat), ...rest0.filter((p) => p.category !== boostCat)] : rest0
+    const tired = new Set(tiredKey ? tiredKey.split('|') : [])
+    const rest = tired.size ? [...rest1.filter((p) => !tired.has(p.category) || p.category === boostCat), ...rest1.filter((p) => tired.has(p.category) && p.category !== boostCat)] : rest1
     const withBack = [...back, ...rest]
     const shared = sharedId ? products.find((p) => p.id === sharedId) : undefined
     return shared ? [shared, ...withBack.filter((p) => p.id !== shared.id)] : withBack
-  }, [products, byId, state.disliked, state.wishlist, state.mode, state.restored, activeFilters, sharedId, boostCat])
+  }, [products, byId, state.disliked, state.wishlist, state.mode, state.restored, activeFilters, sharedId, boostCat, tiredKey])
   const deck = dropOn && !sharedId ? dropDeck : fullDeck
 
   /** Gli scartati della sezione aperta, dal più vecchio al più recente */
