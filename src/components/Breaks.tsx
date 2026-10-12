@@ -18,7 +18,7 @@ import { StoreLink } from './StoreLink'
 const EVERY = 10
 /** Rotazione: Indovina il prezzo e Cosa ti va (i preferiti) tornano più spesso. */
 const NO_LOGO = new Set(['scarpe_eleganti', 'stivali', 'camicie', 'cappotti', 'vestiti', 'maglioni', 'giacche', 'pantaloni'])
-const KINDS = ['prezzo', 'scelta', 'piumeno', 'ordina', 'gratta', 'pezzo', 'prezzo', 'scelta', 'ruota', 'caro', 'piumeno', 'marca', 'ordina', 'gratta', 'pezzo', 'duello'] as const
+const KINDS = ['prezzo', 'ruota', 'scelta', 'piumeno', 'ordina', 'gratta', 'pezzo', 'prezzo', 'scelta', 'ruota', 'caro', 'piumeno', 'marca', 'ordina', 'gratta', 'pezzo', 'duello'] as const
 const SHOES = ['sneakers', 'scarpe_eleganti', 'stivali', 'scarpe_sportive', 'sandali']
 type Break =
   | { kind: 'duello'; pair: [Product, Product] }
@@ -74,8 +74,12 @@ function buildBreak(kind: (typeof KINDS)[number], deck: Product[], all: Product[
     return null
   }
   if (kind === 'ruota') {
-    const cats = categoryOptions(deck, 6)
-    return cats ? { kind, options: cats } : null
+    // Da 6 a 3 fette: con filtri stretti (es. solo scarpe) le categorie nel mazzo sono poche.
+    for (const n of [6, 5, 4, 3]) {
+      const cats = categoryOptions(deck, n, 2)
+      if (cats) return { kind, options: cats }
+    }
+    return null
   }
   if (kind === 'pezzo') {
     // Solo Moda: un outfit vero costruito attorno a un capo del mazzo, con un pezzo (meglio le scarpe) da scegliere.
@@ -153,10 +157,10 @@ function buildBreak(kind: (typeof KINDS)[number], deck: Product[], all: Product[
 }
 
 /** n categorie con abbastanza prodotti "veri" nel mazzo, ognuna con un prodotto da mostrare. */
-function categoryOptions(deck: Product[], n: number) {
+function categoryOptions(deck: Product[], n: number, min = 4) {
   const counts = new Map<string, Product[]>()
-  for (const p of deck.slice(1, 150)) if (looksLike(p)) counts.set(p.category, [...(counts.get(p.category) ?? []), p])
-  const cats = [...counts].filter(([, l]) => l.length >= 4).sort(() => Math.random() - 0.5).slice(0, n)
+  for (const p of deck.slice(1, 300)) if (looksLike(p)) counts.set(p.category, [...(counts.get(p.category) ?? []), p])
+  const cats = [...counts].filter(([, l]) => l.length >= min).sort(() => Math.random() - 0.5).slice(0, n)
   return cats.length < n ? null : cats.map(([category, l]) => ({ category, product: l[0] }))
 }
 
