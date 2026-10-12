@@ -16,6 +16,7 @@ const PAGES = {
   FriendsPage: () => import('./pages/FriendsPage').then((m) => ({ default: m.FriendsPage })),
   GiftListPage: () => import('./pages/GiftListPage').then((m) => ({ default: m.GiftListPage })),
   ChatPage: () => import('./pages/ChatPage').then((m) => ({ default: m.ChatPage })),
+  GiftsPage: () => import('./pages/GiftsPage').then((m) => ({ default: m.GiftsPage })),
   OutfitPage: () => import('./pages/OutfitPage').then((m) => ({ default: m.OutfitPage })),
   PollPage: () => import('./pages/PollPage').then((m) => ({ default: m.PollPage })),
   SantaPage: () => import('./pages/SantaPage').then((m) => ({ default: m.SantaPage })),
@@ -33,6 +34,7 @@ const FriendsPage = lazy(PAGES.FriendsPage)
 const GiftListPage = lazy(PAGES.GiftListPage)
 const ChatPage = lazy(PAGES.ChatPage)
 const OutfitPage = lazy(PAGES.OutfitPage)
+const GiftsPage = lazy(PAGES.GiftsPage)
 const PollPage = lazy(PAGES.PollPage)
 const SantaPage = lazy(PAGES.SantaPage)
 const StudioPage = lazy(PAGES.StudioPage)
@@ -46,7 +48,7 @@ const prefetchPages = () => Object.values(PAGES).forEach((load) => void load().c
 
 export default function App() {
   const { route, hash } = useHashRoute()
-  const isDiscover = route === 'scopri' || route === 'outfit'
+  const isDiscover = route === 'scopri' || route === 'outfit' || route === 'regali'
   const inOutfit = useOutfitMode()
   useEffect(() => {
     const t = setTimeout(prefetchPages, 4000)
@@ -77,6 +79,7 @@ export default function App() {
         {route === 'segreto' && <SantaPage key={hash} />}
         {route === 'chat' && <ChatPage key={hash} />}
         {route === 'outfit' && <OutfitPage />}
+        {route === 'regali' && <GiftsPage />}
         {route === 'studio' && <StudioPage />}
         </Suspense>
         {/* Spazio per la barra in basso: un elemento vero, perché Safari ignora il padding in fondo ai contenitori che scorrono. */}

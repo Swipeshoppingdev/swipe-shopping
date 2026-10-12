@@ -10,7 +10,7 @@ import { useHashRoute, type Route } from './useHashRoute'
 const KEY = 'inOutfit'
 const SECTION_PAGES: Route[] = ['scopri', 'preferiti', 'filtri']
 /** Pagine con un mazzo di prodotti (Swipe insieme): mai in veste Outfit, ma senza uscire da Outfit per dopo. */
-const PRODUCT_PAGES: Route[] = ['insieme']
+const PRODUCT_PAGES: Route[] = ['insieme', 'regali']
 
 export function useInOutfit() {
   const { route } = useHashRoute()

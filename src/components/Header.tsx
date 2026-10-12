@@ -1,4 +1,6 @@
-import { Check, ChevronDown, Cookie, Cpu, Gift, LayoutGrid, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun } from 'lucide-react'
+import { Check, ChevronDown, Cookie, Cpu, Gift, LayoutGrid, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun, TreePine } from 'lucide-react'
+import { giftSeason } from '../pages/GiftsPage'
+import { useHashRoute } from '../lib/useHashRoute'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { APP_NAME } from '../config/app'
 import { SECTIONS, sectionOf, type Universe } from '../config/categories'
@@ -13,6 +15,7 @@ export function Header() {
   const { theme, toggle } = useTheme()
   const { state } = useApp()
   const inOutfit = useInOutfit()
+  const onGifts = useHashRoute().route === 'regali'
   return (
     // Sticky con sfondo pieno: iOS 26 riconosce la barra e usa il suo colore sotto l'ora invece di sfocare il contenuto.
     <header className="sticky top-0 z-20 shrink-0 bg-neutral-50 pt-[env(safe-area-inset-top)]">
@@ -23,7 +26,7 @@ export function Header() {
             {APP_NAME.split(' ')[0]}
             <span className="text-rose-500">{APP_NAME.split(' ').slice(1).join(' ')}</span>
           </span>
-          <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{inOutfit ? 'Outfit' : sectionOf(state.mode).label}</span>
+          <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{inOutfit ? 'Outfit' : onGifts ? 'Regali' : sectionOf(state.mode).label}</span>
         </a>
         {/* Spazio vuoto a destra per tenere il logo centrato (Outfit si apre dal menu Sezioni, scelta di Kevin). */}
         <span className="w-18 max-[389px]:w-9" aria-hidden />
@@ -58,12 +61,13 @@ const NEW_SECTIONS: Universe[] = ['beauty', 'casa', 'gadget', 'snack', 'animali'
 function SectionMenu() {
   const { state, actions } = useApp()
   const onOutfit = useInOutfit()
+  const onGifts = useHashRoute().route === 'regali'
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
-  const current = onOutfit ? { ...sectionOf('moda'), label: 'Outfit' } : sectionOf(state.mode)
-  const Icon = onOutfit ? LayoutGrid : ICONS[current.id]
+  const current = onOutfit ? { ...sectionOf('moda'), label: 'Outfit' } : onGifts ? { ...sectionOf(state.mode), label: 'Regali' } : sectionOf(state.mode)
+  const Icon = onOutfit ? LayoutGrid : onGifts ? TreePine : ICONS[current.id]
   const [visited, setVisited] = useState(() => load<Universe[]>('sectionsVisited', []))
-  const [menuSeen, setMenuSeen] = useState(() => load<boolean>('sectionsMenuSeen:2', false))
+  const [menuSeen, setMenuSeen] = useState(() => load<boolean>('sectionsMenuSeen:3', false))
   const isNew = (u: Universe) => NEW_SECTIONS.includes(u) && !visited.includes(u) && u !== state.mode
   // Il pallino sul pulsante sparisce alla prima apertura del menu; il "Nuovo" nel menu quando si apre la sezione.
   // Outfit è "Nuovo" finché non lo si apre.
@@ -71,7 +75,11 @@ function SectionMenu() {
   useEffect(() => {
     if (onOutfit) save('outfitVisited', true)
   }, [onOutfit])
-  const dot = !menuSeen && (NEW_SECTIONS.some(isNew) || !outfitSeen)
+  const giftsSeen = onGifts || load<boolean>('giftsVisited', false)
+  useEffect(() => {
+    if (onGifts) save('giftsVisited', true)
+  }, [onGifts])
+  const dot = !menuSeen && (NEW_SECTIONS.some(isNew) || !outfitSeen || !giftsSeen)
 
   // Anche se si arriva alla sezione in altri modi (benvenuto, link condiviso): la sezione aperta non è più nuova.
   useEffect(() => {
@@ -101,7 +109,7 @@ function SectionMenu() {
           setOpen(!open)
           if (!menuSeen) {
             setMenuSeen(true)
-            save('sectionsMenuSeen:2', true)
+            save('sectionsMenuSeen:3', true)
           }
         }}
         aria-haspopup="menu"
@@ -141,9 +149,29 @@ function SectionMenu() {
             </span>
             {onOutfit && <Check className="size-4 shrink-0" />}
           </a>
+          {/* Regali: mazzo con tutte le sezioni, per chi lo riceve e per budget (Black Friday e Natale). */}
+          <a
+            href="#/regali"
+            role="menuitemradio"
+            aria-checked={onGifts}
+            onClick={() => setOpen(false)}
+            className="mb-1 flex w-full items-center gap-3 rounded-xl bg-[#dc2626]/10 p-2.5 text-left ring-1 ring-[#dc2626]/20 active:scale-[0.98]"
+          >
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#dc2626] text-[#fff]">
+              <TreePine className="size-4.5" />
+            </span>
+            <span className="min-w-0 flex-1 leading-tight">
+              <span className="flex items-center gap-1.5 font-semibold">
+                {giftSeason().title}
+                {!giftsSeen && <span className="rounded-full bg-[#dc2626] px-1.5 py-px text-[10px] font-bold uppercase text-[#fff]">Nuovo</span>}
+              </span>
+              <span className="block truncate text-xs text-neutral-500">Regali per tutti, per budget e in offerta</span>
+            </span>
+            {onGifts && <Check className="size-4 shrink-0" />}
+          </a>
           {SECTIONS.map((s) => {
             const SIcon = ICONS[s.id]
-            const active = s.id === state.mode && !onOutfit
+            const active = s.id === state.mode && !onOutfit && !onGifts
             return (
               <Fragment key={s.id}>
               <button
@@ -153,7 +181,7 @@ function SectionMenu() {
                 onClick={() => {
                   if (!visited.includes(s.id)) setVisited([...visited, s.id])
                   // Da Outfit: prima si lascia la pagina, poi si cambia sezione (Outfit rimette la Moda finché è aperta).
-                  if (onOutfit) window.location.hash = '#/scopri'
+                  if (onOutfit || onGifts) window.location.hash = '#/scopri'
                   actions.setMode(s.id)
                   setOpen(false)
                 }}

@@ -9,6 +9,7 @@ import { SendButton } from './SendButton'
 import { StoreLink } from './StoreLink'
 import { UndoMenu } from './UndoMenu'
 import { SwipeCard, type SwipeDir } from './SwipeCard'
+import type { Product } from '../types/product'
 
 // Foto delle prossime carte scaricate e già decodificate in anticipo: quando una carta arriva
 // in cima la foto c'è già e lo swipe non scatta. Si tengono vive solo le ultime, per la memoria.
@@ -24,8 +25,11 @@ function preload(url?: string) {
   if (preloaded.size > 40) preloaded.delete(preloaded.keys().next().value!)
 }
 
-export function SwipeDeck() {
-  const { deck, actions } = useApp()
+/** Il mazzo della sezione aperta, oppure `cards` (es. Regali, con prodotti di tutte le sezioni: lì niente "annulla"). */
+export function SwipeDeck({ cards }: { cards?: Product[] } = {}) {
+  const app = useApp()
+  const { actions } = app
+  const deck = cards ?? app.deck
   const [exitDir, setExitDir] = useState<SwipeDir>(1)
   const top = deck[0]
   const visible = deck.slice(0, 3)
@@ -82,7 +86,7 @@ export function SwipeDeck() {
       </div>
 
       <div className="flex items-center justify-center gap-3 sm:gap-4">
-        <UndoMenu />
+        {cards ? <span className="size-11" /> : <UndoMenu />}
         <button
           type="button"
           onClick={() => swipe(-1)}
