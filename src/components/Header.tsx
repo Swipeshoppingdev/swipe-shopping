@@ -18,23 +18,25 @@ export function Header() {
     <header className="sticky top-0 z-20 shrink-0 bg-neutral-50 pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex h-14 max-w-md items-center gap-2 px-2 sm:max-w-2xl">
         <SectionMenu />
-        <a href="#/scopri" className="flex flex-1 flex-col items-center leading-none">
+        <a href="#/scopri" className="flex min-w-0 flex-1 flex-col items-center leading-none">
           <span className="text-lg font-black tracking-tight">
             {APP_NAME.split(' ')[0]}
             <span className="text-rose-500">{APP_NAME.split(' ').slice(1).join(' ')}</span>
           </span>
           <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{inOutfit ? 'Outfit' : sectionOf(state.mode).label}</span>
         </a>
-        {/* Scorciatoia sempre in vista per gli outfit; dentro Outfit resta lo spazio vuoto per tenere il logo centrato. */}
+        {/* Scorciatoia sempre in vista per gli outfit; dentro Outfit resta lo spazio vuoto per tenere il logo centrato.
+            Sui telefoni stretti (sotto 390px) resta solo l'icona, altrimenti la riga esce dallo schermo. */}
         {inOutfit ? (
-          <span className="w-18" aria-hidden />
+          <span className="w-18 max-[389px]:w-9" aria-hidden />
         ) : (
           <a
             href="#/outfit"
             aria-label="Apri gli outfit"
-            className="flex h-9 w-18 items-center justify-center gap-1 rounded-full bg-[#4f46e5] text-xs font-bold text-[#fff] active:scale-95"
+            className="flex h-9 w-18 shrink-0 items-center justify-center gap-1 rounded-full bg-[#4f46e5] text-xs font-bold text-[#fff] active:scale-95 max-[389px]:w-9"
           >
-            <LayoutGrid className="size-3.5" /> Outfit
+            <LayoutGrid className="size-3.5 max-[389px]:size-4" />
+            <span className="max-[389px]:hidden">Outfit</span>
           </a>
         )}
         <button

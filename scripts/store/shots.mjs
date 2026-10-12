@@ -8,7 +8,7 @@ const OUT = new URL('../../store-out/', import.meta.url)
 mkdirSync(new URL('raw/', OUT), { recursive: true })
 
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined })
-const ctx = await browser.newContext({ viewport: { width: 360, height: 640 }, deviceScaleFactor: 3, locale: 'it-IT', colorScheme: 'light' })
+const ctx = await browser.newContext({ viewport: { width: 405, height: 720 }, deviceScaleFactor: 3, locale: 'it-IT', colorScheme: 'light' })
 
 async function page(mode, extra = {}) {
   const p = await ctx.newPage()
