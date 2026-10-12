@@ -1,4 +1,4 @@
-import { BarChart3, Clapperboard, ChevronRight, RotateCcw, ShieldCheck, Trash2, Undo2, UserRound } from 'lucide-react'
+import { BarChart3, Clapperboard, ChevronRight, Gamepad2, RotateCcw, ShieldCheck, Trash2, Undo2, UserRound } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { AccountActions, AccountCard } from '../components/AccountCard'
 import { InstallCard } from '../components/InstallCard'
@@ -6,7 +6,7 @@ import { MyProfileCard } from '../components/MyProfileCard'
 import { ADMIN_EMAIL, AMAZON_DISCLOSURE, APP_NAME, GENERIC_DISCLOSURE } from '../config/app'
 import { categoryLabel, isCategoryId } from '../config/categories'
 import { setConsent, summary } from '../lib/analytics'
-import { remove } from '../lib/storage'
+import { load, remove, save } from '../lib/storage'
 import { useConsent } from '../lib/useConsent'
 import { routeHref } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
@@ -18,6 +18,7 @@ export function ProfilePage() {
   const { user } = useAuth()
   const isAdmin = user?.email?.toLowerCase() === ADMIN_EMAIL
   const [confirmClear, setConfirmClear] = useState(false)
+  const [games, setGames] = useState(() => !load<boolean>('gamesOff', false))
   const stats = isAdmin && consent === 'granted' ? summary() : null
   const titleOf = (id: string) => products.find((p) => p.id === id)?.title ?? id
 
@@ -101,6 +102,24 @@ export function ProfilePage() {
             </a>
           )}
         </AccountCard>
+      </Card>
+
+      <Card icon={<Gamepad2 className="size-5" />} title="Mini giochi">
+        <label className="flex items-center justify-between gap-4 text-sm">
+          <span>
+            Giochi tra uno swipe e l'altro
+            <span className="block text-xs text-neutral-500">Indovina il prezzo, Questo o quello e gli altri, ogni 6 swipe.</span>
+          </span>
+          <input
+            type="checkbox"
+            checked={games}
+            onChange={(e) => {
+              setGames(e.target.checked)
+              save('gamesOff', !e.target.checked)
+            }}
+            className="size-5 accent-neutral-900"
+          />
+        </label>
       </Card>
 
       {/* Le statistiche personali le vede solo l'amministratore. */}

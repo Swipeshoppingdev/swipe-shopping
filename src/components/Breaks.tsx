@@ -108,7 +108,7 @@ export function Breaks() {
     last.current = swipes
     if (added <= 0) return
     spendBoost(added)
-    if (current) return
+    if (current || load<boolean>('gamesOff', false)) return
     const next = load<number>('breakCount', 0) + added
     if (next < EVERY) {
       save('breakCount', next)
