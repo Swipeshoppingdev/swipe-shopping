@@ -53,4 +53,4 @@ export const GOOGLE_CLIENT_ID = '104770095773-o6avbplvppk8lkgvq5ogc9trcj5uc55m.a
  * Si ricava dal secret SUPABASE_SERVICE_ROLE_KEY: `node scripts/webpush.ts` (la stampa anche il log di push.yml).
  * Vuota = notifiche solo nell'app Android.
  */
-export const WEB_PUSH_KEY = ''
+export const WEB_PUSH_KEY = 'BCSREenKlLeeLULKcb_oK8AlR03ghM1ufTroZKLFy8oqbhT5kjQKmTUrHYCFTNcd2wwg5mOV6njirhwBJJtmLz0'
