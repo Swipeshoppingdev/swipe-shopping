@@ -511,6 +511,48 @@ ${
   )
 }
 
+// Black Friday: una pagina sempre online (così Google la conosce già prima di fine novembre),
+// con il conto alla rovescia e le offerte migliori di oggi da tutte le sezioni (prodotti già con la loro pagina).
+const BLACK_FRIDAY = new Date('2026-11-27T00:00:00+01:00')
+{
+  const seenModel = new Set<string>()
+  // Le più scontate di ogni sezione, alternate (non 36 jeans di fila).
+  const perSection = pages
+    .filter((pg) => pg.slug === 'offerte')
+    .map((pg) =>
+      pg.items
+        .filter((p) => (price(p)?.off ?? 0) >= 15)
+        .sort((a, b) => (price(b)?.off ?? 0) - (price(a)?.off ?? 0))
+        .filter((p) => !seenModel.has(model(p)) && seenModel.add(model(p))),
+    )
+  const bfItems = Array.from({ length: Math.max(0, ...perSection.map((l) => l.length)) }, (_, i) => perSection.flatMap((l) => (l[i] ? [l[i]] : []))).flat().slice(0, 36)
+  const dealLinks = pages.filter((pg) => pg.slug === 'offerte').map((pg) => `<li><a href="${pathOf(pg)}">${esc(pg.h1)}</a></li>`).join('')
+  const days = Math.ceil((BLACK_FRIDAY.getTime() - now) / 86_400_000)
+  const body = `<h1>Black Friday 2026</h1>
+<p class="intro">Il Black Friday 2026 è venerdì 27 novembre, e molti negozi anticipano le offerte nei giorni prima. Qui trovi le offerte di marca più forti di oggi su moda, tech, casa, beauty e regali, aggiornate più volte al giorno.</p>
+<p class="note" id="bf-countdown">${days > 0 ? `Mancano ${days} giorni al Black Friday` : days === 0 ? 'Oggi è Black Friday' : 'Il Black Friday 2026 è passato: ecco le offerte di oggi'} · prezzi aggiornati il ${builtLabel}</p>
+<script>(function(){var t=${BLACK_FRIDAY.getTime()},e=document.getElementById('bf-countdown');if(!e)return;var d=Math.ceil((t-Date.now())/864e5);if(d>1)e.firstChild.textContent='Mancano '+d+' giorni al Black Friday · '+e.firstChild.textContent.split(' · ').slice(1).join(' · ');})()</script>
+<p style="margin:12px 0 20px"><a class="cta" href="/#/regali">Scopri le offerte con uno swipe nell'app</a></p>
+${bfItems.length ? `<h2>Le offerte più forti di oggi</h2><ul class="grid">${bfItems.map(card).join('')}</ul>` : ''}
+<nav class="links"><h2>Tutte le offerte</h2><ul>${dealLinks}</ul></nav>`
+  mkdirSync(new URL('black-friday/', dist), { recursive: true })
+  writeFileSync(
+    new URL('black-friday/index.html', dist),
+    layout({
+      title: 'Black Friday 2026: offerte moda, tech, casa e beauty | Swipe Shopping',
+      description: 'Black Friday 2026 il 27 novembre: le offerte di marca più forti di oggi su abbigliamento, scarpe, tech, casa, beauty e idee regalo, con prezzi aggiornati più volte al giorno.',
+      path: '/black-friday/',
+      section: 'moda',
+      body,
+      image: bfItems[0]?.imageUrl,
+      crumbs: [{ name: 'Black Friday 2026', path: '/black-friday/' }],
+      jsonLd: [
+        { '@type': 'ItemList', name: 'Offerte Black Friday 2026', itemListElement: bfItems.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITE}${productPath(p)}`, name: p.title })) },
+      ],
+    }),
+  )
+}
+
 // Indice di ogni sezione
 const INDEX = {
   moda: {
@@ -560,7 +602,7 @@ for (const section of UNIVERSES) {
       path: `/${section}/`,
       section,
       crumbs: [sectionCrumb(section)],
-      body: `<h1>${ix.h1}</h1><p class="intro">Scegli una categoria, una marca o le offerte del giorno. Oppure apri l'app e scopri i prodotti uno alla volta con uno swipe.</p>${linksSection(section, '')}`,
+      body: `<h1>${ix.h1}</h1><p class="intro">Scegli una categoria, una marca o le offerte del giorno. Oppure apri l'app e scopri i prodotti uno alla volta con uno swipe.</p><p class="note"><a href="/black-friday/">Black Friday 2026: le offerte più forti di oggi</a></p>${linksSection(section, '')}`,
     }),
   )
 }
@@ -703,6 +745,7 @@ const urls: { path: string; images: string[]; product?: Product }[] = [
   { path: '/', images: [] },
   ...UNIVERSES.map((u) => ({ path: `/${u}/`, images: [] })),
   { path: '/moda/outfit/', images: [] },
+  { path: '/black-friday/', images: [] },
   ...pages.map((pg) => ({ path: pathOf(pg), images: [] })),
   ...[...paged.values()].map((p) => ({ path: productPath(p), images: [p.imageUrl!], product: p })),
 ]
