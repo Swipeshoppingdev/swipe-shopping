@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Heart, X } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState, type ReactNode } from 'react'
 import { track } from '../lib/analytics'
 import { useApp } from '../state/AppState'
 import { productImageUrl, productUrl, storeLinkLabel, storeName } from '../config/stores'
@@ -8,6 +8,7 @@ import { ProductImage } from './ProductImage'
 import { CoachMarks } from './CoachMarks'
 import { HeartBurst, type Burst } from './HeartBurst'
 import { discountBadge } from '../lib/price'
+import { priceRank } from '../lib/priceCheck'
 import { ShareButton } from './ShareButton'
 import { StoreLink } from './StoreLink'
 import { UndoMenu } from './UndoMenu'
@@ -17,6 +18,11 @@ import type { Product } from '../types/product'
 // Foto delle prossime carte scaricate e già decodificate in anticipo: quando una carta arriva
 // in cima la foto c'è già e lo swipe non scatta. Si tengono vive solo le ultime, per la memoria.
 const AHEAD = 8
+/**
+ * Lo swipe si registra (preferiti, mazzo, statistiche) solo quando la carta è già uscita: il ricalcolo del mazzo
+ * pesa e, fatto subito, faceva scattare l'animazione di uscita sui telefoni lenti.
+ */
+const COMMIT_MS = 380
 const preloaded = new Map<string, HTMLImageElement>()
 function preload(url?: string) {
   if (!url || preloaded.has(url)) return
@@ -43,16 +49,65 @@ export function SwipeDeck({
   // "Salvato! Vedi su Amazon": per qualche secondo dopo un Sì, quando l'interesse è più alto.
   const [saved, setSaved] = useState<Product | null>(null)
   const savedTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const top = deck[0]
-  const visible = deck.slice(0, 3)
+  // Carte già swipate ma non ancora registrate (vedi COMMIT_MS): spariscono subito dal mazzo mostrato.
+  const [leaving, setLeaving] = useState<string[]>([])
+  const pending = useRef<{ run: () => void; timer: ReturnType<typeof setTimeout> }[]>([])
+  const flush = useCallback(() => {
+    const list = pending.current
+    pending.current = []
+    for (const item of list) {
+      clearTimeout(item.timer)
+      item.run()
+    }
+    setLeaving([])
+  }, [])
+  // Uscendo dalla pagina gli swipe in sospeso si registrano subito.
+  useEffect(
+    () => () => {
+      for (const item of pending.current) {
+        clearTimeout(item.timer)
+        item.run()
+      }
+      pending.current = []
+    },
+    [],
+  )
+  const shown = leaving.length ? deck.filter((p) => !leaving.includes(p.id)) : deck
+  const top = shown[0]
+  // La carta nuova in fondo (la terza, ancora invisibile) si aggiunge un attimo dopo, con un render che non blocca:
+  // nel momento dello swipe si fa solo il minimo, così la carta esce senza scatti.
+  const settled = useDeferredValue(shown)
+  const ready = new Set(settled.slice(0, 3).map((p) => p.id))
+  const visible = shown.slice(0, 3).filter((p, i) => i < 2 || ready.has(p.id))
 
   const swipe = useCallback(
     (dir: SwipeDir) => {
       if (!top) return
       setExitDir(dir)
+      const p = top
+      const run = () => {
+        if (dir === 1) {
+          actions.like(p)
+          onLike?.(p)
+        } else {
+          actions.dislike(p)
+          onDislike?.(p)
+        }
+      }
+      setLeaving((l) => [...l, p.id])
+      const item = {
+        run,
+        timer: setTimeout(() => {
+          pending.current = pending.current.filter((x) => x !== item)
+          // Render interrompibile: se intanto si trascina la carta successiva, il dito ha la precedenza.
+          startTransition(() => {
+            run()
+            setLeaving((l) => l.filter((id) => id !== p.id))
+          })
+        }, COMMIT_MS),
+      }
+      pending.current.push(item)
       if (dir === 1) {
-        actions.like(top)
-        onLike?.(top)
         // Cuori che esplodono; più grandi (e vibrazione più forte) per gli sconti veri dal 30% in su.
         const discount = discountBadge(top)
         const id = Date.now()
@@ -60,13 +115,10 @@ export function SwipeDeck({
         setTimeout(() => setBursts((b) => b.filter((x) => x.id !== id)), 1400)
         navigator.vibrate?.((discount ?? 0) >= 30 ? [15, 40, 25, 40, 35] : 15)
         if (productUrl(top)) {
-          setSaved(top)
+          startTransition(() => setSaved(p))
           clearTimeout(savedTimer.current)
           savedTimer.current = setTimeout(() => setSaved(null), 1500)
         }
-      } else {
-        actions.dislike(top)
-        onDislike?.(top)
       }
     },
     [top, actions, onLike, onDislike],
@@ -79,26 +131,33 @@ export function SwipeDeck({
 
   useEffect(() => {
     // Prima le carte più vicine; il resto quando il telefono è libero, per non rallentare quella in cima.
-    deck.slice(1, 3).forEach((p) => preload(productImageUrl(p) ?? undefined))
-    const later = () => deck.slice(3, 1 + AHEAD).forEach((p) => preload(productImageUrl(p) ?? undefined))
+    shown.slice(1, 3).forEach((p) => preload(productImageUrl(p) ?? undefined))
+    const later = () => {
+      shown.slice(3, 1 + AHEAD).forEach((p) => preload(productImageUrl(p) ?? undefined))
+      // "Prezzo giusto?" della prossima carta calcolato ora: quando arriva in cima non rallenta lo swipe.
+      if (shown[1]) priceRank(shown[1], app.allProducts)
+    }
     if ('requestIdleCallback' in window) {
       const id = requestIdleCallback(later, { timeout: 800 })
       return () => cancelIdleCallback(id)
     }
     const t = setTimeout(later, 300)
     return () => clearTimeout(t)
-  }, [deck])
+  }, [shown, app.allProducts])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return
       if (e.key === 'ArrowRight') swipe(1)
       else if (e.key === 'ArrowLeft') swipe(-1)
-      else if ((e.key === 'z' && (e.ctrlKey || e.metaKey)) || e.key === 'Backspace') actions.undo()
+      else if ((e.key === 'z' && (e.ctrlKey || e.metaKey)) || e.key === 'Backspace') {
+        flush()
+        actions.undo()
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [swipe, actions])
+  }, [swipe, actions, flush])
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4">
@@ -121,7 +180,7 @@ export function SwipeDeck({
               <StoreLink
                 product={saved}
                 icon={false}
-                className="flex w-full max-w-sm items-center gap-3 rounded-2xl bg-[#18181b]/95 p-2 pr-2.5 text-[#fff] shadow-2xl ring-1 ring-[#fff]/10 backdrop-blur-md active:scale-[0.98]"
+                className="flex w-full max-w-sm items-center gap-3 rounded-2xl bg-[#18181b]/95 p-2 pr-2.5 text-[#fff] shadow-2xl ring-1 ring-[#fff]/10 active:scale-[0.98]"
               >
                 <span className="size-11 shrink-0 overflow-hidden rounded-xl bg-[#fff] p-0.5 ring-2 ring-rose-500">
                   <ProductImage product={saved} className="size-full object-contain" />

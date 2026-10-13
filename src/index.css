@@ -245,3 +245,90 @@ body {
 :root.dark .app-bg {
   background: var(--color-neutral-50);
 }
+
+/* Cuori del "Sì" (HeartBurst): animazione solo con transform e opacity, fatta dal browser fuori dal JavaScript. */
+@keyframes heart-burst {
+  from {
+    transform: translate(0, 0) scale(0.3);
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--tx), var(--ty)) scale(1) rotate(var(--r));
+    opacity: 0;
+  }
+}
+.heart-burst {
+  animation: heart-burst 0.8s ease-out both;
+  will-change: transform, opacity;
+}
+
+/*
+ * Mini giochi nel tema chiaro: ogni gioco ha uno sfondo pastello suo (prima erano tutti grigio chiaro) e i bottoni
+ * delle risposte prendono il colore del gioco. Nel tema scuro restano come prima.
+ */
+:root:not(.dark) .game-frame {
+  background: linear-gradient(165deg, var(--game-a, #ffe4e6) 0%, var(--game-b, #fef3c7) 100%);
+}
+:root:not(.dark) .game-frame button.bg-white.ring-1 {
+  --tw-ring-color: var(--game-c, #fda4af);
+  box-shadow: 0 3px 0 0 var(--game-c, #fda4af), 0 0 0 1.5px var(--game-c, #fda4af);
+}
+/* Il titolo del gioco con l'icona nel colore del gioco */
+:root:not(.dark) .game-frame > div:first-child svg {
+  color: var(--game-c, #fb7185);
+}
+:root:not(.dark) .game-frame[aria-label="Indovina il prezzo"] {
+  --game-a: #fecdd3;
+  --game-b: #fef3c7;
+  --game-c: #fb7185;
+}
+:root:not(.dark) .game-frame[aria-label="Cosa ti va"] {
+  --game-a: #ddd6fe;
+  --game-b: #e0f2fe;
+  --game-c: #a78bfa;
+}
+:root:not(.dark) .game-frame[aria-label="Più caro"] {
+  --game-a: #a7f3d0;
+  --game-b: #fef9c3;
+  --game-c: #34d399;
+}
+:root:not(.dark) .game-frame[aria-label="Indovina la marca"] {
+  --game-a: #bae6fd;
+  --game-b: #e0e7ff;
+  --game-c: #60a5fa;
+}
+:root:not(.dark) .game-frame[aria-label="Più o meno"] {
+  --game-a: #fde68a;
+  --game-b: #ffedd5;
+  --game-c: #f59e0b;
+}
+:root:not(.dark) .game-frame[aria-label="Gratta lo sconto"] {
+  --game-a: #f5d0fe;
+  --game-b: #fce7f3;
+  --game-c: #e879f9;
+}
+:root:not(.dark) .game-frame[aria-label="Carta misteriosa"] {
+  --game-a: #c7d2fe;
+  --game-b: #fae8ff;
+  --game-c: #818cf8;
+}
+:root:not(.dark) .game-frame[aria-label="Ordina per prezzo"] {
+  --game-a: #99f6e4;
+  --game-b: #e0f2fe;
+  --game-c: #2dd4bf;
+}
+:root:not(.dark) .game-frame[aria-label="Ruota della fortuna"] {
+  --game-a: #fef08a;
+  --game-b: #fce7f3;
+  --game-c: #facc15;
+}
+:root:not(.dark) .game-frame[aria-label="Il pezzo che manca"] {
+  --game-a: #fed7aa;
+  --game-b: #ffe4e6;
+  --game-c: #fb923c;
+}
+:root:not(.dark) .game-frame[aria-label="Duello"] {
+  --game-a: #fecaca;
+  --game-b: #e0e7ff;
+  --game-c: #f87171;
+}

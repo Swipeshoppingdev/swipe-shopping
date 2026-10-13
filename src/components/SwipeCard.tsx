@@ -1,5 +1,5 @@
-import { motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
-import { useRef, useState, type MouseEvent } from 'react'
+import { animate, motion, useMotionValue, useTransform } from 'framer-motion'
+import { useRef, useState, type MouseEvent, type PointerEvent } from 'react'
 import { categoryLabel } from '../config/categories'
 import { brandAndStore } from '../config/stores'
 import type { Product } from '../types/product'
@@ -58,22 +58,60 @@ export function SwipeCard({
     else openProduct(product)
   }
 
-  const onDragEnd = (_: unknown, info: PanInfo) => {
-    if (info.offset.x > SWIPE_DISTANCE || info.velocity.x > SWIPE_VELOCITY) onSwipe(1)
-    else if (info.offset.x < -SWIPE_DISTANCE || info.velocity.x < -SWIPE_VELOCITY) onSwipe(-1)
+  // Trascinamento fatto a mano (non con il drag di framer-motion): quello misurava la pagina a ogni carta e a ogni
+  // tocco, e sui telefoni lenti faceva perdere fotogrammi. Qui si sposta solo la carta.
+  const pan = useRef<{ id: number; x0: number; y0: number; base: number; active: boolean; samples: [number, number][] } | null>(null)
+  const onPointerDown = (e: PointerEvent<HTMLElement>) => {
+    if (!isTop || (e.pointerType === 'mouse' && e.button !== 0)) return
+    pan.current = { id: e.pointerId, x0: e.clientX, y0: e.clientY, base: x.get(), active: false, samples: [[e.timeStamp, e.clientX]] }
+  }
+  const onPointerMove = (e: PointerEvent<HTMLElement>) => {
+    const s = pan.current
+    if (!s || s.id !== e.pointerId) return
+    const dx = e.clientX - s.x0
+    if (!s.active) {
+      if (Math.abs(dx) < 6 && Math.abs(e.clientY - s.y0) < 6) return
+      // Movimento verticale: è uno scroll, la carta resta ferma.
+      if (Math.abs(e.clientY - s.y0) > Math.abs(dx)) {
+        pan.current = null
+        return
+      }
+      s.active = true
+      dragged.current = true
+      x.stop()
+      e.currentTarget.setPointerCapture(e.pointerId)
+    }
+    s.samples.push([e.timeStamp, e.clientX])
+    if (s.samples.length > 6) s.samples.shift()
+    // Come prima (dragElastic 0.9): la carta segue il dito quasi del tutto.
+    x.set(s.base + dx * 0.9)
+  }
+  const onPointerEnd = (e: PointerEvent<HTMLElement>) => {
+    const s = pan.current
+    if (!s || s.id !== e.pointerId) return
+    pan.current = null
+    if (!s.active) return
+    const offset = e.clientX - s.x0
+    const [t0, x0] = s.samples[0]
+    const [t1, x1] = s.samples[s.samples.length - 1]
+    const velocity = t1 > t0 ? ((x1 - x0) / (t1 - t0)) * 1000 : 0
+    if (e.type === 'pointerup' && (offset > SWIPE_DISTANCE || velocity > SWIPE_VELOCITY)) onSwipe(1)
+    else if (e.type === 'pointerup' && (offset < -SWIPE_DISTANCE || velocity < -SWIPE_VELOCITY)) onSwipe(-1)
+    else animate(x, 0, { type: 'spring', stiffness: 420, damping: 32 })
     // Il click che segue un trascinamento non deve aprire il link.
     setTimeout(() => (dragged.current = false), 0)
   }
 
   return (
     <motion.article
-      className="absolute inset-0 flex flex-col overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/5"
-      style={{ x, rotate, zIndex: 10 - index, touchAction: isTop ? 'pan-y' : undefined }}
-      drag={isTop ? 'x' : false}
-      dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.9}
-      onDragStart={() => (dragged.current = true)}
-      onDragEnd={onDragEnd}
+      // Foto non trascinabili dal browser (rovinerebbero lo swipe col mouse); i tocchi vanno al riquadro della foto.
+      className="absolute inset-0 flex flex-col overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/5 select-none [&_img]:pointer-events-none"
+      // will-change: le prime due carte su un livello a parte, così muoverle non ridisegna foto e ombra a ogni fotogramma.
+      style={{ x, rotate, zIndex: 10 - index, touchAction: isTop ? 'pan-y' : undefined, willChange: index < 2 ? 'transform' : undefined }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerEnd}
+      onPointerCancel={onPointerEnd}
       initial={{ scale: 0.94, y: 14, opacity: 0 }}
       animate={{ scale: 1 - index * 0.04, y: index * 14, opacity: index > 1 ? 0 : 1 }}
       exit="exit"
