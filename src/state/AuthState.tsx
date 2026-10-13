@@ -173,7 +173,8 @@ function useAuthStore() {
         pendingSignup = null
         // Questo telefono non riceve più le notifiche di questo account.
         await disablePush(false).catch(() => {})
-        return run(() => supabase!.auth.signOut())
+        // Solo questo dispositivo: con il valore di base ("global") uscire dal telefono faceva uscire anche dal sito e dall'app.
+        return run(() => supabase!.auth.signOut({ scope: 'local' }))
       },
       resetPassword: (email: string) =>
         run(() => supabase!.auth.resetPasswordForEmail(email, { redirectTo: authRedirectUrl() })),
