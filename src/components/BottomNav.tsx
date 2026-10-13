@@ -40,7 +40,7 @@ export function BottomNav({ current, hash, special }: { current: Route; hash: st
   return (
     <nav
       aria-label="Navigazione principale"
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-neutral-200/70 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-neutral-200/70 bg-white pb-[env(safe-area-inset-bottom)]"
     >
       <ul className={`mx-auto grid h-16 max-w-md grid-cols-4`}>
         {ITEMS.map(({ route, label, Icon }) => {

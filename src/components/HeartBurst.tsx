@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { Heart } from 'lucide-react'
+import type { CSSProperties } from 'react'
 
 export interface Burst {
   id: number
@@ -17,21 +18,28 @@ export function HeartBurst({ bursts }: { bursts: Burst[] }) {
           const n = big ? 16 : 8
           return (
             <motion.div key={b.id} className="absolute top-1/2 left-1/2" exit={{ opacity: 0 }}>
+              {/* Animazione CSS (non JavaScript): gira sulla scheda grafica e non rallenta lo swipe. */}
               {Array.from({ length: n }, (_, i) => {
                 const angle = (i / n) * Math.PI * 2 + (b.id % 7) * 0.3
                 const dist = (big ? 150 : 95) * (0.7 + ((i * 37) % 10) / 25)
                 const size = big ? 18 + ((i * 13) % 14) : 14 + ((i * 13) % 10)
                 return (
-                  <motion.span
+                  <span
                     key={i}
-                    className="absolute"
-                    style={{ marginLeft: -size / 2, marginTop: -size / 2 }}
-                    initial={{ x: 0, y: 0, scale: 0.3, opacity: 1 }}
-                    animate={{ x: Math.cos(angle) * dist, y: Math.sin(angle) * dist - 30, scale: 1, opacity: 0, rotate: (i % 2 ? 1 : -1) * 25 }}
-                    transition={{ duration: big ? 1.1 : 0.8, ease: 'easeOut' }}
+                    className="heart-burst absolute"
+                    style={
+                      {
+                        marginLeft: -size / 2,
+                        marginTop: -size / 2,
+                        '--tx': `${Math.cos(angle) * dist}px`,
+                        '--ty': `${Math.sin(angle) * dist - 30}px`,
+                        '--r': `${(i % 2 ? 1 : -1) * 25}deg`,
+                        animationDuration: big ? '1.1s' : '0.8s',
+                      } as CSSProperties
+                    }
                   >
                     <Heart style={{ width: size, height: size }} className={`fill-current ${i % 3 === 0 ? 'text-[#fb7185]' : 'text-[#f43f5e]'}`} />
-                  </motion.span>
+                  </span>
                 )
               })}
               {big && (

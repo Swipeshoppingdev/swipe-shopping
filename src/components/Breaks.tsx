@@ -263,7 +263,8 @@ export function Breaks() {
   )
 }
 
-const frame = 'absolute inset-0 z-30 flex flex-col gap-3 rounded-3xl bg-neutral-50 p-1'
+// game-frame: nel tema chiaro ogni gioco ha il suo sfondo colorato (vedi index.css).
+const frame = 'game-frame absolute inset-0 z-30 flex flex-col gap-3 rounded-3xl bg-neutral-50 p-1'
 const fade = { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
 
 /** Indovina il prezzo: tre prezzi, uno è quello vero. Poi "Lo voglio" o "Avanti". */

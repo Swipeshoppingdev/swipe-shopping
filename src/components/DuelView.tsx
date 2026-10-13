@@ -36,7 +36,7 @@ export function DuelView({ pair, onDone }: { pair: [Product, Product]; onDone: (
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 z-30 flex flex-col gap-3 rounded-3xl bg-neutral-50 p-1"
+          className="game-frame absolute inset-0 z-30 flex flex-col gap-3 rounded-3xl bg-neutral-50 p-1"
           role="dialog"
           aria-label="Duello"
           data-break
