@@ -11,7 +11,8 @@ const DRY = process.argv.includes('--dry')
 const FROM = 'Swipe Shopping <noreply@swipeshopping.app>'
 const APP_URL = 'https://swipeshopping.app'
 const ADMIN_EMAIL = 'kevinconti0118@gmail.com'
-const mask = (e: string) => e.replace(/^(.).*@/, '$1***@') // log pubblici: niente email intere
+// I log di GitHub sono pubblici: nessun indirizzo email, nemmeno in parte.
+const mask = (s: string) => s.replace(/[^\s@"'<>,;:]+@[^\s@"'<>,;:]+/g, '***')
 
 if (!SUPABASE_SERVICE_ROLE_KEY || (!RESEND_API_KEY && !DRY)) {
   console.log('::notice::Comunicazioni non attive: mancano i secrets SUPABASE_SERVICE_ROLE_KEY e/o RESEND_API_KEY.')
@@ -97,7 +98,7 @@ async function send(to: string, b: Broadcast): Promise<'ok' | 'stop' | 'skip'> {
   })
   if (res.ok) return 'ok'
   const detail = (await res.text()).slice(0, 300)
-  console.log(`::warning::Email non inviata (${res.status}): ${detail}`)
+  console.log(`::warning::Email non inviata (${res.status}): ${mask(detail)}`)
   // 429 = troppe email (anche il limite giornaliero di Resend): ci si ferma e si riprende al prossimo giro.
   return res.status === 429 ? 'stop' : 'skip'
 }
@@ -113,7 +114,7 @@ for (const b of queue) {
   const todo = all.filter((r) => !done.has(r.id))
   console.log(`Comunicazione ${b.id}${b.test ? ' (prova)' : ''}: "${b.subject}" → ${todo.length} da inviare su ${all.length}.`)
   if (DRY) {
-    for (const r of todo.slice(0, 20)) console.log(`[prova] ${mask(r.email)}`)
+    console.log(`[prova] ${todo.length} destinatari (indirizzi nascosti).`)
     continue
   }
   await update(b.id, { status: 'sending', total: all.length })

@@ -13,7 +13,8 @@
 import { readFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
 import { FCM_SCOPE, accessToken, fcmSender, type ServiceAccount } from './google.ts'
-const mask = (e: string) => e.replace(/^(.).*@/, '$1***@') // log pubblici: niente email intere
+// I log di GitHub sono pubblici: nessun indirizzo email, nemmeno in parte.
+const mask = (s: string) => s.replace(/[^\s@"'<>,;:]+@[^\s@"'<>,;:]+/g, '***')
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hlsqxxcztysnlijznjng.supabase.co'
 const { SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, FCM_SERVICE_ACCOUNT } = process.env
@@ -103,7 +104,7 @@ async function send(to: string, count: number) {
       headers: { 'List-Unsubscribe': `<${APP_URL}/#/profilo>` },
     }),
   })
-  if (!res.ok) console.log(`::warning::Email non inviata (${res.status}): ${(await res.text()).slice(0, 300)}`)
+  if (!res.ok) console.log(`::warning::Email non inviata (${res.status}): ${mask((await res.text()).slice(0, 300))}`)
   return res.ok
 }
 

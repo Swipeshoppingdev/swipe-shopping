@@ -186,8 +186,8 @@ function SectionMenu() {
 type MenuId = Universe | 'outfit' | 'regali'
 type MenuEntry = { label: string; hint: string; color: string; Icon: typeof Shirt; isNew: boolean; active: boolean; href?: string; onSelect?: () => void }
 
-/** Ordine di partenza scelto da Kevin: Moda, Outfit, Tech, poi le altre e Regali in fondo. */
-const DEFAULT_ORDER: MenuId[] = [...SECTIONS.flatMap((s): MenuId[] => (s.id === 'moda' ? ['moda', 'outfit'] : [s.id])), 'regali']
+/** Ordine di partenza scelto da Kevin (chi lo riordina tiene il suo). */
+const DEFAULT_ORDER: MenuId[] = ['moda', 'tech', 'snack', 'outfit', 'regali', 'gadget', 'casa', 'beauty', 'animali']
 
 /** Ordine salvato; le voci nuove (aggiunte dopo) entrano nella loro posizione di partenza. */
 function loadMenuOrder(): MenuId[] {

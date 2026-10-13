@@ -117,4 +117,4 @@ jobs:
           code=$(curl -sS -o resp.txt -w '%{http_code}' https://api.resend.com/emails \
             -H "Authorization: Bearer $RESEND_API_KEY" -H 'Content-Type: application/json' --data @mail.json)
           rm mail.json code.zip
-          if [ "$code" = "200" ]; then echo "::notice::Backup mandato per mail."; else echo "::warning::Mail non inviata ($code): $(head -c 300 resp.txt)"; fi
+          if [ "$code" = "200" ]; then echo "::notice::Backup mandato per mail."; else echo "::warning::Mail non inviata ($code): $(head -c 300 resp.txt | sed -E 's/[^ @"]+@[^ @"]+/***/g')"; fi
