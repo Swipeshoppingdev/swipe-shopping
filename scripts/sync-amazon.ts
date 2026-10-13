@@ -54,6 +54,9 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 const MIN_GAP_MS = 1100
 let lastCall = 0
 
+// Il token di Amazon scade dopo un'ora e un giro dura di più: alla prima risposta "scaduto" se ne prende uno nuovo.
+let renewedToken: string | null = null
+
 async function callApi(op: string, token: string, payload: Record<string, unknown>) {
   for (let attempt = 0; ; attempt++) {
     await sleep(Math.max(0, lastCall + MIN_GAP_MS - Date.now()))
@@ -61,12 +64,17 @@ async function callApi(op: string, token: string, payload: Record<string, unknow
     requests++
     const res = await fetch(`${API_BASE}/${op}`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', 'x-marketplace': MARKETPLACE },
+      headers: { Authorization: `Bearer ${renewedToken ?? token}`, 'Content-Type': 'application/json', 'x-marketplace': MARKETPLACE },
       body: JSON.stringify({ marketplace: MARKETPLACE, partnerTag: PARTNER_TAG, languagesOfPreference: ['it_IT'], ...payload }),
     })
     const body = await res.json().catch(() => ({}))
     if (res.status === 429 && attempt < 4) {
       await sleep(2000 * 2 ** attempt)
+      continue
+    }
+    if (res.status === 401 && attempt < 2 && /expired/i.test(JSON.stringify(body))) {
+      renewedToken = await getToken()
+      annotate('notice', 'Token Amazon scaduto: rinnovato.')
       continue
     }
     if (!res.ok) throw new Error(`${op} HTTP ${res.status}: ${JSON.stringify(body)}`)
@@ -441,11 +449,15 @@ async function refreshSizes(token: string, products: Record<string, any>[]) {
         if (page >= (result?.variationSummary?.pageCount ?? 1)) break
       }
     } catch (e) {
-      // Prodotto senza varianti (taglia unica) o non più accessibile: lo segniamo e andiamo avanti.
-      if (!/HTTP 4\d\d/.test(String(e))) annotate('warning', `Taglie ${p.externalId}: ${e instanceof Error ? e.message : String(e)}`)
-      p.sizesAt = now
-      done.add(p.externalId)
-      continue
+      // Prodotto senza varianti (taglia unica) o non più accessibile (400/404): lo segniamo e andiamo avanti.
+      // Altri errori (token, troppe richieste, Amazon giù) non dicono nulla sulle taglie: si riprova al prossimo giro.
+      if (/HTTP 40[04]/.test(String(e))) {
+        p.sizesAt = now
+        done.add(p.externalId)
+        continue
+      }
+      annotate('warning', `Taglie interrotte a ${p.externalId}: ${e instanceof Error ? e.message : String(e)}`)
+      break
     }
     families++
     // Le taglie di ogni colore, per tutti i prodotti di questa famiglia che abbiamo in catalogo.

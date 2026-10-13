@@ -120,19 +120,11 @@ function SheetContent({ product }: { product: Product }) {
           <PriceTag product={product} size="lg" />
         </div>
 
-        {product.sizes && product.sizes.length > 0 && (
+        {/* Solo l'elenco completo letto da Amazon (sizesAt): quelle viste nei titoli sono solo alcune varianti. */}
+        {product.sizesAt && product.sizes && product.sizes.length > 0 && (
           <p className="text-sm text-neutral-600">
-            {product.sizesAt ? (
-              <>
-                <span className="font-semibold text-neutral-800">Taglie disponibili:</span> {product.sizes.join(' · ')}
-                <span className="block text-xs text-neutral-500">Controllate su Amazon all'ultimo aggiornamento: scegli la taglia sul negozio.</span>
-              </>
-            ) : (
-              <>
-                <span className="font-semibold text-neutral-800">{product.sizes.length === 1 ? 'Taglia disponibile' : 'Taglie disponibili'}:</span> {product.sizes.join(' · ')}
-                <span className="block text-xs text-neutral-500">Altre taglie potrebbero esserci: le vedi su Amazon.</span>
-              </>
-            )}
+            <span className="font-semibold text-neutral-800">Taglie disponibili:</span> {product.sizes.join(' · ')}
+            <span className="block text-xs text-neutral-500">Controllate su Amazon all'ultimo aggiornamento: scegli la taglia sul negozio.</span>
           </p>
         )}
 

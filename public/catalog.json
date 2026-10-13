@@ -24,8 +24,7 @@
   "imageUrl": "https://m.media-amazon.com/images/I/31kd2AeUCbL._SL500_.jpg",
   "price": 69.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "priceFrom": true,
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceFrom": true
  },
  {
   "id": "amazon:B00GLQR5G4",
@@ -87,8 +86,7 @@
   "imageUrl": "https://m.media-amazon.com/images/I/31RV+n9jSTL._SL500_.jpg",
   "price": 55.92,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "priceFrom": true,
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceFrom": true
  },
  {
   "id": "amazon:B0BFVHR6YC",
@@ -129,8 +127,7 @@
   "addedAt": "2026-10-09T08:49:00Z",
   "imageUrl": "https://m.media-amazon.com/images/I/3143gIGkiHL._SL500_.jpg",
   "price": 27.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B07V5VBCWR",
@@ -303,8 +300,7 @@
   ],
   "imageUrl": "https://m.media-amazon.com/images/I/316dk7+4oFL._SL500_.jpg",
   "price": 130.78,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "benetton:16081556406616",
@@ -12244,7 +12240,6 @@
   ],
   "price": 95.59,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -12267,7 +12262,6 @@
   ],
   "price": 33.95,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -12288,8 +12282,7 @@
    "Bianco"
   ],
   "price": 27.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FDJVBNRQ",
@@ -12308,7 +12301,6 @@
   ],
   "price": 29.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -12330,7 +12322,6 @@
   ],
   "price": 33.04,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -12352,7 +12343,6 @@
   ],
   "price": 39.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -12371,7 +12361,6 @@
   "source": "ricerca",
   "price": 79.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "4XL"
   ]
@@ -12393,7 +12382,6 @@
   ],
   "price": 32,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -12414,8 +12402,7 @@
    "Blu"
   ],
   "price": 36,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GF9YB9H7",
@@ -12431,7 +12418,6 @@
   "source": "ricerca",
   "price": 89.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -12453,7 +12439,6 @@
   ],
   "price": 49.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -12475,7 +12460,6 @@
   ],
   "price": 145.61,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "3XL"
   ]
@@ -12497,7 +12481,6 @@
   ],
   "price": 31.94,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -12519,7 +12502,6 @@
   ],
   "price": 49,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -12541,7 +12523,6 @@
   ],
   "price": 39.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "3XL"
   ]
@@ -12563,7 +12544,6 @@
   ],
   "price": 59.82,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -12585,7 +12565,6 @@
   ],
   "price": 58.49,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -12603,8 +12582,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 38.55,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H1QTLHNS",
@@ -12623,7 +12601,6 @@
   ],
   "price": 59.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -12647,7 +12624,6 @@
   ],
   "price": 69.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -12669,7 +12645,6 @@
   ],
   "price": 38.13,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -12691,7 +12666,6 @@
   ],
   "price": 33,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -12714,7 +12688,6 @@
   "price": 33,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
   "originalPrice": 39.9,
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -12736,7 +12709,6 @@
   ],
   "price": 33,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -12758,7 +12730,6 @@
   ],
   "price": 39.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -12781,7 +12752,6 @@
   ],
   "price": 49.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "3XL"
   ]
@@ -12803,7 +12773,6 @@
   ],
   "price": 29.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -12822,7 +12791,6 @@
   "source": "ricerca",
   "price": 78.46,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -12845,7 +12813,6 @@
   ],
   "price": 44.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -12868,7 +12835,6 @@
   ],
   "price": 29.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -12891,7 +12857,6 @@
   ],
   "price": 39.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -12909,8 +12874,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 93.01,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GF83S4P7",
@@ -12929,7 +12893,6 @@
   ],
   "price": 59.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS",
    "XS",
@@ -12952,8 +12915,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 60,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HCG7ND6N",
@@ -12968,8 +12930,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 63.08,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GQ5LF5CS",
@@ -12984,8 +12945,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 144.4,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0C35WV8XY",
@@ -13004,8 +12964,7 @@
    "Verde"
   ],
   "price": 89.45,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0D91S45FV",
@@ -13021,7 +12980,6 @@
   "source": "ricerca",
   "price": 112.8,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -13042,8 +13000,7 @@
    "Verde"
   ],
   "price": 65,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FD3J15YL",
@@ -13062,7 +13019,6 @@
   ],
   "price": 54.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -13081,7 +13037,6 @@
   "source": "ricerca",
   "price": 93.77,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -13102,8 +13057,7 @@
    "Blu"
   ],
   "price": 61.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HDKG4SS2",
@@ -13122,7 +13076,6 @@
   ],
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -13144,7 +13097,6 @@
   ],
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -13166,7 +13118,6 @@
   ],
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -13188,7 +13139,6 @@
   ],
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -13210,7 +13160,6 @@
   ],
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -13232,7 +13181,6 @@
   ],
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -13254,7 +13202,6 @@
   ],
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -13276,7 +13223,6 @@
   ],
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -13298,7 +13244,6 @@
   ],
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -13320,7 +13265,6 @@
   ],
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -13342,7 +13286,6 @@
   ],
   "price": 23.54,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -13363,8 +13306,7 @@
    "Rosa"
   ],
   "price": 59.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0CVQCLMBQ",
@@ -13382,8 +13324,7 @@
    "Rosso"
   ],
   "price": 18.7,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HHSKTPHF",
@@ -13398,8 +13339,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 38.3,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FT8CZW6G",
@@ -13417,8 +13357,7 @@
    "Grigio"
   ],
   "price": 44.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GTRRKCY6",
@@ -13433,8 +13372,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 36.98,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GTRQ3TZ5",
@@ -13449,8 +13387,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 108.51,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DCXDQDNW",
@@ -13465,8 +13402,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 29.95,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G2XRDCVF",
@@ -13484,8 +13420,7 @@
    "Verde"
   ],
   "price": 34.95,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HHSBWZ82",
@@ -13505,7 +13440,6 @@
   ],
   "price": 65.06,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -13527,7 +13461,6 @@
   ],
   "price": 69.58,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -13545,8 +13478,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 52.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H95KDN8Y",
@@ -13566,7 +13498,6 @@
   ],
   "price": 249.77,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -13589,7 +13520,6 @@
   ],
   "price": 99.15,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -13607,8 +13537,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 35.9,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FTZ9LFB5",
@@ -13624,7 +13553,6 @@
   "source": "ricerca",
   "price": 50,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -13643,7 +13571,6 @@
   "source": "ricerca",
   "price": 92,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -13665,7 +13592,6 @@
   ],
   "price": 128,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -13687,7 +13613,6 @@
   ],
   "price": 106,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -13709,7 +13634,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M",
    "L"
@@ -13728,8 +13652,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 101,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0F54R2D3X",
@@ -13748,7 +13671,6 @@
   ],
   "price": 29.55,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -13770,7 +13692,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -13792,7 +13713,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -13815,7 +13735,6 @@
   ],
   "price": 69.03,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -13839,7 +13758,6 @@
   ],
   "price": 140,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -13861,7 +13779,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -13880,7 +13797,6 @@
   "source": "ricerca",
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -13902,7 +13818,6 @@
   ],
   "price": 159,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -13924,7 +13839,6 @@
   ],
   "price": 44.47,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -13947,7 +13861,6 @@
   ],
   "price": 59.54,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -13970,7 +13883,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -13991,8 +13903,7 @@
    "Bianco"
   ],
   "price": 185,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0F487NK1M",
@@ -14011,7 +13922,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -14033,7 +13943,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -14051,8 +13960,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 18.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B07R3TPXJ9",
@@ -14067,8 +13975,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 96,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMP9321V",
@@ -14083,8 +13990,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 18.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMP6FF8H",
@@ -14099,8 +14005,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 12.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMP4JLDG",
@@ -14115,8 +14020,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 16.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNYSYKY",
@@ -14131,8 +14035,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 20.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNXTW6Z",
@@ -14147,8 +14050,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 12.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNZQ449",
@@ -14163,8 +14065,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 13.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMP9MBY3",
@@ -14179,8 +14080,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 13.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNZQDX4",
@@ -14195,8 +14095,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 20.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNWMNJ1",
@@ -14211,8 +14110,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 16.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMPDT8CD",
@@ -14227,8 +14125,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 19.34,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMP11KSM",
@@ -14243,8 +14140,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 19.34,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNY8MP2",
@@ -14259,8 +14155,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 13.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNZHDK7",
@@ -14275,8 +14170,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 13.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMLPVHFX",
@@ -14291,8 +14185,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 12.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMLQ2F27",
@@ -14307,8 +14200,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 19.34,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMF9JFD6",
@@ -14323,8 +14215,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 19.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMFTH57G",
@@ -14339,8 +14230,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 19.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMDGGKCG",
@@ -14355,8 +14245,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 19.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G4WJ8VHY",
@@ -14372,7 +14261,6 @@
   "source": "ricerca",
   "price": 23.34,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -14390,8 +14278,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 20.2,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H5RK58RH",
@@ -14410,7 +14297,6 @@
   ],
   "price": 132.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "W29"
   ]
@@ -14432,7 +14318,6 @@
   ],
   "price": 103.64,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "W31"
   ]
@@ -14450,8 +14335,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 53.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HLQ5SPWJ",
@@ -14466,8 +14350,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 36.03,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HLQ959DQ",
@@ -14482,8 +14365,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 31.79,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HLQ6H9SB",
@@ -14501,8 +14383,7 @@
    "Rosso"
   ],
   "price": 36.03,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HL3G75KD",
@@ -14517,8 +14398,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 37.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HL3GDL7K",
@@ -14536,8 +14416,7 @@
    "Rosso"
   ],
   "price": 32.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HL43TNGF",
@@ -14552,8 +14431,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 37.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMV1RW4D",
@@ -14568,8 +14446,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 18.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMTQ7R1W",
@@ -14584,8 +14461,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 12.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMTFVDXS",
@@ -14600,8 +14476,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 21.34,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMTNR8Z8",
@@ -14616,8 +14491,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 21.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMT5XRL9",
@@ -14632,8 +14506,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 22.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMTM849F",
@@ -14648,8 +14521,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 18.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMTJYHM6",
@@ -14664,8 +14536,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 21.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMVCM7ZP",
@@ -14680,8 +14551,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 12.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMSPLXRX",
@@ -14696,8 +14566,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 30.94,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMSNQFMZ",
@@ -14712,8 +14581,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 12.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DTHRQRGX",
@@ -14732,7 +14600,6 @@
   ],
   "price": 29.1,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -14750,8 +14617,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 29.89,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0C516VDL3",
@@ -14769,8 +14635,7 @@
    "Bianco"
   ],
   "price": 176.4,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0C5GFTP4R",
@@ -14789,7 +14654,6 @@
   ],
   "price": 153.33,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -14810,8 +14674,7 @@
    "Arancione"
   ],
   "price": 31.66,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0D8PWND3M",
@@ -14829,8 +14692,7 @@
    "Bianco"
   ],
   "price": 69.95,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DKWC6ZB3",
@@ -14849,7 +14711,6 @@
   ],
   "price": 47.59,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -14870,8 +14731,7 @@
    "Beige"
   ],
   "price": 169.95,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DKVNN9BM",
@@ -14891,7 +14751,6 @@
   ],
   "price": 38.3,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -14913,7 +14772,6 @@
   ],
   "price": 49.12,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "3XL"
   ]
@@ -14936,7 +14794,6 @@
   ],
   "price": 34.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -14959,7 +14816,6 @@
   ],
   "price": 59.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S",
    "M"
@@ -14982,7 +14838,6 @@
   ],
   "price": 89.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M",
    "XL"
@@ -15006,7 +14861,6 @@
   ],
   "price": 59.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS",
    "XS",
@@ -15031,7 +14885,6 @@
   ],
   "price": 59.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S",
    "M",
@@ -15055,7 +14908,6 @@
   ],
   "price": 39.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS",
    "XS",
@@ -15081,7 +14933,6 @@
   ],
   "price": 59.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS",
    "S",
@@ -15107,7 +14958,6 @@
   ],
   "price": 105.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -15129,7 +14979,6 @@
   ],
   "price": 38.11,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -15150,8 +14999,7 @@
    "Nero"
   ],
   "price": 40.26,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DSYBT4YQ",
@@ -15170,7 +15018,6 @@
   ],
   "price": 23.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS",
    "XXL"
@@ -15193,7 +15040,6 @@
   ],
   "price": 23.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -15215,7 +15061,6 @@
   ],
   "price": 29.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -15237,7 +15082,6 @@
   ],
   "price": 29.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -15255,8 +15099,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 47.2,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GF26FKYF",
@@ -15275,7 +15118,6 @@
   ],
   "price": 34.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS",
    "XS",
@@ -15302,7 +15144,6 @@
   ],
   "price": 36.68,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -15324,7 +15165,6 @@
   ],
   "price": 49.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M",
    "XL",
@@ -15348,7 +15188,6 @@
   ],
   "price": 38.43,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -15370,7 +15209,6 @@
   ],
   "price": 26.93,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS",
    "M",
@@ -15393,8 +15231,7 @@
    "Rosa"
   ],
   "price": 65,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HD4QDHC8",
@@ -15412,8 +15249,7 @@
    "Verde"
   ],
   "price": 47.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GQ78DVWB",
@@ -15432,7 +15268,6 @@
   ],
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -15453,8 +15288,7 @@
    "Rosa"
   ],
   "price": 47.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HD4QJML6",
@@ -15472,8 +15306,7 @@
    "Arancione"
   ],
   "price": 47.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HD588QLN",
@@ -15491,8 +15324,7 @@
    "Beige"
   ],
   "price": 47.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H7FVQ7K1",
@@ -15510,8 +15342,7 @@
    "Blu"
   ],
   "price": 47.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HD4X1HV9",
@@ -15529,8 +15360,7 @@
    "Verde"
   ],
   "price": 47.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HD4QDYCB",
@@ -15549,7 +15379,6 @@
   ],
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -15570,8 +15399,7 @@
    "Beige"
   ],
   "price": 47.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GM8Y9PJW",
@@ -15589,8 +15417,7 @@
    "Grigio"
   ],
   "price": 47.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HB8W8RCL",
@@ -15608,8 +15435,7 @@
    "Arancione"
   ],
   "price": 47.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HD4X23YT",
@@ -15627,8 +15453,7 @@
    "Marrone"
   ],
   "price": 47.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G59183DB",
@@ -15646,8 +15471,7 @@
    "Bianco"
   ],
   "price": 66.07,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GW15WR3Q",
@@ -15662,8 +15486,7 @@
   "addedAt": "2026-10-09T08:07:27.917Z",
   "source": "ricerca",
   "price": 95,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GW2Q1RV7",
@@ -15682,7 +15505,6 @@
   ],
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -15704,8 +15526,7 @@
    "Bianco"
   ],
   "price": 49.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DLH2YZ1V",
@@ -15723,8 +15544,7 @@
    "Rosa"
   ],
   "price": 34.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DLGZ33K2",
@@ -15743,8 +15563,7 @@
    "Rosso"
   ],
   "price": 87,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GTRMZ8KH",
@@ -15759,8 +15578,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 45.71,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GTRHT7NZ",
@@ -15775,8 +15593,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 120.76,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0F7PQPFHJ",
@@ -15794,8 +15611,7 @@
    "Blu"
   ],
   "price": 30.93,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HHS2T9W8",
@@ -15813,8 +15629,7 @@
    "Beige"
   ],
   "price": 31.27,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G2XSWJ1H",
@@ -15829,8 +15644,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 69.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0F7Q2D4P7",
@@ -15845,8 +15659,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 30.78,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GTRHLCW8",
@@ -15861,8 +15674,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 45.03,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G1CCH2Z8",
@@ -15877,8 +15689,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 39.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GTRD9W91",
@@ -15893,8 +15704,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 36.32,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FWRX6P8D",
@@ -15909,8 +15719,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 18.35,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FQ2Y5FF5",
@@ -15925,8 +15734,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 40,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FXK3V316",
@@ -15945,7 +15753,6 @@
   ],
   "price": 126,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -15967,7 +15774,6 @@
   ],
   "price": 100,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -15986,7 +15792,6 @@
   "source": "ricerca",
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -16005,7 +15810,6 @@
   "source": "ricerca",
   "price": 141,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -16027,7 +15831,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -16045,8 +15848,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 185,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0C936ZTV7",
@@ -16065,7 +15867,6 @@
   ],
   "price": 130.93,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -16087,7 +15888,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -16109,7 +15909,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -16132,7 +15931,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -16156,7 +15954,6 @@
   ],
   "price": 99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -16175,7 +15972,6 @@
   "source": "ricerca",
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -16198,7 +15994,6 @@
   ],
   "price": 158,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "3XL"
   ]
@@ -16221,7 +16016,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS",
    "S"
@@ -16245,7 +16039,6 @@
   ],
   "price": 105,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -16268,7 +16061,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -16286,8 +16078,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 14.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNY8G13",
@@ -16302,8 +16093,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 19.34,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMP22GRB",
@@ -16318,8 +16108,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 19.34,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMP2Z25F",
@@ -16334,8 +16123,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 14.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMLMXTH9",
@@ -16350,8 +16138,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 19.34,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H2HFTKTF",
@@ -16370,7 +16157,6 @@
   ],
   "price": 150,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "W27",
    "W28",
@@ -16394,8 +16180,7 @@
    "Viola"
   ],
   "price": 20.65,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H2HZ7842",
@@ -16414,7 +16199,6 @@
   ],
   "price": 119.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "W27"
   ]
@@ -16436,7 +16220,6 @@
   ],
   "price": 37.84,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -16459,7 +16242,6 @@
   ],
   "price": 20.84,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -16477,8 +16259,7 @@
   "addedAt": "2026-10-09T08:07:27.917Z",
   "source": "ricerca",
   "price": 12.5,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G4W1TYBL",
@@ -16497,7 +16278,6 @@
   ],
   "price": 19.28,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -16515,8 +16295,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 29.74,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GPY1STHP",
@@ -16531,8 +16310,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 32.67,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GPXXRMD8",
@@ -16547,8 +16325,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 25.69,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GPYDYF24",
@@ -16563,8 +16340,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 28.92,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HDR8XXV3",
@@ -16583,7 +16359,6 @@
   ],
   "price": 84.5,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS",
    "S",
@@ -16603,8 +16378,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 43.58,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G54DBZCG",
@@ -16619,8 +16393,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 51.97,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMV9KPZ2",
@@ -16635,8 +16408,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 19.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMTHTMSG",
@@ -16651,8 +16423,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 24.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNMB3MQ",
@@ -16667,8 +16438,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 12.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNBF9ZD",
@@ -16683,8 +16453,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 19.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNGFSCM",
@@ -16699,8 +16468,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 19.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DKTSMND4",
@@ -16719,7 +16487,6 @@
   ],
   "price": 37.24,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -16737,8 +16504,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 28.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BPF1Z3RW",
@@ -16756,8 +16522,7 @@
    "Blu"
   ],
   "price": 50.78,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMP25C5N",
@@ -16772,8 +16537,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 28.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNYH15Z",
@@ -16788,8 +16552,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 25.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNZ9QQT",
@@ -16804,8 +16567,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 23.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMNXR11D",
@@ -16820,8 +16582,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 23.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMP4FRX3",
@@ -16836,8 +16597,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 25.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B081J7TFS2",
@@ -16856,7 +16616,6 @@
   ],
   "price": 64.23,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -16874,8 +16633,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 133,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HML4MKXM",
@@ -16890,8 +16648,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 28.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMJ64TDR",
@@ -16906,8 +16663,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 28.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GN3C1L2W",
@@ -16925,8 +16681,7 @@
    "Grigio"
   ],
   "price": 44.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMDJZDWP",
@@ -16941,8 +16696,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 28.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMD4WH7F",
@@ -16957,8 +16711,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 28.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMD7VHWM",
@@ -16973,8 +16726,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 31.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GN3KVR9F",
@@ -16992,8 +16744,7 @@
    "Rosso"
   ],
   "price": 39.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BPDXR6RC",
@@ -17011,8 +16762,7 @@
    "Nero"
   ],
   "price": 59.67,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HLZV8928",
@@ -17027,8 +16777,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 28.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BH39YK2D",
@@ -17047,7 +16796,6 @@
   ],
   "price": 74.75,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -17069,8 +16817,7 @@
    "Oro"
   ],
   "price": 59,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H41G5YJ4",
@@ -17088,8 +16835,7 @@
    "Nero"
   ],
   "price": 79.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FT8MZWBS",
@@ -17107,8 +16853,7 @@
    "Multicolore"
   ],
   "price": 299.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DLT6S45N",
@@ -17126,8 +16871,7 @@
    "Multicolore"
   ],
   "price": 69.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DY1W3YTX",
@@ -17145,8 +16889,7 @@
    "Bianco"
   ],
   "price": 70.85,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FX5S9GK2",
@@ -17165,8 +16908,7 @@
    "Blu"
   ],
   "price": 59.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G2XRBMCS",
@@ -17185,8 +16927,7 @@
    "Bianco"
   ],
   "price": 280.26,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H8YVH29P",
@@ -17205,7 +16946,6 @@
   ],
   "price": 198.34,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -17223,8 +16963,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 72.87,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FBRYYVGV",
@@ -17242,8 +16981,7 @@
    "Rosa"
   ],
   "price": 126,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GJSG53KV",
@@ -17258,8 +16996,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 46,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G2T18ZQ2",
@@ -17274,8 +17011,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 152.57,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FG89CPFK",
@@ -17293,8 +17029,7 @@
    "Verde"
   ],
   "price": 1879,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G43XQ7ZC",
@@ -17312,8 +17047,7 @@
    "Grigio"
   ],
   "price": 152.57,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMRXW4K6",
@@ -17331,8 +17065,7 @@
    "Beige"
   ],
   "price": 42,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FXGTF2L1",
@@ -17351,7 +17084,6 @@
   ],
   "price": 52.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M",
    "L"
@@ -17374,8 +17106,7 @@
    "Blu"
   ],
   "price": 136,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FWRXLW2C",
@@ -17395,7 +17126,6 @@
   ],
   "price": 59.89,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS",
    "XXL"
@@ -17419,7 +17149,6 @@
   ],
   "price": 60.36,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -17442,7 +17171,6 @@
   ],
   "price": 51.36,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -17465,7 +17193,6 @@
   ],
   "price": 128,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -17487,8 +17214,7 @@
    "Blu"
   ],
   "price": 144,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FZ7RX56X",
@@ -17507,7 +17233,6 @@
   ],
   "price": 130,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -17529,7 +17254,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -17551,7 +17275,6 @@
   ],
   "price": 108.51,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -17570,7 +17293,6 @@
   "source": "ricerca",
   "price": 158.08,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -17592,7 +17314,6 @@
   ],
   "price": 101.18,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -17614,7 +17335,6 @@
   ],
   "price": 120.45,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -17633,7 +17353,6 @@
   "source": "ricerca",
   "price": 118,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -17655,7 +17374,6 @@
   ],
   "price": 125.19,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -17678,7 +17396,6 @@
   ],
   "price": 133,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -17697,7 +17414,6 @@
   "source": "ricerca",
   "price": 139,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -17719,7 +17435,6 @@
   ],
   "price": 121.84,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -17741,7 +17456,6 @@
   ],
   "price": 168.42,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -17763,7 +17477,6 @@
   ],
   "price": 95.59,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -17782,7 +17495,6 @@
   "source": "ricerca",
   "price": 110.13,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -17800,8 +17512,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 139.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0B5YP9RPF",
@@ -17820,7 +17531,6 @@
   ],
   "price": 162.89,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -17842,7 +17552,6 @@
   ],
   "price": 76.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -17864,7 +17573,6 @@
   ],
   "price": 112.77,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -17883,7 +17591,6 @@
   "source": "ricerca",
   "price": 149.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -17906,7 +17613,6 @@
   ],
   "price": 107.8,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -17928,7 +17634,6 @@
   ],
   "price": 129.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS",
    "S"
@@ -17948,7 +17653,6 @@
   "source": "ricerca",
   "price": 153.97,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -17966,8 +17670,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 69,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FX9NQDLX",
@@ -17985,8 +17688,7 @@
    "Beige"
   ],
   "price": 94.9,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GZMDFGQJ",
@@ -18004,8 +17706,7 @@
    "Nero"
   ],
   "price": 101,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HKCZ24YW",
@@ -18020,8 +17721,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 102.9,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HKL8CCH2",
@@ -18036,8 +17736,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 116.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HKKCZ94B",
@@ -18052,8 +17751,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 131.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DFQNCGX3",
@@ -18072,7 +17770,6 @@
   ],
   "price": 296.21,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -18094,7 +17791,6 @@
   ],
   "price": 49.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -18116,7 +17812,6 @@
   ],
   "price": 146.61,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -18135,7 +17830,6 @@
   "source": "ricerca",
   "price": 125.42,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -18156,8 +17850,7 @@
    "Nero"
   ],
   "price": 84.65,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GWPYRXZ5",
@@ -18176,7 +17869,6 @@
   ],
   "price": 96.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -18199,7 +17891,6 @@
   ],
   "price": 36.1,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -18221,7 +17912,6 @@
   ],
   "price": 55.74,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -18244,7 +17934,6 @@
   ],
   "price": 99.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M",
    "XL",
@@ -18269,7 +17958,6 @@
   ],
   "price": 89,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -18292,7 +17980,6 @@
   ],
   "price": 77.63,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -18310,8 +17997,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 65.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H3C5HFN1",
@@ -18330,7 +18016,6 @@
   ],
   "price": 85.85,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -18353,7 +18038,6 @@
   ],
   "price": 99.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -18375,7 +18059,6 @@
   ],
   "price": 89.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "3XL"
   ]
@@ -18393,8 +18076,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 87.2,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HHN7PG5M",
@@ -18409,8 +18091,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 79.2,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BH51S45D",
@@ -18426,7 +18107,6 @@
   "source": "ricerca",
   "price": 187.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "3XL"
   ]
@@ -18447,8 +18127,7 @@
    "Verde"
   ],
   "price": 79.59,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G36CM2ZG",
@@ -18466,8 +18145,7 @@
    "Nero"
   ],
   "price": 71.25,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FX3KZYGJ",
@@ -18482,8 +18160,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 91.97,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0D5GR436Y",
@@ -18498,8 +18175,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 126,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DPXXY2T8",
@@ -18517,8 +18193,7 @@
    "Nero"
   ],
   "price": 61,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G36C6JPY",
@@ -18536,8 +18211,7 @@
    "Blu"
   ],
   "price": 55,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G39GJK6N",
@@ -18555,8 +18229,7 @@
    "Nero"
   ],
   "price": 264.03,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G368BS2P",
@@ -18571,8 +18244,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 279,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FHBLSQDY",
@@ -18591,8 +18263,7 @@
    "Blu"
   ],
   "price": 68,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G368X6GG",
@@ -18610,8 +18281,7 @@
    "Nero"
   ],
   "price": 65.98,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BZSWWXGJ",
@@ -18630,8 +18300,7 @@
    "Blu"
   ],
   "price": 392.23,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G36BCDKG",
@@ -18649,8 +18318,7 @@
    "Grigio"
   ],
   "price": 59.8,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G3692PG3",
@@ -18668,8 +18336,7 @@
    "Grigio"
   ],
   "price": 71,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DQ1SCY96",
@@ -18687,8 +18354,7 @@
    "Nero"
   ],
   "price": 65.98,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0CNBX4WB6",
@@ -18707,7 +18373,6 @@
   ],
   "price": 192.26,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -18728,8 +18393,7 @@
    "Nero"
   ],
   "price": 126.5,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H7FD9QBG",
@@ -18745,7 +18409,6 @@
   "source": "ricerca",
   "price": 66.43,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S",
    "M",
@@ -18765,8 +18428,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 75.75,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMPVB8M1",
@@ -18781,8 +18443,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 37.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMPZ8DMC",
@@ -18797,8 +18458,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 34.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FC613Z66",
@@ -18813,8 +18473,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 65.98,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GT6FMCMC",
@@ -18829,8 +18488,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 65.15,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMCXYK5K",
@@ -18848,8 +18506,7 @@
    "Verde"
   ],
   "price": 104.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GTJZ8SRR",
@@ -18864,8 +18521,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 69.17,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GWFJMHDQ",
@@ -18884,7 +18540,6 @@
   ],
   "price": 107.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -18902,8 +18557,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 83.18,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G87SJVDC",
@@ -18918,8 +18572,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 69.33,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DNNRTQ19",
@@ -18934,8 +18587,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 48.14,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GT7K1ZW7",
@@ -18950,8 +18602,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 59.5,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DG9BNPBK",
@@ -18970,7 +18621,6 @@
   ],
   "price": 51.81,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -18992,7 +18642,6 @@
   ],
   "price": 96.03,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -19014,7 +18663,6 @@
   ],
   "price": 86.4,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S",
    "L"
@@ -19036,8 +18684,7 @@
    "Blu"
   ],
   "price": 189,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0B4F2ZFGD",
@@ -19056,7 +18703,6 @@
   ],
   "price": 201,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "3XL"
   ]
@@ -19074,8 +18720,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 151,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GXH2ZRFX",
@@ -19093,8 +18738,7 @@
    "Verde"
   ],
   "price": 159.16,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GKYFDRR4",
@@ -19112,8 +18756,7 @@
    "Nero"
   ],
   "price": 104,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GXGTVBYZ",
@@ -19132,7 +18775,6 @@
   ],
   "price": 90.49,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -19154,7 +18796,6 @@
   ],
   "price": 117.19,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -19175,8 +18816,7 @@
    "Blu"
   ],
   "price": 86.89,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GT9QHMWG",
@@ -19195,7 +18835,6 @@
   ],
   "price": 77.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -19213,8 +18852,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 87.29,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HLZYJRF5",
@@ -19229,8 +18867,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 28.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HM16SP6V",
@@ -19245,8 +18882,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 28.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HLZX6T9T",
@@ -19261,8 +18897,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 29.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HLZTS153",
@@ -19277,8 +18912,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 26.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DLVMS8XD",
@@ -19296,8 +18930,7 @@
    "Multicolore"
   ],
   "price": 74.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FT8CMNKD",
@@ -19316,8 +18949,7 @@
    "Oro"
   ],
   "price": 41.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FT8CSBPK",
@@ -19335,8 +18967,7 @@
    "Multicolore"
   ],
   "price": 74.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FX5QS3XL",
@@ -19355,8 +18986,7 @@
    "Oro"
   ],
   "price": 42.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FX5QSZV8",
@@ -19374,8 +19004,7 @@
    "Nero"
   ],
   "price": 59,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G4QFRQVF",
@@ -19394,7 +19023,6 @@
   ],
   "price": 59.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -19412,8 +19040,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 44.85,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FNMWQTB4",
@@ -19428,8 +19055,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 83.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DVCDMN62",
@@ -19448,7 +19074,6 @@
   ],
   "price": 69.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -19466,8 +19091,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 70.85,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FNMPF13P",
@@ -19482,8 +19106,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 131.91,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0F9LRP5F1",
@@ -19503,7 +19126,6 @@
   ],
   "price": 86.97,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -19521,8 +19143,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 105.79,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G4QFWDCK",
@@ -19541,7 +19162,6 @@
   ],
   "price": 59.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -19563,7 +19183,6 @@
   ],
   "price": 72,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -19585,7 +19204,6 @@
   ],
   "price": 123,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -19606,8 +19224,7 @@
    "Nero"
   ],
   "price": 61.39,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FDX7CSVV",
@@ -19623,7 +19240,6 @@
   "source": "ricerca",
   "price": 109.95,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -19645,7 +19261,6 @@
   ],
   "price": 108.69,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -19664,7 +19279,6 @@
   "source": "ricerca",
   "price": 150.96,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -19685,8 +19299,7 @@
    "Blu"
   ],
   "price": 185,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BHMW9GL3",
@@ -19705,7 +19318,6 @@
   ],
   "price": 98.01,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -19728,7 +19340,6 @@
   ],
   "price": 97,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -19750,7 +19361,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -19772,8 +19382,7 @@
    "Grigio"
   ],
   "price": 81.16,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FXGQQRM2",
@@ -19789,7 +19398,6 @@
   "source": "ricerca",
   "price": 42.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -19811,7 +19419,6 @@
   ],
   "price": 151,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -19834,7 +19441,6 @@
   ],
   "price": 185,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -19856,7 +19462,6 @@
   ],
   "price": 113.1,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -19878,7 +19483,6 @@
   ],
   "price": 77.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -19900,7 +19504,6 @@
   ],
   "price": 48.85,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -19922,7 +19525,6 @@
   ],
   "price": 72.08,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -19944,7 +19546,6 @@
   ],
   "price": 149.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -19966,7 +19567,6 @@
   ],
   "price": 149.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -19989,7 +19589,6 @@
   "price": 70.94,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
   "originalPrice": 129.9,
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS",
    "XS",
@@ -20010,7 +19609,6 @@
   "source": "ricerca",
   "price": 59.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -20028,8 +19626,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 95.2,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GGBVSVT4",
@@ -20049,7 +19646,6 @@
   "price": 47.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
   "originalPrice": 59.9,
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -20071,7 +19667,6 @@
   ],
   "price": 59.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -20093,7 +19688,6 @@
   ],
   "price": 105.61,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -20113,7 +19707,6 @@
   "price": 62.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
   "originalPrice": 89.9,
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -20132,7 +19725,6 @@
   "source": "ricerca",
   "price": 129.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -20154,7 +19746,6 @@
   ],
   "price": 99.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS",
    "S"
@@ -20173,8 +19764,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 87.2,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0C269G92Z",
@@ -20190,7 +19780,6 @@
   "source": "ricerca",
   "price": 105.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -20211,8 +19800,7 @@
    "Bianco"
   ],
   "price": 99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GF1WL51F",
@@ -20231,7 +19819,6 @@
   ],
   "price": 62.36,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -20249,8 +19836,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 144.19,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0CSTGC59H",
@@ -20268,8 +19854,7 @@
    "Bianco"
   ],
   "price": 135.69,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H1QQYBX2",
@@ -20285,7 +19870,6 @@
   "source": "ricerca",
   "price": 129.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -20306,8 +19890,7 @@
    "Nero"
   ],
   "price": 77.75,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GF1QPKBL",
@@ -20326,7 +19909,6 @@
   ],
   "price": 53.21,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS",
    "XS",
@@ -20352,7 +19934,6 @@
   ],
   "price": 80.6,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -20374,7 +19955,6 @@
   ],
   "price": 89.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -20396,7 +19976,6 @@
   ],
   "price": 66.02,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -20418,7 +19997,6 @@
   ],
   "price": 69.86,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -20440,7 +20018,6 @@
   ],
   "price": 79.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -20458,8 +20035,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 187.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0CMRLGXKJ",
@@ -20478,7 +20054,6 @@
   ],
   "price": 229.68,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -20499,8 +20074,7 @@
    "Bianco"
   ],
   "price": 125,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H4MCBJXC",
@@ -20519,7 +20093,6 @@
   ],
   "price": 74.28,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -20540,8 +20113,7 @@
    "Bianco"
   ],
   "price": 70.14,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0CCS93W55",
@@ -20556,8 +20128,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 104.83,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0CW1Y3VCB",
@@ -20575,8 +20146,7 @@
    "Nero"
   ],
   "price": 122.68,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BHTLQYM5",
@@ -20595,7 +20165,6 @@
   ],
   "price": 96.43,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -20617,8 +20186,7 @@
   ],
   "price": 92.55,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "originalPrice": 105,
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "originalPrice": 105
  },
  {
   "id": "amazon:B0CNBVT4GF",
@@ -20636,8 +20204,7 @@
    "Nero"
   ],
   "price": 160,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DR66R82D",
@@ -20655,8 +20222,7 @@
    "Nero"
   ],
   "price": 264.03,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0CGS21P52",
@@ -20674,8 +20240,7 @@
    "Bianco"
   ],
   "price": 55.1,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G36DT7PR",
@@ -20690,8 +20255,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 272.8,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G365G6FF",
@@ -20709,8 +20273,7 @@
    "Rosso"
   ],
   "price": 165.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G36BVF9P",
@@ -20728,8 +20291,7 @@
    "Nero"
   ],
   "price": 61.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DMTBBBVT",
@@ -20747,8 +20309,7 @@
    "Grigio"
   ],
   "price": 54.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G36GCF6S",
@@ -20763,8 +20324,7 @@
   "addedAt": "2026-10-09T08:07:27.917Z",
   "source": "ricerca",
   "price": 61,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GT79PLFJ",
@@ -20779,8 +20339,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 75.24,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GRK4C1YP",
@@ -20798,8 +20357,7 @@
    "Nero"
   ],
   "price": 77.59,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GV64CCY9",
@@ -20814,8 +20372,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 52.26,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GW161YNJ",
@@ -20830,8 +20387,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 65.27,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GTK4D2Q8",
@@ -20846,8 +20402,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 55.85,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GW1K81JK",
@@ -20862,8 +20417,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 80.52,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GT7D75C2",
@@ -20878,8 +20432,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 52.46,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HK842R4S",
@@ -20894,8 +20447,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 53.13,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FYMFJW8F",
@@ -20913,8 +20465,7 @@
    "Rosa"
   ],
   "price": 80,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G64SZ7GY",
@@ -20929,8 +20480,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 62.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0D8WFHZ72",
@@ -20948,8 +20498,7 @@
    "Grigio"
   ],
   "price": 89.34,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G87478DY",
@@ -20967,8 +20516,7 @@
    "Verde"
   ],
   "price": 65.75,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FRFDGFJ6",
@@ -20987,7 +20535,6 @@
   ],
   "price": 80.62,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -21008,8 +20555,7 @@
    "Nero"
   ],
   "price": 53,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GXH4N4P2",
@@ -21028,7 +20574,6 @@
   ],
   "price": 133,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -21046,8 +20591,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 124.31,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0F91XQF55",
@@ -21066,7 +20610,6 @@
   ],
   "price": 70.89,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -21088,7 +20631,6 @@
   ],
   "price": 117.43,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -21107,7 +20649,6 @@
   "source": "ricerca",
   "price": 92.49,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -21129,7 +20670,6 @@
   ],
   "price": 234,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -21150,8 +20690,7 @@
    "Verde"
   ],
   "price": 185,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0B6255694",
@@ -21166,8 +20705,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 59.77,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0C4V5W4LV",
@@ -21182,8 +20720,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 84.24,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G5Z8PW97",
@@ -21203,7 +20740,6 @@
   ],
   "price": 60.97,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -21223,7 +20759,6 @@
   "price": 49.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
   "originalPrice": 69.99,
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -21244,8 +20779,7 @@
    "Rosa"
   ],
   "price": 89.45,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0B3Z4VCSB",
@@ -21261,7 +20795,6 @@
   "source": "ricerca",
   "price": 73.72,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -21283,7 +20816,6 @@
   ],
   "price": 64.22,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -21304,8 +20836,7 @@
    "Grigio"
   ],
   "price": 89.45,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0F91YLFXX",
@@ -21321,7 +20852,6 @@
   "source": "ricerca",
   "price": 61.83,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -21343,7 +20873,6 @@
   ],
   "price": 110.79,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L",
    "XL"
@@ -21366,7 +20895,6 @@
   ],
   "price": 143.7,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -21384,8 +20912,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 95.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GF9RL56C",
@@ -21405,7 +20932,6 @@
   ],
   "price": 99.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S",
    "M",
@@ -21429,7 +20955,6 @@
   ],
   "price": 99.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M",
    "L",
@@ -21450,8 +20975,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 116.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G2Y8QGMX",
@@ -21470,7 +20994,6 @@
   ],
   "price": 88.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -21488,8 +21011,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 156.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GF9QS2BS",
@@ -21508,7 +21030,6 @@
   ],
   "price": 99.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S",
    "M",
@@ -21532,7 +21053,6 @@
   ],
   "price": 155.48,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -21550,8 +21070,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 186.04,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0CPVCFRML",
@@ -21570,7 +21089,6 @@
   ],
   "price": 231.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -21593,7 +21111,6 @@
   ],
   "price": 161.61,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -21616,7 +21133,6 @@
   ],
   "price": 110.32,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -21635,7 +21151,6 @@
   "source": "ricerca",
   "price": 246.01,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -21657,7 +21172,6 @@
   ],
   "price": 219.53,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -21679,7 +21193,6 @@
   ],
   "price": 179.4,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -21698,7 +21211,6 @@
   "source": "ricerca",
   "price": 171.08,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -21720,7 +21232,6 @@
   ],
   "price": 250.44,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -21742,7 +21253,6 @@
   ],
   "price": 102.26,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -21760,8 +21270,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 118.71,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0CPVBYRLG",
@@ -21780,7 +21289,6 @@
   ],
   "price": 199,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -21798,8 +21306,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 199,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G7JKN6BY",
@@ -21814,8 +21321,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 109.6,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G7HKCQ8S",
@@ -21830,8 +21336,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 118.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G7J4VX52",
@@ -21846,8 +21351,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 149.95,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G7JFW9B1",
@@ -21862,8 +21366,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 134,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0F1Z58BL1",
@@ -21882,7 +21385,6 @@
   ],
   "price": 81.33,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "3XL"
   ]
@@ -21904,7 +21406,6 @@
   ],
   "price": 160,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -21923,7 +21424,6 @@
   "source": "ricerca",
   "price": 136.71,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -21945,7 +21445,6 @@
   ],
   "price": 127.5,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -21964,7 +21463,6 @@
   "source": "ricerca",
   "price": 190,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L",
    "XXL"
@@ -21987,7 +21485,6 @@
   ],
   "price": 150,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -22009,7 +21506,6 @@
   ],
   "price": 150,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -22030,8 +21526,7 @@
    "Beige"
   ],
   "price": 91,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HDJRQ75H",
@@ -22050,7 +21545,6 @@
   ],
   "price": 139.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -22072,7 +21566,6 @@
   ],
   "price": 139.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -22095,7 +21588,6 @@
   ],
   "price": 149.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -22118,7 +21610,6 @@
   ],
   "price": 149.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -22140,7 +21631,6 @@
   ],
   "price": 117.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -22162,7 +21652,6 @@
   ],
   "price": 106.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -22184,7 +21673,6 @@
   ],
   "price": 119,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -22206,7 +21694,6 @@
   ],
   "price": 171,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -22228,7 +21715,6 @@
   ],
   "price": 150,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -22249,8 +21735,7 @@
    "Bianco"
   ],
   "price": 135.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HL9QN3NW",
@@ -22268,8 +21753,7 @@
    "Verde"
   ],
   "price": 131.37,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GWN1G2XN",
@@ -22288,7 +21772,6 @@
   ],
   "price": 89.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -22309,8 +21792,7 @@
    "Nero"
   ],
   "price": 139.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GWNCG7YD",
@@ -22329,7 +21811,6 @@
   ],
   "price": 99.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -22351,7 +21832,6 @@
   ],
   "price": 103.65,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M",
    "L"
@@ -22370,8 +21850,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 109.9,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H61YL5QZ",
@@ -22389,8 +21868,7 @@
    "Verde"
   ],
   "price": 89.91,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0CZ9RB41G",
@@ -22408,8 +21886,7 @@
    "Nero"
   ],
   "price": 44.28,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HHQT2MKW",
@@ -22424,8 +21901,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 83.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HGBTW57J",
@@ -22443,8 +21919,7 @@
    "Verde"
   ],
   "price": 64.82,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GWND7XKM",
@@ -22463,7 +21938,6 @@
   ],
   "price": 81.3,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -22481,8 +21955,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 78.67,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FPXJBK24",
@@ -22500,8 +21973,7 @@
    "Verde"
   ],
   "price": 63.12,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FPXMRK9T",
@@ -22519,8 +21991,7 @@
    "Verde"
   ],
   "price": 58.39,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GL22W719",
@@ -22535,8 +22006,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 61.98,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GQVV8R18",
@@ -22554,8 +22024,7 @@
    "Argento"
   ],
   "price": 44.28,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GL24F5S4",
@@ -22574,8 +22043,7 @@
    "Verde"
   ],
   "price": 61.98,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GN9L6KSY",
@@ -22590,8 +22058,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 61.9,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FWL1DGMR",
@@ -22606,8 +22073,7 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 25.14,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GQH4B77S",
@@ -22622,8 +22088,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 58.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G26FS6KQ",
@@ -22638,8 +22103,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 44.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G26CDC2Z",
@@ -22654,8 +22118,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 59.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMPJLH6X",
@@ -22673,8 +22136,7 @@
    "Bianco"
   ],
   "price": 49.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GQH19G26",
@@ -22689,8 +22151,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 49.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G2CCCF65",
@@ -22705,8 +22166,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 39.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G26FHVZN",
@@ -22721,8 +22181,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 49.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G2675NG6",
@@ -22737,8 +22196,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 44.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G257LKCZ",
@@ -22753,8 +22211,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 39.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G13B39RD",
@@ -22769,8 +22226,7 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 29.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMPYM49P",
@@ -22788,8 +22244,7 @@
    "Grigio"
   ],
   "price": 49.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMPNGR5X",
@@ -22807,8 +22262,7 @@
    "Grigio"
   ],
   "price": 39.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HMPBGGHX",
@@ -22826,8 +22280,7 @@
    "Nero"
   ],
   "price": 49.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0HJXVHDMP",
@@ -22842,8 +22295,7 @@
   "addedAt": "2026-10-10T07:10:52.958Z",
   "source": "ricerca",
   "price": 38.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FWZ7QFWZ",
@@ -22858,8 +22310,7 @@
   "addedAt": "2026-10-09T08:07:27.917Z",
   "source": "ricerca",
   "price": 26.95,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GG5Y6FDJ",
@@ -22874,8 +22325,7 @@
   "addedAt": "2026-10-10T20:03:31.950Z",
   "source": "ricerca",
   "price": 26.95,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0D3CKTLYH",
@@ -22891,7 +22341,6 @@
   "source": "ricerca",
   "price": 22.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L",
    "XL"
@@ -22910,8 +22359,7 @@
   "addedAt": "2026-10-10T20:03:31.950Z",
   "source": "ricerca",
   "price": 23.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0C7VH7ZYK",
@@ -22929,8 +22377,7 @@
    "Marrone"
   ],
   "price": 39,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0C7VFLKC7",
@@ -22948,8 +22395,7 @@
    "Marrone"
   ],
   "price": 39,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0C43LCMTZ",
@@ -22967,8 +22413,7 @@
    "Nero"
   ],
   "price": 25,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BMXY7J84",
@@ -22986,8 +22431,7 @@
    "Rosa"
   ],
   "price": 31.2,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BMBDGZHP",
@@ -23005,8 +22449,7 @@
    "Blu"
   ],
   "price": 27.3,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BL3JL19Y",
@@ -23024,8 +22467,7 @@
    "Rosso"
   ],
   "price": 27.3,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B09KV8JS8D",
@@ -23043,8 +22485,7 @@
    "Bianco"
   ],
   "price": 34.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B08JCBXKY6",
@@ -23063,8 +22504,7 @@
    "Rosso"
   ],
   "price": 30.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FWCFX4T6",
@@ -23080,7 +22520,6 @@
   "source": "ricerca",
   "price": 26.62,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S",
    "XXL"
@@ -23099,8 +22538,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 29.84,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FWCCT8T6",
@@ -23116,7 +22554,6 @@
   "source": "ricerca",
   "price": 22.2,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -23134,8 +22571,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 27.54,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GR146GKZ",
@@ -23150,8 +22586,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 28.07,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GQZP6LLZ",
@@ -23166,8 +22601,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 30.71,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FWCBC32V",
@@ -23186,7 +22620,6 @@
   ],
   "price": 22.2,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -23208,7 +22641,6 @@
   ],
   "price": 55.78,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -23226,8 +22658,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 28.2,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GR12LKWM",
@@ -23242,8 +22673,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 63.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G3BK34RN",
@@ -23262,7 +22692,6 @@
   ],
   "price": 49.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -23281,7 +22710,6 @@
   "source": "ricerca",
   "price": 50,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -23302,8 +22730,7 @@
    "Marrone"
   ],
   "price": 50,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GH2S81R9",
@@ -23319,7 +22746,6 @@
   "source": "ricerca",
   "price": 49.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -23337,8 +22763,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 40,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BPWFJWRR",
@@ -23356,8 +22781,7 @@
    "Multicolore"
   ],
   "price": 75.38,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B09PL6DCVK",
@@ -23376,7 +22800,6 @@
   ],
   "price": 79.42,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -23397,8 +22820,7 @@
    "Nero"
   ],
   "price": 60.45,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B08F9QQ4R2",
@@ -23416,8 +22838,7 @@
    "Rosso"
   ],
   "price": 67.75,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GGBF9VG2",
@@ -23437,7 +22858,6 @@
   ],
   "price": 149.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -23458,8 +22878,7 @@
    "Rosa"
   ],
   "price": 65.76,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DYDB5PCW",
@@ -23478,8 +22897,7 @@
    "Multicolore"
   ],
   "price": 66.61,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BRR3DDLK",
@@ -23498,8 +22916,7 @@
    "Beige"
   ],
   "price": 77.8,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BPW7ZXCP",
@@ -23517,8 +22934,7 @@
    "Blu"
   ],
   "price": 90.39,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GGB8ZYMQ",
@@ -23538,7 +22954,6 @@
   ],
   "price": 99.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -23560,7 +22975,6 @@
   ],
   "price": 102.92,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -23582,7 +22996,6 @@
   ],
   "price": 99.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -23601,7 +23014,6 @@
   "source": "ricerca",
   "price": 118,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -23622,8 +23034,7 @@
    "Bianco"
   ],
   "price": 105.21,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H67WC552",
@@ -23641,8 +23052,7 @@
    "Beige"
   ],
   "price": 245,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BV385F2W",
@@ -23661,7 +23071,6 @@
   ],
   "price": 236.73,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -23682,8 +23091,7 @@
    "Marrone"
   ],
   "price": 77,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H67S1QHH",
@@ -23701,8 +23109,7 @@
    "Bianco"
   ],
   "price": 107,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H56HT5F7",
@@ -23720,8 +23127,7 @@
    "Oro"
   ],
   "price": 179.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H56554Z4",
@@ -23739,8 +23145,7 @@
    "Beige"
   ],
   "price": 154.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H56DQLFW",
@@ -23758,8 +23163,7 @@
    "Blu"
   ],
   "price": 136.5,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H56DMYBV",
@@ -23777,8 +23181,7 @@
    "Bianco"
   ],
   "price": 136.5,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H56CKSTD",
@@ -23796,8 +23199,7 @@
    "Bianco"
   ],
   "price": 189,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H56LQK2C",
@@ -23815,8 +23217,7 @@
    "Verde"
   ],
   "price": 131,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H56MCJP7",
@@ -23834,8 +23235,7 @@
    "Blu"
   ],
   "price": 131,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H56FBS6X",
@@ -23853,8 +23253,7 @@
    "Blu"
   ],
   "price": 129.5,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G7J61XN8",
@@ -23869,8 +23268,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 111.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G7JCV3Z2",
@@ -23885,8 +23283,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 130.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G7HQKFZ1",
@@ -23901,8 +23298,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 146.31,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FSMY9N8M",
@@ -23921,7 +23317,6 @@
   ],
   "price": 171.49,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -23943,8 +23338,7 @@
    "Rosso"
   ],
   "price": 319.29,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DQXZ5PKN",
@@ -23962,8 +23356,7 @@
    "Rosso"
   ],
   "price": 138.29,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0D8WP9SJ8",
@@ -23984,7 +23377,6 @@
   ],
   "price": 267.61,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -24006,8 +23398,7 @@
    "Verde"
   ],
   "price": 196.19,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FFBQ62XC",
@@ -24025,8 +23416,7 @@
    "Bianco"
   ],
   "price": 230.14,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0D8MVJ46X",
@@ -24044,8 +23434,7 @@
    "Blu"
   ],
   "price": 341.65,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DQXSSMSW",
@@ -24063,8 +23452,7 @@
    "Blu"
   ],
   "price": 198.68,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DQXWBTQC",
@@ -24082,8 +23470,7 @@
    "Blu"
   ],
   "price": 195.59,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DQXT6PR7",
@@ -24102,8 +23489,7 @@
    "Verde"
   ],
   "price": 158.19,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DQXT8R2N",
@@ -24121,8 +23507,7 @@
    "Blu"
   ],
   "price": 186.9,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DQXR6Q2W",
@@ -24140,8 +23525,7 @@
    "Marrone"
   ],
   "price": 187.36,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FD3M9QVS",
@@ -24159,8 +23543,7 @@
    "Blu"
   ],
   "price": 130,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0D8MNYZXG",
@@ -24175,8 +23558,7 @@
   "addedAt": "2026-10-10T20:03:31.950Z",
   "source": "ricerca",
   "price": 315.77,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FD3NQS43",
@@ -24191,8 +23573,7 @@
   "addedAt": "2026-10-09T08:07:27.917Z",
   "source": "ricerca",
   "price": 130,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B09RQ8JB4F",
@@ -24211,7 +23592,6 @@
   ],
   "price": 114.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M"
   ]
@@ -24233,8 +23613,7 @@
    "Giallo"
   ],
   "price": 82.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DLZ5G8TZ",
@@ -24253,8 +23632,7 @@
    "Blu"
   ],
   "price": 152.7,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DZYWGVTD",
@@ -24273,8 +23651,7 @@
    "Multicolore"
   ],
   "price": 111.02,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GNVZTZQS",
@@ -24293,7 +23670,6 @@
   ],
   "price": 82,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -24316,7 +23692,6 @@
   "price": 67.21,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
   "originalPrice": 109.9,
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "M",
    "XXL"
@@ -24339,7 +23714,6 @@
   ],
   "price": 99.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -24361,7 +23735,6 @@
   ],
   "price": 109.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS"
   ]
@@ -24383,7 +23756,6 @@
   ],
   "price": 60.46,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -24405,7 +23777,6 @@
   ],
   "price": 55.92,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XS"
   ]
@@ -24427,7 +23798,6 @@
   ],
   "price": 99.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXS",
    "M"
@@ -24447,7 +23817,6 @@
   "source": "ricerca",
   "price": 75.19,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S"
   ]
@@ -24469,7 +23838,6 @@
   ],
   "price": 90.22,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -24491,7 +23859,6 @@
   ],
   "price": 81.37,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XXL"
   ]
@@ -24513,7 +23880,6 @@
   ],
   "price": 68.21,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
@@ -24531,8 +23897,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 126,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0DBRBT1LH",
@@ -24551,7 +23916,6 @@
   ],
   "price": 73.52,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "S",
    "M"
@@ -24571,7 +23935,6 @@
   "source": "ricerca",
   "price": 108.92,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "XL"
   ]
@@ -24589,8 +23952,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 30.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0CXLXL2PT",
@@ -24605,8 +23967,7 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 42.1,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z"
+  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0CXPD4NDN",
@@ -24625,7 +23986,6 @@
   ],
   "price": 31.95,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L",
    "XL"
@@ -24648,7 +24008,6 @@
   ],
   "price": 33.95,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizesAt": "2026-10-13T02:02:54.674Z",
   "sizes": [
    "L"
   ]
