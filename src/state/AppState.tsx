@@ -188,7 +188,9 @@ function useAppStore() {
     restored: [],
   }))
 
-  useEffect(() => save('filters:v2', state.filters), [state.filters])
+  useEffect(() => {
+    save('filters:v2', state.filters)
+  }, [state.filters])
   useEffect(() => {
     for (const [u, f] of Object.entries(state.sectionFilters)) save(`${u}Filters`, f)
   }, [state.sectionFilters])
@@ -198,8 +200,12 @@ function useAppStore() {
     for (const u of UNIVERSES) if (u !== 'moda') document.documentElement.classList.toggle(u, state.mode === u)
   }, [state.mode])
   const activeFilters = state.mode === 'moda' ? state.filters : state.sectionFilters[state.mode]
-  useEffect(() => save('wishlist', state.wishlist), [state.wishlist])
-  useEffect(() => save('disliked', state.disliked), [state.disliked])
+  useEffect(() => {
+    save('wishlist', state.wishlist)
+  }, [state.wishlist])
+  useEffect(() => {
+    save('disliked', state.disliked)
+  }, [state.disliked])
 
   const sync = useCloudSync(state, dispatch)
 

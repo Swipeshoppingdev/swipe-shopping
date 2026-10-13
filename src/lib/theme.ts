@@ -19,7 +19,9 @@ function apply(theme: Theme) {
 
 export function useTheme() {
   const [theme, setTheme] = useState<Theme>(effective)
-  useEffect(() => apply(theme), [theme])
+  useEffect(() => {
+    apply(theme)
+  }, [theme])
   useEffect(() => {
     if (!media) return
     const onChange = () => setTheme(effective())

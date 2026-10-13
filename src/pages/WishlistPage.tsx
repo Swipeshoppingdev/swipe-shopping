@@ -66,7 +66,9 @@ export function WishlistPage() {
   }, [wishlist, current, sort, showDeals, showFew])
 
   // Aprendo i Preferiti l'avviso sul menu si spegne (l'etichetta sulle card resta).
-  useEffect(() => markDealsSeen(), [markDealsSeen])
+  useEffect(() => {
+    markDealsSeen()
+  }, [markDealsSeen])
 
   if (wishlist.length === 0) {
     return (

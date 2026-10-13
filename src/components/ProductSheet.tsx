@@ -28,7 +28,9 @@ export function ProductSheet() {
   const drag = useRef<HTMLDivElement>(null)
   useSwipeDown(panel, drag, !!product)
   // Aprendo un prodotto simile si riparte dall'alto della scheda.
-  useEffect(() => panel.current?.scrollTo({ top: 0 }), [product?.id])
+  useEffect(() => {
+    panel.current?.scrollTo({ top: 0 })
+  }, [product?.id])
 
   useEffect(() => {
     if (!product) return
