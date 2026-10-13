@@ -10,6 +10,7 @@ import { DiscountBadge } from './DiscountBadge'
 import { NewBadge } from './NewBadge'
 import { SizeBadge } from './SizeBadge'
 import { PriceTag } from './PriceTag'
+import { PriceRankPill } from './PriceCheck'
 import { ProductImage } from './ProductImage'
 import { StoreLink } from './StoreLink'
 
@@ -120,7 +121,11 @@ export function SwipeCard({
             </motion.span>
           </>
         )}
-        <DiscountBadge product={product} />
+        {/* In basso a sinistra: lo sconto e, accanto, quanto è conveniente il prezzo (spiegato nella scheda). */}
+        <div className="pointer-events-none absolute bottom-3 left-3 flex items-center gap-2">
+          <DiscountBadge product={product} inline />
+          {isTop && <PriceRankPill product={product} />}
+        </div>
         <NewBadge product={product} />
         <SizeBadge product={product} />
         {product.searchQuery && (

@@ -4,13 +4,24 @@ import { formatPrice } from '../lib/price'
 import { cheaperAlternatives, priceRank } from '../lib/priceCheck'
 import { openProduct } from '../lib/productSheet'
 import type { Product } from '../types/product'
+import { useApp } from '../state/AppState'
 import { PriceTag } from './PriceTag'
 import { ProductImage } from './ProductImage'
 
+// Solo colori che il tema scuro ridefinisce (src/index.css), così si leggono in entrambi i temi.
 const STYLE = {
-  basso: { box: 'bg-emerald-50 text-emerald-900 ring-emerald-200', dot: 'bg-emerald-500', title: 'Buon prezzo' },
-  medio: { box: 'bg-neutral-100 text-neutral-800 ring-neutral-200', dot: 'bg-amber-400', title: 'Prezzo nella media' },
-  alto: { box: 'bg-amber-50 text-amber-900 ring-amber-200', dot: 'bg-amber-500', title: 'Tra i più cari' },
+  basso: { box: 'bg-emerald-50 text-emerald-800 ring-emerald-200', pill: 'bg-[#059669]', dot: 'bg-emerald-500', title: 'Buon prezzo' },
+  medio: { box: 'bg-neutral-100 text-neutral-800 ring-neutral-200', pill: 'bg-[#525252]', dot: 'bg-amber-400', title: 'Prezzo nella media' },
+  alto: { box: 'bg-amber-50 text-amber-900 ring-amber-200', pill: 'bg-[#d97706]', dot: 'bg-amber-500', title: 'Tra i più cari' },
+}
+
+/** Etichetta sulla foto della carta, accanto allo sconto; la spiegazione è nella scheda. Colori fissi: la foto è sempre su bianco. */
+export function PriceRankPill({ product }: { product: Product }) {
+  const { allProducts } = useApp()
+  const rank = useMemo(() => priceRank(product, allProducts), [product, allProducts])
+  if (!rank) return null
+  const s = STYLE[rank.level]
+  return <span className={`rounded-full px-3 py-1.5 text-sm font-bold text-[#fff] shadow-lg ${s.pill}`}>{s.title}</span>
 }
 
 /** "Prezzo giusto?": dove sta questo prezzo rispetto ai prodotti simili di oggi. */
@@ -35,8 +46,7 @@ export function PriceRankBadge({ product, all }: { product: Product; all: Produc
 }
 
 /** "Simile ma costa meno": fino a 3 alternative più economiche, con quanto si risparmia. */
-export function CheaperAlternatives({ product, all }: { product: Product; all: Product[] }) {
-  const list = useMemo(() => cheaperAlternatives(product, all), [product, all])
+export function CheaperAlternatives({ list }: { list: ReturnType<typeof cheaperAlternatives> }) {
   if (list.length === 0) return null
   return (
     <div>

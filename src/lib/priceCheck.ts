@@ -48,7 +48,18 @@ export interface PriceRank {
   peers: number
 }
 
+/** Calcolato una volta per prodotto (carta e scheda usano lo stesso risultato). */
+const rankCache = new WeakMap<Product[], Map<string, PriceRank | null>>()
+
 export function priceRank(product: Product, all: Product[]): PriceRank | null {
+  let cache = rankCache.get(all)
+  if (!cache) rankCache.set(all, (cache = new Map()))
+  const key = `${product.id}|${product.price}|${product.priceCheckedAt}`
+  if (!cache.has(key)) cache.set(key, computeRank(product, all))
+  return cache.get(key)!
+}
+
+function computeRank(product: Product, all: Product[]): PriceRank | null {
   const price = freshPrice(product)?.price
   if (price === undefined) return null
   const peers = peersOf(product, all)
