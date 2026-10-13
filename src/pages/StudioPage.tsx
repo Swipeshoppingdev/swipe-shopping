@@ -333,13 +333,13 @@ function Studio() {
         className="relative h-full max-h-[calc(100vw*16/9)] w-full max-w-[calc(100dvh*9/16)] overflow-hidden bg-gradient-to-b from-[#1a0b14] via-[#14080f] to-[#000] text-[#fff]"
         onClick={() => (playing ? stop() : setPanel((v) => !v))}
       >
-        <div className="pointer-events-none absolute -top-32 -left-24 size-96 rounded-full bg-[#f43f5e]/25 blur-3xl" />
-        <div className="pointer-events-none absolute -right-24 -bottom-32 size-96 rounded-full bg-[#6366f1]/25 blur-3xl" />
+        {/* Luci di sfondo con gradienti radiali e non con blur: su iPhone il blur fa comparire riquadri scuri nelle registrazioni */}
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_5%,rgba(244,63,94,0.28),transparent_45%),radial-gradient(circle_at_90%_95%,rgba(99,102,241,0.28),transparent_45%)]" />
         <AnimatePresence mode="wait">
           <motion.div
             key={`${format}-${variant}-${playing ? step : 'preview'}`}
-            // Zona sicura dei Reels/TikTok: margine in alto, a destra (icone) e in basso (nome e didascalia).
-            className="absolute top-[9%] right-[12%] bottom-[22%] left-[9%] flex flex-col"
+            // Zona sicura dei Reels/TikTok, valida per tutti i formati: margine a destra (icone) e sotto (nome e didascalia), contenuto centrato in altezza.
+            className="absolute top-[15%] right-[12%] bottom-[18%] left-[9%] flex flex-col"
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -24 }}
