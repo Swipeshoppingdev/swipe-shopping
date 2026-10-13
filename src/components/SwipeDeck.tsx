@@ -9,6 +9,7 @@ import { CoachMarks } from './CoachMarks'
 import { HeartBurst, type Burst } from './HeartBurst'
 import { discountBadge } from '../lib/price'
 import { priceRank } from '../lib/priceCheck'
+import { loadDetails } from '../lib/details'
 import { ShareButton } from './ShareButton'
 import { StoreLink } from './StoreLink'
 import { UndoMenu } from './UndoMenu'
@@ -136,6 +137,8 @@ export function SwipeDeck({
       shown.slice(3, 1 + AHEAD).forEach((p) => preload(productImageUrl(p) ?? undefined))
       // "Prezzo giusto?" della prossima carta calcolato ora: quando arriva in cima non rallenta lo swipe.
       if (shown[1]) priceRank(shown[1], app.allProducts)
+      // Anche le foto in più e le caratteristiche (file di dettagli) delle prossime carte, ora che il telefono è libero.
+      shown.slice(1, 3).forEach((p) => void loadDetails(p.id))
     }
     if ('requestIdleCallback' in window) {
       const id = requestIdleCallback(later, { timeout: 800 })

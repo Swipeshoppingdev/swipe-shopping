@@ -2,14 +2,9 @@ import { useEffect, useState } from 'react'
 import { setSystemBarsTheme } from './native'
 import { load, save } from './storage'
 
-/** Tema chiaro/scuro: segue il telefono finché l'utente non sceglie con il pulsante in alto. */
+/** Tema chiaro/scuro: scuro di base (scelta di Kevin), finché l'utente non sceglie con il pulsante in alto. */
 export type Theme = 'light' | 'dark'
-const media = typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)') : null
-
-const effective = (): Theme => {
-  const chosen = load<Theme | null>('theme', null)
-  return chosen ?? (media?.matches ? 'dark' : 'light')
-}
+const effective = (): Theme => load<Theme | null>('theme', null) ?? 'dark'
 
 /** Colore della barra del browser = colore della barra in alto (cambia con tema e sezione). */
 function syncThemeColor() {
@@ -34,12 +29,6 @@ export function useTheme() {
   useEffect(() => {
     apply(theme)
   }, [theme])
-  useEffect(() => {
-    if (!media) return
-    const onChange = () => setTheme(effective())
-    media.addEventListener('change', onChange)
-    return () => media.removeEventListener('change', onChange)
-  }, [])
   const toggle = () => {
     const next: Theme = theme === 'dark' ? 'light' : 'dark'
     save('theme', next)

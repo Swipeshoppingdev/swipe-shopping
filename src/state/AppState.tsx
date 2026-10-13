@@ -11,7 +11,7 @@ import { isFollowed, useFollows } from '../lib/follows'
 import { modelKey } from '../lib/dedupe'
 import { discountBadge } from '../lib/price'
 import { sharedProductId } from '../lib/share'
-import { load, save } from '../lib/storage'
+import { load, save, saveLater } from '../lib/storage'
 import { DEFAULT_FILTERS, type Filters, type Product } from '../types/product'
 import { useAuth } from './AuthState'
 
@@ -227,10 +227,10 @@ function useAppStore() {
   }, [state.mode])
   const activeFilters = state.mode === 'moda' ? state.filters : state.sectionFilters[state.mode]
   useEffect(() => {
-    save('wishlist', state.wishlist)
+    saveLater('wishlist', state.wishlist)
   }, [state.wishlist])
   useEffect(() => {
-    save('disliked', state.disliked)
+    saveLater('disliked', state.disliked)
   }, [state.disliked])
 
   const sync = useCloudSync(state, dispatch)
