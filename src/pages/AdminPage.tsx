@@ -103,6 +103,7 @@ function AdminStatsView() {
         </div>
       </div>
 
+      <AdminErrors />
       <AdminBroadcast />
       <AdminReports />
 
@@ -155,6 +156,69 @@ function AdminStatsView() {
         </div>
       )}
     </div>
+  )
+}
+
+type ErrorRow = { id: number; happened_at: string; kind: string; message: string; stack?: string; route?: string; ua?: string; native: boolean }
+
+/** Errori dell'app arrivati dai telefoni (anonimi): da copiare e mandare a Claude. Si vede solo se ce ne sono. */
+function AdminErrors() {
+  const [rows, setRows] = useState<ErrorRow[] | null>(null)
+  const [error, setError] = useState('')
+  const [copied, setCopied] = useState(false)
+  useEffect(() => {
+    if (!supabase) return
+    supabase.rpc('admin_errors').then(({ data, error }) => {
+      if (error) setError(error.message.includes('admin_errors') ? 'Manca lo script schema-16.sql in Supabase.' : error.message)
+      else setRows((data as ErrorRow[]) ?? [])
+    })
+  }, [])
+  if (error) return <p className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">Errori dell'app: {error}</p>
+  if (!rows?.length) return null
+  const when = (iso: string) => new Date(iso).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+  const device = (r: ErrorRow) => (r.native ? 'App Android' : /iPhone|iPad/.test(r.ua ?? '') ? 'Sito iPhone' : /Android/.test(r.ua ?? '') ? 'Sito Android' : 'Sito')
+  const text = rows.map((r) => `${r.happened_at} [${r.kind}] ${device(r)} ${r.route ?? ''}\n${r.message}\n${r.stack ?? ''}\n${r.ua ?? ''}`).join('\n\n')
+  return (
+    <Section title={`Errori dell'app (${rows.length})`}>
+      <ul className="space-y-3 text-sm">
+        {rows.slice(0, 10).map((r) => (
+          <li key={r.id}>
+            <span className="block text-xs text-neutral-500">
+              {when(r.happened_at)} · {device(r)} · {r.route || '#/'}
+            </span>
+            <span className="block font-medium break-all">{r.message}</span>
+            {r.stack && (
+              <details className="text-xs text-neutral-500">
+                <summary>Dettagli</summary>
+                <pre className="mt-1 max-h-48 overflow-auto text-[10px] break-all whitespace-pre-wrap">{r.stack}</pre>
+              </details>
+            )}
+          </li>
+        ))}
+      </ul>
+      <div className="mt-3 flex gap-2">
+        <button
+          type="button"
+          onClick={async () => {
+            await navigator.clipboard?.writeText(text).catch(() => {})
+            setCopied(true)
+          }}
+          className="flex-1 rounded-full bg-neutral-900 py-2 text-sm font-semibold text-white active:scale-95"
+        >
+          {copied ? 'Copiato!' : 'Copia per Claude'}
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setRows([])
+            void supabase?.rpc('admin_errors_clear')
+          }}
+          className="rounded-full px-4 py-2 text-sm font-medium text-neutral-600 ring-1 ring-neutral-200"
+        >
+          Svuota
+        </button>
+      </div>
+    </Section>
   )
 }
 
