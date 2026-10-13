@@ -57,7 +57,7 @@ export function SwipeDeck({ cards, onLike }: { cards?: Product[]; onLike?: (p: P
         if (productUrl(top)) {
           setSaved(top)
           clearTimeout(savedTimer.current)
-          savedTimer.current = setTimeout(() => setSaved(null), 3500)
+          savedTimer.current = setTimeout(() => setSaved(null), 2000)
         }
       } else actions.dislike(top)
     },
