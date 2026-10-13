@@ -426,11 +426,12 @@ async function refreshSizes(token: string, products: Record<string, any>[]) {
   const done = new Set<string>()
   let families = 0
   let updated = 0
+  let priced = 0
   for (const p of candidates) {
     if (requests >= MAX_REQUESTS) break
     if (done.has(p.externalId)) continue
     if (p.sizesAt && Date.now() - Date.parse(p.sizesAt) < 20 * 3_600_000) break // tutti già controllati da poco
-    const variants: { asin: string; color: string; size: string | null; ok: boolean }[] = []
+    const variants: { asin: string; color: string; size: string | null; ok: boolean; offer: Offer | null }[] = []
     try {
       for (let page = 1; page <= 3 && requests < MAX_REQUESTS; page++) {
         const body = await callApi('getVariations', token, {
@@ -444,7 +445,8 @@ async function refreshSizes(token: string, products: Record<string, any>[]) {
           const attrs: { name?: string; value?: string }[] = item?.variationAttributes ?? []
           const size = attrs.find((a) => a.name === 'size_name')?.value
           const color = attrs.find((a) => a.name === 'color_name')?.value ?? ''
-          variants.push({ asin: item?.asin, color, size: size ? sizeOf(size, p.category) : null, ok: isUsable(readListing(item)) })
+          const offer = readListing(item)
+          variants.push({ asin: item?.asin, color, size: size ? sizeOf(size, p.category) : null, ok: isUsable(offer), offer })
         }
         if (page >= (result?.variationSummary?.pageCount ?? 1)) break
       }
@@ -466,15 +468,27 @@ async function refreshSizes(token: string, products: Record<string, any>[]) {
     for (const m of members) {
       done.add(m.externalId)
       const color = colorOf.get(m.externalId)
-      const sizes = variants.filter((v) => v.ok && v.size && (color === undefined || v.color === color)).map((v) => v.size!)
+      const same = variants.filter((v) => v.ok && v.size && (color === undefined || v.color === color))
+      const sizes = same.map((v) => v.size!)
       m.sizesAt = now
       if (sizes.length) {
         m.sizes = sortSizes(sizes)
         updated++
       }
+      // Taglie con prezzi diversi: si mostra "da" il prezzo più basso tra quelle disponibili (con il suo sconto).
+      const prices = same.map((v) => v.offer!).filter((o) => o.price > 0)
+      if (prices.length > 1 && m.price !== undefined) {
+        const low = prices.reduce((a, b) => (b.price < a.price ? b : a))
+        const high = Math.max(...prices.map((o) => o.price))
+        if (high - low.price >= 0.5) {
+          applyOffer(m, low)
+          m.priceFrom = true
+          priced++
+        }
+      }
     }
   }
-  annotate('notice', `Taglie da Amazon: ${families} famiglie lette, ${updated} prodotti con tutte le taglie disponibili.`)
+  annotate('notice', `Taglie da Amazon: ${families} famiglie lette, ${updated} prodotti con tutte le taglie disponibili, ${priced} con prezzi diversi per taglia ("da").`)
 }
 
 if (process.env.AMAZON_SIZES_ONLY) {
@@ -522,6 +536,14 @@ try {
     if (old?.sizesAt && Date.now() - Date.parse(old.sizesAt) < SIZES_MAX_AGE) {
       p.sizesAt = old.sizesAt
       if (old.sizes?.length) p.sizes = old.sizes
+    }
+    // Prezzo "da" (la taglia meno cara) letto da poco: resta finché è valido, se più basso di quello della ricerca.
+    if (old?.priceFrom && old.price < (p.price ?? Infinity) && Date.now() - Date.parse(old.priceCheckedAt ?? '') < 20 * 3_600_000) {
+      p.price = old.price
+      p.priceFrom = true
+      p.priceCheckedAt = old.priceCheckedAt
+      if (old.originalPrice > old.price) p.originalPrice = old.originalPrice
+      else delete p.originalPrice
     }
   }
   const next = [...curated, ...others, ...searched, ...kept]

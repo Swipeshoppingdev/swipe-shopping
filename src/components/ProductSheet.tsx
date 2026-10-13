@@ -5,6 +5,7 @@ import { categoryLabel } from '../config/categories'
 import { brandAndStore, storeLinkLabel, storeName } from '../config/stores'
 import { galleryOf } from '../lib/gallery'
 import { closeProduct, openProduct, useOpenProduct } from '../lib/productSheet'
+import { hasSizes } from '../lib/sizes'
 import { similarProducts } from '../lib/similar'
 import { useDetails } from '../lib/useDetails'
 import { useApp } from '../state/AppState'
@@ -121,10 +122,17 @@ function SheetContent({ product }: { product: Product }) {
         </div>
 
         {/* Solo l'elenco completo letto da Amazon (sizesAt): quelle viste nei titoli sono solo alcune varianti. */}
-        {product.sizesAt && product.sizes && product.sizes.length > 0 && (
+        {hasSizes(product.category) && (
           <p className="text-sm text-neutral-600">
-            <span className="font-semibold text-neutral-800">Taglie disponibili:</span> {product.sizes.join(' · ')}
-            <span className="block text-xs text-neutral-500">Controllate su Amazon all'ultimo aggiornamento: scegli la taglia sul negozio.</span>
+            {product.sizesAt && product.sizes && product.sizes.length > 0 && (
+              <>
+                <span className="font-semibold text-neutral-800">Taglie disponibili:</span> {product.sizes.join(' · ')}
+                <br />
+              </>
+            )}
+            <span className="text-xs text-neutral-500">
+              Taglie diverse possono avere prezzi diversi: controlla il prezzo della tua su Amazon.
+            </span>
           </p>
         )}
 
