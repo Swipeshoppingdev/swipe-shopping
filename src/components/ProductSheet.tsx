@@ -25,6 +25,8 @@ import { StoreLink } from './StoreLink'
 export function ProductSheet() {
   const product = useOpenProduct()
   const panel = useRef<HTMLDivElement>(null)
+  const drag = useRef<HTMLDivElement>(null)
+  useSwipeDown(panel, drag, !!product)
   // Aprendo un prodotto simile si riparte dall'alto della scheda.
   useEffect(() => panel.current?.scrollTo({ top: 0 }), [product?.id])
 
@@ -47,23 +49,95 @@ export function ProductSheet() {
           onClick={closeProduct}
         >
           <motion.div
-            ref={panel}
-            role="dialog"
-            aria-modal="true"
-            aria-label={product.title}
-            className="relative max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-white pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-2xl"
+            className="w-full max-w-md"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', stiffness: 380, damping: 36 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <SheetContent key={product.id} product={product} />
+            <div ref={drag}>
+              <div
+                ref={panel}
+                role="dialog"
+                aria-modal="true"
+                aria-label={product.title}
+                className="relative max-h-[92dvh] w-full overflow-y-auto overscroll-contain rounded-t-3xl bg-white pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-2xl"
+              >
+                {/* Maniglia: la scheda si chiude anche trascinandola verso il basso. */}
+                <div aria-hidden className="absolute top-2 left-1/2 z-20 h-1.5 w-10 -translate-x-1/2 rounded-full bg-neutral-300/90" />
+                <SheetContent key={product.id} product={product} />
+              </div>
+            </div>
           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
   )
+}
+
+/**
+ * Trascinando la scheda verso il basso (quando è già in cima) la si chiude, come nelle app.
+ * Listener nativi con passive: false, così si blocca lo scorrimento della pagina mentre si trascina.
+ */
+function useSwipeDown(panel: React.RefObject<HTMLDivElement | null>, drag: React.RefObject<HTMLDivElement | null>, open: boolean) {
+  useEffect(() => {
+    const el = panel.current
+    const box = drag.current
+    if (!open || !el || !box) return
+    let startY = 0
+    let startX = 0
+    let startAt = 0
+    let dy = 0
+    let active = false
+    let decided = false
+    const set = (y: number, animate: boolean) => {
+      box.style.transition = animate ? 'transform 0.25s ease-out' : 'none'
+      box.style.transform = y ? `translateY(${y}px)` : ''
+    }
+    const start = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return
+      startY = e.touches[0].clientY
+      startX = e.touches[0].clientX
+      startAt = Date.now()
+      dy = 0
+      active = false
+      decided = el.scrollTop > 0 // scheda già scorsa: si scorre e basta
+    }
+    const move = (e: TouchEvent) => {
+      const y = e.touches[0].clientY - startY
+      if (!decided) {
+        const x = Math.abs(e.touches[0].clientX - startX)
+        if (Math.abs(y) < 6 && x < 6) return
+        decided = true
+        active = y > 0 && y > x // verso il basso, non in orizzontale (foto)
+      }
+      if (!active) return
+      e.preventDefault()
+      dy = Math.max(0, y)
+      set(dy, false)
+    }
+    const end = () => {
+      if (!active) return
+      active = false
+      const fast = dy > 60 && dy / Math.max(1, Date.now() - startAt) > 0.6
+      if (dy > 120 || fast) {
+        set(window.innerHeight, true)
+        setTimeout(closeProduct, 200)
+      } else set(0, true)
+    }
+    el.addEventListener('touchstart', start, { passive: true })
+    el.addEventListener('touchmove', move, { passive: false })
+    el.addEventListener('touchend', end)
+    el.addEventListener('touchcancel', end)
+    return () => {
+      el.removeEventListener('touchstart', start)
+      el.removeEventListener('touchmove', move)
+      el.removeEventListener('touchend', end)
+      el.removeEventListener('touchcancel', end)
+      set(0, false)
+    }
+  }, [panel, drag, open])
 }
 
 function SheetContent({ product }: { product: Product }) {
