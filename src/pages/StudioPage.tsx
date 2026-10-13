@@ -337,7 +337,8 @@ function Studio() {
         <AnimatePresence mode="wait">
           <motion.div
             key={`${format}-${variant}-${playing ? step : 'preview'}`}
-            className="absolute inset-0 flex flex-col"
+            // Zona sicura dei Reels/TikTok: margine in alto, a destra (icone) e in basso (nome e didascalia).
+            className="absolute top-[9%] right-[12%] bottom-[22%] left-[9%] flex flex-col"
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -24 }}
@@ -596,7 +597,7 @@ function AutoSwipe({ product, yes }: { product: Product; yes: boolean }) {
         transition={{ duration: 1.6, times: [0, 0.45, 0.7, 1], ease: 'easeIn' }}
         className="relative overflow-hidden rounded-3xl bg-[#fff] text-[#111] shadow-2xl"
       >
-        <ProductImage product={product} eager className="aspect-[4/5] w-full" />
+        <ProductImage product={product} eager className="aspect-square w-full" />
         <div className="space-y-0.5 p-4">
           <p className="text-[11px] font-semibold tracking-wide text-[#737373] uppercase">{product.brand}</p>
           <p className="line-clamp-1 font-semibold">{product.title}</p>
