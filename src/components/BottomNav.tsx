@@ -1,4 +1,4 @@
-import { Flame, Heart, SlidersHorizontal, BadgePercent, User, Users } from 'lucide-react'
+import { Flame, Heart, SlidersHorizontal, BadgePercent, User } from 'lucide-react'
 import { universeOf } from '../config/categories'
 import { useEffect, useState } from 'react'
 import { subscribeUnseen } from '../lib/social'
@@ -9,10 +9,12 @@ import { useApp } from '../state/AppState'
 const ITEMS = [
   { route: 'scopri', label: 'Scopri', Icon: Flame },
   { route: 'preferiti', label: 'Preferiti', Icon: Heart },
-  { route: 'amici', label: 'Amici', Icon: Users },
   { route: 'filtri', label: 'Filtri', Icon: SlidersHorizontal },
   { route: 'profilo', label: 'Profilo', Icon: User },
 ] as const
+
+/** Pagine degli amici: stanno dentro Profilo (Kevin, 13/10: niente scheda Amici nella barra). */
+const SOCIAL_ROUTES: Route[] = ['amici', 'u', 'chat', 'sondaggio', 'insieme', 'sfida', 'segreto', 'regalo']
 
 export function BottomNav({ current, hash, special }: { current: Route; hash: string; special: Special | null }) {
   // In Outfit (o Regali) Scopri, Preferiti e Filtri portano al suo mazzo, ai suoi salvati e ai suoi filtri.
@@ -20,7 +22,9 @@ export function BottomNav({ current, hash, special }: { current: Route; hash: st
   const hrefOf = (r: Route) =>
     !special ? routeHref(r) : r === 'scopri' ? `#/${special}` : r === 'preferiti' ? `#/${special}/salvati` : r === 'filtri' ? `#/${special}/filtri` : routeHref(r)
   const isActive = (r: Route) =>
-    current !== 'outfit' && current !== 'regali'
+    r === 'profilo' && SOCIAL_ROUTES.includes(current)
+      ? true
+      : current !== 'outfit' && current !== 'regali'
       ? current === r
       : r === 'scopri'
         ? !new RegExp(`^#/${current}/(salvati|filtri)`).test(hash)
@@ -30,14 +34,14 @@ export function BottomNav({ current, hash, special }: { current: Route; hash: st
   useEffect(() => subscribeUnseen(setUnseenSocial), [])
   const badges: Partial<Record<Route, number>> = {
     preferiti: onOutfit ? 0 : wishlist.filter((w) => universeOf(w.product.category) === state.mode).length,
-    amici: unseenSocial,
+    profilo: unseenSocial,
   }
   return (
     <nav
       aria-label="Navigazione principale"
       className="fixed inset-x-0 bottom-0 z-30 border-t border-neutral-200/70 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur"
     >
-      <ul className={`mx-auto grid h-16 max-w-md grid-cols-5`}>
+      <ul className={`mx-auto grid h-16 max-w-md grid-cols-4`}>
         {ITEMS.map(({ route, label, Icon }) => {
           const active = isActive(route)
           const badge = badges[route]

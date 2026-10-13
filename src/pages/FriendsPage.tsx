@@ -1,5 +1,6 @@
-import { BarChart3, Bell, Cake, Flame, Gift, Inbox, Layers, Search, Share2, Snowflake, Target, Trash2, UserPlus, Users, X } from 'lucide-react'
+import { BarChart3, Bell, ChevronLeft, Cake, Flame, Gift, Inbox, Layers, Search, Share2, Snowflake, Target, Trash2, UserPlus, Users, X } from 'lucide-react'
 import { challengeProducts } from '../lib/priceGame'
+import { routeHref } from '../lib/useHashRoute'
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { ProductImage } from '../components/ProductImage'
 import { Avatar, FriendPicker, LoginNeeded, ProductPicker, ProductStrip, ReactionBar, useProductsById } from '../components/SocialBits'
@@ -108,6 +109,9 @@ export function FriendsPage() {
   if (!auth.ready) return <p className="py-10 text-center text-neutral-500">Caricamento…</p>
   return (
     <div className="space-y-4 pb-6">
+      <a href={routeHref('profilo')} className="inline-flex items-center gap-1 text-sm font-medium text-neutral-500">
+        <ChevronLeft className="size-4" /> Profilo
+      </a>
       <h1 className="text-2xl font-bold">Amici</h1>
       {!auth.user ? (
         <LoginNeeded text="Con un account puoi invitare gli amici, chiedere un parere sui prodotti e fare Swipe insieme." />
