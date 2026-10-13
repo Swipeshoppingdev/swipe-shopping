@@ -3,7 +3,7 @@ import { pickDrop, useDropDay, useDropOn } from '../lib/drop'
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import { UNIVERSES, isUniverse, universeOf, type Universe } from '../config/categories'
 import { track } from '../lib/analytics'
-import { loadCatalog } from '../lib/catalog'
+import { loadCatalog, loadCatalogPreview } from '../lib/catalog'
 import { fetchUserData, mergeUserData, saveUserData } from '../lib/cloudSync'
 import { matchesFilters, normalizeFilters, sortProducts } from '../lib/filters'
 import { isNew, setNewBaseline } from '../lib/newness'
@@ -51,6 +51,7 @@ type Action =
   | { type: 'like' | 'dislike'; product: Product }
   | { type: 'undo' }
   | { type: 'restore'; ids: string[] }
+  | { type: 'pin'; ids: string[] }
   | { type: 'remove'; id: string }
   | { type: 'filters'; filters: Filters; section?: Universe }
   | { type: 'mode'; mode: Universe }
@@ -128,6 +129,11 @@ function reducer(state: State, action: Action): State {
         history: state.history.slice(0, -1),
         restored: [last.product.id, ...state.restored.filter((id) => id !== last.product.id)],
       }
+    }
+    // Le carte già sullo schermo restano in cima quando arriva il catalogo completo.
+    case 'pin': {
+      const ids = new Set(action.ids)
+      return { ...state, restored: [...action.ids, ...state.restored.filter((id) => !ids.has(id))] }
     }
     case 'restore': {
       const ids = new Set(action.ids)
@@ -218,11 +224,26 @@ function useAppStore() {
     modeRef.current = state.mode
     if (state.catalog.status === 'ready' && !state.catalog.sections.includes(state.mode)) wakeRest.current?.()
   }, [state.mode, state.catalog])
+  // Anteprima: poche centinaia di prodotti della sezione (file piccolo) per mostrare subito le prime carte,
+  // mentre il catalogo completo finisce di scaricarsi. Poi le carte già sullo schermo restano in cima.
+  const [preview, setPreview] = useState<Product[] | null>(null)
+  const deckRef = useRef<Product[]>([])
+  const previewShown = useRef(false)
   const reloadCatalog = useCallback((signal?: AbortSignal) => {
     dispatch({ type: 'catalog', catalog: { status: 'loading' } })
     const first = modeRef.current
+    let full = false
+    loadCatalogPreview(first, signal)
+      .then((p) => {
+        if (!full && !signal?.aborted && p.length) setPreview(p)
+      })
+      .catch(() => {})
     loadCatalog(first, signal)
       .then(async (r) => {
+        full = true
+        if (previewShown.current) dispatch({ type: 'pin', ids: deckRef.current.slice(0, 3).map((p) => p.id) })
+        previewShown.current = false
+        setPreview(null)
         setNewBaseline(r.products)
         dispatch({ type: 'catalog', catalog: { status: 'ready', products: r.products, exploreMode: r.exploreMode, sections: r.sections } })
         const others = UNIVERSES.filter((u) => !r.sections.includes(u))
@@ -255,6 +276,11 @@ function useAppStore() {
   }, [reloadCatalog])
 
   const products = useMemo(() => (state.catalog.status === 'ready' ? state.catalog.products : []), [state.catalog])
+  // Il mazzo può partire dall'anteprima; tutto il resto (preferiti, giochi, offerte) aspetta il catalogo vero.
+  const deckProducts = useMemo(
+    () => (state.catalog.status === 'loading' && preview ? preview : products),
+    [state.catalog.status, preview, products],
+  )
 
   // Prodotto aperto da un link condiviso: va in cima al mazzo una volta sola, anche se filtrato o già visto.
   const [sharedId, setSharedId] = useState(() => sharedProductId())
@@ -267,7 +293,7 @@ function useAppStore() {
     if (sharedProduct) dispatch({ type: 'mode', mode: universeOf(sharedProduct.category) })
   }, [sharedProduct])
 
-  const byId = useMemo(() => new Map(products.map((p) => [p.id, p])), [products])
+  const byId = useMemo(() => new Map(deckProducts.map((p) => [p.id, p])), [deckProducts])
   const boost = useBoost()
   // Solo la categoria (non i giri rimasti): il mazzo non si ricalcola a ogni swipe.
   const boostCat = boost && boost.section === state.mode ? boost.category : null
@@ -300,7 +326,7 @@ function useAppStore() {
 
   const fullDeck = useMemo(() => {
     const seen = new Set([...state.disliked, ...state.wishlist.map((w) => w.product.id)])
-    const list = products.filter(
+    const list = deckProducts.filter(
       (p) =>
         p.availability !== 'out_of_stock' &&
         !seen.has(p.id) &&
@@ -329,10 +355,14 @@ function useAppStore() {
     const tired = new Set(tiredKey ? tiredKey.split('|') : [])
     const rest = tired.size ? [...rest1.filter((p) => !tired.has(p.category) || p.category === boostCat), ...rest1.filter((p) => tired.has(p.category) && p.category !== boostCat)] : rest1
     const withBack = [...back, ...rest]
-    const shared = sharedId ? products.find((p) => p.id === sharedId) : undefined
+    const shared = sharedId ? deckProducts.find((p) => p.id === sharedId) : undefined
     return shared ? [shared, ...withBack.filter((p) => p.id !== shared.id)] : withBack
-  }, [products, byId, state.disliked, state.wishlist, state.mode, state.restored, activeFilters, sharedId, boostCat, tiredKey])
+  }, [deckProducts, byId, state.disliked, state.wishlist, state.mode, state.restored, activeFilters, sharedId, boostCat, tiredKey])
   const deck = dropOn && !sharedId ? dropDeck : fullDeck
+  // In anteprima si mostra il mazzo solo se ha abbastanza carte (altrimenti si aspetta il catalogo completo).
+  const previewing = state.catalog.status === 'loading' && !!preview && deck.length >= 3
+  deckRef.current = deck
+  if (previewing) previewShown.current = true
 
   /** Gli scartati della sezione aperta, dal più vecchio al più recente */
   const sectionDisliked = useMemo(() => {
@@ -410,7 +440,7 @@ function useAppStore() {
   const view = useMemo(() => ({ ...state, filters: activeFilters }), [state, activeFilters])
   /** Prodotti della sezione aperta (per i filtri) */
   const sectionProducts = useMemo(() => products.filter((p) => universeOf(p.category) === state.mode), [products, state.mode])
-  return { state: view, products: sectionProducts, allProducts: products, deck, drop: { day: dropDay, on: dropOn, total: dropList.length, left: dropDeck.length }, sectionDisliked, wishlist, actions, sync, unseenDeals, markDealsSeen }
+  return { state: view, products: sectionProducts, allProducts: products, deck, previewing, drop: { day: dropDay, on: dropOn, total: dropList.length, left: dropDeck.length }, sectionDisliked, wishlist, actions, sync, unseenDeals, markDealsSeen }
 }
 
 export type SyncStatus = 'off' | 'loading' | 'synced' | 'saving' | 'error'

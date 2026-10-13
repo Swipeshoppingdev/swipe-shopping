@@ -11,7 +11,7 @@ import { formatWait, msToNextDrop, setDropOn } from '../lib/drop'
 import { useApp } from '../state/AppState'
 
 export function DiscoverPage() {
-  const { state, deck, products, wishlist, actions, drop } = useApp()
+  const { state, deck, products, wishlist, actions, drop, previewing } = useApp()
   const { catalog } = state
   // Mazzo finito: proposte per allargare i filtri, con quanti prodotti nuovi si vedrebbero.
   const widen = useMemo(() => {
@@ -21,7 +21,7 @@ export function DiscoverPage() {
   }, [deck.length, products, state.disliked, state.filters, wishlist])
 
   // Anche quando la sezione aperta non è ancora arrivata (si scarica dopo l'altra).
-  if (catalog.status === 'loading' || (catalog.status === 'ready' && !catalog.sections.includes(state.mode))) {
+  if ((catalog.status === 'loading' && !previewing) || (catalog.status === 'ready' && !catalog.sections.includes(state.mode))) {
     return (
       <div className="flex flex-1 flex-col gap-4" aria-busy="true" aria-label="Caricamento prodotti">
         <div className="flex-1 animate-pulse rounded-3xl bg-neutral-200/70" />
@@ -42,7 +42,7 @@ export function DiscoverPage() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
-      {catalog.exploreMode && (
+      {catalog.status === 'ready' && catalog.exploreMode && (
         <p className="rounded-2xl bg-amber-50 px-4 py-2 text-center text-xs text-amber-900 ring-1 ring-amber-200">
           Catalogo in preparazione: per ora ogni card apre una ricerca reale su Amazon.
         </p>
@@ -51,9 +51,14 @@ export function DiscoverPage() {
       {deck.length > 0 ? (
         <div className="relative flex min-h-0 flex-1 flex-col">
           <SwipeDeck />
-          <NewArrivals key={state.mode} />
-          <Breaks key={`breaks:${state.mode}`} />
-          <FavDeals key={`favdeals:${state.mode}`} />
+          {/* Questi aspettano il catalogo completo (in anteprima mancano offerte e novità vere). */}
+          {!previewing && (
+            <>
+              <NewArrivals key={state.mode} />
+              <Breaks key={`breaks:${state.mode}`} />
+              <FavDeals key={`favdeals:${state.mode}`} />
+            </>
+          )}
         </div>
       ) : drop.on ? (
         <DropDone total={drop.total} />

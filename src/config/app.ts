@@ -18,6 +18,9 @@ export const PRIVACY_UPDATED = '9 ottobre 2026'
 export const SOCIAL_LINKS = {
   instagram: 'https://www.instagram.com/swipeshoppingapp/',
   tiktok: 'https://www.tiktok.com/@swipeshoppingapp',
+  whatsapp: 'https://whatsapp.com/channel/0029VbDsQHy5Ui2fYiqw201q',
+  threads: 'https://www.threads.com/@swipeshoppingapp',
+  x: 'https://x.com/SwipeShopping_',
 }
 
 /** Unico account che vede la pagina Statistiche (#/admin). Il controllo vero è in Supabase (admin_stats). */

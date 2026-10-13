@@ -165,7 +165,7 @@ function SectionMenu() {
         <ChevronDown className={`size-3.5 shrink-0 transition ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div role="menu" className="absolute top-12 left-0 z-30 max-h-[calc(100dvh-5rem)] w-72 overflow-y-auto rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-neutral-200">
+        <div role="menu" className="absolute top-12 left-0 z-30 max-h-[calc(100dvh-10.5rem-env(safe-area-inset-bottom))] w-72 overflow-y-auto rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-neutral-200">
           {/* Tenendo premuta una voce la si trascina su o giù (nessun tasto: chi lo sa lo usa, gli altri non lo notano). */}
           <Reorder.Group as="div" axis="y" values={order} onReorder={setOrder}>
             {order.map((id) => (

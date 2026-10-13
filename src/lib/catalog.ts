@@ -32,6 +32,13 @@ export async function loadCatalog(section: Universe, signal?: AbortSignal): Prom
   return { products: valid, exploreMode: false, skipped: invalid.length, sections }
 }
 
+/** Anteprima leggera della sezione (catalog-<sezione>-anteprima.json, vedi build-catalog): vuota se manca. */
+export async function loadCatalogPreview(section: Universe, signal?: AbortSignal): Promise<Product[]> {
+  const res = await fetch(`${DATA_BASE}catalog-${section}-anteprima.json`, { signal })
+  if (!res.ok) return []
+  return checkCatalog((await res.json()).map(expand)).valid.filter((p) => p.availability !== 'out_of_stock')
+}
+
 /** Ricostruisce i campi tolti dal build per risparmiare peso (vedi scripts/build-catalog.ts). */
 function expand(raw: Record<string, unknown>) {
   const p = { ...raw }
