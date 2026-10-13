@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { supabase } from '../lib/supabase'
 import { ProductImage } from '../components/ProductImage'
 import { ADMIN_EMAIL } from '../config/app'
-import { universeOf } from '../config/categories'
+import { categoryLabel, universeOf, type CategoryId } from '../config/categories'
 import { STYLE_LABEL, buildOutfits, outfitTotal, type Outfit } from '../lib/outfits'
 import { formatPrice, freshPrice } from '../lib/price'
 import { routeHref } from '../lib/useHashRoute'
@@ -17,7 +17,7 @@ import type { Product } from '../types/product'
  * registrazione schermo dell'iPhone. I contenuti cambiano ogni giorno; "Altri" ne propone di nuovi.
  * Le foto dei prodotti si mostrano come nell'app (mai modificate o unite).
  */
-type Format = 'offerte' | 'sfida' | 'outfit' | 'swipe' | 'meme' | 'prezzo' | 'sconto' | 'marche'
+type Format = 'offerte' | 'sfida' | 'outfit' | 'swipe' | 'meme' | 'prezzo' | 'sconto' | 'marche' | 'caro' | 'budget' | 'sotto' | 'regali' | 'colore'
 const FORMATS: { id: Format; label: string }[] = [
   { id: 'offerte', label: 'Top 5 offerte' },
   { id: 'sfida', label: 'Questo o quello' },
@@ -27,9 +27,14 @@ const FORMATS: { id: Format; label: string }[] = [
   { id: 'prezzo', label: 'Indovina il prezzo' },
   { id: 'sconto', label: 'Prima e dopo' },
   { id: 'marche', label: 'Marche più amate' },
+  { id: 'caro', label: 'Quale costa di più?' },
+  { id: 'budget', label: 'Cosa compri con…' },
+  { id: 'sotto', label: 'Top 5 sotto…' },
+  { id: 'regali', label: 'Idee regalo' },
+  { id: 'colore', label: 'Total colore' },
 ]
 /** Formati con uomo/donna (gli outfit) */
-const WITH_GENDER: Format[] = ['sfida', 'outfit']
+const WITH_GENDER: Format[] = ['sfida', 'outfit', 'budget', 'regali', 'colore']
 
 /**
  * Meme in tre stili, tutti con layout nostri (nessun template coperto da diritti):
@@ -143,6 +148,10 @@ const FOOTER = `👉 Link in bio: swipeshopping.app\n\n#pubblicità ${TAGS}`
 
 /** Calendario: un formato per giorno della settimana (0 = domenica), più le storie ogni giorno. */
 const WEEK: Format[] = ['marche', 'offerte', 'sfida', 'prezzo', 'outfit', 'meme', 'sconto']
+/** Il secondo post del giorno (chi vuole pubblicare di più). */
+const WEEK2: Format[] = ['regali', 'sotto', 'caro', 'budget', 'colore', 'caro', 'regali']
+/** Colori più comuni nei titoli Amazon, per "Total colore" */
+const LOOK_COLORS = ['Nero', 'Bianco', 'Beige', 'Blu', 'Grigio', 'Marrone', 'Verde', 'Rosso', 'Rosa']
 const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
 
 export function StudioPage() {
@@ -293,6 +302,116 @@ function Studio() {
         { ms: 3000, node: <Outro line="Vota anche tu su" /> },
       ])
     }
+    if (format === 'caro') {
+      // Tre coppie della stessa categoria (e genere), prezzi lontani almeno il 25%: si indovina, poi si scopre.
+      const pool = pick(allProducts.filter((p) => inStock(p) && !freshPrice(p)!.from), 400, rand)
+      const pairs: [Product, Product][] = []
+      for (const a of pool) {
+        if (pairs.length >= 3) break
+        if (pairs.some(([x, y]) => x.category === a.category || y.category === a.category)) continue
+        const b = pool.find(
+          (q) => q !== a && q.category === a.category && q.gender === a.gender && q.brand !== a.brand && Math.max(freshPrice(q)!.price, freshPrice(a)!.price) >= 1.25 * Math.min(freshPrice(q)!.price, freshPrice(a)!.price),
+        )
+        if (b) pairs.push([a, b])
+      }
+      if (pairs.length < 3) return []
+      const cap = `Quale costa di più? 🤔 3 sfide, ferma il video e scegli prima del via.\n\nQuante ne hai indovinate? Scrivilo nei commenti 👇 Prezzi di oggi.\n\n${FOOTER} #qualecostadipiu #challenge #gioco`
+      return withCaption(cap, [
+        { ms: 2000, node: <Title kicker="Gioco" title="QUALE COSTA DI PIÙ?" sub="Scegli prima del via" /> },
+        ...pairs.flatMap(([a, b], i) => [
+          ...[3, 2, 1].map((n) => ({ ms: 900, node: <WhichPricier a={a} b={b} index={i + 1} count={n} /> })),
+          { ms: 3000, node: <WhichPricier a={a} b={b} index={i + 1} /> },
+        ]),
+        { ms: 3000, node: <Outro line="Quante ne hai indovinate? 👇 Gioca su" /> },
+      ])
+    }
+    // Moda del genere scelto (e unisex)
+    const forGender = (p: Product) => p.gender === gender || p.gender === 'unisex'
+    if (format === 'budget') {
+      // Con un budget fisso: capi di categorie diverse finché il totale ci sta.
+      const budget = [30, 50, 100][Math.floor(rand() * 3)]
+      const chosen: Product[] = []
+      let sum = 0
+      for (const p of pick(moda.filter((p) => inStock(p) && forGender(p) && !freshPrice(p)!.from && freshPrice(p)!.price <= budget * 0.6), 600, rand)) {
+        const price = freshPrice(p)!.price
+        if (chosen.length < 5 && sum + price <= budget && !chosen.some((c) => c.category === p.category)) {
+          chosen.push(p)
+          sum += price
+        }
+      }
+      if (chosen.length < 3) return []
+      const cap = `Cosa compri con ${budget} € da ${gender}? 💸 ${chosen.length} pezzi a ${formatPrice(sum)} in tutto: ${[...new Set(chosen.map((p) => p.brand).filter(Boolean))].join(', ')}.\n\nTu cosa avresti preso? 👇 Salvalo per dopo!\n\n${FOOTER} #budget #risparmio #haul`
+      return withCaption(cap, [
+        { ms: 2000, node: <Title kicker={`Look da ${gender}`} title={`COSA COMPRI CON ${budget} €?`} sub="Prezzi veri di oggi" /> },
+        ...chosen.map((_, i) => ({ ms: 1800, node: <BudgetList items={chosen} shown={i + 1} budget={budget} /> })),
+        { ms: 3200, node: <BudgetList items={chosen} shown={chosen.length} budget={budget} done /> },
+        { ms: 3000, node: <Outro line="Trovi tutto su" /> },
+      ])
+    }
+    if (format === 'sotto') {
+      // Una categoria di qualsiasi sezione con abbastanza prodotti sotto la soglia: 5 di marche diverse.
+      const groups = new Map<string, Product[]>()
+      const limit = [15, 20, 30, 50][Math.floor(rand() * 4)]
+      for (const p of allProducts) {
+        if (!inStock(p) || freshPrice(p)!.price > limit) continue
+        const list = groups.get(p.category) ?? []
+        list.push(p)
+        groups.set(p.category, list)
+      }
+      const ok = [...groups].filter(([, list]) => new Set(list.map((p) => p.brand)).size >= 5)
+      const [entry] = pick(ok, 1, rand)
+      if (!entry) return []
+      const [cat, list] = entry
+      const chosen: Product[] = []
+      for (const p of pick(list, list.length, rand)) if (chosen.length < 5 && !chosen.some((c) => c.brand === p.brand)) chosen.push(p)
+      chosen.sort((a, b) => freshPrice(b)!.price - freshPrice(a)!.price)
+      const name = categoryLabel(cat as CategoryId)
+      const cap = `5 ${name.toLowerCase()} sotto ${limit} € 🔥 ${chosen.map((p) => p.brand).filter(Boolean).join(', ')}.\n\nQuale prendi? Scrivi il numero nei commenti 👇 Prezzi di oggi, possono cambiare.\n\n${FOOTER} #sotto${limit}euro #affari #consigli`
+      return withCaption(cap, [
+        { ms: 2200, node: <Title kicker={name} title={`TOP 5 SOTTO ${limit} €`} sub="Marche vere, prezzi di oggi" /> },
+        ...chosen.map((p, i) => ({ ms: 3000, node: <DealSlide product={p} rank={chosen.length - i} /> })),
+        { ms: 3000, node: <Outro line="Altri su" /> },
+      ])
+    }
+    if (format === 'regali') {
+      // Per lei: Moda e Beauty; per lui: Moda, Tech e Gadget. Categorie diverse, sotto la soglia.
+      const sections = gender === 'donna' ? ['moda', 'beauty', 'casa'] : ['moda', 'tech', 'gadget']
+      const limit = [30, 50][Math.floor(rand() * 2)]
+      const chosen: Product[] = []
+      for (const p of pick(allProducts.filter((p) => inStock(p) && forGender(p) && sections.includes(universeOf(p.category)) && freshPrice(p)!.price <= limit && freshPrice(p)!.price >= 10), 500, rand)) {
+        if (chosen.length < 5 && !chosen.some((c) => c.category === p.category || c.brand === p.brand)) chosen.push(p)
+      }
+      if (chosen.length < 5) return []
+      const who = gender === 'donna' ? 'lei' : 'lui'
+      const month = new Date().getMonth()
+      const kicker = month === 10 ? 'Black Friday' : month === 11 ? 'Natale' : 'Idee regalo'
+      const cap = `5 idee regalo per ${who} sotto ${limit} € 🎁 ${chosen.map((p) => p.brand).filter(Boolean).join(', ')}.\n\nMandalo a chi te lo deve regalare 😏👇\n\n${FOOTER} #ideeregalo #regali #regaliperlui #regaliperlei`
+      return withCaption(cap, [
+        { ms: 2200, node: <Title kicker={kicker} title={`REGALI PER ${who.toUpperCase()}`} sub={`5 idee sotto ${limit} €`} /> },
+        ...chosen.map((p, i) => ({ ms: 3000, node: <DealSlide product={p} rank={chosen.length - i} /> })),
+        { ms: 3000, node: <Outro line="Tante altre idee regalo su" /> },
+      ])
+    }
+    if (format === 'colore') {
+      // Quattro capi dello stesso colore (letto dal titolo), categorie diverse: il "total look".
+      const colors = pick(LOOK_COLORS, LOOK_COLORS.length, rand)
+      for (const color of colors) {
+        const chosen: Product[] = []
+        for (const p of pick(moda.filter((p) => inStock(p) && forGender(p) && p.colors?.includes(color)), 600, rand)) {
+          if (chosen.length < 4 && !chosen.some((c) => c.category === p.category)) chosen.push(p)
+        }
+        if (chosen.length < 4) continue
+        const sum = chosen.reduce((t, p) => t + freshPrice(p)!.price, 0)
+        const cap = `Total ${color.toLowerCase()} da ${gender} 🖤 4 pezzi a ${formatPrice(sum)}: ${[...new Set(chosen.map((p) => p.brand).filter(Boolean))].join(', ')}.\n\nChe colore vuoi la prossima volta? Scrivilo nei commenti 👇\n\n${FOOTER} #total${color.toLowerCase()} #monocromo #ootd`
+        return withCaption(cap, [
+          { ms: 2000, node: <Title kicker={`Look da ${gender}`} title={`TOTAL ${color.toUpperCase()}`} sub="Un colore, quattro pezzi" /> },
+          ...chosen.map((_, i) => ({ ms: 1300, node: <ColorLook items={chosen} shown={i + 1} /> })),
+          { ms: 3200, node: <ColorLook items={chosen} shown={chosen.length} total={sum} /> },
+          { ms: 3000, node: <Outro line="Crea il tuo look su" /> },
+        ])
+      }
+      return []
+    }
     // Swipe in diretta: carte che vanno da sole a destra o a sinistra, come se qualcuno usasse l'app.
     const cards = pick(
       moda.filter((p) => p.availability !== 'out_of_stock' && p.imageUrl && freshPrice(p)),
@@ -323,7 +442,7 @@ function Studio() {
     setStep(0)
   }
   // Anteprima: il primo fotogramma "vero" (dopo il titolo), così si vede cosa uscirà.
-  const previewAt: Partial<Record<Format, number>> = { swipe: 0, meme: 0, prezzo: 4, sconto: 2 }
+  const previewAt: Partial<Record<Format, number>> = { swipe: 0, meme: 0, prezzo: 4, sconto: 2, caro: 4, budget: 1, colore: 5 }
   const current = slides[playing ? step : Math.min(previewAt[format] ?? 1, slides.length - 1)]
 
   return (
@@ -881,6 +1000,119 @@ function BrandRank({ rank, brand, likePct, product }: { rank: number; brand: str
   )
 }
 
+/** Due prodotti uno accanto all'altro: conto alla rovescia, poi i prezzi con la corona su quello più caro. */
+function WhichPricier({ a, b, index, count }: { a: Product; b: Product; index: number; count?: number }) {
+  const pa = freshPrice(a)!.price
+  const pb = freshPrice(b)!.price
+  return (
+    <div className="flex flex-1 flex-col justify-center gap-5 px-5">
+      <p className="text-center text-sm font-bold tracking-[0.3em] text-[#fb7185] uppercase">Sfida {index} di 3</p>
+      <div className="grid grid-cols-2 gap-3">
+        {[a, b].map((p, i) => {
+          const dearer = (i === 0 ? pa > pb : pb > pa) && !count
+          return (
+            <div key={p.id} className={`relative rounded-3xl p-1.5 transition ${dearer ? 'bg-[#facc15]' : 'bg-[#fff]/10'}`}>
+              {dearer && (
+                <motion.span initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: -12 }} className="absolute -top-6 -left-2 z-10 text-5xl">
+                  👑
+                </motion.span>
+              )}
+              <ProductImage product={p} eager className="aspect-square w-full overflow-hidden rounded-2xl" />
+              <p className={`mt-1.5 truncate px-1 text-center text-xs font-bold tracking-wide uppercase ${dearer ? 'text-[#111]' : 'text-[#fb7185]'}`}>{p.brand}</p>
+              <div className="flex h-12 items-center justify-center">
+                {!count && (
+                  <motion.span
+                    initial={{ scale: 0.4, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: i * 0.25, type: 'spring', stiffness: 260, damping: 14 }}
+                    className={`text-2xl font-black whitespace-nowrap ${dearer ? 'text-[#111]' : 'text-[#fff]'}`}
+                  >
+                    {formatPrice(i === 0 ? pa : pb)}
+                  </motion.span>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      <div className="flex h-20 items-center justify-center">
+        {count ? (
+          <motion.span key={count} initial={{ scale: 2, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-7xl font-black">
+            {count}
+          </motion.span>
+        ) : (
+          <p className="text-2xl font-black">{pa > pb ? 'A sinistra' : 'A destra'} costa di più!</p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/** Lista che si riempie un pezzo alla volta, con la barra del budget. */
+function BudgetList({ items, shown, budget, done }: { items: Product[]; shown: number; budget: number; done?: boolean }) {
+  const sum = items.slice(0, shown).reduce((t, p) => t + freshPrice(p)!.price, 0)
+  return (
+    <div className="flex flex-1 flex-col justify-center gap-3 px-5">
+      {items.slice(0, shown).map((p, i) => (
+        <motion.div
+          key={p.id}
+          initial={i === shown - 1 && !done ? { x: 60, opacity: 0 } : false}
+          animate={{ x: 0, opacity: 1 }}
+          className="flex items-center gap-3 rounded-2xl bg-[#fff]/8 p-2 ring-1 ring-[#fff]/10"
+        >
+          <ProductImage product={p} eager className="size-20 shrink-0 overflow-hidden rounded-xl" />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-bold tracking-widest text-[#fb7185] uppercase">{p.brand}</p>
+            <p className="line-clamp-2 text-sm font-semibold">{p.title}</p>
+          </div>
+          <p className="text-lg font-black">{formatPrice(freshPrice(p)!.price)}</p>
+        </motion.div>
+      ))}
+      <div className="mt-2">
+        <div className="mb-1 flex justify-between text-sm font-bold">
+          <span>Totale {formatPrice(sum)}</span>
+          <span className="text-[#fff]/70">Budget {budget} €</span>
+        </div>
+        <div className="h-3 overflow-hidden rounded-full bg-[#fff]/15">
+          <motion.div animate={{ width: `${Math.min(100, (sum / budget) * 100)}%` }} className="h-full rounded-full bg-[#22c55e]" />
+        </div>
+        {done && (
+          <motion.p initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="mt-3 text-center text-2xl font-black">
+            Avanzano {formatPrice(budget - sum)} 🎉
+          </motion.p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/** Griglia 2x2 dello stesso colore, un pezzo alla volta; alla fine il totale. */
+function ColorLook({ items, shown, total }: { items: Product[]; shown: number; total?: number }) {
+  return (
+    <div className="flex flex-1 flex-col justify-center gap-5 px-6">
+      <div className="grid grid-cols-2 gap-2">
+        {items.map((p, i) => (
+          <motion.div key={p.id} initial={false} animate={{ opacity: i < shown ? 1 : 0, scale: i < shown ? 1 : 0.85 }} transition={{ type: 'spring', stiffness: 220, damping: 20 }} className="relative">
+            <ProductImage product={p} eager className="aspect-square w-full overflow-hidden rounded-2xl" />
+            {i < shown && <span className="absolute bottom-1.5 left-1.5 rounded-full bg-[#000]/80 px-2 py-0.5 text-xs font-bold">{formatPrice(freshPrice(p)!.price)}</span>}
+          </motion.div>
+        ))}
+      </div>
+      {total !== undefined ? (
+        <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center">
+          <p className="text-sm font-bold tracking-[0.3em] text-[#fb7185] uppercase">Totale look</p>
+          <p className="text-6xl font-black">{formatPrice(total)}</p>
+        </motion.div>
+      ) : (
+        <div className="min-h-24 text-center">
+          <p className="text-sm font-bold tracking-widest text-[#fb7185] uppercase">{items[shown - 1]?.brand}</p>
+          <p className="line-clamp-2 text-lg font-semibold">{items[shown - 1]?.title}</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
 /** La settimana: cosa pubblicare ogni giorno (oggi evidenziato). Tocca un giorno per aprire quel formato. */
 function Calendar({ current, onPick }: { current: Format; onPick: (f: Format) => void }) {
   const day = new Date().getDay()
@@ -888,7 +1120,7 @@ function Calendar({ current, onPick }: { current: Format; onPick: (f: Format) =>
   return (
     <div className="space-y-1.5">
       <p className="text-center text-xs text-[#fff]/75">
-        Oggi pubblica: <b className="text-[#fff]">{label(WEEK[day])}</b> · nelle storie: Swipe in diretta
+        Oggi pubblica: <b className="text-[#fff]">{label(WEEK[day])}</b> e, se vuoi un secondo post, <b className="text-[#fff]">{label(WEEK2[day])}</b> · nelle storie: Swipe in diretta
       </p>
       <div className="grid grid-cols-7 gap-1">
         {[1, 2, 3, 4, 5, 6, 0].map((d) => (
