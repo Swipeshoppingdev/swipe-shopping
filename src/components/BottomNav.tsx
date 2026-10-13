@@ -2,6 +2,7 @@ import { Flame, Heart, SlidersHorizontal, BadgePercent, User } from 'lucide-reac
 import { universeOf } from '../config/categories'
 import { useEffect, useState } from 'react'
 import { subscribeUnseen } from '../lib/social'
+import { FEATURES } from '../config/app'
 import type { Special } from '../lib/outfitMode'
 import { routeHref, type Route } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
@@ -34,7 +35,7 @@ export function BottomNav({ current, hash, special }: { current: Route; hash: st
   useEffect(() => subscribeUnseen(setUnseenSocial), [])
   const badges: Partial<Record<Route, number>> = {
     preferiti: onOutfit ? 0 : wishlist.filter((w) => universeOf(w.product.category) === state.mode).length,
-    profilo: unseenSocial,
+    profilo: FEATURES.social ? unseenSocial : 0,
   }
   return (
     <nav

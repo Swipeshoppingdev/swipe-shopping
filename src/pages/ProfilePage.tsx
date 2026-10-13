@@ -1,6 +1,7 @@
 import { BadgeCheck, Users, BarChart3, Clapperboard, ChevronRight, Gamepad2, RotateCcw, ShieldCheck, Trash2, Undo2, UserRound } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { subscribeUnseen } from '../lib/social'
+import { FEATURES } from '../config/app'
 import { AccountActions, AccountCard } from '../components/AccountCard'
 import { InstallCard } from '../components/InstallCard'
 import { MyProfileCard } from '../components/MyProfileCard'
@@ -64,8 +65,12 @@ export function ProfilePage() {
     <div className="space-y-5 pb-6">
       <h1 className="text-2xl font-bold">Profilo</h1>
 
-      <MyProfileCard />
-      <FriendsLink />
+      {FEATURES.social && (
+        <>
+          <MyProfileCard />
+          <FriendsLink />
+        </>
+      )}
 
       {isAdmin && (
         <a

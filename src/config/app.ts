@@ -38,6 +38,11 @@ export const FEATURES = {
   feedSaves: false,
   /** "Continua con Google": si accende quando Google è attivo in Supabase (Authentication → Providers). */
   googleLogin: true,
+  /**
+   * Parte Amici (profilo con @tag e follower, QR, Amici in Profilo, "Consiglia a un amico", Manda agli amici).
+   * Nascosta il 13/10/2026 da Kevin finché non ci saranno più utenti: i link già mandati funzionano ancora.
+   */
+  social: false,
 }
 
 /**
