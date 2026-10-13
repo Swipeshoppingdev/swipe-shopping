@@ -7,6 +7,7 @@ import { ADMIN_EMAIL } from '../config/app'
 import { categoryLabel, universeOf, type CategoryId } from '../config/categories'
 import { STYLE_LABEL, buildOutfits, outfitTotal, type Outfit } from '../lib/outfits'
 import { formatPrice, freshPrice } from '../lib/price'
+import { colorSwatch } from '../config/colors'
 import { routeHref } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
 import { useAuth } from '../state/AuthState'
@@ -17,7 +18,7 @@ import type { Product } from '../types/product'
  * registrazione schermo dell'iPhone. I contenuti cambiano ogni giorno; "Altri" ne propone di nuovi.
  * Le foto dei prodotti si mostrano come nell'app (mai modificate o unite).
  */
-type Format = 'offerte' | 'sfida' | 'outfit' | 'swipe' | 'meme' | 'prezzo' | 'sconto' | 'marche' | 'caro' | 'budget' | 'sotto' | 'regali' | 'colore'
+type Format = 'offerte' | 'sfida' | 'outfit' | 'swipe' | 'meme' | 'prezzo' | 'sconto' | 'marche' | 'caro' | 'budget' | 'sotto' | 'regali' | 'colore' | 'vetrina' | 'mood' | 'pioggia' | 'stop' | 'mese' | 'tieni'
 const FORMATS: { id: Format; label: string }[] = [
   { id: 'offerte', label: 'Top 5 offerte' },
   { id: 'sfida', label: 'Questo o quello' },
@@ -32,9 +33,15 @@ const FORMATS: { id: Format; label: string }[] = [
   { id: 'sotto', label: 'Top 5 sotto…' },
   { id: 'regali', label: 'Idee regalo' },
   { id: 'colore', label: 'Total colore' },
+  { id: 'vetrina', label: '✨ Vetrina 3D' },
+  { id: 'mood', label: '✨ Moodboard' },
+  { id: 'pioggia', label: '✨ Pioggia di offerte' },
+  { id: 'stop', label: '😂 Ferma il video' },
+  { id: 'mese', label: '😂 Il tuo mese' },
+  { id: 'tieni', label: '😂 Tienine uno' },
 ]
 /** Formati con uomo/donna (gli outfit) */
-const WITH_GENDER: Format[] = ['sfida', 'outfit', 'budget', 'regali', 'colore']
+const WITH_GENDER: Format[] = ['sfida', 'outfit', 'budget', 'regali', 'colore', 'vetrina', 'mood', 'stop', 'mese', 'tieni']
 
 /**
  * Meme in tre stili, tutti con layout nostri (nessun template coperto da diritti):
@@ -137,6 +144,8 @@ function pick<T>(list: T[], n: number, rand: () => number) {
 interface Slide {
   ms: number
   node: ReactNode
+  /** Sfondo a tutto schermo per questo fotogramma (i formati "belli"): sostituisce il gradiente scuro */
+  bg?: string
 }
 /** I fotogrammi e la didascalia pronta per il post */
 type Slides = Slide[] & { caption?: string }
@@ -149,7 +158,7 @@ const FOOTER = `👉 Link in bio: swipeshopping.app\n\n#pubblicità ${TAGS}`
 /** Calendario: un formato per giorno della settimana (0 = domenica), più le storie ogni giorno. */
 const WEEK: Format[] = ['marche', 'offerte', 'sfida', 'prezzo', 'outfit', 'meme', 'sconto']
 /** Il secondo post del giorno (chi vuole pubblicare di più). */
-const WEEK2: Format[] = ['regali', 'sotto', 'caro', 'budget', 'colore', 'caro', 'regali']
+const WEEK2: Format[] = ['mese', 'stop', 'vetrina', 'tieni', 'mood', 'stop', 'pioggia']
 /** Colori più comuni nei titoli Amazon, per "Total colore" */
 const LOOK_COLORS = ['Nero', 'Bianco', 'Beige', 'Blu', 'Grigio', 'Marrone', 'Verde', 'Rosso', 'Rosa']
 const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
@@ -412,6 +421,91 @@ function Studio() {
       }
       return []
     }
+    if (format === 'stop') {
+      // "Ferma il video": i prodotti scorrono velocissimi, quello su cui ti fermi è il tuo regalo. Si mette in pausa (o screenshot).
+      const items = pick(moda.filter((p) => inStock(p) && forGender(p)), 24, rand)
+      if (items.length < 24) return []
+      const cap = `Ferma il video: quello che esce è il tuo regalo 🎁😂 Fai screenshot e scrivi nei commenti cosa ti è uscito 👇\n\nE tagga chi te lo deve comprare!\n\n${FOOTER} #fermailvideo #stopthevideo #challenge`
+      return withCaption(cap, [
+        { ms: 1800, node: <Title kicker="Gioco" title="FERMA IL VIDEO" sub="Quello che esce è il tuo regalo 🎁" /> },
+        { ms: 8000, node: <StopReel items={items} /> },
+        { ms: 3000, node: <Outro line="Cosa ti è uscito? Scrivilo 👇 Poi cercalo su" /> },
+      ])
+    }
+    if (format === 'mese') {
+      // "Il tuo mese di nascita è il tuo…": dodici capi, uno per mese. Tutti commentano il loro mese.
+      const thing = rand() < 0.5 ? 'outfit' : 'regalo'
+      const chosen: Product[] = []
+      for (const p of pick(moda.filter((p) => inStock(p) && forGender(p)), 800, rand)) {
+        if (chosen.length < 12 && chosen.filter((c) => c.category === p.category).length < 2 && !chosen.some((c) => c.brand === p.brand)) chosen.push(p)
+      }
+      if (chosen.length < 12) return []
+      const cap = `Il tuo mese di nascita è il tuo ${thing} 😂 Di che mese sei? Ti piace quello che ti è uscito? 👇\n\nTagga chi è nato nel tuo stesso mese!\n\n${FOOTER} #mesedinascita #ilmiomese #challenge`
+      return withCaption(cap, [
+        { ms: 2000, node: <Title kicker="Gioco" title="IL TUO MESE DI NASCITA" sub={`è il tuo ${thing} 👀`} /> },
+        ...[0, 1, 2].map((part) => ({ ms: 4200, node: <MonthGrid items={chosen} part={part} /> })),
+        { ms: 3000, node: <Outro line="Di che mese sei? Scrivilo 👇 Trovi tutto su" /> },
+      ])
+    }
+    if (format === 'tieni') {
+      // "Tienine solo uno": quattro pezzi forti, ne puoi tenere uno. Ottimo per i commenti.
+      const rounds: Product[][] = []
+      const pool = pick(moda.filter((p) => inStock(p) && forGender(p) && freshPrice(p)!.price >= 30), 800, rand)
+      for (let r = 0; r < 3; r++) {
+        const used = new Set(rounds.flat().map((p) => p.id))
+        const group: Product[] = []
+        for (const p of pool) if (group.length < 4 && !used.has(p.id) && !group.some((g) => g.category === p.category || g.brand === p.brand)) group.push(p)
+        if (group.length === 4) rounds.push(group)
+      }
+      if (rounds.length < 3) return []
+      const cap = `Puoi tenerne solo UNO 😩 3 round, scegli in fretta: 1, 2, 3 o 4? Scrivi le tue 3 risposte nei commenti 👇\n\n${FOOTER} #tieneunosolo #sceltadifficile #challenge`
+      return withCaption(cap, [
+        { ms: 1800, node: <Title kicker="Scelta difficile" title="TIENINE SOLO UNO" sub="3 round, decidi in 5 secondi" /> },
+        ...rounds.map((g, r) => ({ ms: 5600, node: <KeepOne items={g} round={r + 1} /> })),
+        { ms: 3000, node: <Outro line="Scrivi le tue scelte 👇 Trovi tutto su" /> },
+      ])
+    }
+    if (format === 'vetrina') {
+      // Sei capi (genere scelto) di categorie diverse in una giostra 3D: uno alla volta viene davanti.
+      const chosen: Product[] = []
+      for (const p of pick(moda.filter((p) => inStock(p) && forGender(p)), 600, rand)) {
+        if (chosen.length < 6 && !chosen.some((c) => c.category === p.category || c.brand === p.brand)) chosen.push(p)
+      }
+      if (chosen.length < 6) return []
+      const cap = `La vetrina di oggi ✨ 6 pezzi da ${gender}: ${chosen.map((p) => p.brand).filter(Boolean).join(', ')}.\n\nQuale metteresti nel carrello? Scrivi il numero 1-6 👇\n\n${FOOTER} #vetrina #wishlist #ootd`
+      return withCaption(cap, [
+        { ms: 2000, node: <Title kicker={`Da ${gender}`} title="LA VETRINA DI OGGI" sub="Sei pezzi, scegline uno" />, bg: VETRINA_BG },
+        { ms: chosen.length * CAROUSEL_MS + 600, node: <Carousel items={chosen} />, bg: VETRINA_BG },
+        { ms: 3000, node: <Outro line="Scegli il tuo su" />, bg: VETRINA_BG },
+      ])
+    }
+    if (format === 'mood') {
+      // Moodboard: sei capi dello stesso colore che si posano come foto su un tavolo, sullo sfondo di quel colore.
+      for (const color of pick(LOOK_COLORS, LOOK_COLORS.length, rand)) {
+        const chosen: Product[] = []
+        for (const p of pick(moda.filter((p) => inStock(p) && forGender(p) && p.colors?.includes(color)), 600, rand)) {
+          if (chosen.length < 6 && !chosen.some((c) => c.category === p.category)) chosen.push(p)
+        }
+        if (chosen.length < 6) continue
+        const from = Math.min(...chosen.map((p) => freshPrice(p)!.price))
+        const bg = moodBg(color)
+        const cap = `Mood ${color.toLowerCase()} 🤍 sei pezzi da ${gender}, da ${formatPrice(from)}: ${[...new Set(chosen.map((p) => p.brand).filter(Boolean))].join(', ')}.\n\nChe colore vuoi la prossima volta? 👇 Salvalo per ispirarti!\n\n${FOOTER} #moodboard #mood${color.toLowerCase()} #ispirazione`
+        return withCaption(cap, [{ ms: 9500, node: <Moodboard items={chosen} color={color} from={from} />, bg }, { ms: 3000, node: <Outro line="Il tuo mood su" />, bg }])
+      }
+      return []
+    }
+    if (format === 'pioggia') {
+      // Le offerte "piovono" una sull'altra in un mucchio, poi la migliore viene davanti.
+      const chosen: Product[] = []
+      for (const p of pick(discounted(25), 300, rand)) if (chosen.length < 7 && !chosen.some((c) => c.category === p.category)) chosen.push(p)
+      if (chosen.length < 5) return []
+      const best = [...chosen].sort((a, b) => freshPrice(b)!.discountPct! - freshPrice(a)!.discountPct!)[0]
+      const cap = `Piovono offerte ☔🔥 ${chosen.length} sconti di oggi, il migliore: ${best.brand} a -${freshPrice(best)!.discountPct}%.\n\nQuale prendi? 👇 Prezzi di oggi, possono cambiare.\n\n${FOOTER} #offerte #sconti #affari`
+      return withCaption(cap, [
+        { ms: chosen.length * RAIN_MS + 3800, node: <Rain items={chosen} best={best} /> },
+        { ms: 3000, node: <Outro line="Tutte le offerte su" /> },
+      ])
+    }
     // Swipe in diretta: carte che vanno da sole a destra o a sinistra, come se qualcuno usasse l'app.
     const cards = pick(
       moda.filter((p) => p.availability !== 'out_of_stock' && p.imageUrl && freshPrice(p)),
@@ -442,7 +536,7 @@ function Studio() {
     setStep(0)
   }
   // Anteprima: il primo fotogramma "vero" (dopo il titolo), così si vede cosa uscirà.
-  const previewAt: Partial<Record<Format, number>> = { swipe: 0, meme: 0, prezzo: 4, sconto: 2, caro: 4, budget: 1, colore: 5 }
+  const previewAt: Partial<Record<Format, number>> = { swipe: 0, meme: 0, prezzo: 4, sconto: 2, caro: 4, budget: 1, colore: 5, vetrina: 1, mood: 0, pioggia: 0, stop: 1, mese: 1, tieni: 1 }
   const current = slides[playing ? step : Math.min(previewAt[format] ?? 1, slides.length - 1)]
 
   return (
@@ -454,6 +548,11 @@ function Studio() {
       >
         {/* Luci di sfondo con gradienti radiali e non con blur: su iPhone il blur fa comparire riquadri scuri nelle registrazioni */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_5%,rgba(244,63,94,0.28),transparent_45%),radial-gradient(circle_at_90%_95%,rgba(99,102,241,0.28),transparent_45%)]" />
+        <AnimatePresence>
+          {current?.bg && (
+            <motion.div key={current.bg} className="pointer-events-none absolute inset-0" style={{ background: current.bg }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }} />
+          )}
+        </AnimatePresence>
         <AnimatePresence mode="wait">
           <motion.div
             key={`${format}-${variant}-${playing ? step : 'preview'}`}
@@ -1109,6 +1208,234 @@ function ColorLook({ items, shown, total }: { items: Product[]; shown: number; t
           <p className="line-clamp-2 text-lg font-semibold">{items[shown - 1]?.title}</p>
         </div>
       )}
+    </div>
+  )
+}
+
+const VETRINA_BG = 'radial-gradient(120% 80% at 50% 30%, #3b2a4d 0%, #1b1027 55%, #07040b 100%)'
+const CAROUSEL_MS = 2100
+/** Sfondo del moodboard: il colore dei capi, sfumato e un po' più scuro in basso (testo sempre leggibile). */
+function moodBg(color: string) {
+  const sw = colorSwatch(color) ?? '#444'
+  return `radial-gradient(110% 70% at 30% 20%, ${sw} 0%, color-mix(in srgb, ${sw} 55%, #000) 60%, color-mix(in srgb, ${sw} 25%, #000) 100%)`
+}
+
+/** Giostra 3D: le carte su un cerchio, che ruota di uno spicchio alla volta; la carta davanti è grande e nitida. */
+function Carousel({ items }: { items: Product[] }) {
+  const [i, setI] = useState(0)
+  useEffect(() => {
+    if (i >= items.length - 1) return
+    const t = setTimeout(() => setI((n) => n + 1), CAROUSEL_MS)
+    return () => clearTimeout(t)
+  }, [i, items.length])
+  const step = 360 / items.length
+  const front = items[i]
+  return (
+    <div className="flex flex-1 flex-col justify-center gap-8">
+      <div className="relative mx-auto aspect-square w-[62%]" style={{ perspective: 1100 }}>
+        <motion.div className="absolute inset-0" style={{ transformStyle: 'preserve-3d' }} animate={{ rotateY: -i * step }} transition={{ type: 'spring', stiffness: 60, damping: 16 }}>
+          {items.map((p, k) => {
+            const dist = Math.min(Math.abs(k - i), items.length - Math.abs(k - i))
+            return (
+              <motion.div
+                key={p.id}
+                className="absolute inset-0 overflow-hidden rounded-3xl bg-[#fff] shadow-[0_30px_60px_rgba(0,0,0,0.55)]"
+                style={{ transform: `rotateY(${k * step}deg) translateZ(190px)`, backfaceVisibility: 'hidden' }}
+                animate={{ opacity: dist === 0 ? 1 : dist === 1 ? 0.55 : 0.2, filter: dist === 0 ? 'none' : 'brightness(0.7)' }}
+                transition={{ duration: 0.5 }}
+              >
+                <ProductImage product={p} eager className="size-full" />
+              </motion.div>
+            )
+          })}
+        </motion.div>
+      </div>
+      {/* Riflesso sul "pavimento" */}
+      <div className="mx-auto -mt-6 h-6 w-1/2 rounded-[50%] bg-[#000]/60 blur-md" />
+      <AnimatePresence mode="wait">
+        <motion.div key={front.id} initial={{ y: 16, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.35 }} className="space-y-1 px-6 text-center">
+          <p className="text-xs font-bold tracking-[0.35em] text-[#e9d5ff] uppercase">
+            {i + 1} / {items.length} · {front.brand}
+          </p>
+          <p className="line-clamp-2 text-lg font-semibold">{front.title}</p>
+          <p className="text-3xl font-black">{formatPrice(freshPrice(front)!.price)}</p>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  )
+}
+
+/** Posizioni del collage: un po' storte e di misure diverse, come foto appoggiate su un tavolo. */
+const MOOD_SPOTS = [
+  { left: '7%', top: '0%', w: '38%', r: -5 },
+  { left: '55%', top: '3%', w: '37%', r: 4 },
+  { left: '52%', top: '35%', w: '38%', r: -3 },
+  { left: '5%', top: '33%', w: '37%', r: 3 },
+  { left: '9%', top: '66%', w: '37%', r: -6 },
+  { left: '54%', top: '67%', w: '37%', r: 5 },
+]
+
+function Moodboard({ items, color, from }: { items: Product[]; color: string; from: number }) {
+  const light = ['Bianco', 'Beige', 'Rosa', 'Grigio'].includes(color)
+  return (
+    <div className={`flex flex-1 flex-col gap-4 ${light ? 'text-[#1c1917]' : 'text-[#fff]'}`}>
+      <motion.div initial={{ opacity: 0, letterSpacing: '0.6em' }} animate={{ opacity: 1, letterSpacing: '0.25em' }} transition={{ duration: 1.2 }} className="text-center">
+        <p className="text-xs font-bold uppercase opacity-70">Moodboard</p>
+        <p className="font-serif text-5xl leading-none font-black uppercase italic">{color}</p>
+      </motion.div>
+      {/* Il collage si avvicina piano per tutta la durata: movimento lento da "video bello" */}
+      <motion.div className="relative flex-1" initial={{ scale: 0.96 }} animate={{ scale: 1.05 }} transition={{ duration: 9.5, ease: 'linear' }}>
+        {items.map((p, k) => {
+          const spot = MOOD_SPOTS[k]
+          return (
+            <motion.div
+              key={p.id}
+              className="absolute rounded-2xl bg-[#fff] p-1.5 pb-6 shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
+              style={{ left: spot.left, top: spot.top, width: spot.w }}
+              initial={{ y: 60, opacity: 0, rotate: spot.r * 3, scale: 1.15 }}
+              animate={{ y: 0, opacity: 1, rotate: spot.r, scale: 1 }}
+              transition={{ delay: 0.6 + k * 0.7, type: 'spring', stiffness: 120, damping: 15 }}
+            >
+              <ProductImage product={p} eager className="aspect-square w-full overflow-hidden rounded-xl" />
+              <p className="absolute inset-x-2 bottom-1 truncate text-center text-[10px] font-bold text-[#44403c]">
+                {p.brand} · {formatPrice(freshPrice(p)!.price)}
+              </p>
+            </motion.div>
+          )
+        })}
+      </motion.div>
+      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 5.4 }} className="text-center text-lg font-bold">
+        6 pezzi · da {formatPrice(from)}
+      </motion.p>
+    </div>
+  )
+}
+
+const RAIN_MS = 450
+/** Le carte cadono dall'alto e si ammucchiano; poi la migliore offerta viene in primo piano. */
+function Rain({ items, best }: { items: Product[]; best: Product }) {
+  const [hero, setHero] = useState(false)
+  useEffect(() => {
+    const t = setTimeout(() => setHero(true), items.length * RAIN_MS + 900)
+    return () => clearTimeout(t)
+  }, [items.length])
+  const fp = freshPrice(best)!
+  return (
+    <div className="flex flex-1 flex-col justify-center">
+      <motion.p initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-4 text-center text-4xl font-black">
+        {hero ? 'La migliore 👑' : 'Piovono offerte ☔'}
+      </motion.p>
+      <div className="relative mx-auto aspect-[3/4] w-[78%]">
+        {items.map((p, k) => {
+          const seed = (k * 37) % 11
+          const isBest = p === best
+          return (
+            <motion.div
+              key={p.id}
+              className="absolute top-[12%] left-[10%] w-[80%] rounded-2xl bg-[#fff] p-1.5 text-[#111] shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+              initial={{ y: -700, rotate: (seed - 5) * 9, opacity: 1 }}
+              animate={
+                hero
+                  ? isBest
+                    ? { y: -10, x: 0, rotate: 0, scale: 1.12, zIndex: 50, opacity: 1 }
+                    : { y: 40 + seed * 4, x: (seed - 5) * 10, rotate: (seed - 5) * 4, scale: 0.9, opacity: 0.25 }
+                  : { y: seed * 3, x: (seed - 5) * 9, rotate: (seed - 5) * 4, scale: 1 }
+              }
+              transition={hero ? { type: 'spring', stiffness: 140, damping: 16 } : { delay: k * (RAIN_MS / 1000), type: 'spring', stiffness: 170, damping: 17 }}
+              style={{ zIndex: k }}
+            >
+              <ProductImage product={p} eager className="aspect-square w-full overflow-hidden rounded-xl" />
+              <div className="flex items-center justify-between px-1.5 py-1">
+                <span className="truncate text-xs font-bold uppercase">{p.brand}</span>
+                <span className="rounded-lg bg-[#f43f5e] px-2 py-0.5 text-sm font-black text-[#fff]">-{freshPrice(p)!.discountPct}%</span>
+              </div>
+            </motion.div>
+          )
+        })}
+      </div>
+      <div className="h-20">
+        {hero && (
+          <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3, type: 'spring', stiffness: 240, damping: 14 }} className="mt-6 flex items-baseline justify-center gap-3">
+            <span className="text-5xl font-black">{formatPrice(fp.price)}</span>
+            {fp.originalPrice && <span className="text-xl text-[#fff]/50 line-through">{formatPrice(fp.originalPrice)}</span>}
+          </motion.div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/** Prodotti che cambiano ogni 120 ms, sempre più lenti verso la fine (ma non si ferma: lo ferma chi guarda). */
+function StopReel({ items }: { items: Product[] }) {
+  const [i, setI] = useState(0)
+  useEffect(() => {
+    const t = setTimeout(() => setI((n) => n + 1), i < 40 ? 120 : 160)
+    return () => clearTimeout(t)
+  }, [i])
+  const p = items[i % items.length]
+  return (
+    <div className="flex flex-1 flex-col justify-center gap-5 px-6">
+      <motion.p animate={{ scale: [1, 1.08, 1] }} transition={{ repeat: Infinity, duration: 0.6 }} className="text-center text-3xl font-black">
+        ✋ FERMA IL VIDEO
+      </motion.p>
+      <div className="overflow-hidden rounded-3xl bg-[#fff] p-2 shadow-2xl ring-4 ring-[#facc15]">
+        <ProductImage product={p} eager className="aspect-square w-full overflow-hidden rounded-2xl" />
+        <div className="flex items-center justify-between px-2 pt-2 text-[#111]">
+          <span className="truncate text-sm font-bold uppercase">{p.brand}</span>
+          <span className="text-xl font-black">{formatPrice(freshPrice(p)!.price)}</span>
+        </div>
+      </div>
+      <p className="text-center text-lg font-semibold text-[#fff]/80">Quello che esce è il tuo regalo 🎁</p>
+    </div>
+  )
+}
+
+const MONTHS = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre']
+/** Quattro mesi per schermata, in griglia 2x2. */
+function MonthGrid({ items, part }: { items: Product[]; part: number }) {
+  return (
+    <div className="flex flex-1 flex-col justify-center gap-3 px-5">
+      <div className="grid grid-cols-2 gap-3">
+        {items.slice(part * 4, part * 4 + 4).map((p, k) => (
+          <motion.div key={p.id} initial={{ scale: 0.6, opacity: 0, rotate: k % 2 ? 6 : -6 }} animate={{ scale: 1, opacity: 1, rotate: 0 }} transition={{ delay: k * 0.35, type: 'spring', stiffness: 200, damping: 15 }} className="rounded-2xl bg-[#fff] p-1.5 text-[#111]">
+            <p className="pb-1 text-center text-base font-black tracking-wide uppercase">{MONTHS[part * 4 + k]}</p>
+            <ProductImage product={p} eager className="aspect-square w-full overflow-hidden rounded-xl" />
+            <p className="truncate pt-1 text-center text-[11px] font-bold text-[#525252] uppercase">{p.brand}</p>
+          </motion.div>
+        ))}
+      </div>
+      <p className="text-center text-xl font-black">Di che mese sei? 👇</p>
+    </div>
+  )
+}
+
+/** Quattro pezzi numerati con il conto alla rovescia: ne puoi tenere uno solo. */
+function KeepOne({ items, round }: { items: Product[]; round: number }) {
+  // Conto alla rovescia dentro il fotogramma: le foto restano ferme, cambia solo il numero.
+  const [count, setCount] = useState(5)
+  useEffect(() => {
+    if (count <= 1) return
+    const t = setTimeout(() => setCount((n) => n - 1), 1000)
+    return () => clearTimeout(t)
+  }, [count])
+  return (
+    <div className="flex flex-1 flex-col justify-center gap-4 px-5">
+      <p className="text-center text-sm font-bold tracking-[0.3em] text-[#fb7185] uppercase">Round {round} di 3</p>
+      <p className="text-center text-3xl leading-tight font-black">Puoi tenerne solo UNO 😩</p>
+      <div className="grid grid-cols-2 gap-2.5">
+        {items.map((p, k) => (
+          <motion.div key={p.id} initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: k * 0.15 }} className="relative rounded-2xl bg-[#fff] p-1.5">
+            <span className="absolute -top-2 -left-2 z-10 grid size-9 place-items-center rounded-full bg-[#f43f5e] text-lg font-black shadow-lg">{k + 1}</span>
+            <ProductImage product={p} eager className="aspect-square w-full overflow-hidden rounded-xl" />
+            <p className="truncate pt-1 text-center text-[11px] font-bold text-[#111] uppercase">
+              {p.brand} · {formatPrice(freshPrice(p)!.price)}
+            </p>
+          </motion.div>
+        ))}
+      </div>
+      <motion.p key={count} initial={{ scale: 1.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center text-6xl font-black">
+        {count}
+      </motion.p>
     </div>
   )
 }
