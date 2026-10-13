@@ -230,7 +230,7 @@ body {
  * (iOS lo usa sotto l'ora). Le schede e le foto restano bianche. Nel tema scuro non cambia niente.
  */
 :root {
-  --top-tint: color-mix(in srgb, var(--color-rose-100) 75%, var(--color-neutral-50));
+  --top-tint: color-mix(in srgb, var(--color-rose-300) 22%, var(--color-rose-100));
 }
 :root.dark {
   --top-tint: var(--color-neutral-50);
@@ -240,7 +240,7 @@ body {
 }
 .app-bg {
   background:
-    linear-gradient(180deg, var(--top-tint) 0, var(--color-neutral-50) 38%, var(--color-neutral-50) 70%, color-mix(in srgb, var(--color-rose-50) 80%, var(--color-neutral-50)) 100%);
+    linear-gradient(180deg, var(--top-tint) 0, var(--color-neutral-50) 48%, var(--color-neutral-50) 62%, var(--color-rose-100) 100%);
 }
 :root.dark .app-bg {
   background: var(--color-neutral-50);
