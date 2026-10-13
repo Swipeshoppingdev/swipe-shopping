@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { load, save } from './storage'
 import { useHashRoute, type Route } from './useHashRoute'
+import { giftSeason } from '../pages/GiftsPage'
 
 /**
  * Outfit e Regali si comportano come sezioni: aperti, anche Amici, Profilo e le altre pagine restano "in Outfit"
@@ -37,6 +38,8 @@ export function useSpecialMode() {
     }
     document.documentElement.classList.toggle('outfit', special === 'outfit')
     document.documentElement.classList.toggle('regali', special === 'regali')
+    // Durante un evento (Halloween) l'area Regali prende i suoi colori.
+    document.documentElement.classList.toggle('halloween', special === 'regali' && giftSeason().id === 'halloween')
   }, [route, special])
   return special
 }

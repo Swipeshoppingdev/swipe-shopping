@@ -25,3 +25,6 @@ export function discountBadge(p: Product) {
   const pct = freshPrice(p)?.discountPct
   return pct !== undefined && pct >= 5 ? pct : null
 }
+
+/** "Ultimi pezzi": solo se Amazon lo ha detto insieme a un prezzo ancora valido. */
+export const fewLeft = (p: Product, now = Date.now()) => p.fewLeft === true && p.availability === 'in_stock' && freshPrice(p, now) !== null

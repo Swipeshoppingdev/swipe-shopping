@@ -1,5 +1,5 @@
 import { storeName } from '../config/stores'
-import { formatPrice, freshPrice } from '../lib/price'
+import { fewLeft, formatPrice, freshPrice } from '../lib/price'
 import type { Product } from '../types/product'
 
 export function PriceTag({ product, size = 'md' }: { product: Product; size?: 'md' | 'lg' }) {
@@ -20,6 +20,9 @@ export function PriceTag({ product, size = 'md' }: { product: Product; size?: 'm
             -{price.discountPct}%
           </span>
         </>
+      )}
+      {fewLeft(product) && (
+        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">⏳ Ultimi pezzi</span>
       )}
     </span>
   )

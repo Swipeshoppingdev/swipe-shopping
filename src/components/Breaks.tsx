@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowDown, ArrowUp, ArrowUpDown, BadgeCheck, Disc3, Footprints, Check, Euro, Heart, Percent, Shuffle, Tag, TrendingUp, X } from 'lucide-react'
+import { ArrowDown, ArrowUp, ArrowUpDown, BadgeCheck, Disc3, Footprints, Check, Euro, Heart, Percent, Shuffle, Sparkles, Tag, TrendingUp, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { categoryLabel, universeOf, type CategoryId } from '../config/categories'
 import { OUTFITS_SAVED_EVENT } from './CompleteLook'
@@ -21,13 +21,14 @@ import { useAuth } from '../state/AuthState'
 const EVERY = 10
 /** Rotazione: Indovina il prezzo e Cosa ti va (i preferiti) tornano più spesso. */
 const NO_LOGO = new Set(['scarpe_eleganti', 'stivali', 'camicie', 'cappotti', 'vestiti', 'maglioni', 'giacche', 'pantaloni'])
-const KINDS = ['prezzo', 'ruota', 'scelta', 'piumeno', 'ordina', 'gratta', 'pezzo', 'prezzo', 'scelta', 'ruota', 'caro', 'piumeno', 'marca', 'ordina', 'gratta', 'pezzo', 'duello'] as const
+const KINDS = ['prezzo', 'ruota', 'scelta', 'mistero', 'piumeno', 'ordina', 'gratta', 'pezzo', 'prezzo', 'scelta', 'ruota', 'caro', 'mistero', 'piumeno', 'marca', 'ordina', 'gratta', 'pezzo', 'duello'] as const
 const SHOES = ['sneakers', 'scarpe_eleganti', 'stivali', 'scarpe_sportive', 'sandali']
 type Break =
   | { kind: 'duello'; pair: [Product, Product] }
   | { kind: 'caro'; pair: [Product, Product] }
   | { kind: 'piumeno'; chain: Product[] }
   | { kind: 'gratta'; product: Product }
+  | { kind: 'mistero'; product: Product }
   | { kind: 'ordina'; products: Product[] }
   | { kind: 'ruota'; options: { category: string; product: Product }[] }
   | { kind: 'pezzo'; outfit: Outfit; missing: number; options: Product[] }
@@ -129,6 +130,19 @@ function buildBreak(kind: (typeof KINDS)[number], deck: Product[], all: Product[
     })
     return product ? { kind, product } : null
   }
+  if (kind === 'mistero') {
+    // Il più scontato tra i prossimi del mazzo (sconto vero di oggi, almeno 25%).
+    let best: Product | null = null
+    let bestPct = 24
+    for (const p of deck.slice(1, 200)) {
+      const fp = freshPrice(p)
+      if (fp && !fp.from && (fp.discountPct ?? 0) > bestPct) {
+        best = p
+        bestPct = fp.discountPct!
+      }
+    }
+    return best ? { kind, product: best } : null
+  }
   if (kind === 'marca') {
     // Solo capi dove il logo di solito non si vede in foto (sneakers, borse e tech lo mostrano quasi sempre).
     const withBrand = deck.slice(1, 120).filter((p) => p.brand && NO_LOGO.has(p.category))
@@ -216,6 +230,7 @@ export function Breaks() {
       {current?.kind === 'marca' && <BrandGuess key="m" product={current.product} options={current.options} onDone={done} />}
       {current?.kind === 'piumeno' && <HigherLower key="h" chain={current.chain} onDone={done} />}
       {current?.kind === 'gratta' && <ScratchDeal key="g" product={current.product} onDone={done} />}
+      {current?.kind === 'mistero' && <MysteryCard key="x" product={current.product} onDone={done} />}
       {current?.kind === 'ordina' && <SortByPrice key="o" products={current.products} onDone={done} />}
       {current?.kind === 'ruota' && <Wheel key="r" options={current.options} onDone={done} />}
       {current?.kind === 'pezzo' && <MissingPiece key="z" {...current} onDone={done} />}
@@ -644,6 +659,89 @@ function ScratchDeal({ product, onDone }: { product: Product; onDone: () => void
             className="grid size-11 shrink-0 place-items-center rounded-full bg-rose-500 text-[#fff] active:scale-95"
           >
             <Heart className="size-5 fill-current" />
+          </button>
+        )}
+        {open && (
+          <StoreLink
+            product={product}
+            className="flex h-11 items-center gap-2 rounded-full bg-neutral-900 px-5 text-sm font-semibold whitespace-nowrap text-white active:scale-95"
+          />
+        )}
+        <button type="button" onClick={onDone} className="h-11 rounded-full px-5 text-sm font-semibold text-neutral-500 active:bg-neutral-100">
+          {open ? 'Avanti' : 'Salta'}
+        </button>
+      </div>
+    </motion.div>
+  )
+}
+
+/** Carta misteriosa: una carta coperta che, girata, mostra il prodotto più scontato del momento. */
+function MysteryCard({ product, onDone }: { product: Product; onDone: () => void }) {
+  const { actions } = useApp()
+  const fp = freshPrice(product)!
+  const [open, setOpen] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const flip = () => {
+    if (open) return
+    navigator.vibrate?.([10, 40, 10])
+    setOpen(true)
+  }
+  return (
+    <motion.div {...fade} className={frame} role="dialog" aria-label="Carta misteriosa" data-break>
+      <div className="pt-1 text-center">
+        <p className="flex items-center justify-center gap-2 text-xl font-black">
+          <Sparkles className="size-5 text-[#8b5cf6]" /> Carta misteriosa
+        </p>
+        <p className="text-sm text-neutral-500">{open ? `Uno dei più scontati di oggi: -${fp.discountPct}%` : 'Sotto c\'è uno dei prodotti più scontati di oggi'}</p>
+      </div>
+      <div className="relative min-h-0 flex-1 [perspective:1200px]">
+        <motion.div
+          className="relative size-full [transform-style:preserve-3d]"
+          initial={false}
+          animate={{ rotateY: open ? 180 : 0 }}
+          transition={{ duration: 0.6, ease: 'easeInOut' }}
+        >
+          {/* Dorso: si tocca per girarla */}
+          <button
+            type="button"
+            onClick={flip}
+            aria-label="Gira la carta"
+            className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-2xl bg-[linear-gradient(135deg,#7c3aed,#db2777)] text-[#fff] shadow-lg [backface-visibility:hidden]"
+          >
+            <motion.span animate={{ scale: [1, 1.12, 1] }} transition={{ repeat: Infinity, duration: 1.6 }} className="text-7xl leading-none">
+              ❓
+            </motion.span>
+            <span className="text-lg font-black tracking-wide">Tocca per girarla</span>
+          </button>
+          {/* Fronte: il prodotto */}
+          <div className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl bg-[#fff] shadow-lg [backface-visibility:hidden] [transform:rotateY(180deg)]">
+            <div className="relative min-h-0 flex-1">
+              <ProductImage product={product} eager className="absolute inset-0 size-full object-contain p-3" />
+              <span className="absolute top-3 left-3 rounded-full bg-rose-500 px-3 py-1 text-lg font-black text-[#fff] shadow">-{fp.discountPct}%</span>
+            </div>
+            <div className="space-y-0.5 p-3 text-[#171717]">
+              <p className="line-clamp-2 text-sm font-medium">{product.title}</p>
+              <p className="text-sm">
+                <strong className="text-lg">{formatPrice(fp.price)}</strong>{' '}
+                <span className="text-[#737373] line-through">{formatPrice(fp.originalPrice!)}</span>
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+      <div className="flex justify-center gap-2 pb-1">
+        {open && (
+          <button
+            type="button"
+            disabled={saved}
+            onClick={() => {
+              actions.like(product)
+              setSaved(true)
+            }}
+            aria-label={saved ? 'Salvato nei preferiti' : 'Salva nei preferiti'}
+            className="grid size-11 shrink-0 place-items-center rounded-full bg-rose-500 text-[#fff] active:scale-95 disabled:opacity-60"
+          >
+            {saved ? <Check className="size-5" /> : <Heart className="size-5 fill-current" />}
           </button>
         )}
         {open && (

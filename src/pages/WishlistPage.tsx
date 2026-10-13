@@ -12,7 +12,7 @@ import { AMAZON_DISCLOSURE } from '../config/app'
 import { compareFolders, folderLabel, isPresetFolder } from '../config/folders'
 import { universeOf } from '../config/categories'
 import { brandAndStore } from '../config/stores'
-import { discountBadge, freshPrice } from '../lib/price'
+import { discountBadge, fewLeft, freshPrice } from '../lib/price'
 import { openProduct } from '../lib/productSheet'
 import { shareList } from '../lib/share'
 import { social } from '../lib/social'
@@ -35,6 +35,9 @@ export function WishlistPage() {
   const [moving, setMoving] = useState<Product | null>(null)
   const [dealsOnly, setDealsOnly] = useState(false)
   const showDeals = dealsOnly && deals > 0
+  const few = wishlist.filter((w) => w.inCatalog && fewLeft(w.product)).length
+  const [fewOnly, setFewOnly] = useState(false)
+  const showFew = fewOnly && few > 0 && !showDeals
 
   const folders = useMemo(() => {
     const count = new Map<string, number>()
@@ -45,7 +48,9 @@ export function WishlistPage() {
   const current = folder && folders.some(([f]) => f === folder) ? folder : null
 
   const shown = useMemo(() => {
-    const list = wishlist.filter((w) => (!current || w.folder === current) && (!showDeals || w.deal !== null))
+    const list = wishlist.filter(
+      (w) => (!current || w.folder === current) && (!showDeals || w.deal !== null) && (!showFew || (w.inCatalog && fewLeft(w.product))),
+    )
     if (sort === 'sconto') return list.sort((a, b) => (discountBadge(b.product) ?? 0) - (discountBadge(a.product) ?? 0))
     if (sort !== 'recenti') {
       const dir = sort === 'prezzo_asc' ? 1 : -1
@@ -58,7 +63,7 @@ export function WishlistPage() {
       })
     }
     return list
-  }, [wishlist, current, sort, showDeals])
+  }, [wishlist, current, sort, showDeals, showFew])
 
   // Aprendo i Preferiti l'avviso sul menu si spegne (l'etichetta sulle card resta).
   useEffect(() => markDealsSeen(), [markDealsSeen])
@@ -85,7 +90,10 @@ export function WishlistPage() {
       {deals > 0 && (
         <button
           type="button"
-          onClick={() => setDealsOnly(!showDeals)}
+          onClick={() => {
+            setDealsOnly(!showDeals)
+            setFewOnly(false)
+          }}
           aria-pressed={showDeals}
           className={`flex w-full items-center gap-2 rounded-2xl px-4 py-3 text-left text-sm font-medium ring-1 active:scale-[0.99] ${
             showDeals ? 'bg-emerald-600 text-[#fff] ring-emerald-600' : 'bg-emerald-50 text-emerald-800 ring-emerald-200'
@@ -100,6 +108,25 @@ export function WishlistPage() {
                 : `${deals} preferiti sono in offerta!`}
           </span>
           <span className="text-xs font-semibold underline">{showDeals ? 'Mostra tutti' : 'Mostra'}</span>
+        </button>
+      )}
+      {few > 0 && (
+        <button
+          type="button"
+          onClick={() => {
+            setFewOnly(!showFew)
+            setDealsOnly(false)
+          }}
+          aria-pressed={showFew}
+          className={`flex w-full items-center gap-2 rounded-2xl px-4 py-3 text-left text-sm font-medium ring-1 active:scale-[0.99] ${
+            showFew ? 'bg-amber-500 text-[#fff] ring-amber-500' : 'bg-amber-50 text-amber-900 ring-amber-200'
+          }`}
+        >
+          <span className="text-lg leading-none">⏳</span>
+          <span className="flex-1">
+            {showFew ? `Solo quelli che stanno finendo (${few})` : few === 1 ? 'Un tuo preferito sta finendo!' : `${few} preferiti stanno finendo!`}
+          </span>
+          <span className="text-xs font-semibold underline">{showFew ? 'Mostra tutti' : 'Mostra'}</span>
         </button>
       )}
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]">

@@ -27,6 +27,9 @@
         if (hm) sp = hm[1]
         else if (/^(#\/?)?(scopri|preferiti|filtri|insieme|outfit|regali)?([/?].*)?$/.test(location.hash)) sp = null
         if (sp) document.documentElement.classList.add(sp)
+        // Halloween: dal 20 al 31 ottobre l'area Regali è arancione (vedi giftSeason in src/pages/GiftsPage.tsx).
+        var now = new Date()
+        if (sp === 'regali' && now.getMonth() === 9 && now.getDate() >= 20) document.documentElement.classList.add('halloween')
       } catch (e) {}
     </script>
     <link rel="manifest" href="./manifest.webmanifest" />

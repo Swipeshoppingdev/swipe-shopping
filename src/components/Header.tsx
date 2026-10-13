@@ -1,4 +1,4 @@
-import { Check, ChevronDown, Cookie, Cpu, Gift, LayoutGrid, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun, TreePine } from 'lucide-react'
+import { Check, ChevronDown, Ghost, Cookie, Cpu, Gift, LayoutGrid, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun, TreePine } from 'lucide-react'
 import { giftSeason } from '../pages/GiftsPage'
 import { Reorder, useDragControls } from 'framer-motion'
 import { useEffect, useRef, useState, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react'
@@ -25,7 +25,7 @@ export function Header() {
             {APP_NAME.split(' ')[0]}
             <span className="text-rose-500">{APP_NAME.split(' ').slice(1).join(' ')}</span>
           </span>
-          <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{special === 'outfit' ? 'Outfit' : special === 'regali' ? 'Regali' : sectionOf(state.mode).label}</span>
+          <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{special === 'outfit' ? 'Outfit' : special === 'regali' ? (giftSeason().id === 'halloween' ? 'Halloween' : 'Regali') : sectionOf(state.mode).label}</span>
         </a>
         {/* Spazio vuoto a destra per tenere il logo centrato (Outfit si apre dal menu Sezioni, scelta di Kevin). */}
         <span className="w-18 max-[389px]:w-9" aria-hidden />
@@ -64,8 +64,8 @@ function SectionMenu() {
   const onGifts = special === 'regali'
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
-  const current = onOutfit ? { ...sectionOf('moda'), label: 'Outfit' } : onGifts ? { ...sectionOf(state.mode), label: 'Regali' } : sectionOf(state.mode)
-  const Icon = onOutfit ? LayoutGrid : onGifts ? TreePine : ICONS[current.id]
+  const current = onOutfit ? { ...sectionOf('moda'), label: 'Outfit' } : onGifts ? { ...sectionOf(state.mode), label: giftSeason().id === 'halloween' ? 'Halloween' : 'Regali' } : sectionOf(state.mode)
+  const Icon = onOutfit ? LayoutGrid : onGifts ? (giftSeason().id === 'halloween' ? Ghost : TreePine) : ICONS[current.id]
   const [visited, setVisited] = useState(() => load<Universe[]>('sectionsVisited', []))
   const [menuSeen, setMenuSeen] = useState(() => load<boolean>('sectionsMenuSeen:3', false))
   const isNew = (u: Universe) => NEW_SECTIONS.includes(u) && !visited.includes(u) && u !== state.mode
@@ -76,10 +76,16 @@ function SectionMenu() {
     if (onOutfit) save('outfitVisited', true)
   }, [onOutfit])
   const giftsSeen = onGifts || load<boolean>('giftsVisited', false)
+  // Halloween ha il suo "Nuovo" (ogni anno), anche per chi ha già aperto Regali.
+  const halloweenKey = `halloweenVisited:${new Date().getFullYear()}`
+  const halloweenSeen = onGifts || load<boolean>(halloweenKey, false)
   useEffect(() => {
-    if (onGifts) save('giftsVisited', true)
-  }, [onGifts])
-  const dot = !menuSeen && (NEW_SECTIONS.some(isNew) || !outfitSeen || !giftsSeen)
+    if (onGifts) {
+      save('giftsVisited', true)
+      if (giftSeason().id === 'halloween') save(halloweenKey, true)
+    }
+  }, [onGifts, halloweenKey])
+  const dot = (!menuSeen && (NEW_SECTIONS.some(isNew) || !outfitSeen || !giftsSeen)) || (giftSeason().id === 'halloween' && !halloweenSeen)
 
   // Anche se si arriva alla sezione in altri modi (benvenuto, link condiviso): la sezione aperta non è più nuova.
   useEffect(() => {
@@ -126,7 +132,11 @@ function SectionMenu() {
   }
   entries.outfit = { label: 'Outfit', hint: 'Look completi pronti, dalle scarpe alla giacca', color: '#4f46e5', Icon: LayoutGrid, isNew: !outfitSeen, active: onOutfit, href: '#/outfit' }
   // Regali: mazzo con tutte le sezioni, per chi lo riceve e per budget (Black Friday e Natale).
-  entries.regali = { label: giftSeason().title, hint: 'Regali per tutti, per budget e in offerta', color: '#dc2626', Icon: TreePine, isNew: !giftsSeen, active: onGifts, href: '#/regali' }
+  const season = giftSeason()
+  entries.regali =
+    season.id === 'halloween'
+      ? { label: 'Halloween', hint: season.hint, color: '#ea580c', Icon: Ghost, isNew: !halloweenSeen, active: onGifts, href: '#/regali' }
+      : { label: season.title, hint: 'Regali per tutti, per budget e in offerta', color: '#dc2626', Icon: TreePine, isNew: !giftsSeen, active: onGifts, href: '#/regali' }
 
   return (
     <div ref={ref} className="relative">

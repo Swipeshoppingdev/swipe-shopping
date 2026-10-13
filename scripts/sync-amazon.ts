@@ -6,7 +6,7 @@ import { classify, isJunk } from './classify.ts'
 import { detectColors } from '../src/config/colors.ts'
 import { validateProduct } from '../src/lib/validate.ts'
 import { DETAIL_SHARDS, detailShard, type ProductDetails } from '../src/lib/details.ts'
-import { OUTFIT_PRIORITY, SEARCH_PLAN, normalizeBrand } from './search-plan.ts'
+import { OUTFIT_PRIORITY, SEARCH_PLAN, inSeason, normalizeBrand } from './search-plan.ts'
 import { hasSizes, sortSizes, splitSize } from '../src/lib/sizes.ts'
 
 const { AMAZON_CREDENTIAL_ID, AMAZON_CREDENTIAL_SECRET, AMAZON_CREDENTIAL_VERSION, AMAZON_TOKEN_URL } = process.env
@@ -92,16 +92,26 @@ interface Offer {
   price: number
   basis: number
   availability: string
+  /** Amazon dice che ne restano pochi ("Solo 3 disponibili", tipo IN_STOCK_SCARCE) */
+  fewLeft: boolean
 }
+
+/** Tipi e messaggi di disponibilità visti in questo giro (nel log, per capire cosa manda Amazon). */
+const availabilitySeen = new Map<string, number>()
 
 function readListing(item: any): Offer | null {
   const listings: any[] = item?.offersV2?.listings ?? []
   const listing = listings.find((l) => l?.isBuyBoxWinner) ?? listings[0]
   if (!listing) return null
+  const availability = String(listing.availability?.type ?? '').toUpperCase()
+  const message = String(listing.availability?.message ?? '')
+  const seenKey = `${availability}${message ? ` "${message.replace(/\d+/g, 'N')}"` : ''}`
+  availabilitySeen.set(seenKey, (availabilitySeen.get(seenKey) ?? 0) + 1)
   return {
     price: num(listing.price?.money?.amount),
     basis: num(listing.price?.savingBasis?.money?.amount),
-    availability: String(listing.availability?.type ?? '').toUpperCase(),
+    availability,
+    fewLeft: availability.includes('SCARCE') || /\bsol[oi]\s+\d+|ultim[ie]\s+(\d+\s+)?(pezz|articol|disponibil)/i.test(message),
   }
 }
 
@@ -182,7 +192,10 @@ function applyOffer(p: Record<string, any>, offer: Offer | null) {
     if (offer.basis > offer.price) p.originalPrice = offer.basis
     else delete p.originalPrice
     p.availability = 'in_stock'
+    if (offer.fewLeft) p.fewLeft = true
+    else delete p.fewLeft
   } else {
+    delete p.fewLeft
     delete p.price
     delete p.originalPrice
     delete p.priceCheckedAt
@@ -351,7 +364,7 @@ async function searchCatalog(token: string) {
   // Prime pagine di tutte le ricerche; quelle con altri risultati si segnano per andare più a fondo.
   const deeper: [(typeof SEARCH_PLAN)[number], string, string][] = []
   let stopped = false
-  outer: for (const plan of SEARCH_PLAN) {
+  outer: for (const plan of SEARCH_PLAN.filter((pl) => inSeason(pl))) {
     for (const gender of plan.genders) {
       for (const brand of plan.brands) {
         for (let page = 1; page <= pages; page++) {
@@ -507,6 +520,9 @@ try {
   }
   writeFileSync(file, JSON.stringify(next, null, 1) + '\n')
   annotate('notice', `Catalogo: ${next.length} prodotti (${searched.length} dalla ricerca), ${requests} richieste ad Amazon.`)
+  const few = next.filter((p) => p.fewLeft).length
+  const kinds = [...availabilitySeen].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([k, n]) => `${k}: ${n}`)
+  annotate('notice', `Ultimi pezzi: ${few} prodotti. Disponibilità viste: ${kinds.join(' | ')}`)
 } catch (e) {
   annotate('error', `Sincronizzazione Amazon non riuscita: ${e instanceof Error ? e.message : String(e)}`)
 }

@@ -206,3 +206,20 @@ body {
   --color-rose-500: #e11d1d;
   --color-rose-700: #fca5a5;
 }
+
+/* Halloween (dal 20 al 31 ottobre l'area Regali diventa Halloween): arancione zucca. */
+:root:root.regali.halloween {
+  --color-rose-50: #fff7ed;
+  --color-rose-100: #ffedd5;
+  --color-rose-300: #fdba74;
+  --color-rose-400: #fb923c;
+  --color-rose-500: #ea580c;
+  --color-rose-600: #c2410c;
+  --color-rose-700: #9a3412;
+}
+:root:root.regali.halloween.dark {
+  --color-rose-50: #3a1a06;
+  --color-rose-100: #5a2a0a;
+  --color-rose-500: #f97316;
+  --color-rose-700: #fdba74;
+}

@@ -15,15 +15,26 @@ import { load, save } from '../lib/storage'
 import { useApp } from '../state/AppState'
 import type { Product } from '../types/product'
 
-/** Titolo del periodo: Black Friday dal 20 novembre al Cyber Monday, poi Natale fino al 24 dicembre. */
-export function giftSeason(now = new Date()) {
+export type GiftSeason = { id: 'regali' | 'halloween'; title: string; emoji: string; hint: string; deals: boolean }
+
+/**
+ * Titolo del periodo: Halloween dal 20 al 31 ottobre (mazzo a tema arancione), Black Friday dal 20 novembre
+ * al Cyber Monday, poi Natale fino al 24 dicembre. Per un nuovo evento: un periodo qui, le ricerche in
+ * scripts/search-plan.ts (con months) e i colori in index.css.
+ */
+export function giftSeason(now = new Date()): GiftSeason {
   const m = now.getMonth() + 1
   const d = now.getDate()
-  if ((m === 11 && d >= 20) || (m === 12 && d <= 1)) return { title: 'Black Friday', hint: 'Le offerte più forti di tutte le sezioni', deals: true }
-  if (m === 12 && d <= 24) return { title: 'Regali di Natale', hint: 'Idee regalo per tutti, per budget', deals: false }
-  if (m === 11 || m === 10) return { title: 'Idee regalo', hint: 'Black Friday e Natale: inizia a salvare le idee', deals: false }
-  return { title: 'Idee regalo', hint: 'Regali per tutti, per budget', deals: false }
+  const gifts = { id: 'regali' as const, emoji: '🎄' }
+  if (m === 10 && d >= 20) return { id: 'halloween', title: 'Halloween', emoji: '🎃', hint: 'Costumi, decorazioni, trucchi e dolcetti', deals: false }
+  if ((m === 11 && d >= 20) || (m === 12 && d <= 1)) return { ...gifts, title: 'Black Friday', hint: 'Le offerte più forti di tutte le sezioni', deals: true }
+  if (m === 12 && d <= 24) return { ...gifts, title: 'Regali di Natale', hint: 'Idee regalo per tutti, per budget', deals: false }
+  if (m === 11 || m === 10) return { ...gifts, title: 'Idee regalo', hint: 'Black Friday e Natale: inizia a salvare le idee', deals: false }
+  return { ...gifts, title: 'Idee regalo', hint: 'Regali per tutti, per budget', deals: false }
 }
+
+/** Prodotti di Halloween: la categoria dedicata o "halloween" nel titolo (es. LEGO, candele). */
+const isHalloween = (p: Product) => p.category === 'halloween' || /halloween/i.test(p.title)
 
 type Who = 'lei' | 'lui' | 'tech' | 'casa' | 'gadget' | 'golosi' | 'animali'
 const WHO: { id: Who; label: string; fits: (p: Product, u: Universe) => boolean }[] = [
@@ -54,6 +65,7 @@ export function GiftsPage() {
   const { hash } = useHashRoute()
   const tab = hash.startsWith('#/regali/salvati') ? 'salvati' : hash.startsWith('#/regali/filtri') ? 'filtri' : 'scopri'
   const season = giftSeason()
+  const halloween = season.id === 'halloween'
   const [f, setF] = useState<GiftFilters>(() => load('giftFilters', { who: null, max: null, deals: season.deals }))
   const set = (patch: Partial<GiftFilters>) => {
     const next = { ...f, ...patch }
@@ -78,6 +90,7 @@ export function GiftsPage() {
       // Un regalo senza prezzo verificato non si può scegliere per budget: fuori.
       if (price === undefined || (f.max !== null && price > f.max)) return false
       if (f.deals && discountBadge(p) === null) return false
+      if (halloween) return isHalloween(p)
       return !who || who.fits(p, universeOf(p.category))
     })
     let sorted = sortProducts(list, 'mix', SEED)
@@ -88,16 +101,16 @@ export function GiftsPage() {
     }
     const seenModels = new Set(wishlist.map((w) => modelKey(w.product as Product)))
     return onePerModel(sorted, seenModels)
-  }, [allProducts, state.disliked, wishlist, f])
+  }, [allProducts, state.disliked, wishlist, f, halloween])
 
   const ready = state.catalog.status === 'ready'
   const summary = [
-    WHO.find((w) => w.id === f.who)?.label.replace(/^\S+\s/, '').toLowerCase(),
+    !halloween && WHO.find((w) => w.id === f.who)?.label.replace(/^\S+\s/, '').toLowerCase(),
     f.max !== null && `fino a ${f.max} €`,
     f.deals && 'in offerta',
   ].filter(Boolean)
 
-  if (tab === 'filtri') return <GiftFiltersTab f={f} set={set} count={ready ? cards.length : null} />
+  if (tab === 'filtri') return <GiftFiltersTab f={f} set={set} count={ready ? cards.length : null} season={season} />
   if (tab === 'salvati') {
     const saved = liked.map((id) => wishlist.find((w) => w.product.id === id)?.product).filter((p): p is Product => !!p)
     return <GiftsSaved products={saved} onRemove={(p) => actions.remove(p)} />
@@ -107,14 +120,16 @@ export function GiftsPage() {
     <div className="flex min-h-0 flex-1 flex-col gap-2.5">
       <div className="flex items-center gap-2">
         <div className="min-w-0 flex-1 leading-tight">
-          <h1 className="truncate text-xl font-black">🎄 {season.title}</h1>
-          <p className="truncate text-xs text-neutral-500">{summary.length ? `Regali ${summary.join(', ')}` : season.hint}</p>
+          <h1 className="truncate text-xl font-black">
+            {season.emoji} {season.title}
+          </h1>
+          <p className="truncate text-xs text-neutral-500">{summary.length ? `${halloween ? 'Halloween' : 'Regali'} ${summary.join(', ')}` : season.hint}</p>
         </div>
         <a
           href="#/regali/filtri"
           className="flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-rose-500 px-3.5 text-sm font-semibold text-[#fff] active:scale-95"
         >
-          <SlidersHorizontal className="size-4" /> Per chi
+          <SlidersHorizontal className="size-4" /> {halloween ? 'Filtri' : 'Per chi'}
         </a>
       </div>
       {!ready ? (
@@ -124,16 +139,16 @@ export function GiftsPage() {
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
           <div className="text-5xl" aria-hidden>
-            🎁
+            {halloween ? '🎃' : '🎁'}
           </div>
-          <h2 className="text-xl font-semibold">Nessun regalo con queste scelte</h2>
+          <h2 className="text-xl font-semibold">{halloween ? 'Niente di Halloween con queste scelte' : 'Nessun regalo con queste scelte'}</h2>
           <p className="text-neutral-500">Prova un budget più alto o togli "Offerte".</p>
           <button
             type="button"
             onClick={() => set({ who: null, max: null, deals: false })}
             className="rounded-full bg-neutral-900 px-5 py-3 font-semibold text-white active:scale-95"
           >
-            Mostra tutti i regali
+            {halloween ? 'Mostra tutto Halloween' : 'Mostra tutti i regali'}
           </button>
         </div>
       )}
@@ -147,11 +162,12 @@ const chip = (on: boolean) =>
   }`
 
 /** Filtri di Regali (#/regali/filtri): per chi, budget e offerte. Le scelte valgono subito. */
-function GiftFiltersTab({ f, set, count }: { f: GiftFilters; set: (p: Partial<GiftFilters>) => void; count: number | null }) {
+function GiftFiltersTab({ f, set, count, season }: { f: GiftFilters; set: (p: Partial<GiftFilters>) => void; count: number | null; season: GiftSeason }) {
+  const halloween = season.id === 'halloween'
   return (
     <div className="space-y-6 py-2">
-      <h1 className="text-2xl font-bold">Filtri regali</h1>
-      <section className="space-y-2.5">
+      <h1 className="text-2xl font-bold">{halloween ? 'Filtri Halloween' : 'Filtri regali'}</h1>
+      {!halloween && <section className="space-y-2.5">
         <h2 className="font-semibold">Per chi</h2>
         <div className="flex flex-wrap gap-2">
           <button type="button" aria-pressed={!f.who} onClick={() => set({ who: null })} className={chip(!f.who)}>
@@ -163,7 +179,7 @@ function GiftFiltersTab({ f, set, count }: { f: GiftFilters; set: (p: Partial<Gi
             </button>
           ))}
         </div>
-      </section>
+      </section>}
       <section className="space-y-2.5">
         <h2 className="font-semibold">Budget</h2>
         <div className="flex flex-wrap gap-2">
@@ -187,7 +203,11 @@ function GiftFiltersTab({ f, set, count }: { f: GiftFilters; set: (p: Partial<Gi
         href="#/regali"
         className="flex h-12 items-center justify-center rounded-full bg-rose-500 font-semibold text-[#fff] shadow-md active:scale-95"
       >
-        {count === null ? 'Mostra i regali' : count === 0 ? 'Nessun regalo: cambia le scelte' : `Mostra ${count.toLocaleString('it-IT')} regali`}
+        {count === null
+          ? 'Mostra i prodotti'
+          : count === 0
+            ? 'Nessun prodotto: cambia le scelte'
+            : `Mostra ${count.toLocaleString('it-IT')} ${halloween ? 'prodotti' : 'regali'}`}
       </a>
     </div>
   )

@@ -16,7 +16,12 @@ export interface CategoryPlan {
   /** Solo prodotti con buone recensioni (se Amazon le fornisce): stelle minime e numero minimo di voti */
   minRating?: number
   minReviews?: number
+  /** Solo in questi mesi (1-12): ricerche stagionali, es. Halloween in ottobre. Senza: tutto l'anno. */
+  months?: number[]
 }
+
+/** Le ricerche attive questo mese. */
+export const inSeason = (plan: CategoryPlan, now = new Date()) => !plan.months || plan.months.includes(now.getMonth() + 1)
 
 const BOTH: SearchGender[] = ['uomo', 'donna']
 /** Prodotti per tutti: una sola ricerca, senza uomo/donna */
@@ -189,6 +194,17 @@ export const SEARCH_PLAN: CategoryPlan[] = [
     brands: ['Apple', 'Tile', 'Samsung', 'Chipolo'] },
   { category: 'gadget_tech', keywords: 'mini proiettore', searchIndex: 'Electronics', minPrice: 100, ...GADGET,
     brands: ['XGIMI', 'Samsung', 'Anker', 'Nebula', 'Philips'] },
+  // Halloween (solo in ottobre): area a tema in Regali dal 20 al 31 (vedi giftSeason in src/pages/GiftsPage.tsx)
+  { category: 'halloween', keywords: 'costume halloween', searchIndex: 'ToysAndGames', minPrice: 12, ...GADGET, minReviews: 20, months: [10],
+    brands: ["Rubie's", 'Smiffys', 'Widmann', 'Carnival Toys', 'Ciao', 'Amscan', 'Boland', 'Funidelia'] },
+  { category: 'halloween', keywords: 'decorazioni halloween', searchIndex: 'HomeAndKitchen', minPrice: 8, ...GADGET, minReviews: 20, months: [10],
+    brands: ['Amscan', 'Widmann', 'Boland', 'Yankee Candle', 'Kaemingk', 'Lumineo', 'Smiffys', 'Rubie\'s'] },
+  { category: 'halloween', keywords: 'halloween', searchIndex: 'ToysAndGames', minPrice: 8, ...GADGET, minReviews: 20, months: [10],
+    brands: ['LEGO', 'Funko', 'Paladone', 'Disney', 'Playmobil'] },
+  { category: 'halloween', keywords: 'trucco halloween', searchIndex: 'Beauty', minPrice: 6, ...GADGET, minReviews: 20, months: [10],
+    brands: ['Grimas', 'Snazaroo', 'Kryolan', 'Mehron', 'Widmann', 'Smiffys', 'Moon Creations'] },
+  { category: 'halloween', keywords: 'dolci halloween', searchIndex: 'GroceryAndGourmetFood', minPrice: 4, ...GADGET, minReviews: 20, months: [10],
+    brands: ['Haribo', 'Ferrero', 'Kinder', 'Chupa Chups', 'Perugina', 'Fini', 'Rossana', "M&M's", 'Skittles', 'Lindt'] },
   // Sezione Snack: solo marche note
   { category: 'cioccolato', keywords: 'cioccolato', minPrice: 5, ...SNACK,
     brands: ['Lindt', 'Ferrero', 'Milka', 'Kinder', 'Novi', 'Venchi', 'Toblerone', 'Ritter Sport'] },

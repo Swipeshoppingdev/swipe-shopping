@@ -36,6 +36,8 @@ export interface Product {
   sizesAt?: string
   colors?: string[]
   availability: Availability
+  /** Amazon segnala che ne restano pochi (all'ultimo controllo del prezzo) */
+  fewLeft?: boolean
   /** ISO date: quando il prodotto è entrato in catalogo (ordinamento "novità") */
   addedAt: string
   /**

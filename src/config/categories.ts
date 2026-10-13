@@ -151,6 +151,7 @@ export const GADGET_GROUPS = [
     items: [
       { id: 'regali', label: 'Regali divertenti' },
       { id: 'gadget_tech', label: 'Gadget tech' },
+      { id: 'halloween', label: 'Halloween' },
     ],
   },
 ] as const
