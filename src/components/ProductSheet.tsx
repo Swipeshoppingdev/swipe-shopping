@@ -16,6 +16,7 @@ import { DiscountBadge } from './DiscountBadge'
 import { FollowBrand } from './FollowBrand'
 import { NewBadge } from './NewBadge'
 import { PriceTag } from './PriceTag'
+import { CheaperAlternatives, PriceRankBadge } from './PriceCheck'
 import { ProductImage } from './ProductImage'
 import { ReportProduct } from './ReportProduct'
 import { ShareButton } from './ShareButton'
@@ -202,6 +203,7 @@ function SheetContent({ product }: { product: Product }) {
           <h2 className="text-lg leading-snug font-semibold">{product.title}</h2>
           <PriceTag product={product} size="lg" />
         </div>
+        <PriceRankBadge product={product} all={allProducts} />
 
         {/* Solo l'elenco completo letto da Amazon (sizesAt): quelle viste nei titoli sono solo alcune varianti. */}
         {hasSizes(product.category) && (
@@ -250,6 +252,8 @@ function SheetContent({ product }: { product: Product }) {
           label="Consiglia a un amico"
           className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-white text-sm font-semibold ring-1 ring-neutral-200 active:scale-[0.98]"
         />
+
+        <CheaperAlternatives product={product} all={allProducts} />
 
         <CompleteLook product={product} />
 
