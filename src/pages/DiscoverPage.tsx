@@ -1,4 +1,4 @@
-import { Flame, RefreshCw, SlidersHorizontal, Sparkles } from 'lucide-react'
+import { RefreshCw, SlidersHorizontal, Sparkles } from 'lucide-react'
 import { SwipeDeck } from '../components/SwipeDeck'
 import { DeckTabs } from '../components/DeckTabs'
 import { Breaks } from '../components/Breaks'
@@ -6,12 +6,11 @@ import { FavDeals } from '../components/FavDeals'
 import { NewArrivals } from '../components/NewArrivals'
 import { routeHref } from '../lib/useHashRoute'
 import { widenSuggestions } from '../lib/widen'
-import { useEffect, useMemo, useState } from 'react'
-import { formatWait, msToNextDrop, setDropOn } from '../lib/drop'
+import { useMemo } from 'react'
 import { useApp } from '../state/AppState'
 
 export function DiscoverPage() {
-  const { state, deck, products, wishlist, actions, drop, previewing } = useApp()
+  const { state, deck, products, wishlist, actions, previewing } = useApp()
   const { catalog } = state
   // Mazzo finito: proposte per allargare i filtri, con quanti prodotti nuovi si vedrebbero.
   const widen = useMemo(() => {
@@ -60,8 +59,6 @@ export function DiscoverPage() {
             </>
           )}
         </div>
-      ) : drop.on ? (
-        <DropDone total={drop.total} />
       ) : products.length === 0 ? (
         <Empty title="Sezione in arrivo" text="Stiamo preparando i prodotti di questa sezione: torna tra qualche ora.">
           <button type="button" onClick={() => actions.setMode('moda')} className={primaryBtn}>
@@ -86,25 +83,6 @@ export function DiscoverPage() {
         </Empty>
       )}
     </div>
-  )
-}
-
-/** Drop di oggi finito (o vuoto con questi filtri): quando esce il prossimo. */
-function DropDone({ total }: { total: number }) {
-  const [wait, setWait] = useState(() => msToNextDrop())
-  useEffect(() => {
-    const t = setInterval(() => setWait(msToNextDrop()), 30_000)
-    return () => clearInterval(t)
-  }, [])
-  return (
-    <Empty
-      title={total ? 'Drop di oggi completato!' : 'Oggi niente drop con questi filtri'}
-      text={`Il prossimo esce tra ${formatWait(wait)}: 10 novità e sconti scelti per te.`}
-    >
-      <button type="button" onClick={() => setDropOn(false)} className={primaryBtn}>
-        <Flame className="size-4" /> Continua con tutti i prodotti
-      </button>
-    </Empty>
   )
 }
 

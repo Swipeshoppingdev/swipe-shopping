@@ -1,5 +1,4 @@
 import { useBoost } from '../lib/boost'
-import { pickDrop, useDropDay, useDropOn } from '../lib/drop'
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import { UNIVERSES, isUniverse, universeOf, type Universe } from '../config/categories'
 import { track } from '../lib/analytics'
@@ -314,21 +313,6 @@ function useAppStore() {
   const boost = useBoost()
   // Solo la categoria (non i giri rimasti): il mazzo non si ricalcola a ogni swipe.
   const boostCat = boost && boost.section === state.mode ? boost.category : null
-  // "Drop di oggi": i 10 del giorno restano gli stessi anche dopo averli swipati (si conta 3/10).
-  const dropDay = useDropDay()
-  const dropOn = useDropOn()
-  const dropList = useMemo(() => {
-    const f = { ...activeFilters, onlyDeals: undefined }
-    return pickDrop(
-      products.filter((p) => p.availability !== 'out_of_stock' && universeOf(p.category) === state.mode && matchesFilters(p, f)),
-      `${dropDay}:${state.mode}`,
-    )
-  }, [products, state.mode, activeFilters, dropDay])
-  const dropDeck = useMemo(() => {
-    const seen = new Set([...state.disliked, ...state.wishlist.map((w) => w.product.id)])
-    return dropList.filter((p) => !seen.has(p.id))
-  }, [dropList, state.disliked, state.wishlist])
-
   // Categorie "stancanti": tanti No e nessun Sì negli ultimi swipe. Vanno in fondo al mazzo (non spariscono)
   // e tornano da sole quando quei No escono dagli ultimi 30 swipe: magari dopo si ha voglia d'altro.
   const tiredKey = useMemo(() => {
@@ -378,7 +362,7 @@ function useAppStore() {
     const shared = sharedId ? deckProducts.find((p) => p.id === sharedId) : undefined
     return shared ? [shared, ...withBack.filter((p) => p.id !== shared.id)] : withBack
   }, [deckProducts, byId, state.disliked, state.wishlist, state.mode, state.restored, activeFilters, sharedId, boostCat, tiredKey, follows])
-  const deck = dropOn && !sharedId ? dropDeck : fullDeck
+  const deck = fullDeck
   // In anteprima si mostra il mazzo solo se ha abbastanza carte (altrimenti si aspetta il catalogo completo).
   const previewing = state.catalog.status === 'loading' && !!preview && deck.length >= 3
   deckRef.current = deck
@@ -460,7 +444,7 @@ function useAppStore() {
   const view = useMemo(() => ({ ...state, filters: activeFilters }), [state, activeFilters])
   /** Prodotti della sezione aperta (per i filtri) */
   const sectionProducts = useMemo(() => products.filter((p) => universeOf(p.category) === state.mode), [products, state.mode])
-  return { state: view, products: sectionProducts, allProducts: products, deck, previewing, drop: { day: dropDay, on: dropOn, total: dropList.length, left: dropDeck.length }, sectionDisliked, wishlist, actions, sync, unseenDeals, markDealsSeen }
+  return { state: view, products: sectionProducts, allProducts: products, deck, previewing, sectionDisliked, wishlist, actions, sync, unseenDeals, markDealsSeen }
 }
 
 export type SyncStatus = 'off' | 'loading' | 'synced' | 'saving' | 'error'

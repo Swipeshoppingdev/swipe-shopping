@@ -156,7 +156,7 @@ export function Welcome() {
                 title="Fare shopping diventa un gioco"
                 points={[
                   { icon: <Gamepad2 className="size-5" />, title: 'Mini giochi', text: 'Indovina il prezzo, Più o meno, la Ruota della fortuna e altri, tra uno swipe e l\'altro.' },
-                  { icon: <Sparkles className="size-5" />, title: 'Outfit e drop del giorno', text: 'Look completi già pronti e ogni giorno 10 prodotti nuovi o scontati da scoprire.' },
+                  { icon: <Sparkles className="size-5" />, title: 'Outfit già pronti', text: 'Look completi abbinati per te, da salvare e mandare agli amici.' },
                   { icon: <ShieldCheck className="size-5" />, title: 'Prezzi controllati, acquisti sicuri', text: 'Prezzi aggiornati più volte al giorno; compri direttamente su Amazon e negli altri negozi.' },
                 ]}
               />
