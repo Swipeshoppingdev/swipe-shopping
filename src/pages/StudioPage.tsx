@@ -301,7 +301,8 @@ function Studio() {
     )
     const cap = `Sì o no? 👀 Il modo più veloce per fare shopping: uno swipe e via. Quale avresti tenuto?\n\n${FOOTER} #swipe #shoppingtime #tendenze`
     return withCaption(cap, [
-      ...cards.map((p) => ({ ms: 1700, node: <AutoSwipe product={p} yes={rand() > 0.4} /> })),
+      // Un solo fotogramma per tutto il mazzo: le carte si susseguono senza dissolvenze in mezzo.
+      { ms: cards.length * SWIPE_MS + 400, node: <SwipeReel cards={cards.map((p) => ({ product: p, yes: rand() > 0.4 }))} /> },
       { ms: 3000, node: <Outro line="Prova anche tu su" /> },
     ])
   }, [format, gender, variant, allProducts, moda, outfits, memeTop, memeBottom, memeStyle, memeLine, memeProduct, brands])
@@ -587,40 +588,109 @@ function Versus({ a, b }: { a: Outfit; b: Outfit }) {
   )
 }
 
-function AutoSwipe({ product, yes }: { product: Product; yes: boolean }) {
-  const dir = yes ? 1 : -1
+const SWIPE_MS = 1700
+const FLY = {
+  out: (yes: boolean) => ({ x: yes ? 480 : -480, rotate: yes ? 22 : -22, zIndex: 10, transition: { duration: 0.45, ease: 'easeIn' as const } }),
+}
+
+/**
+ * Swipe in diretta: un mazzo come nell'app. La carta resta ferma un attimo, si "preme" il bottone,
+ * compare il timbro SÌ/NO e la carta vola via; sotto c'è già la successiva.
+ */
+function SwipeReel({ cards }: { cards: { product: Product; yes: boolean }[] }) {
+  const [i, setI] = useState(0)
+  // Fasi di ogni carta: 0 ferma, 1 bottone premuto + timbro, poi vola via (cambio di i).
+  const [phase, setPhase] = useState(0)
+  useEffect(() => {
+    if (i >= cards.length) return
+    const press = setTimeout(() => setPhase(1), 750)
+    const next = setTimeout(() => {
+      setPhase(0)
+      setI((n) => n + 1)
+    }, SWIPE_MS)
+    return () => {
+      clearTimeout(press)
+      clearTimeout(next)
+    }
+  }, [i, cards.length])
+  const top = cards[i]
+  const below = cards[i + 1]
+  const yes = top?.yes ?? false
   return (
     <div className="flex flex-1 flex-col justify-center px-6">
-      <motion.div
-        initial={{ x: 0, rotate: 0, opacity: 1 }}
-        animate={{ x: [0, 0, dir * 40, dir * 520], rotate: [0, 0, dir * 4, dir * 24], opacity: [1, 1, 1, 0] }}
-        transition={{ duration: 1.6, times: [0, 0.45, 0.7, 1], ease: 'easeIn' }}
-        className="relative overflow-hidden rounded-3xl bg-[#fff] text-[#111] shadow-2xl"
-      >
-        <ProductImage product={product} eager className="aspect-square w-full" />
-        <div className="space-y-0.5 p-4">
-          <p className="text-[11px] font-semibold tracking-wide text-[#737373] uppercase">{product.brand}</p>
-          <p className="line-clamp-1 font-semibold">{product.title}</p>
-          {freshPrice(product) && <p className="text-lg font-black">{formatPrice(freshPrice(product)!.price)}</p>}
+      <div className="relative">
+        {/* Tiene l'altezza del mazzo: le carte vere stanno sopra, una sull'altra */}
+        <div aria-hidden className="invisible">
+          <SwipeCardFace product={cards[0].product} />
         </div>
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0, 1] }}
-          transition={{ duration: 1.1, times: [0, 0.6, 1] }}
-          className={`absolute top-6 rounded-xl border-4 px-3 py-1 text-3xl font-black ${
-            yes ? 'left-6 -rotate-12 border-[#10b981] text-[#10b981]' : 'right-6 rotate-12 border-[#f43f5e] text-[#f43f5e]'
-          }`}
-        >
-          {yes ? 'SÌ' : 'NO'}
-        </motion.span>
-      </motion.div>
+        {/* Carta sotto: stessa misura, appena più piccola, così il mazzo si vede */}
+        {below && (
+          <motion.div
+            key={`b-${i + 1}`}
+            initial={{ scale: 0.92, y: 14 }}
+            animate={{ scale: phase ? 0.97 : 0.94, y: phase ? 6 : 10 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0"
+          >
+            <SwipeCardFace product={below.product} />
+          </motion.div>
+        )}
+        <AnimatePresence initial={false}>
+          {top && (
+            <motion.div
+              key={`t-${i}`}
+              custom={top.yes}
+              initial={{ scale: 0.97, y: 6 }}
+              animate={{ scale: 1, y: 0, x: phase ? (top.yes ? 18 : -18) : 0, rotate: phase ? (top.yes ? 3 : -3) : 0 }}
+              variants={FLY}
+              exit="out"
+              transition={{ duration: 0.25 }}
+              className="absolute inset-0"
+            >
+              <SwipeCardFace product={top.product} />
+              <motion.span
+                initial={false}
+                animate={{ opacity: phase ? 1 : 0, scale: phase ? 1 : 1.6 }}
+                transition={{ duration: 0.2 }}
+                className={`absolute top-6 rounded-xl border-4 bg-[#fff]/80 px-3 py-1 text-3xl font-black ${
+                  top.yes ? 'left-6 -rotate-12 border-[#10b981] text-[#10b981]' : 'right-6 rotate-12 border-[#f43f5e] text-[#f43f5e]'
+                }`}
+              >
+                {top.yes ? 'SÌ' : 'NO'}
+              </motion.span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+      </div>
       <div className="mt-6 flex justify-center gap-6">
-        <span className={`grid size-16 place-items-center rounded-full bg-[#fff]/10 text-3xl font-black ${!yes ? 'ring-4 ring-[#f43f5e]' : ''}`}>
+        <motion.span
+          animate={{ scale: phase && !yes ? [1, 1.25, 1] : 1 }}
+          transition={{ duration: 0.35 }}
+          className={`grid size-16 place-items-center rounded-full text-3xl font-black ${phase && !yes ? 'bg-[#f43f5e] ring-4 ring-[#fff]' : 'bg-[#fff]/10'}`}
+        >
           <X className="size-8" />
-        </span>
-        <span className={`grid size-16 place-items-center rounded-full bg-[#f43f5e] ${yes ? 'ring-4 ring-[#fff]' : ''}`}>
+        </motion.span>
+        <motion.span
+          animate={{ scale: phase && yes ? [1, 1.25, 1] : 1 }}
+          transition={{ duration: 0.35 }}
+          className={`grid size-16 place-items-center rounded-full bg-[#f43f5e] ${phase && yes ? 'ring-4 ring-[#fff]' : ''}`}
+        >
           <Heart className="size-8 fill-current" />
-        </span>
+        </motion.span>
+      </div>
+    </div>
+  )
+}
+
+function SwipeCardFace({ product }: { product: Product }) {
+  return (
+    <div className="overflow-hidden rounded-3xl bg-[#fff] text-[#111] shadow-2xl">
+      <ProductImage product={product} eager className="aspect-square w-full" />
+      <div className="space-y-0.5 p-4">
+        <p className="text-[11px] font-semibold tracking-wide text-[#737373] uppercase">{product.brand}</p>
+        <p className="line-clamp-1 font-semibold">{product.title}</p>
+        {freshPrice(product) && <p className="text-lg font-black">{formatPrice(freshPrice(product)!.price)}</p>}
       </div>
     </div>
   )

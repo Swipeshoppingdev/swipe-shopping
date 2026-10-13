@@ -19,7 +19,7 @@ export const SOCIAL_LINKS = {
   instagram: 'https://www.instagram.com/swipeshoppingapp/',
   tiktok: 'https://www.tiktok.com/@swipeshoppingapp',
   whatsapp: 'https://whatsapp.com/channel/0029VbDsQHy5Ui2fYiqw201q',
-  x: 'https://x.com/SwipeShopping_',
+  // X (https://x.com/SwipeShopping_) tolto per ora su richiesta di Kevin (13/10/2026).
 }
 
 /** Unico account che vede la pagina Statistiche (#/admin). Il controllo vero è in Supabase (admin_stats). */
