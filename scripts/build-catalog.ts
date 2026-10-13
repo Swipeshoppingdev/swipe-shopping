@@ -2,6 +2,7 @@
 // così l'app scarica e legge meno dati all'avvio.
 import { readFileSync, writeFileSync } from 'node:fs'
 import { UNIVERSES, universeOf, type CategoryId } from '../src/config/categories.ts'
+import { checkCatalog } from '../src/lib/validate.ts'
 
 function hash(s: string) {
   let h = 2166136261
@@ -11,7 +12,10 @@ function hash(s: string) {
 
 const file = new URL('../dist/catalog.json', import.meta.url)
 const source = readFileSync(file, 'utf8')
-const catalog = (JSON.parse(source) as { availability?: string }[]).filter((p) => p.availability !== 'out_of_stock')
+// Controllo completo qui, una volta sola: l'app fa solo un controllo veloce (src/lib/catalog.ts), che sui telefoni lenti conta.
+const checked = checkCatalog(JSON.parse(source))
+if (checked.invalid.length) console.warn(`Scartati ${checked.invalid.length} prodotti non validi, es. ${JSON.stringify(checked.invalid.slice(0, 3))}`)
+const catalog = (checked.valid as unknown as { availability?: string }[]).filter((p) => p.availability !== 'out_of_stock')
 const out = JSON.stringify(catalog)
 writeFileSync(file, out)
 // Una copia per sezione, più leggera: senza campi ricostruibili (vedi expand() in src/lib/catalog.ts).

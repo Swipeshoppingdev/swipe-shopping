@@ -21,7 +21,7 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET' || url.origin !== self.location.origin) return
 
   const immutable = url.pathname.includes('/assets/') || url.pathname.includes('/icons/')
-  if (/\/catalog(-\w+)?\.json$/.test(url.pathname)) event.respondWith(networkWithTimeout(event, req))
+  if (/\/catalog(-[\w-]+)?\.json$/.test(url.pathname)) event.respondWith(networkWithTimeout(event, req))
   else event.respondWith(immutable ? cacheFirst(req) : networkFirst(req))
 })
 

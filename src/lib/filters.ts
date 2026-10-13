@@ -51,7 +51,10 @@ export function sortProducts(list: Product[], sort: Filters['sort'], seed = '') 
       }
       return k
     }
-    return sorted.sort((a, b) => key(a) - key(b))
+    // Chiavi calcolate prima e ordinamento su numeri: con ~20.000 prodotti è molto più veloce che leggere la cache nel confronto.
+    const keyed = list.map((p) => ({ k: key(p), p }))
+    keyed.sort((a, b) => a.k - b.k)
+    return keyed.map((x) => x.p)
   }
   if (sort === 'novita') return sorted.sort((a, b) => b.addedAt.localeCompare(a.addedAt))
   const dir = sort === 'prezzo_asc' ? 1 : -1

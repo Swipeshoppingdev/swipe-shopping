@@ -6,17 +6,21 @@ import type { Product } from '../types/product'
  */
 const NEW_DAYS = 7
 let baseline = Infinity
+const added = new WeakMap<Product, number>()
 
 export function setNewBaseline(products: Product[]) {
   let min = Infinity
   for (const p of products) {
-    const t = Date.parse(p.addedAt)
+    // La data letta qui serve anche a isNew: così si legge una volta sola per prodotto.
+    let t = added.get(p)
+    if (t === undefined) {
+      t = Date.parse(p.addedAt)
+      added.set(p, t)
+    }
     if (t < min) min = t
   }
   baseline = min + 24 * 3_600_000
 }
-
-const added = new WeakMap<Product, number>()
 
 export function isNew(p: Product, now = Date.now()) {
   let t = added.get(p)

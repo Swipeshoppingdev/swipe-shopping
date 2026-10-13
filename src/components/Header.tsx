@@ -1,6 +1,6 @@
 import { closeBreaks } from '../lib/closeBreaks'
 import { Check, ChevronDown, Ghost, Cookie, Cpu, Gift, LayoutGrid, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun, TreePine } from 'lucide-react'
-import { giftSeason } from '../pages/GiftsPage'
+import { giftSeason } from '../lib/giftSeason'
 import { Reorder, useDragControls } from 'framer-motion'
 import { useEffect, useRef, useState, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react'
 import { APP_NAME } from '../config/app'
