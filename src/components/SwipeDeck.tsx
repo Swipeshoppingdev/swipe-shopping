@@ -1,9 +1,10 @@
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Heart, X } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { track } from '../lib/analytics'
 import { useApp } from '../state/AppState'
-import { productImageUrl, storeLinkLabel } from '../config/stores'
+import { productImageUrl, productUrl, storeLinkLabel, storeName } from '../config/stores'
+import { ProductImage } from './ProductImage'
 import { CoachMarks } from './CoachMarks'
 import { HeartBurst, type Burst } from './HeartBurst'
 import { discountBadge } from '../lib/price'
@@ -34,6 +35,9 @@ export function SwipeDeck({ cards, onLike }: { cards?: Product[]; onLike?: (p: P
   const deck = cards ?? app.deck
   const [exitDir, setExitDir] = useState<SwipeDir>(1)
   const [bursts, setBursts] = useState<Burst[]>([])
+  // "Salvato! Vedi su Amazon": per qualche secondo dopo un Sì, quando l'interesse è più alto.
+  const [saved, setSaved] = useState<Product | null>(null)
+  const savedTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
   const top = deck[0]
   const visible = deck.slice(0, 3)
 
@@ -50,6 +54,11 @@ export function SwipeDeck({ cards, onLike }: { cards?: Product[]; onLike?: (p: P
         setBursts((b) => [...b.slice(-2), { id, discount }])
         setTimeout(() => setBursts((b) => b.filter((x) => x.id !== id)), 1400)
         navigator.vibrate?.((discount ?? 0) >= 30 ? [15, 40, 25, 40, 35] : 15)
+        if (productUrl(top)) {
+          setSaved(top)
+          clearTimeout(savedTimer.current)
+          savedTimer.current = setTimeout(() => setSaved(null), 3500)
+        }
       } else actions.dislike(top)
     },
     [top, actions, onLike],
@@ -92,6 +101,29 @@ export function SwipeDeck({ cards, onLike }: { cards?: Product[]; onLike?: (p: P
             .reverse()}
         </AnimatePresence>
         <HeartBurst bursts={bursts} />
+        <AnimatePresence>
+          {saved && (
+            <motion.div
+              key={saved.id}
+              initial={{ y: -16, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -16, opacity: 0 }}
+              className="absolute inset-x-0 top-2 z-30 flex justify-center px-3"
+            >
+              <StoreLink
+                product={saved}
+                icon={false}
+                className="flex max-w-full items-center gap-2 rounded-full bg-neutral-900 py-1.5 pr-3.5 pl-1.5 text-sm font-semibold text-white shadow-xl"
+              >
+                <span className="size-8 shrink-0 overflow-hidden rounded-full bg-[#fff]">
+                  <ProductImage product={saved} className="size-full object-contain" />
+                </span>
+                <span className="truncate">❤️ Salvato!</span>
+                <span className="shrink-0 underline underline-offset-2">Vedi su {storeName(saved.store)} →</span>
+              </StoreLink>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <CoachMarks />
       </div>
 

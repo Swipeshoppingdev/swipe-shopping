@@ -1,9 +1,10 @@
 import { storeName } from '../config/stores'
-import { fewLeft, formatPrice, freshPrice } from '../lib/price'
+import { fewLeft, formatPrice, freshPrice, timedDeal } from '../lib/price'
 import type { Product } from '../types/product'
 
 export function PriceTag({ product, size = 'md' }: { product: Product; size?: 'md' | 'lg' }) {
   const price = freshPrice(product)
+  const deal = timedDeal(product)
   if (!price) {
     return <span className="text-sm text-neutral-500">Prezzo su {storeName(product.store)}</span>
   }
@@ -21,9 +22,20 @@ export function PriceTag({ product, size = 'md' }: { product: Product; size?: 'm
           </span>
         </>
       )}
+      {deal && (
+        <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-semibold text-violet-800">
+          ⚡ {deal.badge}
+          {deal.left !== null && deal.left < 48 * 3_600_000 && ` · finisce tra ${waitText(deal.left)}`}
+        </span>
+      )}
       {fewLeft(product) && (
         <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">⏳ Ultimi pezzi</span>
       )}
     </span>
   )
+}
+
+const waitText = (ms: number) => {
+  const h = Math.floor(ms / 3_600_000)
+  return h >= 1 ? `${h} h` : `${Math.max(1, Math.round(ms / 60_000))} min`
 }

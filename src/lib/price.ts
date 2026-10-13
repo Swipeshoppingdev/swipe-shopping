@@ -28,3 +28,11 @@ export function discountBadge(p: Product) {
 
 /** "Ultimi pezzi": solo se Amazon lo ha detto insieme a un prezzo ancora valido. */
 export const fewLeft = (p: Product, now = Date.now()) => p.fewLeft === true && p.availability === 'in_stock' && freshPrice(p, now) !== null
+
+/** Offerta a tempo ancora in corso (con prezzo valido): etichetta e millisecondi alla fine, se Amazon la dice. */
+export function timedDeal(p: Product, now = Date.now()) {
+  if (!p.dealBadge || p.availability !== 'in_stock' || !freshPrice(p, now)) return null
+  const left = p.dealEndsAt ? Date.parse(p.dealEndsAt) - now : NaN
+  if (left <= 0) return null
+  return { badge: p.dealBadge, left: Number.isNaN(left) ? null : left }
+}

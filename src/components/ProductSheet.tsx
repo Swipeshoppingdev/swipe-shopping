@@ -6,6 +6,7 @@ import { brandAndStore, storeLinkLabel, storeName } from '../config/stores'
 import { galleryOf } from '../lib/gallery'
 import { closeProduct, openProduct, useOpenProduct } from '../lib/productSheet'
 import { hasSizes } from '../lib/sizes'
+import { formatPrice, freshPrice } from '../lib/price'
 import { similarProducts } from '../lib/similar'
 import { useDetails } from '../lib/useDetails'
 import { useApp } from '../state/AppState'
@@ -66,6 +67,7 @@ export function ProductSheet() {
 }
 
 function SheetContent({ product }: { product: Product }) {
+  const fresh = freshPrice(product)
   const { wishlist, actions, allProducts } = useApp()
   const similar = useMemo(() => similarProducts(product, allProducts), [product, allProducts])
   const details = useDetails(product.id)
@@ -136,12 +138,16 @@ function SheetContent({ product }: { product: Product }) {
           </p>
         )}
 
-        <div className="flex gap-2">
+        {/* Sempre a portata di dito: resta fisso in basso mentre si scorre la scheda. */}
+        <div className="sticky bottom-0 z-10 -mx-5 flex gap-2 bg-white px-5 py-2 shadow-[0_-8px_16px_-12px_rgba(0,0,0,0.25)]">
           <StoreLink
             product={product}
-            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-neutral-900 font-semibold text-white"
+            className="flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-full bg-neutral-900 font-semibold text-white"
           >
-            {storeLinkLabel(product)}
+            <span className="truncate">
+              {storeLinkLabel(product)}
+              {fresh && ` · ${fresh.from ? 'da ' : ''}${formatPrice(fresh.price)}`}
+            </span>
           </StoreLink>
           <button
             type="button"

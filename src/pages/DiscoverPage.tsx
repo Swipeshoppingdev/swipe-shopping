@@ -2,6 +2,7 @@ import { Flame, RefreshCw, SlidersHorizontal, Sparkles } from 'lucide-react'
 import { SwipeDeck } from '../components/SwipeDeck'
 import { DeckTabs } from '../components/DeckTabs'
 import { Breaks } from '../components/Breaks'
+import { FavDeals } from '../components/FavDeals'
 import { NewArrivals } from '../components/NewArrivals'
 import { routeHref } from '../lib/useHashRoute'
 import { widenSuggestions } from '../lib/widen'
@@ -52,6 +53,7 @@ export function DiscoverPage() {
           <SwipeDeck />
           <NewArrivals key={state.mode} />
           <Breaks key={`breaks:${state.mode}`} />
+          <FavDeals key={`favdeals:${state.mode}`} />
         </div>
       ) : drop.on ? (
         <DropDone total={drop.total} />

@@ -38,6 +38,9 @@ export interface Product {
   availability: Availability
   /** Amazon segnala che ne restano pochi (all'ultimo controllo del prezzo) */
   fewLeft?: boolean
+  /** Offerta a tempo su Amazon: etichetta (es. "Offerta a tempo") e quando finisce */
+  dealBadge?: string
+  dealEndsAt?: string
   /** ISO date: quando il prodotto è entrato in catalogo (ordinamento "novità") */
   addedAt: string
   /**

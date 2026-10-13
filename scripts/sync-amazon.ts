@@ -102,10 +102,20 @@ interface Offer {
   availability: string
   /** Amazon dice che ne restano pochi ("Solo 3 disponibili", tipo IN_STOCK_SCARCE) */
   fewLeft: boolean
+  /** Offerta a tempo (offersV2 dealDetails): etichetta di Amazon e fine */
+  deal?: { badge: string; endsAt?: string }
 }
 
 /** Tipi e messaggi di disponibilità visti in questo giro (nel log, per capire cosa manda Amazon). */
 const availabilitySeen = new Map<string, number>()
+
+function readDeal(d: any): Offer['deal'] {
+  if (!d) return undefined
+  const end = typeof d.endTime === 'string' ? Date.parse(d.endTime) : NaN
+  if (!Number.isNaN(end) && end < Date.now()) return undefined
+  const badge = typeof d.badge === 'string' && d.badge.trim() ? d.badge.trim().slice(0, 40) : 'Offerta a tempo'
+  return { badge, endsAt: Number.isNaN(end) ? undefined : new Date(end).toISOString() }
+}
 
 function readListing(item: any): Offer | null {
   const listings: any[] = item?.offersV2?.listings ?? []
@@ -119,6 +129,7 @@ function readListing(item: any): Offer | null {
     price: num(listing.price?.money?.amount),
     basis: num(listing.price?.savingBasis?.money?.amount),
     availability,
+    deal: readDeal(listing.dealDetails),
     fewLeft: availability.includes('SCARCE') || /\bsol[oi]\s+\d+|ultim[ie]\s+(\d+\s+)?(pezz|articol|disponibil)/i.test(message),
   }
 }
@@ -202,8 +213,18 @@ function applyOffer(p: Record<string, any>, offer: Offer | null) {
     p.availability = 'in_stock'
     if (offer.fewLeft) p.fewLeft = true
     else delete p.fewLeft
+    if (offer.deal) {
+      p.dealBadge = offer.deal.badge
+      if (offer.deal.endsAt) p.dealEndsAt = offer.deal.endsAt
+      else delete p.dealEndsAt
+    } else {
+      delete p.dealBadge
+      delete p.dealEndsAt
+    }
   } else {
     delete p.fewLeft
+    delete p.dealBadge
+    delete p.dealEndsAt
     delete p.price
     delete p.originalPrice
     delete p.priceCheckedAt
@@ -214,6 +235,8 @@ function applyOffer(p: Record<string, any>, offer: Offer | null) {
 // Foto aggiuntive e caratteristiche per la scheda prodotto. Se Amazon rifiuta questi campi,
 // la ricerca continua senza (meglio un catalogo senza dettagli che nessun catalogo).
 let detailResources = ['images.variants.large', 'itemInfo.features']
+// Offerte a tempo: se Amazon non accetta il campo, si toglie per primo.
+let dealResources = ['offersV2.listings.dealDetails']
 let reviewResources = ['customerReviews.count', 'customerReviews.starRating']
 
 /** Almeno `minRating` stelle e `minReviews` voti. Senza dati sulle recensioni basta la marca nota. */
@@ -283,7 +306,7 @@ async function searchCatalog(token: string) {
                 minPrice: plan.minPrice * 100,
                 availability: 'Available',
                 resources: [
-                  'images.primary.large', 'itemInfo.title', 'itemInfo.byLineInfo', ...detailResources, ...OFFER_RESOURCES,
+                  'images.primary.large', 'itemInfo.title', 'itemInfo.byLineInfo', ...detailResources, ...OFFER_RESOURCES, ...dealResources,
                   ...(wantReviews ? reviewResources : []),
                 ],
               })
@@ -297,6 +320,9 @@ async function searchCatalog(token: string) {
                 if (sortBy) {
                   annotate('warning', `Ordinamento ${sortBy} non accettato, continuo senza: ${e instanceof Error ? e.message : String(e)}`)
                   sortBy = ''
+                } else if (dealResources.length) {
+                  annotate('warning', `Offerte a tempo non disponibili, continuo senza: ${e instanceof Error ? e.message : String(e)}`)
+                  dealResources = []
                 } else if (wantReviews && reviewResources.length) {
                   annotate('warning', `Recensioni non disponibili, continuo senza: ${e instanceof Error ? e.message : String(e)}`)
                   reviewResources = []
@@ -556,6 +582,7 @@ try {
   annotate('notice', `Catalogo: ${next.length} prodotti (${searched.length} dalla ricerca), ${requests} richieste ad Amazon.`)
   const few = next.filter((p) => p.fewLeft).length
   const kinds = [...availabilitySeen].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([k, n]) => `${k}: ${n}`)
+  annotate('notice', `Offerte a tempo: ${next.filter((p) => p.dealBadge).length} prodotti (${[...new Set(next.map((p) => p.dealBadge).filter(Boolean))].slice(0, 5).join(', ')}).`)
   annotate('notice', `Ultimi pezzi: ${few} prodotti. Disponibilità viste: ${kinds.join(' | ')}`)
 } catch (e) {
   annotate('error', `Sincronizzazione Amazon non riuscita: ${e instanceof Error ? e.message : String(e)}`)
