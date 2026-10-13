@@ -49,7 +49,7 @@ export function CoachMarks() {
           <strong>Il menu in alto a sinistra</strong> apre le altre sezioni (Beauty, Tech, Casa e le altre), ognuna con preferiti e filtri suoi.
         </Tip>
         <Tip icon={<LayoutGrid className="size-5" />}>
-          <strong>Il tasto Outfit</strong> in alto a destra apre look completi già abbinati: se un capo non ti convince, lo cambi.
+          <strong>Outfit</strong>, nel menu delle sezioni, ha look completi già abbinati: se un capo non ti convince, lo cambi.
         </Tip>
         <button type="button" onClick={close} className="h-12 w-full rounded-full bg-rose-500 font-semibold text-[#fff]">
           Ho capito

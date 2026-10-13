@@ -3,6 +3,7 @@ import { useState, type ReactNode } from 'react'
 import { AccountActions, AccountCard } from '../components/AccountCard'
 import { InstallCard } from '../components/InstallCard'
 import { MyProfileCard } from '../components/MyProfileCard'
+import { CrashLogCard } from '../components/CrashLogCard'
 import { ADMIN_EMAIL, AMAZON_DISCLOSURE, APP_NAME, GENERIC_DISCLOSURE } from '../config/app'
 import { categoryLabel, isCategoryId } from '../config/categories'
 import { setConsent, summary } from '../lib/analytics'
@@ -83,6 +84,8 @@ export function ProfilePage() {
           <ChevronRight className="size-5" />
         </a>
       )}
+
+      {isAdmin && <CrashLogCard />}
 
       <InstallCard />
 

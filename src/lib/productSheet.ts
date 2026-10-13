@@ -11,6 +11,8 @@ export function openProduct(p: Product) {
 }
 export function closeProduct() {
   current = null
+  // Se la WebView ha spostato la pagina mentre la scheda era aperta, si torna in cima (vedi index.css).
+  if (window.scrollY || document.documentElement.scrollTop) window.scrollTo(0, 0)
   listeners.forEach((fn) => fn())
 }
 export function useOpenProduct() {
