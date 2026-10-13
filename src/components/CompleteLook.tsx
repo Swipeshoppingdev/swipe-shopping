@@ -1,4 +1,5 @@
 import { Check, Heart, RefreshCw } from 'lucide-react'
+import { AmazonCart } from './AmazonCart'
 import { useMemo, useState } from 'react'
 import { universeOf } from '../config/categories'
 import { STYLE_LABEL, completeLook, outfitTotal } from '../lib/outfits'
@@ -75,6 +76,7 @@ export function CompleteLook({ product }: { product: Product }) {
           </li>
         ))}
       </ul>
+      <AmazonCart products={look.items} className="mt-3" />
       <button
         type="button"
         onClick={saveLook}

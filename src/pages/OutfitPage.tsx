@@ -1,4 +1,5 @@
 import { SIZE_HINT, SizePicker } from '../components/SizePicker'
+import { AmazonCart } from '../components/AmazonCart'
 import { facetValues } from '../lib/filters'
 import { fitSizes } from '../lib/sizes'
 import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
@@ -428,6 +429,7 @@ function OutfitSheet(props: { outfit: Outfit; saved: boolean; onSave: () => void
             )
           })}
         </ul>
+        <AmazonCart products={outfit.items} className="mt-4" />
         {!saved && outfit.items.length > 0 && (
           <button
             type="button"

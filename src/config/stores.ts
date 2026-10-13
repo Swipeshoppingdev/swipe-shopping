@@ -77,3 +77,14 @@ export const productImageUrl = (p: Product): string | null => {
 }
 export const storeLinkLabel = (p: Product) =>
   p.searchQuery ? `Cerca su ${storeName(p.store)}` : `Vedi su ${storeName(p.store)}`
+
+/**
+ * Un solo link che mette più prodotti Amazon nel carrello (pagina ufficiale "Aggiungi al carrello"
+ * di Amazon, con il nostro tag affiliato). Solo prodotti Amazon veri (non le ricerche), al massimo 30.
+ */
+export function amazonCartUrl(products: Product[]) {
+  const asins = [...new Set(products.filter((p) => p.store === 'amazon' && !p.searchQuery && p.availability !== 'out_of_stock').map((p) => p.externalId))].slice(0, 30)
+  if (asins.length < 2) return null
+  const q = asins.map((a, i) => `ASIN.${i + 1}=${encodeURIComponent(a)}&Quantity.${i + 1}=1`).join('&')
+  return { url: `https://www.amazon.it/gp/aws/cart/add.html?AssociateTag=${AMAZON_TAG}&${q}`, count: asins.length }
+}

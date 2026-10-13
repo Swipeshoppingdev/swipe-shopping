@@ -1,4 +1,5 @@
 import { BadgePercent, FolderInput, Heart, Share2, Trash2 } from 'lucide-react'
+import { AmazonCart } from '../components/AmazonCart'
 import { useEffect, useMemo, useState } from 'react'
 import { FolderPicker } from '../components/FolderPicker'
 import { NewBadge } from '../components/NewBadge'
@@ -148,6 +149,8 @@ export function WishlistPage() {
           non mandano più avvisi.
         </p>
       )}
+      {/* Solo quelli disponibili ora: i preferiti usciti dal catalogo non si possono comprare. */}
+      <AmazonCart products={shown.filter((w) => w.inCatalog).map((w) => w.product)} />
       {shown.length > 0 && <ListShare name={current && isPresetFolder(current) ? current : null} products={shown.map((w) => w.product)} />}
       <div className="flex items-center justify-between gap-3 text-sm">
         {current ? (
