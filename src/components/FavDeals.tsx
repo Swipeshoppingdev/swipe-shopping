@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { BadgePercent } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { universeOf } from '../config/categories'
-import { dropDay } from '../lib/drop'
 import { formatPrice, freshPrice } from '../lib/price'
 import { load, save } from '../lib/storage'
 import { routeHref } from '../lib/useHashRoute'
@@ -14,10 +13,16 @@ import { StoreLink } from './StoreLink'
  * "Oggi nei tuoi preferiti": una volta al giorno per sezione, all'apertura, se qualche preferito è in offerta
  * (sconto vero di oggi) compare prima del mazzo con il link diretto al negozio.
  */
+/** Il giorno cambia alle 8 di mattina (ora del telefono). */
+function dayKey(now = new Date()) {
+  const d = new Date(now.getTime() - 8 * 3_600_000)
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
+}
+
 export function FavDeals() {
   const { state, wishlist } = useApp()
   const key = `favDealsSeen:${state.mode}`
-  const today = dropDay()
+  const today = dayKey()
   const [closed, setClosed] = useState(() => load<string>(key, '') === today)
   const all = useMemo(
     () =>
@@ -32,7 +37,7 @@ export function FavDeals() {
   const deals = all.filter((w) => atOpen.current!.has(w.product.id))
   const close = () => setClosed(true)
   const show = !closed && deals.length > 0
-  // Vista oggi: riaprendo l'app non ricompare fino a domani (alle 8, come il drop).
+  // Vista oggi: riaprendo l'app non ricompare fino a domani (alle 8).
   useEffect(() => {
     if (show) save(key, today)
   }, [show, key, today])
