@@ -223,3 +223,25 @@ body {
   --color-rose-500: #f97316;
   --color-rose-700: #fdba74;
 }
+
+/*
+ * Tema chiaro meno "tutto bianco": in alto una sfumatura del colore della sezione (rosa Moda, arancio Tech...)
+ * che sfuma nel grigio chiaro, e un velo leggero in fondo. La barra in alto ha lo stesso colore pieno
+ * (iOS lo usa sotto l'ora). Le schede e le foto restano bianche. Nel tema scuro non cambia niente.
+ */
+:root {
+  --top-tint: color-mix(in srgb, var(--color-rose-100) 75%, var(--color-neutral-50));
+}
+:root.dark {
+  --top-tint: var(--color-neutral-50);
+}
+.app-top {
+  background: var(--top-tint);
+}
+.app-bg {
+  background:
+    linear-gradient(180deg, var(--top-tint) 0, var(--color-neutral-50) 38%, var(--color-neutral-50) 70%, color-mix(in srgb, var(--color-rose-50) 80%, var(--color-neutral-50)) 100%);
+}
+:root.dark .app-bg {
+  background: var(--color-neutral-50);
+}
