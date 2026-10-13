@@ -1,5 +1,5 @@
 import { Check, X } from 'lucide-react'
-import { FOLDERS, compareFolders, folderLabel, isPresetFolder } from '../config/folders'
+import { FOLDERS, WATCH_FOLDER, compareFolders, folderLabel, isPresetFolder } from '../config/folders'
 import { useApp } from '../state/AppState'
 import type { Product } from '../types/product'
 
@@ -29,7 +29,10 @@ export function FolderPicker({ product, onClose }: { product: Product; onClose: 
           on ? 'bg-neutral-900 text-white ring-neutral-900' : 'bg-white text-neutral-800 ring-neutral-200'
         }`}
       >
-        <span className="flex-1 truncate">{folderLabel(name)}</span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate">{folderLabel(name)}</span>
+          {name === WATCH_FOLDER && <span className={`block text-[11px] font-normal ${on ? 'text-white/70' : 'text-emerald-700'}`}>🔔 ti avvisiamo</span>}
+        </span>
         {on ? <Check className="size-4 shrink-0" /> : n > 0 && <span className="text-xs text-neutral-400">{n}</span>}
       </button>
     )

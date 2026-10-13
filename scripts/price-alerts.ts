@@ -23,6 +23,8 @@ const TEST_TO = process.argv.find((a) => a.startsWith('--test='))?.slice('--test
 const FROM = 'Swipe Shopping <noreply@swipeshopping.app>'
 const APP_URL = 'https://swipeshopping.app'
 const MIN_GAP_MS = 3 * 24 * 3_600_000
+const WATCH_GAP_MS = 20 * 3_600_000
+const WATCH_FOLDER = 'Quando scende' // src/config/folders.ts
 const PRICE_MAX_AGE_MS = 24 * 3_600_000
 
 if (TEST_TO !== undefined && (!RESEND_API_KEY || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(TEST_TO))) {
@@ -70,8 +72,10 @@ async function all<T>(table: string, columns: string, filter?: (q: any) => any):
   }
 }
 
-function email(count: number) {
-  const subject = count === 1 ? 'Un tuo preferito è in offerta' : `${count} tuoi preferiti sono in offerta`
+function email(count: number, watching = false) {
+  const subject = watching
+    ? count === 1 ? 'Quello che aspettavi è in offerta' : `${count} prodotti che aspettavi sono in offerta`
+    : count === 1 ? 'Un tuo preferito è in offerta' : `${count} tuoi preferiti sono in offerta`
   const intro =
     count === 1
       ? 'Uno dei prodotti che hai salvato nei preferiti adesso è scontato.'
@@ -83,15 +87,15 @@ function email(count: number) {
     <h1 style="font-size:22px;color:#171717;margin:20px 0 8px">${subject}</h1>
     <p style="font-size:15px;line-height:1.5;color:#525252;margin:0 0 24px">${intro} Aprili nell’app per vedere lo sconto prima che finisca.</p>
     <a href="${link}" style="display:inline-block;background:#f43f5e;color:#fff;text-decoration:none;font-weight:600;font-size:16px;padding:14px 28px;border-radius:999px">Vedi i miei preferiti</a>
-    <p style="font-size:12px;line-height:1.5;color:#a3a3a3;margin:28px 0 0">Ricevi questa email perché hai un account su Swipe Shopping. Ti scriviamo al massimo ogni 3 giorni.<br><a href="${APP_URL}/#/profilo" style="color:#a3a3a3">Non voglio più questi avvisi</a></p>
+    <p style="font-size:12px;line-height:1.5;color:#a3a3a3;margin:28px 0 0">Ricevi questa email perché hai un account su Swipe Shopping. Ti scriviamo solo quando un preferito va in offerta, al massimo una volta al giorno.<br><a href="${APP_URL}/#/profilo" style="color:#a3a3a3">Non voglio più questi avvisi</a></p>
   </div>
 </div>`
   const text = `${subject}\n\n${intro}\nVedi i tuoi preferiti: ${link}\n\nNon vuoi più questi avvisi? Spegnili dal Profilo: ${APP_URL}/#/profilo`
   return { subject, html, text }
 }
 
-async function send(to: string, count: number) {
-  const { subject, html, text } = email(count)
+async function send(to: string, count: number, watching = false) {
+  const { subject, html, text } = email(count, watching)
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
@@ -143,9 +147,11 @@ const romeHour = Number(new Intl.DateTimeFormat('it-IT', { hour: 'numeric', hour
 const quiet = romeHour < 9 || romeHour >= 21
 
 /** Notifica sul telefono, testo fisso. true se è arrivata ad almeno un telefono. */
-async function notifyPhones(userId: string, count: number) {
+async function notifyPhones(userId: string, count: number, watching = false) {
   const m = {
-    title: count === 1 ? 'Un tuo preferito è in offerta' : `${count} tuoi preferiti sono in offerta`,
+    title: watching
+      ? count === 1 ? 'Quello che aspettavi è in offerta' : `${count} prodotti che aspettavi sono in offerta`
+      : count === 1 ? 'Un tuo preferito è in offerta' : `${count} tuoi preferiti sono in offerta`,
     body: 'Guardali prima che lo sconto finisca',
     url: '#/preferiti',
   }
@@ -168,7 +174,12 @@ for (const u of users) {
   const before: Record<string, number> = (log?.notified as { deals?: Record<string, number> } | undefined)?.deals ?? {}
   const active: Record<string, number> = {}
   const fresh: Record<string, number> = {}
-  for (const w of Array.isArray(u.wishlist) ? u.wishlist : []) {
+  // Cartella "Quando scende": chi la usa riceve avvisi solo per quei prodotti (meno avvisi, più utili),
+  // e al massimo uno al giorno invece che ogni 3 giorni. Chi non la usa: tutti i preferiti, come prima.
+  const items = Array.isArray(u.wishlist) ? u.wishlist : []
+  const watched = items.filter((w) => (w as { folder?: string })?.folder === WATCH_FOLDER)
+  const watching = watched.length > 0
+  for (const w of watching ? watched : items) {
     const id = w?.product?.id
     const pct = id ? currentDeal(id) : null
     if (!id || pct === null) continue
@@ -176,7 +187,7 @@ for (const u of users) {
     if (before[id] === undefined || pct >= before[id] + 5) fresh[id] = pct
   }
   const forgotten = Object.keys(before).some((id) => active[id] === undefined)
-  const waiting = log?.last_sent_at && now - Date.parse(log.last_sent_at) < MIN_GAP_MS
+  const waiting = log?.last_sent_at && now - Date.parse(log.last_sent_at) < (watching ? WATCH_GAP_MS : MIN_GAP_MS)
   const count = Object.keys(fresh).length
   if (count === 0 || waiting) {
     if (forgotten && log) await db.from('price_alerts').update({ notified: { deals: active } }).eq('user_id', u.user_id)
@@ -187,7 +198,7 @@ for (const u of users) {
   if (phones.has(u.user_id)) {
     // Di notte niente notifiche: si aspetta il prossimo aggiornamento del catalogo.
     if (quiet) continue
-    viaPhone = await notifyPhones(u.user_id, count)
+    viaPhone = await notifyPhones(u.user_id, count, watching)
   }
   if (viaPhone) {
     if (DRY) continue
@@ -198,10 +209,10 @@ for (const u of users) {
     if (error || !to || !data.user.email_confirmed_at) continue
 
     if (DRY) {
-      console.log(`[prova] ${mask(to)}: ${email(count).subject}`)
+      console.log(`[prova] ${mask(to)}: ${email(count, watching).subject}`)
       continue
     }
-    if (!(await send(to, count))) {
+    if (!(await send(to, count, watching))) {
       failed++
       continue
     }

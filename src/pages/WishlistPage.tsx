@@ -9,7 +9,7 @@ import { PriceTag } from '../components/PriceTag'
 import { ProductImage } from '../components/ProductImage'
 import { StoreLink } from '../components/StoreLink'
 import { AMAZON_DISCLOSURE } from '../config/app'
-import { compareFolders, folderLabel, isPresetFolder } from '../config/folders'
+import { WATCH_FOLDER, compareFolders, folderLabel, isPresetFolder } from '../config/folders'
 import { universeOf } from '../config/categories'
 import { brandAndStore } from '../config/stores'
 import { discountBadge, fewLeft, freshPrice } from '../lib/price'
@@ -31,6 +31,7 @@ export function WishlistPage() {
   const wishlist = useMemo(() => all.filter((w) => universeOf(w.product.category) === state.mode), [all, state.mode])
   const deals = wishlist.filter((w) => w.deal !== null).length
   const [folder, setFolder] = useState<string | null>(null)
+  const watchUser = !!useAuth().user
   const [sort, setSort] = useState<WishSort>('recenti')
   const [moving, setMoving] = useState<Product | null>(null)
   const [dealsOnly, setDealsOnly] = useState(false)
@@ -137,6 +138,12 @@ export function WishlistPage() {
           <FolderChip key={name} active={current === name} onClick={() => setFolder(name)} label={folderLabel(name)} count={n} />
         ))}
       </div>
+      {current === WATCH_FOLDER && (
+        <p className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+          🔔 Ti avvisiamo appena uno di questi va in offerta{watchUser ? '.' : ': serve un account (Profilo).'} Gli altri preferiti
+          non mandano più avvisi.
+        </p>
+      )}
       {shown.length > 0 && <ListShare name={current && isPresetFolder(current) ? current : null} products={shown.map((w) => w.product)} />}
       <div className="flex items-center justify-between gap-3 text-sm">
         {current ? (

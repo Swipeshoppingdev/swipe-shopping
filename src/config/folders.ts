@@ -17,6 +17,9 @@ export const FOLDERS = [
 const EMOJI = new Map<string, string>(FOLDERS.map((f) => [f.name, f.emoji]))
 const ORDER = new Map<string, number>(FOLDERS.map((f, i) => [f.name, i]))
 
+/** Cartella con gli avvisi: chi la usa riceve gli avvisi offerta solo per questi prodotti (scripts/price-alerts.ts). */
+export const WATCH_FOLDER = 'Quando scende'
+
 export const isPresetFolder = (name: string) => EMOJI.has(name)
 export const folderEmoji = (name: string) => EMOJI.get(name) ?? '📁'
 export const folderLabel = (name: string) => `${folderEmoji(name)} ${name}`
