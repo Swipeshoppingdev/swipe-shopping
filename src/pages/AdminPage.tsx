@@ -163,7 +163,7 @@ type ErrorRow = { id: number; happened_at: string; kind: string; message: string
 
 /** Errori dell'app arrivati dai telefoni (anonimi): da copiare e mandare a Claude. Si vede solo se ce ne sono. */
 function AdminErrors() {
-  const [rows, setRows] = useState<ErrorRow[] | null>(null)
+  const [all, setRows] = useState<ErrorRow[] | null>(null)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
   useEffect(() => {
@@ -174,11 +174,30 @@ function AdminErrors() {
     })
   }, [])
   if (error) return <p className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">Errori dell'app: {error}</p>
-  if (!rows?.length) return null
+  const feedback = all?.filter((r) => r.kind === 'segnalazione') ?? []
+  const rows = all?.filter((r) => r.kind !== 'segnalazione') ?? []
+  const whenF = (iso: string) => new Date(iso).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+  const feedbackBox = feedback.length > 0 && (
+    <Section title={`Segnalazioni degli utenti (${feedback.length})`}>
+      <ul className="space-y-2 text-sm">
+        {feedback.map((r) => (
+          <li key={r.id}>
+            <span className="block font-medium">{r.message}</span>
+            <span className="block text-xs text-neutral-500">
+              {whenF(r.happened_at)} · {r.native ? 'App Android' : /iPhone|iPad/.test(r.ua ?? '') ? 'Sito iPhone' : /Android/.test(r.ua ?? '') ? 'Sito Android' : 'Sito'} · {r.stack}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </Section>
+  )
+  if (!rows.length) return feedbackBox || null
   const when = (iso: string) => new Date(iso).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
   const device = (r: ErrorRow) => (r.native ? 'App Android' : /iPhone|iPad/.test(r.ua ?? '') ? 'Sito iPhone' : /Android/.test(r.ua ?? '') ? 'Sito Android' : 'Sito')
   const text = rows.map((r) => `${r.happened_at} [${r.kind}] ${device(r)} ${r.route ?? ''}\n${r.message}\n${r.stack ?? ''}\n${r.ua ?? ''}`).join('\n\n')
   return (
+    <>
+    {feedbackBox}
     <Section title={`Errori dell'app (${rows.length})`}>
       <ul className="space-y-3 text-sm">
         {rows.slice(0, 10).map((r) => (
@@ -219,6 +238,7 @@ function AdminErrors() {
         </button>
       </div>
     </Section>
+    </>
   )
 }
 

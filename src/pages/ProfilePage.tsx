@@ -4,6 +4,7 @@ import { AccountActions, AccountCard } from '../components/AccountCard'
 import { InstallCard } from '../components/InstallCard'
 import { MyProfileCard } from '../components/MyProfileCard'
 import { CrashLogCard } from '../components/CrashLogCard'
+import { ProblemReport, ProblemReportIcon } from '../components/ProblemReport'
 import { ADMIN_EMAIL, AMAZON_DISCLOSURE, APP_NAME, GENERIC_DISCLOSURE } from '../config/app'
 import { categoryLabel, isCategoryId } from '../config/categories'
 import { setConsent, summary } from '../lib/analytics'
@@ -154,6 +155,10 @@ export function ProfilePage() {
           )}
         </Card>
       )}
+
+      <Card icon={<ProblemReportIcon className="size-5" />} title="Segnala un problema">
+        <ProblemReport />
+      </Card>
 
       <Card icon={<ShieldCheck className="size-5" />} title="Privacy">
         <label className="flex items-center justify-between gap-4 text-sm">
