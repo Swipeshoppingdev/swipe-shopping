@@ -8,7 +8,7 @@ import { matchesFilters, normalizeFilters, sortProducts } from '../lib/filters'
 import { isNew, setNewBaseline } from '../lib/newness'
 import { fitSizes } from '../lib/sizes'
 import { isFollowed, useFollows } from '../lib/follows'
-import { modelKey, onePerModel } from '../lib/dedupe'
+import { modelKey } from '../lib/dedupe'
 import { discountBadge } from '../lib/price'
 import { sharedProductId } from '../lib/share'
 import { load, save } from '../lib/storage'
@@ -328,30 +328,44 @@ function useAppStore() {
   // Marche seguite: una carta su tre è di una di loro (finché ce ne sono), senza riempire il mazzo solo di quelle.
   const follows = useFollows()
 
-  const fullDeck = useMemo(() => {
-    const seen = new Set([...state.disliked, ...state.wishlist.map((w) => w.product.id)])
-    const list = deckProducts.filter(
-      (p) =>
-        p.availability !== 'out_of_stock' &&
-        !seen.has(p.id) &&
-        universeOf(p.category) === state.mode &&
-        matchesFilters(p, activeFilters),
-    )
-    // Una variante per modello: niente stessa felpa in tre colori di fila. Un modello già scartato o salvato non torna.
-    const seenModels = new Set([...seen].flatMap((id) => (byId.has(id) ? [modelKey(byId.get(id)!)] : [])))
+  // Prodotti della sezione già filtrati e ordinati: si ricalcola solo quando cambiano catalogo, sezione o filtri,
+  // non a ogni swipe (sui telefoni lenti rifare tutto su decine di migliaia di prodotti costava centinaia di ms).
+  // Quando arrivano le altre sezioni i prodotti di questa restano gli stessi: si tiene la lista di prima
+  // così il mazzo non si ricalcola (era il blocco più lungo dopo l'avvio).
+  const modeProductsRef = useRef<Product[]>([])
+  const modeProducts = useMemo(() => {
+    const next = deckProducts.filter((p) => universeOf(p.category) === state.mode)
+    const prev = modeProductsRef.current
+    if (prev.length === next.length && next.every((p, i) => p === prev[i])) return prev
+    modeProductsRef.current = next
+    return next
+  }, [deckProducts, state.mode])
+  const sectionDeck = useMemo(() => {
+    const list = modeProducts.filter((p) => p.availability !== 'out_of_stock' && matchesFilters(p, activeFilters))
     const mixed = sortProducts(list, activeFilters.sort, MIX_SEED)
     // I prodotti appena arrivati per primi (sempre mescolati), poi tutti gli altri.
     const fresh = new Set(mixed.filter((p) => isNew(p)))
     // Con "La tua taglia": prima i capi con la taglia confermata, poi le novità, poi il resto.
     const fit = new Set(activeFilters.sizes.length ? mixed.filter((p) => fitSizes(p.sizes, activeFilters.sizes).length) : [])
-    const sorted = onePerModel(
-      [...mixed.filter((p) => fit.has(p) && fresh.has(p)), ...mixed.filter((p) => fit.has(p) && !fresh.has(p)), ...mixed.filter((p) => !fit.has(p) && fresh.has(p)), ...mixed.filter((p) => !fit.has(p) && !fresh.has(p))],
-      seenModels,
-    )
+    const ordered = [...mixed.filter((p) => fit.has(p) && fresh.has(p)), ...mixed.filter((p) => fit.has(p) && !fresh.has(p)), ...mixed.filter((p) => !fit.has(p) && fresh.has(p)), ...mixed.filter((p) => !fit.has(p) && !fresh.has(p))]
+    return { ordered, models: ordered.map(modelKey), inList: new Set(list) }
+  }, [modeProducts, activeFilters])
+
+  const fullDeck = useMemo(() => {
+    const seen = new Set([...state.disliked, ...state.wishlist.map((w) => w.product.id)])
+    // Una variante per modello: niente stessa felpa in tre colori di fila. Un modello già scartato o salvato non torna.
+    const seenModels = new Set([...seen].flatMap((id) => (byId.has(id) ? [modelKey(byId.get(id)!)] : [])))
+    const sorted: Product[] = []
+    const { ordered, models } = sectionDeck
+    for (let i = 0; i < ordered.length; i++) {
+      if (seen.has(ordered[i].id) || seenModels.has(models[i])) continue
+      seenModels.add(models[i])
+      sorted.push(ordered[i])
+    }
     // Scartati rimessi nel mazzo: in cima (anche se il modello era già stato visto).
     const back = state.restored.flatMap((id) => {
       const p = byId.get(id)
-      return p && list.includes(p) ? [p] : []
+      return p && sectionDeck.inList.has(p) && !seen.has(p.id) ? [p] : []
     })
     const rest0 = back.length ? sorted.filter((p) => !back.includes(p)) : sorted
     // "Cosa ti va?": la categoria scelta va in cima per un po'.
@@ -361,7 +375,7 @@ function useAppStore() {
     const withBack = [...back, ...(follows.length ? interleaveFollowed(rest, follows) : rest)]
     const shared = sharedId ? deckProducts.find((p) => p.id === sharedId) : undefined
     return shared ? [shared, ...withBack.filter((p) => p.id !== shared.id)] : withBack
-  }, [deckProducts, byId, state.disliked, state.wishlist, state.mode, state.restored, activeFilters, sharedId, boostCat, tiredKey, follows])
+  }, [deckProducts, byId, sectionDeck, state.disliked, state.wishlist, state.restored, sharedId, boostCat, tiredKey, follows])
   const deck = fullDeck
   // In anteprima si mostra il mazzo solo se ha abbastanza carte (altrimenti si aspetta il catalogo completo).
   const previewing = state.catalog.status === 'loading' && !!preview && deck.length >= 3
@@ -369,17 +383,18 @@ function useAppStore() {
   if (previewing) previewShown.current = true
 
   /** Gli scartati della sezione aperta, dal più vecchio al più recente */
+  const productsById = useMemo(() => new Map(products.map((p) => [p.id, p])), [products])
   const sectionDisliked = useMemo(() => {
-    const byId = new Map(products.map((p) => [p.id, p]))
+    const byId = productsById
     return state.disliked.filter((id) => {
       const p = byId.get(id)
       return !!p && universeOf(p.category) === state.mode
     })
-  }, [products, state.disliked, state.mode])
+  }, [productsById, state.disliked, state.mode])
 
   /** Preferiti con i dati aggiornati dal catalogo quando il prodotto è ancora presente */
   const wishlist = useMemo(() => {
-    const byId = new Map(products.map((p) => [p.id, p]))
+    const byId = productsById
     return state.wishlist.map((w) => {
       const current = byId.get(w.product.id)
       return {
@@ -390,7 +405,7 @@ function useAppStore() {
         deal: current && current.availability !== 'out_of_stock' ? discountBadge(current) : null,
       }
     })
-  }, [products, state.wishlist])
+  }, [productsById, state.wishlist])
 
   /** Offerte sui preferiti già viste nella pagina Preferiti: id → sconto visto */
   const [seenDeals, setSeenDeals] = useState(() => load<Record<string, number>>('dealsSeen', {}))
