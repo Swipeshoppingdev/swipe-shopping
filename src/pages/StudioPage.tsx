@@ -8,6 +8,7 @@ import { categoryLabel, universeOf, type CategoryId } from '../config/categories
 import { STYLE_LABEL, buildOutfits, outfitTotal, type Outfit } from '../lib/outfits'
 import { formatPrice, freshPrice } from '../lib/price'
 import { colorSwatch } from '../config/colors'
+import { cheaperAlternatives } from '../lib/priceCheck'
 import { routeHref } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
 import { useAuth } from '../state/AuthState'
@@ -21,6 +22,7 @@ import type { Product } from '../types/product'
 type Format =
   | 'offerte' | 'sfida' | 'outfit' | 'swipe' | 'meme' | 'prezzo' | 'sconto' | 'marche' | 'caro' | 'budget' | 'sotto' | 'regali'
   | 'colore' | 'vetrina' | 'mood' | 'pioggia' | 'stop' | 'mese' | 'tieni' | 'chat' | 'notifiche' | 'scontrino' | 'ruota'
+  | 'slot' | 'cerca' | 'note' | 'furbo'
 type Group = 'offerte' | 'giochi' | 'stile' | 'risate' | 'belli'
 const GROUPS: { id: Group; label: string }[] = [
   { id: 'risate', label: '😂 Divertenti' },
@@ -34,8 +36,10 @@ const FORMATS: { id: Format; label: string; emoji: string; desc: string; group: 
   { id: 'stop', label: 'Ferma il video', emoji: '✋', desc: 'Quello che esce è il tuo regalo', group: 'risate' },
   { id: 'mese', label: 'Il tuo mese', emoji: '📅', desc: 'Il mese di nascita è il tuo outfit', group: 'risate' },
   { id: 'chat', label: 'Chat', emoji: '💬', desc: 'Conversazione con un finale da ridere', group: 'risate' },
+  { id: 'note', label: 'Note del telefono', emoji: '📝', desc: 'Buoni propositi cancellati, uno a uno', group: 'risate' },
   { id: 'meme', label: 'Meme', emoji: '🤣', desc: 'Frasi pronte o scritte da te', group: 'risate' },
   { id: 'tieni', label: 'Tienine uno', emoji: '😩', desc: '4 pezzi, ne puoi tenere solo uno', group: 'risate' },
+  { id: 'slot', label: 'Slot machine', emoji: '🎰', desc: 'Tre rulli, esce un outfit completo', group: 'giochi' },
   { id: 'ruota', label: 'La ruota', emoji: '🎡', desc: 'La ruota decide cosa compri', group: 'giochi' },
   { id: 'prezzo', label: 'Indovina il prezzo', emoji: '💸', desc: '3 prodotti, conto alla rovescia', group: 'giochi' },
   { id: 'caro', label: 'Quale costa di più?', emoji: '👑', desc: 'Sfide a due, poi i prezzi', group: 'giochi' },
@@ -43,10 +47,12 @@ const FORMATS: { id: Format; label: string; emoji: string; desc: string; group: 
   { id: 'vetrina', label: 'Vetrina 3D', emoji: '🎠', desc: 'Giostra in prospettiva di 6 capi', group: 'belli' },
   { id: 'mood', label: 'Moodboard', emoji: '🎨', desc: 'Capi di un colore, come un collage', group: 'belli' },
   { id: 'pioggia', label: 'Pioggia di offerte', emoji: '☔', desc: 'Le offerte cadono in un mucchio', group: 'belli' },
+  { id: 'cerca', label: 'Ricerca', emoji: '🔍', desc: 'Si scrive la ricerca, escono i risultati', group: 'belli' },
   { id: 'notifiche', label: 'Notifiche', emoji: '🔔', desc: 'Offerte che arrivano sul telefono', group: 'belli' },
   { id: 'swipe', label: 'Swipe in diretta', emoji: '👆', desc: 'Il mazzo che si sfoglia da solo', group: 'belli' },
   { id: 'offerte', label: 'Top 5 offerte', emoji: '🔥', desc: 'Le più scontate di oggi', group: 'offerte' },
   { id: 'scontrino', label: 'Scontrino', emoji: '🧾', desc: 'Quanto risparmi, riga per riga', group: 'offerte' },
+  { id: 'furbo', label: 'Il caro e il furbo', emoji: '🦊', desc: 'Lo stesso pezzo, che costa meno', group: 'offerte' },
   { id: 'sconto', label: 'Prima e dopo', emoji: '📉', desc: 'Prezzo pieno contro prezzo di oggi', group: 'offerte' },
   { id: 'sotto', label: 'Top 5 sotto…', emoji: '🏷️', desc: 'Una categoria sotto una soglia', group: 'offerte' },
   { id: 'budget', label: 'Cosa compri con…', emoji: '👛', desc: '30, 50 o 100 € e cosa avanza', group: 'offerte' },
@@ -56,7 +62,7 @@ const FORMATS: { id: Format; label: string; emoji: string; desc: string; group: 
   { id: 'marche', label: 'Marche più amate', emoji: '🏆', desc: 'Classifica dai Sì della settimana', group: 'stile' },
 ]
 /** Formati con uomo/donna (gli outfit) */
-const WITH_GENDER: Format[] = ['sfida', 'outfit', 'budget', 'regali', 'colore', 'vetrina', 'mood', 'stop', 'mese', 'tieni', 'chat']
+const WITH_GENDER: Format[] = ['sfida', 'outfit', 'budget', 'regali', 'colore', 'vetrina', 'mood', 'stop', 'mese', 'tieni', 'chat', 'slot', 'cerca', 'note', 'furbo']
 
 /**
  * Meme in tre stili, tutti con layout nostri (nessun template coperto da diritti):
@@ -175,7 +181,7 @@ const FOOTER = `👉 Link in bio: swipeshopping.app\n\n#pubblicità ${TAGS}`
 /** Calendario: un formato per giorno della settimana (0 = domenica), più le storie ogni giorno. */
 const WEEK: Format[] = ['marche', 'offerte', 'sfida', 'prezzo', 'outfit', 'meme', 'sconto']
 /** Il secondo post del giorno (chi vuole pubblicare di più). */
-const WEEK2: Format[] = ['mese', 'stop', 'chat', 'ruota', 'mood', 'notifiche', 'scontrino']
+const WEEK2: Format[] = ['note', 'stop', 'chat', 'slot', 'cerca', 'ruota', 'furbo']
 /** Colori più comuni nei titoli Amazon, per "Total colore" */
 const LOOK_COLORS = ['Nero', 'Bianco', 'Beige', 'Blu', 'Grigio', 'Marrone', 'Verde', 'Rosso', 'Rosa']
 const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
@@ -495,6 +501,81 @@ function Studio() {
         { ms: 3000, node: <Outro line="Gira anche tu su" /> },
       ])
     }
+    if (format === 'slot') {
+      // Slot machine: tre rulli che girano tra i capi e si fermano uno alla volta su un outfit vero.
+      const [o] = pick(outfits.filter((o) => o.items.length >= 3 && o.items.slice(0, 3).every(inStock)), 1, rand)
+      const pool = pick(moda.filter((p) => inStock(p) && forGender(p)), 30, rand)
+      if (!o || pool.length < 30) return []
+      const items = o.items.slice(0, 3)
+      const total = items.reduce((t, p) => t + freshPrice(p)!.price, 0)
+      const cap = `La slot machine dell'outfit 🎰 È uscito un look ${STYLE_LABEL[o.style].toLowerCase()} da ${gender} a ${formatPrice(total)}: ${items.map((p) => p.brand).filter(Boolean).join(' + ')}.\n\nJackpot o da rigirare? Scrivilo nei commenti 👇\n\n${FOOTER} #slotmachine #outfit #ootd`
+      return withCaption(cap, [
+        { ms: 1800, node: <Title kicker="Gioco" title="SLOT DELL'OUTFIT" sub="Tre rulli, un look completo 🎰" /> },
+        { ms: 7600, node: <Slot items={items} pool={pool} total={total} />, bg: SLOT_BG },
+        { ms: 3000, node: <Outro line="Gira anche tu su" /> },
+      ])
+    }
+    if (format === 'cerca') {
+      // Una ricerca che si scrive da sola ("<categoria> da donna sotto 30 €") e i risultati veri che compaiono in lista.
+      const byCat = new Map<string, Product[]>()
+      for (const p of moda) {
+        if (!inStock(p) || p.gender !== gender) continue
+        const list = byCat.get(p.category) ?? []
+        list.push(p)
+        byCat.set(p.category, list)
+      }
+      for (const [cat, list] of pick([...byCat], byCat.size, rand)) {
+        const limit = [20, 30, 50, 80].find((n) => list.filter((p) => freshPrice(p)!.price <= n).length >= 12)
+        if (!limit) continue
+        const results = pick(list.filter((p) => freshPrice(p)!.price <= limit), 4, rand).sort((a, b) => freshPrice(a)!.price - freshPrice(b)!.price)
+        const count = list.filter((p) => freshPrice(p)!.price <= limit).length
+        const query = `${categoryLabel(cat as CategoryId).toLowerCase()} da ${gender} sotto ${limit} €`
+        const cap = `Quando cerchi "${query}" 🔍 e trovi questi: ${results.map((p) => `${p.brand} ${formatPrice(freshPrice(p)!.price)}`).join(' · ')}\n\nCosa vuoi che cerchi la prossima volta? 👇 Prezzi di oggi, possono cambiare.\n\n${FOOTER} #cercasubito #sotto${limit}euro #offerte`
+        return withCaption(cap, [
+          { ms: 9000, node: <Search query={query} results={results} count={count} />, bg: SEARCH_BG },
+          { ms: 3000, node: <Outro line="Cerca anche tu su" /> },
+        ])
+      }
+      return []
+    }
+    if (format === 'note') {
+      // L'app Note: i buoni propositi del mese si cancellano uno alla volta, l'ultima riga è un prodotto vero.
+      const withDeal = moda.filter((p) => inStock(p) && forGender(p) && (freshPrice(p)!.discountPct ?? 0) >= 15)
+      const [p] = pick(withDeal.length ? withDeal : moda.filter((p) => inStock(p) && forGender(p)), 1, rand)
+      if (!p) return []
+      const fp = freshPrice(p)!
+      const [script] = pick(NOTES.filter((n) => fp.discountPct || !n.end.includes('{sconto}')), 1, rand)
+      const month = new Date().toLocaleDateString('it-IT', { month: 'long' })
+      const fill = (t: string) => t.replaceAll('{mese}', month).replaceAll('{marca}', p.brand ?? 'questo').replaceAll('{prezzo}', formatPrice(fp.price)).replaceAll('{sconto}', `${fp.discountPct ?? 0}%`)
+      const title = fill(script.title)
+      const cap = `${title} 📝 Com'è andata? Come sempre 😂\n\nTagga chi ha la stessa lista 👇\n\n${FOOTER} #buonipropositi #relatable #shoppingaddict`
+      return withCaption(cap, [
+        { ms: script.lines.length * NOTE_MS + 4200, node: <Notes title={title} lines={script.lines} end={fill(script.end)} product={p} />, bg: NOTES_BG },
+        { ms: 3000, node: <Outro line="Lo trovi su" /> },
+      ])
+    }
+    if (format === 'furbo') {
+      // Il caro e il furbo: un capo e uno simile che costa meno (stessa categoria, prezzi di oggi).
+      const pairs: [Product, Product][] = []
+      for (const p of pick(moda.filter((p) => inStock(p) && forGender(p) && p.store === 'amazon' && freshPrice(p)!.price >= 40), 200, rand)) {
+        if (pairs.length >= 2) break
+        if (pairs.some(([a]) => a.category === p.category)) continue
+        const alt = cheaperAlternatives(p, moda, 1)[0]?.product
+        if (alt && alt.store === 'amazon' && inStock(alt)) pairs.push([p, alt])
+      }
+      if (pairs.length < 2) return []
+      const saved = pairs.reduce((t, [a, b]) => t + freshPrice(a)!.price - freshPrice(b)!.price, 0)
+      const cap = `Il caro e il furbo 🦊 Stesso stile, ${formatPrice(saved)} in meno in tasca.\n\nTu sei il caro o il furbo? 👇 Prezzi di oggi, possono cambiare.\n\n${FOOTER} #dupe #risparmio #moda`
+      return withCaption(cap, [
+        { ms: 1800, node: <Title kicker={`Da ${gender}`} title="IL CARO E IL FURBO" sub="Stesso stile, prezzo diverso 🦊" /> },
+        ...pairs.flatMap(([a, b], i) => [
+          { ms: 1800, group: `f${i}`, node: <Dupe a={a} b={b} stage={0} /> },
+          { ms: 1600, group: `f${i}`, node: <Dupe a={a} b={b} stage={1} /> },
+          { ms: 2600, group: `f${i}`, node: <Dupe a={a} b={b} stage={2} /> },
+        ]),
+        { ms: 3000, node: <Outro line="Fai il furbo su" /> },
+      ])
+    }
     if (format === 'stop') {
       // "Ferma il video": i prodotti scorrono velocissimi, quello su cui ti fermi è il tuo regalo. Si mette in pausa (o screenshot).
       const items = pick(moda.filter((p) => inStock(p) && forGender(p)), 24, rand)
@@ -610,7 +691,7 @@ function Studio() {
     setStep(0)
   }
   // Anteprima: il primo fotogramma "vero" (dopo il titolo), così si vede cosa uscirà.
-  const previewAt: Partial<Record<Format, number>> = { swipe: 0, meme: 0, prezzo: 4, sconto: 2, caro: 4, budget: 1, colore: 5, vetrina: 1, mood: 0, pioggia: 0, stop: 1, mese: 1, tieni: 1, chat: 0, notifiche: 0, scontrino: 0, ruota: 0 }
+  const previewAt: Partial<Record<Format, number>> = { swipe: 0, meme: 0, prezzo: 4, sconto: 2, caro: 4, budget: 1, colore: 5, vetrina: 1, mood: 0, pioggia: 0, stop: 1, mese: 1, tieni: 1, chat: 0, notifiche: 0, scontrino: 0, ruota: 0, slot: 1, cerca: 0, note: 0, furbo: 3 }
   const current = slides[playing ? step : Math.min(previewAt[format] ?? 1, slides.length - 1)]
 
   return (
@@ -1840,6 +1921,231 @@ function CaptionBox({ text }: { text: string }) {
       <button type="button" onClick={copy} className="mt-2 w-full rounded-lg bg-[#fff] py-1.5 text-sm font-bold text-[#111] active:scale-95">
         {copied ? 'Copiata ✓' : 'Copia didascalia'}
       </button>
+    </div>
+  )
+}
+
+const SLOT_BG = 'radial-gradient(120% 80% at 50% 30%, #7f1d1d 0%, #1c0606 75%)'
+/** Slot machine: i tre rulli girano tra capi a caso e si fermano uno dopo l'altro sui pezzi dell'outfit. */
+function Slot({ items, pool, total }: { items: Product[]; pool: Product[]; total: number }) {
+  const [stopped, setStopped] = useState(0)
+  useEffect(() => {
+    const ts = [1700, 2900, 4100].map((ms, k) => setTimeout(() => setStopped(k + 1), ms))
+    return () => ts.forEach(clearTimeout)
+  }, [])
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center gap-5">
+      <p className="text-center text-3xl font-black tracking-wide text-[#fde047] [text-shadow:0_0_18px_rgba(253,224,71,.6)]">
+        {stopped >= 3 ? 'JACKPOT! 🎉' : '🎰 GIRA… 🎰'}
+      </p>
+      <div className="w-full rounded-[2rem] bg-[linear-gradient(#facc15,#ca8a04)] p-2.5 shadow-[0_20px_50px_rgba(0,0,0,.6)]">
+        <div className="flex flex-col gap-2 rounded-[1.5rem] bg-[#1c0606] p-2.5">
+          {items.map((p, k) => {
+            const strip = pool.slice(k * 10, k * 10 + 10)
+            return (
+              <div key={k} className="relative h-[7.5rem] overflow-hidden rounded-2xl bg-[#fff]">
+                {stopped <= k ? (
+                  // Il rullo: una striscia di foto (ripetuta due volte) che scorre in loop, così le immagini restano caricate.
+                  <motion.div
+                    className="blur-[1.5px]"
+                    animate={{ y: ['0%', '-50%'] }}
+                    transition={{ duration: 0.9, repeat: Infinity, ease: 'linear' }}
+                  >
+                    {[...strip, ...strip].map((q, j) => (
+                      <div key={j} className="flex h-[7.5rem] items-center justify-center">
+                        <ProductImage product={q} eager className="size-24 overflow-hidden rounded-xl" />
+                      </div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    initial={{ y: -30, scale: 1.08 }}
+                    animate={{ y: 0, scale: 1 }}
+                    transition={{ type: 'spring', stiffness: 320, damping: 14 }}
+                    className="flex h-full items-center gap-3 px-3"
+                  >
+                    <ProductImage product={p} eager className="size-24 shrink-0 overflow-hidden rounded-xl" />
+                    <div className="min-w-0 text-[#111]">
+                      <p className="truncate text-xs font-bold tracking-wide text-[#dc2626] uppercase">{p.brand}</p>
+                      <p className="line-clamp-2 text-sm font-semibold">{p.title}</p>
+                      <p className="text-xl font-black">{formatPrice(freshPrice(p)!.price)}</p>
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+      <div className="flex h-14 items-center">
+        {stopped >= 3 && (
+          <motion.p
+            initial={{ scale: 0.3, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 240, damping: 12 }}
+            className="rounded-2xl bg-[#fde047] px-5 py-2 text-2xl font-black text-[#111]"
+          >
+            Outfit a {formatPrice(total)}
+          </motion.p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+const SEARCH_BG = 'linear-gradient(#f8fafc, #e2e8f0)'
+/** Barra di ricerca che si scrive lettera per lettera, poi i risultati veri in lista. */
+function Search({ query, results, count }: { query: string; results: Product[]; count: number }) {
+  const [typed, setTyped] = useState(0)
+  useEffect(() => {
+    if (typed >= query.length) return
+    const t = setTimeout(() => setTyped((v) => v + 1), typed === 0 ? 600 : 70)
+    return () => clearTimeout(t)
+  }, [typed, query.length])
+  const done = typed >= query.length
+  return (
+    <div className="flex flex-1 flex-col justify-center gap-4 text-[#0f172a]">
+      <p className="text-center text-2xl font-black">
+        Swipe<span className="text-[#f43f5e]">Shopping</span>
+      </p>
+      <div className="flex items-center gap-2 rounded-3xl bg-[#fff] px-4 py-3 shadow-[0_6px_24px_rgba(15,23,42,.15)] ring-1 ring-[#cbd5e1]">
+        <span className="text-lg">🔍</span>
+        <p className="min-w-0 flex-1 text-[15px] leading-snug font-medium">
+          {query.slice(0, typed)}
+          {!done && <span className="ml-px inline-block h-4 w-0.5 animate-pulse bg-[#f43f5e] align-middle" />}
+        </p>
+      </div>
+      <div className="min-h-[22rem] space-y-2">
+        {done && (
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="px-1 text-xs text-[#64748b]">
+            {count} risultati · prezzi di oggi
+          </motion.p>
+        )}
+        {done &&
+          results.map((p, k) => {
+            const fp = freshPrice(p)!
+            return (
+              <motion.div
+                key={p.id}
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8 + k * 0.6, type: 'spring', stiffness: 220, damping: 22 }}
+                className="flex items-center gap-3 rounded-2xl bg-[#fff] p-2 shadow-sm"
+              >
+                <ProductImage product={p} eager className="size-16 shrink-0 overflow-hidden rounded-xl" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[11px] font-bold tracking-wide text-[#f43f5e] uppercase">{p.brand}</p>
+                  <p className="truncate text-sm font-medium">{p.title}</p>
+                  <p className="text-lg font-black">
+                    {formatPrice(fp.price)}
+                    {fp.discountPct ? <span className="ml-2 rounded-md bg-[#dcfce7] px-1.5 text-xs font-bold text-[#15803d]">-{fp.discountPct}%</span> : null}
+                  </p>
+                </div>
+              </motion.div>
+            )
+          })}
+      </div>
+    </div>
+  )
+}
+
+/** Note del telefono: titolo, propositi che si cancellano, ultima riga = il prodotto. Testi fissi. */
+const NOTES: { title: string; lines: string[]; end: string }[] = [
+  { title: 'Obiettivi di {mese}', lines: ['Risparmiare 💶', 'Basta shopping online', 'Comprare solo il necessario'], end: '{marca} a {prezzo} (necessario)' },
+  { title: 'Lista della spesa 🛒', lines: ['Latte', 'Pane', 'Uova', 'Frutta'], end: '{marca} a -{sconto}% (era in offerta, non potevo)' },
+  { title: 'Budget di {mese} 💶', lines: ['Affitto', 'Bollette', 'Spesa', 'Risparmi'], end: '{marca}, {prezzo}. I risparmi possono aspettare' },
+  { title: 'Cose che mi servono davvero', lines: ['Niente', 'Proprio niente', 'Giuro, niente'], end: 'Questo 👇 a {prezzo}' },
+  { title: 'Buoni propositi 2.0 ✨', lines: ['Niente carrello pieno', 'Niente "lo metto nei preferiti"', 'Niente acquisti di notte'], end: 'Ore 2:14 · {marca} -{sconto}% ✅' },
+]
+const NOTE_MS = 1000
+const NOTES_BG = 'linear-gradient(#fef9c3, #fef3c7)'
+function Notes({ title, lines, end, product }: { title: string; lines: string[]; end: string; product: Product }) {
+  // Ogni riga compare e poco dopo viene barrata; poi arriva l'ultima con il prodotto.
+  const [n, setN] = useState(0)
+  useEffect(() => {
+    if (n > lines.length * 2) return
+    const t = setTimeout(() => setN((v) => v + 1), n === 0 ? 700 : NOTE_MS / 2)
+    return () => clearTimeout(t)
+  }, [n, lines.length])
+  const showEnd = n > lines.length * 2
+  return (
+    <div className="flex flex-1 flex-col justify-center text-[#292524]">
+      <p className="mb-1 text-sm font-semibold text-[#ca8a04]">‹ Note</p>
+      <p className="mb-4 text-3xl leading-tight font-black">{title}</p>
+      <div className="space-y-3 text-xl">
+        {lines.map((l, k) => {
+          const visible = n > k * 2
+          const struck = n > k * 2 + 1
+          if (!visible) return null
+          return (
+            <motion.p key={l} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} className="relative w-fit">
+              <span className={struck ? 'text-[#a8a29e]' : ''}>• {l}</span>
+              <motion.span
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: struck ? 1 : 0 }}
+                transition={{ duration: 0.25 }}
+                className="absolute top-1/2 right-0 left-0 h-[3px] origin-left rounded bg-[#dc2626]"
+              />
+            </motion.p>
+          )
+        })}
+      </div>
+      <div className="mt-5 min-h-[9rem]">
+        {showEnd && (
+          <motion.div initial={{ opacity: 0, y: 16, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 240, damping: 16 }}>
+            <p className="text-xl font-bold">✅ {end}</p>
+            <div className="mt-3 flex items-center gap-3 rounded-2xl bg-[#fff] p-2 shadow-md">
+              <ProductImage product={product} eager className="size-20 shrink-0 overflow-hidden rounded-xl" />
+              <div className="min-w-0">
+                <p className="truncate text-xs font-bold tracking-wide text-[#f43f5e] uppercase">{product.brand}</p>
+                <p className="line-clamp-2 text-sm">{product.title}</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/** Il caro (sopra) e il furbo (sotto): stage 0 solo il caro, 1 arriva il furbo, 2 quanto si risparmia. */
+function Dupe({ a, b, stage }: { a: Product; b: Product; stage: number }) {
+  const pa = freshPrice(a)!.price
+  const pb = freshPrice(b)!.price
+  const half = (p: Product, price: number, label: string, furbo: boolean) => (
+    <div className={`flex items-center gap-3 rounded-3xl p-3 ${furbo ? 'bg-[#16a34a]' : 'bg-[#fff]/10'}`}>
+      <ProductImage product={p} eager className="size-32 shrink-0 overflow-hidden rounded-2xl" />
+      <div className="min-w-0">
+        <p className="text-sm font-black tracking-widest uppercase">{label}</p>
+        <p className={`truncate text-xs font-bold tracking-wide uppercase ${furbo ? 'text-[#dcfce7]' : 'text-[#fb7185]'}`}>{p.brand}</p>
+        <p className="line-clamp-2 text-xs opacity-90">{p.title}</p>
+        <p className="mt-1 text-3xl font-black">{formatPrice(price)}</p>
+      </div>
+    </div>
+  )
+  return (
+    <div className="flex flex-1 flex-col justify-center gap-3">
+      {half(a, pa, 'Il caro 💸', false)}
+      <div className="flex h-10 items-center justify-center text-2xl font-black">{stage >= 1 ? 'VS' : ''}</div>
+      <div className="min-h-[9.5rem]">
+        {stage >= 1 && (
+          <motion.div initial={{ x: 120, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ type: 'spring', stiffness: 200, damping: 20 }}>
+            {half(b, pb, 'Il furbo 🦊', true)}
+          </motion.div>
+        )}
+      </div>
+      <div className="flex h-16 items-center justify-center">
+        {stage >= 2 && (
+          <motion.p
+            initial={{ scale: 2.2, opacity: 0, rotate: -10 }}
+            animate={{ scale: 1, opacity: 1, rotate: -4 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 12 }}
+            className="rounded-2xl border-4 border-[#4ade80] px-4 py-1 text-2xl font-black text-[#4ade80]"
+          >
+            -{formatPrice(pa - pb)} in tasca
+          </motion.p>
+        )}
+      </div>
     </div>
   )
 }
