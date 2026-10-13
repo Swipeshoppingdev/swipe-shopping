@@ -1,5 +1,5 @@
-import { animate, motion, useIsPresent, useMotionValue, useTransform } from 'framer-motion'
-import { useRef, useState, type MouseEvent, type PointerEvent } from 'react'
+import { animate, motion, useMotionValue, usePresence, usePresenceData, useTransform } from 'framer-motion'
+import { useEffect, useRef, useState, type MouseEvent, type PointerEvent } from 'react'
 import { categoryLabel } from '../config/categories'
 import { brandAndStore } from '../config/stores'
 import type { Product } from '../types/product'
@@ -19,14 +19,7 @@ const SWIPE_VELOCITY = 600
 
 export type SwipeDir = 1 | -1
 
-const variants = {
-  exit: (dir: SwipeDir) => ({
-    x: dir * (typeof window === 'undefined' ? 600 : window.innerWidth + 200),
-    rotate: dir * 22,
-    opacity: 0,
-    transition: { duration: 0.32, ease: 'easeOut' as const },
-  }),
-}
+const EXIT_MS = 320
 
 export function SwipeCard({
   product,
@@ -40,7 +33,9 @@ export function SwipeCard({
 }) {
   // Una carta che sta uscendo resta ancora a schermo per l'animazione: non deve più ricevere tocchi.
   // (Toccarla fermava l'uscita: la carta restava bloccata sopra il mazzo e ogni swipe salvava quelle sotto.)
-  const present = useIsPresent()
+  const [present, safeToRemove] = usePresence()
+  const exitDir = usePresenceData() as SwipeDir | undefined
+  const card = useRef<HTMLElement>(null)
   const isTop = index === 0 && present
   const x = useMotionValue(0)
   const rotate = useTransform(x, [-300, 0, 300], [-16, 0, 16])
@@ -50,6 +45,32 @@ export function SwipeCard({
   const details = useDetails(product.id, isTop)
   const photos = galleryOf(product, details)
   const [photo, setPhoto] = useState(0)
+
+  // Uscita animata dal browser (Web Animations), non da JavaScript a ogni fotogramma: la carta vola via fluida
+  // anche se nello stesso momento il telefono è occupato a preparare la carta successiva.
+  useEffect(() => {
+    if (present) return
+    const el = card.current
+    if (!el?.animate) {
+      safeToRemove?.()
+      return
+    }
+    const dir = exitDir ?? 1
+    const from = `translateX(${x.get()}px) rotate(${rotate.get()}deg)`
+    x.stop()
+    const anim = el.animate(
+      [
+        { transform: from, opacity: 1 },
+        {
+          transform: `translateX(${dir * (window.innerWidth + 200)}px) rotate(${dir * 22}deg)`,
+          opacity: 0,
+        },
+      ],
+      { duration: EXIT_MS, easing: 'ease-out', fill: 'forwards' },
+    )
+    anim.onfinish = () => safeToRemove?.()
+    return () => anim.cancel()
+  }, [present]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Tocco sulla foto: ai lati cambia foto (come le storie), al centro apre la scheda.
   const onImageClick = (e: MouseEvent<HTMLDivElement>) => {
@@ -63,10 +84,24 @@ export function SwipeCard({
 
   // Trascinamento fatto a mano (non con il drag di framer-motion): quello misurava la pagina a ogni carta e a ogni
   // tocco, e sui telefoni lenti faceva perdere fotogrammi. Qui si sposta solo la carta.
-  const pan = useRef<{ id: number; x0: number; y0: number; base: number; active: boolean; samples: [number, number][] } | null>(null)
+  const pan = useRef<{
+    id: number
+    x0: number
+    y0: number
+    base: number
+    active: boolean
+    samples: [number, number][]
+  } | null>(null)
   const onPointerDown = (e: PointerEvent<HTMLElement>) => {
     if (!isTop || (e.pointerType === 'mouse' && e.button !== 0)) return
-    pan.current = { id: e.pointerId, x0: e.clientX, y0: e.clientY, base: x.get(), active: false, samples: [[e.timeStamp, e.clientX]] }
+    pan.current = {
+      id: e.pointerId,
+      x0: e.clientX,
+      y0: e.clientY,
+      base: x.get(),
+      active: false,
+      samples: [[e.timeStamp, e.clientX]],
+    }
   }
   const onPointerMove = (e: PointerEvent<HTMLElement>) => {
     const s = pan.current
@@ -111,99 +146,116 @@ export function SwipeCard({
   }
 
   return (
-    <motion.article
-      // Foto non trascinabili dal browser (rovinerebbero lo swipe col mouse); i tocchi vanno al riquadro della foto.
-      className="absolute inset-0 flex flex-col overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/5 select-none [&_img]:pointer-events-none"
-      // will-change: le prime due carte su un livello a parte, così muoverle non ridisegna foto e ombra a ogni fotogramma.
-      style={{ x, rotate, zIndex: 10 - index, touchAction: isTop ? 'pan-y' : undefined, pointerEvents: present ? undefined : 'none', willChange: index < 2 ? 'transform' : undefined }}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerEnd}
-      onPointerCancel={onPointerEnd}
-      initial={{ scale: 0.94, y: 14, opacity: 0 }}
-      animate={{ scale: 1 - index * 0.04, y: index * 14, opacity: index > 1 ? 0 : 1 }}
-      exit="exit"
-      variants={variants}
-      transition={{ type: 'spring', stiffness: 320, damping: 30 }}
-      aria-hidden={!isTop}
-      aria-label={isTop ? product.title : undefined}
+    // Posto nel mazzo (dietro: più piccola e più in basso) con una transizione CSS, che il browser anima da solo
+    // senza JavaScript: quando la carta sotto sale in cima non scatta anche se il telefono è occupato.
+    <div
+      className="swipe-slot absolute inset-0"
+      style={{
+        transform: index ? `translateY(${index * 14}px) scale(${1 - index * 0.04})` : undefined,
+        opacity: index > 1 ? 0 : 1,
+        zIndex: 10 - index,
+        pointerEvents: present ? undefined : 'none',
+        willChange: index < 2 ? 'transform' : undefined,
+      }}
     >
-      <div className="relative min-h-0 flex-1">
-        <div
-          className="size-full cursor-pointer"
-          onClick={onImageClick}
-          role={isTop ? 'button' : undefined}
-          aria-label={isTop ? `Dettagli di ${product.title}` : undefined}
-        >
-          <ProductImage
-            key={photos[photo] ?? 'main'}
-            product={product}
-            src={isTop ? photos[photo] : undefined}
-            eager={index < 3}
-            priority={isTop}
-            className="size-full"
-          />
-        </div>
-        {isTop && photos.length > 1 && (
-          <div className="pointer-events-none absolute inset-x-4 top-2.5 flex gap-1">
-            {photos.map((src, i) => (
-              <span key={src} className={`h-1 flex-1 rounded-full ${i === photo ? 'bg-neutral-800' : 'bg-neutral-300/80'}`} />
-            ))}
-          </div>
-        )}
-        {isTop && (
-          <>
-            <motion.span
-              style={{ opacity: likeOpacity }}
-              className="pointer-events-none absolute top-6 left-5 -rotate-12 rounded-xl border-4 border-rose-500 bg-rose-500 px-3 py-1 text-2xl font-black tracking-wide text-[#fff] shadow-lg"
-            >
-              MI PIACE
-            </motion.span>
-            <motion.span
-              style={{ opacity: nopeOpacity }}
-              className="pointer-events-none absolute top-6 right-5 rotate-12 rounded-xl border-4 border-[#262626] bg-[#fff]/90 px-3 py-1 text-2xl font-black tracking-wide text-[#262626]"
-            >
-              NO
-            </motion.span>
-          </>
-        )}
-        {/* In basso a sinistra: lo sconto e, accanto, quanto è conveniente il prezzo (spiegato nella scheda). */}
-        <div className="pointer-events-none absolute bottom-3 left-3 flex items-center gap-2">
-          <DiscountBadge product={product} inline />
-          {isTop && <PriceRankPill product={product} />}
-        </div>
-        <NewBadge product={product} />
-        <SizeBadge product={product} />
-        {product.searchQuery && (
-          <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-neutral-900/80 px-3 py-1 text-xs font-medium text-white">
-            Esplora la categoria
-          </span>
-        )}
-      </div>
-      <div
-        className="cursor-pointer space-y-1.5 border-t border-neutral-100 px-5 pt-3 pb-4"
-        onClick={(e) => {
-          // Il link "Apri" porta al negozio, il resto apre la scheda.
-          if (isTop && !dragged.current && !(e.target as HTMLElement).closest('a')) openProduct(product)
+      <motion.article
+        ref={card}
+        // Foto non trascinabili dal browser (rovinerebbero lo swipe col mouse); i tocchi vanno al riquadro della foto.
+        className="absolute inset-0 flex flex-col overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/5 select-none [&_img]:pointer-events-none"
+        // will-change: le prime due carte su un livello a parte, così trascinarle non ridisegna foto e ombra a ogni fotogramma.
+        style={{
+          x,
+          rotate,
+          touchAction: isTop ? 'pan-y' : undefined,
+          willChange: index < 2 ? 'transform' : undefined,
         }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerEnd}
+        onPointerCancel={onPointerEnd}
+        aria-hidden={!isTop}
+        aria-label={isTop ? product.title : undefined}
       >
-        <p className="text-xs font-medium tracking-wide text-neutral-500 uppercase">
-          {brandAndStore(product, categoryLabel(product.category))}
-        </p>
-        <h2 className="line-clamp-2 text-lg leading-snug font-semibold text-neutral-900">{product.title}</h2>
-        <div className="flex items-center justify-between gap-3">
-          <PriceTag product={product} size="lg" />
-          {isTop && (
-            <StoreLink
+        <div className="relative min-h-0 flex-1">
+          <div
+            className="size-full cursor-pointer"
+            onClick={onImageClick}
+            role={isTop ? 'button' : undefined}
+            aria-label={isTop ? `Dettagli di ${product.title}` : undefined}
+          >
+            <ProductImage
+              key={photos[photo] ?? 'main'}
               product={product}
-              className="inline-flex items-center gap-1 text-sm font-medium text-neutral-700 underline-offset-4 hover:underline"
-              onClickCapture={(e) => dragged.current && e.preventDefault()}
-            >
-              Apri
-            </StoreLink>
+              src={isTop ? photos[photo] : undefined}
+              eager={index < 3}
+              priority={isTop}
+              className="size-full"
+            />
+          </div>
+          {isTop && photos.length > 1 && (
+            <div className="pointer-events-none absolute inset-x-4 top-2.5 flex gap-1">
+              {photos.map((src, i) => (
+                <span
+                  key={src}
+                  className={`h-1 flex-1 rounded-full ${i === photo ? 'bg-neutral-800' : 'bg-neutral-300/80'}`}
+                />
+              ))}
+            </div>
+          )}
+          {isTop && (
+            <>
+              <motion.span
+                style={{ opacity: likeOpacity }}
+                className="pointer-events-none absolute top-6 left-5 -rotate-12 rounded-xl border-4 border-rose-500 bg-rose-500 px-3 py-1 text-2xl font-black tracking-wide text-[#fff] shadow-lg"
+              >
+                MI PIACE
+              </motion.span>
+              <motion.span
+                style={{ opacity: nopeOpacity }}
+                className="pointer-events-none absolute top-6 right-5 rotate-12 rounded-xl border-4 border-[#262626] bg-[#fff]/90 px-3 py-1 text-2xl font-black tracking-wide text-[#262626]"
+              >
+                NO
+              </motion.span>
+            </>
+          )}
+          {/* In basso a sinistra: lo sconto e, accanto, quanto è conveniente il prezzo (spiegato nella scheda). */}
+          <div className="pointer-events-none absolute bottom-3 left-3 flex items-center gap-2">
+            <DiscountBadge product={product} inline />
+            {isTop && <PriceRankPill product={product} />}
+          </div>
+          <NewBadge product={product} />
+          <SizeBadge product={product} />
+          {product.searchQuery && (
+            <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-neutral-900/80 px-3 py-1 text-xs font-medium text-white">
+              Esplora la categoria
+            </span>
           )}
         </div>
-      </div>
-    </motion.article>
+        <div
+          className="cursor-pointer space-y-1.5 border-t border-neutral-100 px-5 pt-3 pb-4"
+          onClick={(e) => {
+            // Il link "Apri" porta al negozio, il resto apre la scheda.
+            if (isTop && !dragged.current && !(e.target as HTMLElement).closest('a')) openProduct(product)
+          }}
+        >
+          <p className="text-xs font-medium tracking-wide text-neutral-500 uppercase">
+            {brandAndStore(product, categoryLabel(product.category))}
+          </p>
+          <h2 className="line-clamp-2 text-lg leading-snug font-semibold text-neutral-900">{product.title}</h2>
+          <div className="flex items-center justify-between gap-3">
+            <PriceTag product={product} size="lg" />
+            {isTop && (
+              <StoreLink
+                product={product}
+                className="inline-flex items-center gap-1 text-sm font-medium text-neutral-700 underline-offset-4 hover:underline"
+                onClickCapture={(e) => dragged.current && e.preventDefault()}
+              >
+                Apri
+              </StoreLink>
+            )}
+          </div>
+        </div>
+      </motion.article>
+    </div>
   )
 }

@@ -275,3 +275,22 @@ body {
 :root:not(.dark) .game-frame > div:first-child svg {
   color: var(--color-rose-500);
 }
+
+/* Carte del mazzo: la carta sotto sale in cima con una transizione fatta dal browser (vedi SwipeCard). */
+.swipe-slot {
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.25s ease-out;
+  animation: swipe-slot-in 0.3s ease-out;
+}
+@keyframes swipe-slot-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .swipe-slot {
+    transition: none;
+    animation: none;
+  }
+}
