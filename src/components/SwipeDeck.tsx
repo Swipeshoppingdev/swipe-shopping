@@ -165,7 +165,7 @@ export function SwipeDeck({
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4">
       <div className="relative min-h-0 flex-1">
-        <AnimatePresence custom={exitDir}>
+        <AnimatePresence custom={exitDir} initial={false}>
           {visible
             .map((p, i) => <SwipeCard key={p.id} product={p} index={i} onSwipe={swipe} />)
             .reverse()}
