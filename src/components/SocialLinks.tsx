@@ -20,13 +20,6 @@ const WhatsAppIcon = ({ className }: { className: string }) => (
   </svg>
 )
 
-const ThreadsIcon = ({ className }: { className: string }) => (
-  <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
-    <path d="M16.8 11.2c-.3-2.6-2-4-4.6-4-2 0-3.4.9-4 2.3" />
-    <path d="M16.6 11.5c-2.9-1-7 .1-6.8 2.6.2 2.4 4.6 2.6 5.8.2.9-1.8.9-4.6.1-6.5-.9-2.3-3-3.8-5.6-3.8C6.2 4 4 7.2 4 12s2.2 8 6.1 8c3.2 0 5.3-1.2 6.4-2.8 1.3-2-.3-4.6-2-5.6" />
-  </svg>
-)
-
 const XIcon = ({ className }: { className: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
     <path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77L17.75 3Zm-1.08 16.18h1.7L7.4 4.73H5.58l11.09 14.45Z" />
@@ -37,7 +30,6 @@ const LINKS = [
   { label: 'Instagram', href: SOCIAL_LINKS.instagram, Icon: InstagramIcon },
   { label: 'TikTok', href: SOCIAL_LINKS.tiktok, Icon: TikTokIcon },
   { label: 'WhatsApp', href: SOCIAL_LINKS.whatsapp, Icon: WhatsAppIcon },
-  { label: 'Threads', href: SOCIAL_LINKS.threads, Icon: ThreadsIcon },
   { label: 'X', href: SOCIAL_LINKS.x, Icon: XIcon },
 ]
 

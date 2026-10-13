@@ -19,7 +19,6 @@ export const SOCIAL_LINKS = {
   instagram: 'https://www.instagram.com/swipeshoppingapp/',
   tiktok: 'https://www.tiktok.com/@swipeshoppingapp',
   whatsapp: 'https://whatsapp.com/channel/0029VbDsQHy5Ui2fYiqw201q',
-  threads: 'https://www.threads.com/@swipeshoppingapp',
   x: 'https://x.com/SwipeShopping_',
 }
 
