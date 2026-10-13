@@ -8,6 +8,7 @@ import { brandAndStore } from '../config/stores'
 import { setBoost, spendBoost } from '../lib/boost'
 import { formatPrice, freshPrice } from '../lib/price'
 import { load, save } from '../lib/storage'
+import { CLOSE_BREAKS_EVENT } from '../lib/closeBreaks'
 import { decoys } from '../lib/priceGame'
 import { useApp } from '../state/AppState'
 import type { Product } from '../types/product'
@@ -196,6 +197,28 @@ export function Breaks() {
   openRef.current = current !== null
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
   useEffect(() => () => clearTimeout(timer.current), [])
+  // Menu Sezioni, cambio di sezione o di pagina: il gioco si chiude (e quello in arrivo non parte).
+  useEffect(() => {
+    const close = () => {
+      clearTimeout(timer.current)
+      timer.current = undefined
+      setCurrent(null)
+    }
+    window.addEventListener(CLOSE_BREAKS_EVENT, close)
+    window.addEventListener('hashchange', close)
+    return () => {
+      window.removeEventListener(CLOSE_BREAKS_EVENT, close)
+      window.removeEventListener('hashchange', close)
+    }
+  }, [])
+  const modeRef = useRef(state.mode)
+  useEffect(() => {
+    if (modeRef.current === state.mode) return
+    modeRef.current = state.mode
+    clearTimeout(timer.current)
+    timer.current = undefined
+    setCurrent(null)
+  }, [state.mode])
 
   useEffect(() => {
     const added = swipes - last.current

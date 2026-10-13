@@ -4,6 +4,7 @@ import { PriceTag } from '../components/PriceTag'
 import { ProductImage } from '../components/ProductImage'
 import { StoreLink } from '../components/StoreLink'
 import { SwipeDeck } from '../components/SwipeDeck'
+import { UndoMenuView } from '../components/UndoMenu'
 import { brandAndStore } from '../config/stores'
 import { openProduct } from '../lib/productSheet'
 import { useHashRoute } from '../lib/useHashRoute'
@@ -81,6 +82,20 @@ export function GiftsPage() {
     })
   }, [])
 
+  // I "no" dati qui (dal più vecchio al più recente), per "Rivedi i no" del tasto annulla.
+  const [nos, setNos] = useState(() => load<string[]>('giftsDisliked', []))
+  const onDislike = useCallback((p: Product) => {
+    setNos((prev) => {
+      const next = [...prev.filter((id) => id !== p.id), p.id].slice(-2000)
+      save('giftsDisliked', next)
+      return next
+    })
+  }, [])
+  const giftNos = useMemo(() => {
+    const disliked = new Set(state.disliked)
+    return nos.filter((id) => disliked.has(id))
+  }, [nos, state.disliked])
+
   const cards = useMemo(() => {
     const seen = new Set([...state.disliked, ...wishlist.map((w) => w.product.id)])
     const who = WHO.find((w) => w.id === f.who)
@@ -100,8 +115,12 @@ export function GiftsPage() {
       sorted = [...sorted].sort((a, b) => band(b) - band(a))
     }
     const seenModels = new Set(wishlist.map((w) => modelKey(w.product as Product)))
-    return onePerModel(sorted, seenModels)
-  }, [allProducts, state.disliked, wishlist, f, halloween])
+    const deck = onePerModel(sorted, seenModels)
+    // Annullati e "no" rivisti: tornano in cima, il più recente per primo.
+    const byId = new Map(list.map((p) => [p.id, p]))
+    const back = state.restored.flatMap((id) => (byId.has(id) ? [byId.get(id)!] : []))
+    return back.length ? [...back, ...deck.filter((p) => !back.includes(p))] : deck
+  }, [allProducts, state.disliked, state.restored, wishlist, f, halloween])
 
   const ready = state.catalog.status === 'ready'
   const summary = [
@@ -135,7 +154,19 @@ export function GiftsPage() {
       {!ready ? (
         <div className="flex-1 animate-pulse rounded-3xl bg-neutral-200/70" aria-busy="true" />
       ) : cards.length > 0 ? (
-        <SwipeDeck cards={cards} onLike={onLike} />
+        <SwipeDeck
+          cards={cards}
+          onLike={onLike}
+          onDislike={onDislike}
+          undo={
+            <UndoMenuView
+              canUndo={state.history.length > 0}
+              nos={giftNos.length}
+              onUndo={actions.undo}
+              onRestore={(last) => actions.restore(last ? giftNos.slice(-last) : giftNos)}
+            />
+          }
+        />
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
           <div className="text-5xl" aria-hidden>
