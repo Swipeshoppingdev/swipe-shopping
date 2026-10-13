@@ -161,6 +161,8 @@ interface Slide {
   node: ReactNode
   /** Sfondo a tutto schermo per questo fotogramma (i formati "belli"): sostituisce il gradiente scuro */
   bg?: string
+  /** Fotogrammi consecutivi con lo stesso group restano fermi: cambia solo il contenuto (es. i secondi del countdown) */
+  group?: string
 }
 /** I fotogrammi e la didascalia pronta per il post */
 type Slides = Slide[] & { caption?: string }
@@ -291,8 +293,8 @@ function Studio() {
       return withCaption(cap, [
         { ms: 2000, node: <Title kicker="Gioco" title="INDOVINA IL PREZZO" sub="Scrivi la tua risposta prima del via" /> },
         ...items.flatMap((p, i) => [
-          ...[3, 2, 1].map((n) => ({ ms: 900, node: <Guess product={p} index={i + 1} count={n} /> })),
-          { ms: 2800, node: <Guess product={p} index={i + 1} /> },
+          ...[3, 2, 1].map((n) => ({ ms: 900, group: `g${i}`, node: <Guess product={p} index={i + 1} count={n} /> })),
+          { ms: 2800, group: `g${i}`, node: <Guess product={p} index={i + 1} /> },
         ]),
         { ms: 3000, node: <Outro line="Quanti ne hai indovinati? Scrivilo nei commenti 👇 Gioca su" /> },
       ])
@@ -343,8 +345,8 @@ function Studio() {
       return withCaption(cap, [
         { ms: 2000, node: <Title kicker="Gioco" title="QUALE COSTA DI PIÙ?" sub="Scegli prima del via" /> },
         ...pairs.flatMap(([a, b], i) => [
-          ...[3, 2, 1].map((n) => ({ ms: 900, node: <WhichPricier a={a} b={b} index={i + 1} count={n} /> })),
-          { ms: 3000, node: <WhichPricier a={a} b={b} index={i + 1} /> },
+          ...[3, 2, 1].map((n) => ({ ms: 900, group: `c${i}`, node: <WhichPricier a={a} b={b} index={i + 1} count={n} /> })),
+          { ms: 3000, group: `c${i}`, node: <WhichPricier a={a} b={b} index={i + 1} /> },
         ]),
         { ms: 3000, node: <Outro line="Quante ne hai indovinate? 👇 Gioca su" /> },
       ])
@@ -627,7 +629,7 @@ function Studio() {
         </AnimatePresence>
         <AnimatePresence mode="wait">
           <motion.div
-            key={`${format}-${variant}-${playing ? step : 'preview'}`}
+            key={`${format}-${variant}-${playing ? (current?.group ?? step) : 'preview'}`}
             // Zona sicura dei Reels/TikTok, valida per tutti i formati: margine a destra (icone) e sotto (nome e didascalia), contenuto centrato in altezza.
             className="absolute top-[15%] right-[12%] bottom-[18%] left-[9%] flex flex-col"
             initial={{ opacity: 0, y: 24 }}
