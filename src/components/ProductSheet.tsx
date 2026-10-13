@@ -8,6 +8,7 @@ import { closeProduct, openProduct, useOpenProduct } from '../lib/productSheet'
 import { hasSizes } from '../lib/sizes'
 import { formatPrice, freshPrice } from '../lib/price'
 import { similarProducts } from '../lib/similar'
+import { cheaperAlternatives } from '../lib/priceCheck'
 import { useDetails } from '../lib/useDetails'
 import { useApp } from '../state/AppState'
 import type { Product } from '../types/product'
@@ -147,7 +148,9 @@ function useSwipeDown(panel: React.RefObject<HTMLDivElement | null>, drag: React
 function SheetContent({ product }: { product: Product }) {
   const fresh = freshPrice(product)
   const { wishlist, actions, allProducts } = useApp()
-  const similar = useMemo(() => similarProducts(product, allProducts), [product, allProducts])
+  // Con "Simile ma costa meno" i "Simili" in fondo non servono (Kevin: troppe liste uguali).
+  const cheaper = useMemo(() => cheaperAlternatives(product, allProducts), [product, allProducts])
+  const similar = useMemo(() => (cheaper.length ? [] : similarProducts(product, allProducts)), [cheaper, product, allProducts])
   const details = useDetails(product.id)
   const photos = galleryOf(product, details)
   const saved = wishlist.some((w) => w.product.id === product.id)
@@ -253,7 +256,7 @@ function SheetContent({ product }: { product: Product }) {
           className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-white text-sm font-semibold ring-1 ring-neutral-200 active:scale-[0.98]"
         />
 
-        <CheaperAlternatives product={product} all={allProducts} />
+        <CheaperAlternatives list={cheaper} />
 
         <CompleteLook product={product} />
 

@@ -62,7 +62,7 @@ export function SwipeDeck({
         if (productUrl(top)) {
           setSaved(top)
           clearTimeout(savedTimer.current)
-          savedTimer.current = setTimeout(() => setSaved(null), 2000)
+          savedTimer.current = setTimeout(() => setSaved(null), 1500)
         }
       } else {
         actions.dislike(top)
