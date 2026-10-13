@@ -40,7 +40,7 @@ export function DeckTabs() {
             role="tab"
             aria-selected={mode === m}
             onClick={() => choose(m)}
-            className={`relative rounded-full py-1.5 transition ${mode === m ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500'}`}
+            className={`relative rounded-full py-1.5 transition ${mode === m ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-600'}`}
           >
             {label}
             {m === 'oggi' && fresh && <span className="absolute top-1 right-2 size-2 rounded-full bg-rose-500" aria-label="nuovo" />}

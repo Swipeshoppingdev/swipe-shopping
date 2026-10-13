@@ -242,23 +242,61 @@ for (const section of ['beauty', 'tech', 'casa', 'gadget', 'snack', 'animali'] a
   )
 }
 
+// --- Fasce di prezzo: "Felpe da donna sotto 30 €", "Cuffie sotto 50 €"… (ricerche molto frequenti) ---
+// Solo prezzi verificati entro la finestra del negozio. Al massimo 2 fasce per categoria, solo se la fascia
+// ha abbastanza prodotti e non coincide quasi con tutta la categoria (altrimenti sarebbe una copia).
+const PRICE_BANDS = [15, 20, 30, 50, 100, 200]
+const MIN_BAND = 12
+const isBand = (slug: string) => slug.includes('-sotto-')
+function addBands(section: Universe, slug: string, label: string, group: string, list: Product[]) {
+  const priced = list.filter((p) => price(p) !== null)
+  let made = 0
+  for (const max of PRICE_BANDS) {
+    if (made === 2) break
+    const band = priced.filter((p) => p.price! <= max)
+    if (band.length < MIN_BAND || band.length > priced.length * 0.85) continue
+    made++
+    add(
+      {
+        section,
+        slug: `${slug}-sotto-${max}-euro`,
+        group,
+        title: `${label} sotto ${max} €: i migliori di marca | Swipe Shopping`,
+        h1: `${label} sotto ${max} €`,
+        intro: `${label} di marca a meno di ${max} €, con prezzi controllati più volte al giorno e gli sconti in evidenza. Salva quelli che ti piacciono e acquistali in un tocco.`,
+      },
+      band,
+    )
+  }
+}
+for (const section of UNIVERSES) {
+  for (const group of groupsOf(section)) {
+    for (const item of group.items) {
+      const list = products.filter((p) => p.category === item.id)
+      const slug = slugify(item.label)
+      if (section === 'moda') for (const g of ['donna', 'uomo'] as const) addBands(section, `${slug}-${g}`, `${item.label} da ${g}`, group.label, forGender(list, g))
+      else addBands(section, slug, item.label, group.label, list)
+    }
+  }
+}
+
 const CSS = `
 :root{color-scheme:light dark;--bg:#fafafa;--card:#fff;--text:#171717;--muted:#737373;--line:#e5e5e5;--accent:#f43f5e}
 @media (prefers-color-scheme:dark){:root{--bg:#0e0e10;--card:#1c1c1f;--text:#f4f4f6;--muted:#9d9da4;--line:#34343a}}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
 a{color:inherit}header{display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto;padding:14px 16px}
 .logo{font-weight:900;font-size:20px;text-decoration:none;letter-spacing:-.02em}.logo span{color:var(--accent)}
-.cta{background:var(--accent);color:#fff;text-decoration:none;font-weight:600;padding:10px 18px;border-radius:999px;font-size:14px}
+.cta{background:color-mix(in srgb,var(--accent) 78%,#000);color:#fff;text-decoration:none;font-weight:600;padding:10px 18px;border-radius:999px;font-size:14px}
 main{max-width:1100px;margin:0 auto;padding:0 16px 32px}h1{font-size:28px;line-height:1.2;margin:12px 0 6px}.intro{color:var(--muted);margin:0 0 6px}
 .note{color:var(--muted);font-size:12px;margin:0 0 18px}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;list-style:none;padding:0;margin:0}
 @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}@media(min-width:960px){.grid{grid-template-columns:repeat(4,1fr)}}
 .card{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column}
 .img{position:relative;aspect-ratio:1;background:#fff;display:block}.img img{width:100%;height:100%;object-fit:contain;padding:12px}
-.off{position:absolute;left:8px;bottom:8px;background:var(--accent);color:#fff;font-weight:800;font-size:12px;padding:2px 8px;border-radius:999px}
+.off{position:absolute;left:8px;bottom:8px;background:color-mix(in srgb,var(--accent) 78%,#000);color:#fff;font-weight:800;font-size:12px;padding:2px 8px;border-radius:999px}
 .body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}.brand{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600}
 .title{font-size:14px;font-weight:500;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.price{font-weight:700;margin-top:auto}.buy{margin-top:6px;text-align:center;background:var(--text);color:var(--bg);text-decoration:none;font-weight:600;font-size:14px;padding:8px;border-radius:999px}
+.price{font-weight:700;margin-top:auto}.buy{margin-top:6px;text-align:center;background:var(--text);color:var(--bg);text-decoration:none;font-weight:600;font-size:14px;padding:11px 8px;border-radius:999px;display:block}
 .outfits{grid-template-columns:1fr}@media(min-width:640px){.outfits{grid-template-columns:repeat(2,1fr)}}@media(min-width:960px){.outfits{grid-template-columns:repeat(3,1fr)}}
 .ogrid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:6px;background:var(--line)}.oimg{aspect-ratio:1;background:#fff;border-radius:10px;overflow:hidden;display:block}
 .oimg img{width:100%;height:100%;object-fit:contain;padding:6px}.olist{list-style:none;padding:0;margin:4px 0 0;font-size:13px;display:flex;flex-direction:column;gap:4px}
@@ -357,7 +395,7 @@ function card(p: Product) {
   const url = productUrl(p)
   // Il link va alla pagina del prodotto (che Google può leggere); senza pagina, all'app.
   const app = paged.has(p.id) ? productPath(p) : `/#/p/${encodeURIComponent(p.id)}`
-  return `<li class="card"><a class="img" href="${app}"><img src="${esc(p.imageUrl!)}" alt="${esc(p.title)}" loading="lazy" decoding="async" width="300" height="300">${pr?.off ? `<span class="off">-${pr.off}%</span>` : ''}</a><div class="body"><span class="brand">${esc(p.brand ?? '')}</span><h3 class="title"><a href="${app}" style="text-decoration:none">${esc(p.title)}</a></h3>${pr ? `<span class="price">${pr.text}</span>` : ''}${url ? `<a class="buy" href="${esc(url)}" rel="sponsored nofollow noopener" target="_blank">Vedi su ${STORES[p.store].name}</a>` : ''}</div></li>`
+  return `<li class="card"><a class="img" href="${app}"><img src="${esc(p.imageUrl!)}" alt="${esc(p.title)}" loading="lazy" decoding="async" width="300" height="300">${pr?.off ? `<span class="off">-${pr.off}%</span>` : ''}</a><div class="body"><span class="brand">${esc(p.brand ?? '')}</span><h2 class="title"><a href="${app}" style="text-decoration:none">${esc(p.title)}</a></h2>${pr ? `<span class="price">${pr.text}</span>` : ''}${url ? `<a class="buy" href="${esc(url)}" rel="sponsored nofollow noopener" target="_blank">Vedi su ${STORES[p.store].name}</a>` : ''}</div></li>`
 }
 
 /** Un look: le foto dei capi affiancate (non modificate), il totale e l'elenco dei capi con i link. */
@@ -386,7 +424,7 @@ function mini(p: Product) {
 function linksSection(section: Universe, current: string) {
   const groups = new Map<string, Page[]>()
   for (const pg of pages)
-    if (pg.section === section && pg.slug !== current && !/-(uomo|donna)$/.test(pg.slug)) groups.set(pg.group, [...(groups.get(pg.group) ?? []), pg])
+    if (pg.section === section && pg.slug !== current && !/-(uomo|donna)$/.test(pg.slug) && !isBand(pg.slug)) groups.set(pg.group, [...(groups.get(pg.group) ?? []), pg])
   return `<nav class="links">${[...groups]
     .map(([g, list]) => `<h2>${esc(g)}</h2><ul>${list.map((pg) => `<li><a href="${pathOf(pg)}">${esc(pg.h1)}</a></li>`).join('')}</ul>`)
     .join('')}${otherSection(section)}</nav>`
@@ -479,10 +517,13 @@ ${similar.length ? `<section class="links"><h2>${esc(label)} simili</h2><ul clas
 
 for (const pg of pages) {
   const genderLinks = pages.filter((x) => x.section === pg.section && (x.slug === `${pg.slug}-donna` || x.slug === `${pg.slug}-uomo`))
+  // Dalla categoria alle sue fasce di prezzo (e dalla fascia alle altre fasce e alla categoria).
+  const base = isBand(pg.slug) ? pg.slug.replace(/-sotto-\d+-euro$/, '') : pg.slug
+  const bandLinks = pages.filter((x) => x.section === pg.section && x.slug !== pg.slug && (x.slug === base || (isBand(x.slug) && x.slug.replace(/-sotto-\d+-euro$/, '') === base)))
   const body = `<h1>${esc(pg.h1)}</h1><p class="intro">${esc(pg.intro)}</p>
 <p class="note">${pg.outfits ? `${pg.outfits.length} outfit` : `${pg.items.length} prodotti`} · prezzi aggiornati il ${builtLabel}${
     genderLinks.length ? ` · ${genderLinks.map((x) => `<a href="${pathOf(x)}">${x.slug.endsWith('donna') ? 'Donna' : 'Uomo'}</a>`).join(' · ')}` : ''
-  }</p>
+  }${bandLinks.length ? ` · ${bandLinks.map((x) => `<a href="${pathOf(x)}">${isBand(x.slug) ? `Sotto ${x.slug.match(/sotto-(\d+)/)![1]} €` : 'Tutti i prezzi'}</a>`).join(' · ')}` : ''}</p>
 ${
     pg.outfits
       ? `<ul class="grid outfits">${pg.outfits.map(outfitCard).join('')}</ul><p style="margin-top:20px"><a class="cta" href="/#/outfit">Scopri altri outfit nell'app</a></p>`

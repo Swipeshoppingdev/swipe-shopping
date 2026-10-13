@@ -12,7 +12,7 @@ export const PRIVACY_OWNER = {
   name: 'Kevin Conti',
   email: 'rispondea@gmail.com',
 }
-export const PRIVACY_UPDATED = '9 ottobre 2026'
+export const PRIVACY_UPDATED = '13 ottobre 2026'
 
 /** Profili social dell'app (mostrati nel Profilo). Per aggiungerne uno basta inserirlo qui e in SocialLinks. */
 export const SOCIAL_LINKS = {
@@ -47,3 +47,10 @@ export const FEATURES = {
  */
 export const GOOGLE_CLIENT_ID = '104770095773-o6avbplvppk8lkgvq5ogc9trcj5uc55m.apps.googleusercontent.com'
 
+
+/**
+ * Chiave pubblica Web Push (notifiche dal sito, anche su iPhone con il sito nella schermata Home).
+ * Si ricava dal secret SUPABASE_SERVICE_ROLE_KEY: `node scripts/webpush.ts` (la stampa anche il log di push.yml).
+ * Vuota = notifiche solo nell'app Android.
+ */
+export const WEB_PUSH_KEY = 'BCSREenKlLeeLULKcb_oK8AlR03ghM1ufTroZKLFy8oqbhT5kjQKmTUrHYCFTNcd2wwg5mOV6njirhwBJJtmLz0'

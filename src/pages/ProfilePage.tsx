@@ -1,4 +1,4 @@
-import { BarChart3, Clapperboard, ChevronRight, Gamepad2, RotateCcw, ShieldCheck, Trash2, Undo2, UserRound } from 'lucide-react'
+import { BadgeCheck, BarChart3, Clapperboard, ChevronRight, Gamepad2, RotateCcw, ShieldCheck, Trash2, Undo2, UserRound } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { AccountActions, AccountCard } from '../components/AccountCard'
 import { InstallCard } from '../components/InstallCard'
@@ -10,6 +10,7 @@ import { categoryLabel, isCategoryId } from '../config/categories'
 import { setConsent, summary } from '../lib/analytics'
 import { load, remove, save } from '../lib/storage'
 import { useConsent } from '../lib/useConsent'
+import { toggleFollow, useFollows } from '../lib/follows'
 import { routeHref } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
 import { useAuth } from '../state/AuthState'
@@ -17,6 +18,7 @@ import { useAuth } from '../state/AuthState'
 export function ProfilePage() {
   const { state, wishlist, allProducts: products, actions } = useApp()
   const consent = useConsent()
+  const follows = useFollows()
   const { user } = useAuth()
   const isAdmin = user?.email?.toLowerCase() === ADMIN_EMAIL
   const [confirmClear, setConfirmClear] = useState(false)
@@ -106,6 +108,31 @@ export function ProfilePage() {
             </a>
           )}
         </AccountCard>
+      </Card>
+
+      <Card icon={<BadgeCheck className="size-5" />} title="Marche che segui">
+        {follows.length === 0 ? (
+          <p className="text-sm text-neutral-600">
+            Apri un prodotto e tocca <strong>Segui</strong> sulla sua marca: le sue novità usciranno più spesso e, con le notifiche attive, ti avvisiamo quando ne arrivano di nuove.
+          </p>
+        ) : (
+          <>
+            <p className="mb-3 text-xs text-neutral-500">Tocca una marca per non seguirla più.</p>
+            <div className="flex flex-wrap gap-2">
+              {follows.map((b) => (
+                <button
+                  key={b}
+                  type="button"
+                  onClick={() => toggleFollow(b)}
+                  className="inline-flex h-9 items-center gap-1.5 rounded-full bg-neutral-100 px-3.5 text-sm font-medium text-neutral-800"
+                >
+                  {b} <span aria-hidden className="text-neutral-400">✕</span>
+                  <span className="sr-only">non seguire più</span>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
       </Card>
 
       <Card icon={<Gamepad2 className="size-5" />} title="Mini giochi">

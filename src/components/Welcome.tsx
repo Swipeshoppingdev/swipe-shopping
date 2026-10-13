@@ -232,7 +232,7 @@ export function Welcome() {
           {step < 3 && <ChevronRight className="size-5" />}
         </button>
         {step === 0 && (
-          <p className="text-center text-xs text-neutral-400">
+          <p className="text-center text-xs text-neutral-500">
             Continuando accetti i{' '}
             <a href={routeHref('privacy')} target="_blank" rel="noopener" className="underline">
               termini e l'informativa privacy

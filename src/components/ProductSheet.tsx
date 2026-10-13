@@ -13,6 +13,7 @@ import { useApp } from '../state/AppState'
 import type { Product } from '../types/product'
 import { CompleteLook } from './CompleteLook'
 import { DiscountBadge } from './DiscountBadge'
+import { FollowBrand } from './FollowBrand'
 import { NewBadge } from './NewBadge'
 import { PriceTag } from './PriceTag'
 import { ProductImage } from './ProductImage'
@@ -192,9 +193,12 @@ function SheetContent({ product }: { product: Product }) {
 
       <div className="space-y-4 px-5 pt-4">
         <div className="space-y-1.5">
-          <p className="text-xs font-medium tracking-wide text-neutral-500 uppercase">
-            {brandAndStore(product, categoryLabel(product.category))}
-          </p>
+          <div className="flex items-center justify-between gap-2">
+            <p className="min-w-0 text-xs font-medium tracking-wide text-neutral-500 uppercase">
+              {brandAndStore(product, categoryLabel(product.category))}
+            </p>
+            <FollowBrand product={product} />
+          </div>
           <h2 className="text-lg leading-snug font-semibold">{product.title}</h2>
           <PriceTag product={product} size="lg" />
         </div>

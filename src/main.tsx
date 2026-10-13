@@ -30,4 +30,8 @@ if (import.meta.env.PROD && !isNative && 'serviceWorker' in navigator && (locati
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').catch(() => {})
   })
+  // Tocco su una notifica con l'app già aperta: si va alla pagina indicata.
+  navigator.serviceWorker.addEventListener('message', (e: MessageEvent<{ type?: string; url?: string }>) => {
+    if (e.data?.type === 'open' && e.data.url?.startsWith('#/')) window.location.hash = e.data.url
+  })
 }

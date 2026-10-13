@@ -59,3 +59,36 @@ async function networkFirst(req) {
     throw err
   }
 }
+
+// Notifiche dal sito (Web Push, vedi scripts/webpush.ts): testo fisso deciso dal server.
+self.addEventListener('push', (event) => {
+  let data = {}
+  try {
+    data = event.data ? event.data.json() : {}
+  } catch {}
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'Swipe Shopping', {
+      body: data.body || '',
+      icon: 'icons/icon-192.png',
+      badge: 'icons/favicon-64.png',
+      tag: data.tag || 'swipe',
+      data: { url: typeof data.url === 'string' && data.url.startsWith('#/') ? data.url : '#/scopri' },
+    }),
+  )
+})
+
+// Tocco sulla notifica: si riapre l'app (se è già aperta la si porta davanti) sulla pagina giusta.
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  const url = event.notification.data?.url || '#/scopri'
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+      const open = list.find((c) => c.url.startsWith(self.registration.scope))
+      if (open) {
+        open.postMessage({ type: 'open', url })
+        return open.focus()
+      }
+      return self.clients.openWindow(self.registration.scope + url)
+    }),
+  )
+})
