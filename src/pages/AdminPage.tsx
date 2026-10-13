@@ -7,6 +7,7 @@ import { openProduct } from '../lib/productSheet'
 import { supabase } from '../lib/supabase'
 import { AdminBroadcast } from '../components/AdminBroadcast'
 import { AdminInsights } from '../components/AdminInsights'
+import { AdminOverview, PhoneStats } from '../components/AdminOverview'
 import { ProductImage } from '../components/ProductImage'
 import { routeHref } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
@@ -123,6 +124,9 @@ function AdminStatsView() {
         </div>
       </div>
 
+      <Section title="Panoramica">
+        <AdminOverview />
+      </Section>
       <AdminErrors />
       <AdminReports />
 
@@ -174,6 +178,9 @@ function AdminStatsView() {
           <Ranking title="Marche (mi piace + click)" rows={stats.top_brands} label={(id) => id} />
         </div>
       )}
+      <Section title="Questo telefono">
+        <PhoneStats />
+      </Section>
     </div>
   )
 }
