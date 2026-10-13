@@ -1,17 +1,15 @@
-import { BadgePercent, FolderInput, Heart, Share2, Trash2 } from 'lucide-react'
+import { BadgePercent, Bell, BellRing, Heart, Share2, Trash2 } from 'lucide-react'
 import { AmazonCart } from '../components/AmazonCart'
 import { useEffect, useMemo, useState } from 'react'
-import { FolderPicker } from '../components/FolderPicker'
 import { NewBadge } from '../components/NewBadge'
 import { DiscountBadge } from '../components/DiscountBadge'
-import { SendButton } from '../components/SendButton'
 import { FriendPicker } from '../components/SocialBits'
 import { PriceTag } from '../components/PriceTag'
 import { ProductImage } from '../components/ProductImage'
 import { StoreLink } from '../components/StoreLink'
 import { WishlistStory } from '../components/WishlistStory'
-import { AMAZON_DISCLOSURE } from '../config/app'
-import { WATCH_FOLDER, compareFolders, folderLabel, isPresetFolder } from '../config/folders'
+import { AMAZON_DISCLOSURE, FEATURES } from '../config/app'
+import { WATCH_FOLDER, compareFolders, folderLabel } from '../config/folders'
 import { universeOf } from '../config/categories'
 import { brandAndStore } from '../config/stores'
 import { discountBadge, fewLeft, freshPrice } from '../lib/price'
@@ -35,7 +33,6 @@ export function WishlistPage() {
   const [folder, setFolder] = useState<string | null>(null)
   const watchUser = !!useAuth().user
   const [sort, setSort] = useState<WishSort>('recenti')
-  const [moving, setMoving] = useState<Product | null>(null)
   const [dealsOnly, setDealsOnly] = useState(false)
   const showDeals = dealsOnly && deals > 0
   const few = wishlist.filter((w) => w.inCatalog && fewLeft(w.product)).length
@@ -44,7 +41,8 @@ export function WishlistPage() {
 
   const folders = useMemo(() => {
     const count = new Map<string, number>()
-    for (const w of wishlist) if (w.folder) count.set(w.folder, (count.get(w.folder) ?? 0) + 1)
+    // Resta solo la cartella degli avvisi (Kevin, 13/10): le altre cartelle vecchie non si mostrano più.
+    for (const w of wishlist) if (w.folder === WATCH_FOLDER) count.set(w.folder, (count.get(w.folder) ?? 0) + 1)
     return [...count].sort((a, b) => compareFolders(a[0], b[0]))
   }, [wishlist])
   // Cartella eliminata o svuotata: si torna a "Tutti".
@@ -86,93 +84,71 @@ export function WishlistPage() {
     )
   }
 
+  const chip = (active: boolean) =>
+    `flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3 text-xs font-semibold ring-1 transition active:scale-95 ${
+      active ? 'bg-neutral-900 text-white ring-neutral-900' : 'bg-white text-neutral-700 ring-neutral-200'
+    }`
+
+  // Pagina in tre parti: cartelle e filtri rapidi in alto, i prodotti, e in fondo cosa fare con la lista
+  // (carrello Amazon, condividi, storia). Prima tutto stava sopra i prodotti.
   return (
-    <div className="space-y-4 pb-4">
+    <div className="space-y-3 pb-4">
       <div className="flex items-baseline justify-between">
         <h1 className="text-2xl font-bold">Preferiti</h1>
-        <span className="flex items-center gap-3 text-sm text-neutral-500">
-          {wishlist.length} prodotti
-          <WishlistStory items={wishlist.map((w) => w.product)} section={state.mode} deals={deals} />
-        </span>
+        <span className="text-sm text-neutral-500">{wishlist.length} prodotti</span>
       </div>
-      {deals > 0 && (
-        <button
-          type="button"
-          onClick={() => {
-            setDealsOnly(!showDeals)
-            setFewOnly(false)
-          }}
-          aria-pressed={showDeals}
-          className={`flex w-full items-center gap-2 rounded-2xl px-4 py-3 text-left text-sm font-medium ring-1 active:scale-[0.99] ${
-            showDeals ? 'bg-emerald-600 text-[#fff] ring-emerald-600' : 'bg-emerald-50 text-emerald-800 ring-emerald-200'
-          }`}
-        >
-          <BadgePercent className="size-5 shrink-0" />
-          <span className="flex-1">
-            {showDeals
-              ? `Solo i preferiti in offerta (${deals})`
-              : deals === 1
-                ? 'Un tuo preferito è in offerta!'
-                : `${deals} preferiti sono in offerta!`}
-          </span>
-          <span className="text-xs font-semibold underline">{showDeals ? 'Mostra tutti' : 'Mostra'}</span>
-        </button>
-      )}
-      {few > 0 && (
-        <button
-          type="button"
-          onClick={() => {
-            setFewOnly(!showFew)
-            setDealsOnly(false)
-          }}
-          aria-pressed={showFew}
-          className={`flex w-full items-center gap-2 rounded-2xl px-4 py-3 text-left text-sm font-medium ring-1 active:scale-[0.99] ${
-            showFew ? 'bg-amber-500 text-[#fff] ring-amber-500' : 'bg-amber-50 text-amber-900 ring-amber-200'
-          }`}
-        >
-          <span className="text-lg leading-none">⏳</span>
-          <span className="flex-1">
-            {showFew ? `Solo quelli che stanno finendo (${few})` : few === 1 ? 'Un tuo preferito sta finendo!' : `${few} preferiti stanno finendo!`}
-          </span>
-          <span className="text-xs font-semibold underline">{showFew ? 'Mostra tutti' : 'Mostra'}</span>
-        </button>
-      )}
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]">
         <FolderChip active={!current} onClick={() => setFolder(null)} label="Tutti" count={wishlist.length} />
         {folders.map(([name, n]) => (
           <FolderChip key={name} active={current === name} onClick={() => setFolder(name)} label={folderLabel(name)} count={n} />
         ))}
       </div>
-      {current === WATCH_FOLDER && (
+      {current === WATCH_FOLDER ? (
         <p className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
-          🔔 Ti avvisiamo appena uno di questi va in offerta{watchUser ? '.' : ': serve un account (Profilo).'} Gli altri preferiti
+          🔔 Ti avvisiamo appena uno di questi scende di prezzo{watchUser ? '.' : ': serve un account (Profilo).'} Gli altri preferiti
           non mandano più avvisi.
         </p>
+      ) : (
+        folders.length === 0 && (
+          <p className="flex items-center gap-1.5 text-xs text-neutral-500">
+            Tocca <Bell className="inline size-3.5 shrink-0" /> su un preferito per sapere quando scende di prezzo.
+          </p>
+        )
       )}
-      {/* Solo quelli disponibili ora: i preferiti usciti dal catalogo non si possono comprare. */}
-      <AmazonCart products={shown.filter((w) => w.inCatalog).map((w) => w.product)} />
-      {shown.length > 0 && <ListShare name={current && isPresetFolder(current) ? current : null} products={shown.map((w) => w.product)} />}
-      <div className="flex items-center justify-between gap-3 text-sm">
-        {current ? (
-          <span className="flex gap-3">
+      <div className="flex items-center gap-2">
+        <div className="-ml-1 flex min-w-0 flex-1 gap-2 overflow-x-auto py-1 pl-1 [scrollbar-width:none]">
+          {deals > 0 && (
             <button
               type="button"
-              className="font-medium text-rose-600 underline"
-              onClick={() => window.confirm(`Svuotare la cartella "${current}"? I prodotti restano nei preferiti.`) && actions.renameFolder(current)}
+              onClick={() => {
+                setDealsOnly(!showDeals)
+                setFewOnly(false)
+              }}
+              aria-pressed={showDeals}
+              className={showDeals ? chip(true) : `${chip(false)} !bg-emerald-50 !text-emerald-800 !ring-emerald-200`}
             >
-              Svuota cartella
+              <BadgePercent className="size-3.5" /> {deals} in offerta
             </button>
-          </span>
-        ) : (
-          <span className="flex items-center gap-1 text-xs text-neutral-500">
-            Tocca <FolderInput className="inline size-3.5 shrink-0" /> per le cartelle
-          </span>
-        )}
+          )}
+          {few > 0 && (
+            <button
+              type="button"
+              onClick={() => {
+                setFewOnly(!showFew)
+                setDealsOnly(false)
+              }}
+              aria-pressed={showFew}
+              className={showFew ? chip(true) : `${chip(false)} !bg-amber-50 !text-amber-900 !ring-amber-200`}
+            >
+              ⏳ {few} stanno finendo
+            </button>
+          )}
+        </div>
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as WishSort)}
           aria-label="Ordina i preferiti"
-          className="rounded-full bg-white px-3 py-1.5 text-sm ring-1 ring-neutral-200"
+          className="h-8 shrink-0 rounded-full bg-white px-3 text-xs font-semibold ring-1 ring-neutral-200"
         >
           <option value="recenti">Più recenti</option>
           <option value="prezzo_asc">Prezzo più basso</option>
@@ -203,18 +179,15 @@ export function WishlistPage() {
                 )}
                 <button
                   type="button"
-                  onClick={() => setMoving(product)}
-                  aria-label={`Sposta ${product.title} in una cartella`}
-                  className={`absolute top-2 right-24 grid size-9 place-items-center rounded-full shadow ring-1 ring-black/5 active:scale-90 ${
-                    itemFolder ? 'bg-neutral-900 text-white' : 'bg-white/90 text-neutral-600'
+                  onClick={() => actions.setFolder(product, itemFolder === WATCH_FOLDER ? undefined : WATCH_FOLDER)}
+                  aria-label={itemFolder === WATCH_FOLDER ? `Non avvisarmi più per ${product.title}` : `Avvisami se scende il prezzo di ${product.title}`}
+                  aria-pressed={itemFolder === WATCH_FOLDER}
+                  className={`absolute top-2 right-13 grid size-9 place-items-center rounded-full shadow ring-1 ring-black/5 active:scale-90 ${
+                    itemFolder === WATCH_FOLDER ? 'bg-amber-400 text-[#1c1c1f]' : 'bg-white/90 text-neutral-600'
                   }`}
                 >
-                  <FolderInput className="size-4" />
+                  {itemFolder === WATCH_FOLDER ? <BellRing className="size-4" /> : <Bell className="size-4" />}
                 </button>
-                <SendButton
-                  product={product}
-                  className="absolute top-2 right-13 grid size-9 place-items-center rounded-full bg-white/90 text-neutral-600 shadow ring-1 ring-black/5 active:scale-90"
-                />
                 <button
                   type="button"
                   onClick={() => actions.remove(product)}
@@ -243,7 +216,16 @@ export function WishlistPage() {
           )
         })}
       </ul>
-      {moving && <FolderPicker product={moving} onClose={() => setMoving(null)} />}
+      {shown.length > 0 && (
+        <div className="space-y-2 rounded-2xl bg-white p-3 shadow-sm ring-1 ring-black/5">
+          {/* Solo quelli disponibili ora: i preferiti usciti dal catalogo non si possono comprare. */}
+          <AmazonCart products={shown.filter((w) => w.inCatalog).map((w) => w.product)} />
+          <div className="flex gap-2">
+            <ListShare name={null} products={shown.map((w) => w.product)} />
+            <WishlistStory items={wishlist.map((w) => w.product)} section={state.mode} deals={deals} />
+          </div>
+        </div>
+      )}
       <p className="text-center text-xs text-neutral-500">
         L'acquisto avviene sul sito del negozio. Prezzi e disponibilità possono cambiare.
       </p>
@@ -288,11 +270,11 @@ function ListShare({ name, products }: { name: string | null; products: Product[
     <>
       <button
         type="button"
-        onClick={() => (auth.user ? setOpen(true) : void shareOutside())}
-        className="flex w-full items-center justify-center gap-2 rounded-full bg-white py-2.5 text-sm font-semibold ring-1 ring-neutral-200 active:scale-[0.98]"
+        onClick={() => (auth.user && FEATURES.social ? setOpen(true) : void shareOutside())}
+        className="flex h-10 flex-1 items-center justify-center gap-2 rounded-full bg-white text-sm font-semibold ring-1 ring-neutral-200 active:scale-[0.98]"
       >
         <Share2 className="size-4" />
-        {toast || (name ? `Condividi la cartella "${name}"` : 'Condividi questa lista')}
+        {toast || 'Condividi la lista'}
       </button>
       {open && (
         <FriendPicker

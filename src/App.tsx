@@ -20,6 +20,7 @@ const PAGES = {
   OutfitPage: () => import('./pages/OutfitPage').then((m) => ({ default: m.OutfitPage })),
   PollPage: () => import('./pages/PollPage').then((m) => ({ default: m.PollPage })),
   SantaPage: () => import('./pages/SantaPage').then((m) => ({ default: m.SantaPage })),
+  CommsPage: () => import('./pages/AdminPage').then((m) => ({ default: m.CommsPage })),
   StudioPage: () => import('./pages/StudioPage').then((m) => ({ default: m.StudioPage })),
   SwipeTogetherPage: () => import('./pages/SwipeTogetherPage').then((m) => ({ default: m.SwipeTogetherPage })),
   ChallengePage: () => import('./pages/ChallengePage').then((m) => ({ default: m.ChallengePage })),
@@ -39,6 +40,7 @@ const GiftsPage = lazy(PAGES.GiftsPage)
 const PollPage = lazy(PAGES.PollPage)
 const SantaPage = lazy(PAGES.SantaPage)
 const StudioPage = lazy(PAGES.StudioPage)
+const CommsPage = lazy(PAGES.CommsPage)
 const SwipeTogetherPage = lazy(PAGES.SwipeTogetherPage)
 const ChallengePage = lazy(PAGES.ChallengePage)
 const FiltersPage = lazy(PAGES.FiltersPage)
@@ -84,6 +86,7 @@ export default function App() {
         {route === 'outfit' && <OutfitPage />}
         {route === 'regali' && <GiftsPage />}
         {route === 'studio' && <StudioPage />}
+        {route === 'comunicazioni' && <CommsPage />}
         </Suspense>
         {/* Spazio per la barra in basso: un elemento vero, perché Safari ignora il padding in fondo ai contenitori che scorrono. */}
         {!isDiscover && <div aria-hidden className="h-[calc(6rem+env(safe-area-inset-bottom))] shrink-0" />}

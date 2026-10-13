@@ -14,12 +14,15 @@ export function AmazonCart({ products, className = '' }: { products: Product[]; 
         target="_blank"
         rel="noopener noreferrer sponsored nofollow"
         onClick={() => products.forEach((p) => p.store === 'amazon' && track('click', p))}
-        className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-neutral-900 px-4 font-semibold text-white active:scale-[0.98]"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-neutral-900 px-4 text-[15px] leading-tight font-semibold text-white active:scale-[0.98]"
       >
         <ShoppingCart className="size-5 shrink-0" />
-        Aggiungi tutto al carrello Amazon ({cart.count})
+        {cart.total > cart.count ? `Aggiungi i primi ${cart.count} al carrello Amazon` : `Aggiungi tutto al carrello Amazon (${cart.count})`}
       </a>
-      <p className="mt-1.5 text-center text-xs text-neutral-500">Su Amazon controlla taglie e colori nel carrello prima di pagare.</p>
+      <p className="mt-1.5 text-center text-xs text-neutral-500">
+        {cart.total > cart.count && `Al massimo ${cart.count} alla volta: usa le cartelle per scegliere quali. `}
+        Su Amazon controlla taglie e colori nel carrello prima di pagare.
+      </p>
     </div>
   )
 }

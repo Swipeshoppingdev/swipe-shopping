@@ -1,7 +1,7 @@
 /** Cartelle dei preferiti: solo nomi già pronti (niente testo libero). Il nome è quello salvato nel preferito. */
 export const FOLDERS = [
   { name: 'Da comprare', emoji: '🛒' },
-  { name: 'Quando scende', emoji: '💸' },
+  { name: 'Quando scende', emoji: '🔔' },
   { name: 'Idee regalo', emoji: '🎁' },
   { name: 'Per me', emoji: '💖' },
   { name: 'Estate', emoji: '☀️' },
@@ -22,7 +22,9 @@ export const WATCH_FOLDER = 'Quando scende'
 
 export const isPresetFolder = (name: string) => EMOJI.has(name)
 export const folderEmoji = (name: string) => EMOJI.get(name) ?? '📁'
-export const folderLabel = (name: string) => `${folderEmoji(name)} ${name}`
+export const folderLabel = (name: string) => (name === WATCH_FOLDER ? WATCH_LABEL : `${folderEmoji(name)} ${name}`)
+/** Come si chiama per l'utente la cartella degli avvisi (il valore salvato resta "Quando scende"). */
+export const WATCH_LABEL = '🔔 Avvisami se scende'
 
 /** Prima le cartelle pronte nel loro ordine, poi quelle vecchie con nome scelto a mano. */
 export const compareFolders = (a: string, b: string) =>

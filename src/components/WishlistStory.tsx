@@ -33,7 +33,7 @@ export function WishlistStory({ items, section, deals }: { items: Product[]; sec
             setBusy(false)
           }
         }}
-        className="inline-flex h-9 items-center gap-1.5 rounded-full bg-neutral-900 px-3.5 text-sm font-semibold text-white disabled:opacity-60"
+        className="inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-white px-3.5 text-sm font-semibold ring-1 ring-neutral-200 disabled:opacity-60"
       >
         <Camera className="size-4" />
         {busy ? 'Un attimo…' : 'Crea storia'}

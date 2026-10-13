@@ -9,7 +9,7 @@ export function EmailAlertsToggle() {
     <EmailPrefToggle
       column="email_alerts"
       label="Avvisami quando un preferito è in offerta"
-      hint={pushAvailable ? 'Con una notifica (se attive) o via email, al massimo ogni 3 giorni (ogni giorno per la cartella 💸 Quando scende).' : "Via email (nell'app Android con una notifica), al massimo ogni 3 giorni (ogni giorno per la cartella 💸 Quando scende)."}
+      hint={pushAvailable ? 'Con una notifica (se attive) o via email, al massimo ogni 3 giorni (ogni giorno per quelli con la campanella 🔔).' : "Via email (nell'app Android con una notifica), al massimo ogni 3 giorni (ogni giorno per quelli con la campanella 🔔)."}
     />
   )
 }

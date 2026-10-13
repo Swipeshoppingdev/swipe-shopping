@@ -5,6 +5,7 @@ import { social } from '../lib/social'
 import { useAuth } from '../state/AuthState'
 import type { Product } from '../types/product'
 import { FriendPicker } from './SocialBits'
+import { FEATURES } from '../config/app'
 
 /**
  * Pulsante "Manda" della home: con account si sceglie a quali amici mandarlo (arriva nella loro Chat),
@@ -28,7 +29,7 @@ export function SendButton({ product, className }: { product: Product; className
         type="button"
         aria-label={`Manda ${product.title}`}
         title="Manda a un amico"
-        onClick={() => (auth.user ? setOpen(true) : void shareOutside())}
+        onClick={() => (auth.user && FEATURES.social ? setOpen(true) : void shareOutside())}
         className={/\babsolute\b/.test(className) ? className : `relative ${className}`}
       >
         <Send className="size-5" />

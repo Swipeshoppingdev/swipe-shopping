@@ -83,8 +83,9 @@ export const storeLinkLabel = (p: Product) =>
  * di Amazon, con il nostro tag affiliato). Solo prodotti Amazon veri (non le ricerche), al massimo 30.
  */
 export function amazonCartUrl(products: Product[]) {
-  const asins = [...new Set(products.filter((p) => p.store === 'amazon' && !p.searchQuery && p.availability !== 'out_of_stock').map((p) => p.externalId))].slice(0, 30)
+  const all = [...new Set(products.filter((p) => p.store === 'amazon' && !p.searchQuery && p.availability !== 'out_of_stock').map((p) => p.externalId))]
+  const asins = all.slice(0, 30)
   if (asins.length < 2) return null
   const q = asins.map((a, i) => `ASIN.${i + 1}=${encodeURIComponent(a)}&Quantity.${i + 1}=1`).join('&')
-  return { url: `https://www.amazon.it/gp/aws/cart/add.html?AssociateTag=${AMAZON_TAG}&${q}`, count: asins.length }
+  return { url: `https://www.amazon.it/gp/aws/cart/add.html?AssociateTag=${AMAZON_TAG}&${q}`, count: asins.length, total: all.length }
 }

@@ -3,7 +3,6 @@ import { SwipeDeck } from '../components/SwipeDeck'
 import { DeckTabs } from '../components/DeckTabs'
 import { Breaks } from '../components/Breaks'
 import { FavDeals } from '../components/FavDeals'
-import { NewArrivals } from '../components/NewArrivals'
 import { routeHref } from '../lib/useHashRoute'
 import { widenSuggestions } from '../lib/widen'
 import { useMemo } from 'react'
@@ -53,7 +52,6 @@ export function DiscoverPage() {
           {/* Questi aspettano il catalogo completo (in anteprima mancano offerte e novità vere). */}
           {!previewing && (
             <>
-              <NewArrivals key={state.mode} />
               <Breaks key={`breaks:${state.mode}`} />
               <FavDeals key={`favdeals:${state.mode}`} />
             </>

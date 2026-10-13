@@ -44,7 +44,7 @@ export function PrivacyPage() {
           </li>
           <li>
             <strong>Avvisi di prezzo:</strong> se hai un account, quando un tuo preferito è in offerta ti avvisiamo (notifica o
-            email) al massimo ogni 3 giorni, oppure una volta al giorno per i prodotti nella cartella "Quando scende". Puoi
+            email) al massimo ogni 3 giorni, oppure una volta al giorno per i preferiti con la campanella "Avvisami se scende". Puoi
             spegnerli in ogni momento dal Profilo.
           </li>
           <li>
