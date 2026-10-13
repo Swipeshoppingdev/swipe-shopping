@@ -5,7 +5,7 @@ name: Backup database Supabase
 # (meno tempo per chi volesse provare a indovinare la password: deve essere lunga e casuale).
 # Segreti: SUPABASE_DB_URL (Connect → Session pooler, con la password del database) e BACKUP_PASSWORD.
 # Per aprirlo: gpg --decrypt backup.dump.gpg > backup.dump, poi pg_restore.
-# Ogni notte arriva anche una mail a Kevin (Resend) con il backup cifrato e una copia del codice del repository
+# Ogni notte arriva anche una mail a Kevin (Resend) con il backup cifrato e una copia cifrata del codice del repository
 # (senza catalogo e file generati, che si rifanno da soli): così ne resta una fuori da GitHub per sempre.
 on:
   # GitHub ritarda o salta spesso i giri programmati: si prova ogni 3 ore e si fa il backup
@@ -100,6 +100,7 @@ jobs:
         if: steps.secrets.outputs.ok == 'true'
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          PASSWORD: ${{ secrets.BACKUP_PASSWORD }}
           FORCE: ${{ inputs.mail }}
         run: |
           set -euo pipefail
@@ -109,17 +110,21 @@ jobs:
           fi
           if [ -z "$RESEND_API_KEY" ]; then echo "::warning::Manca RESEND_API_KEY: mail non inviata."; exit 0; fi
           day=$(date -u +%Y-%m-%d)
-          git -C repo archive --format=zip --output="$PWD/code.zip" HEAD -- . ':!public/catalog.json' ':!public/details' \
+          # Gmail rifiuta gli zip con dentro file .js, .jar o .bat (il codice ne ha): anche il codice va cifrato,
+          # così Gmail non guarda dentro.
+          git -C repo archive --format=tar.gz --output="$PWD/code.tar.gz" HEAD -- . ':!public/catalog.json' ':!public/details' \
             ':!android/app/src/main/assets/public' ':!ios/App/App/public' ':!public/play'
+          gpg --batch --yes --pinentry-mode loopback --symmetric --cipher-algo AES256 \
+            --passphrase-fd 3 --output code.tar.gz.gpg code.tar.gz 3<<< "$PASSWORD"
           sha=$(git -C repo rev-parse --short HEAD)
-          jq -n --arg to "$BACKUP_MAIL_TO" --arg day "$day" --arg sha "$sha" --rawfile data <(base64 -w0 backup.dump.gpg) --rawfile code <(base64 -w0 code.zip) '{
+          jq -n --arg to "$BACKUP_MAIL_TO" --arg day "$day" --arg sha "$sha" --rawfile data <(base64 -w0 backup.dump.gpg) --rawfile code <(base64 -w0 code.tar.gz.gpg) '{
             from: "Swipe Shopping <noreply@swipeshopping.app>", to: [$to],
             subject: ("Backup Swipe Shopping " + $day),
-            text: ("Backup del " + $day + ".\n\n- Database (dati dell app e account): file .dump.gpg, cifrato con la password BACKUP_PASSWORD.\n- Codice del sito e dell app (versione " + $sha + "): file .zip.\n\nTienili, servono solo in caso di emergenza. Per il ripristino chiedi a Claude nel progetto."),
+            text: ("Backup del " + $day + ".\n\n- Database (dati dell app e account): file .dump.gpg, cifrato con la password BACKUP_PASSWORD.\n- Codice del sito e dell app (versione " + $sha + "): file .tar.gz.gpg, cifrato con la stessa password.\n\nTienili, servono solo in caso di emergenza. Per il ripristino chiedi a Claude nel progetto."),
             attachments: [{ filename: ("swipe-shopping-database-" + $day + ".dump.gpg"), content: $data },
-                          { filename: ("swipe-shopping-codice-" + $day + ".zip"), content: $code }]
+                          { filename: ("swipe-shopping-codice-" + $day + ".tar.gz.gpg"), content: $code }]
           }' > mail.json
           code=$(curl -sS -o resp.txt -w '%{http_code}' https://api.resend.com/emails \
             -H "Authorization: Bearer $RESEND_API_KEY" -H 'Content-Type: application/json' --data @mail.json)
-          rm mail.json code.zip
+          rm mail.json code.tar.gz code.tar.gz.gpg
           if [ "$code" = "200" ]; then echo "::notice::Backup mandato per mail."; else echo "::warning::Mail non inviata ($code): $(head -c 300 resp.txt | sed -E 's/[^ @"]+@[^ @"]+/***/g')"; fi
