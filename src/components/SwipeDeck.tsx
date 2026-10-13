@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { Heart, X } from 'lucide-react'
+import { ArrowRight, Heart, X } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { track } from '../lib/analytics'
 import { useApp } from '../state/AppState'
@@ -108,18 +108,25 @@ export function SwipeDeck({ cards, onLike }: { cards?: Product[]; onLike?: (p: P
               initial={{ y: -16, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -16, opacity: 0 }}
-              className="absolute inset-x-0 top-2 z-30 flex justify-center px-3"
+              className="absolute inset-x-0 top-3 z-30 flex justify-center px-3"
             >
               <StoreLink
                 product={saved}
                 icon={false}
-                className="flex max-w-full items-center gap-2 rounded-full bg-neutral-900 py-1.5 pr-3.5 pl-1.5 text-sm font-semibold text-white shadow-xl"
+                className="flex w-full max-w-sm items-center gap-3 rounded-2xl bg-[#18181b]/95 p-2 pr-2.5 text-[#fff] shadow-2xl ring-1 ring-[#fff]/10 backdrop-blur-md active:scale-[0.98]"
               >
-                <span className="size-8 shrink-0 overflow-hidden rounded-full bg-[#fff]">
+                <span className="size-11 shrink-0 overflow-hidden rounded-xl bg-[#fff] p-0.5 ring-2 ring-rose-500">
                   <ProductImage product={saved} className="size-full object-contain" />
                 </span>
-                <span className="truncate">❤️ Salvato!</span>
-                <span className="shrink-0 underline underline-offset-2">Vedi su {storeName(saved.store)} →</span>
+                <span className="min-w-0 flex-1 leading-tight">
+                  <span className="flex items-center gap-1 text-xs font-medium text-[#fff]/70">
+                    <Heart className="size-3 fill-rose-500 text-rose-500" /> Salvato nei preferiti
+                  </span>
+                  <span className="block truncate text-sm font-semibold">{saved.brand || saved.title}</span>
+                </span>
+                <span className="flex shrink-0 items-center gap-1 rounded-xl bg-rose-500 px-3 py-2 text-sm font-bold text-[#fff]">
+                  {storeName(saved.store)} <ArrowRight className="size-4" />
+                </span>
               </StoreLink>
             </motion.div>
           )}
