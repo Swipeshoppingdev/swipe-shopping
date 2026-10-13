@@ -180,7 +180,7 @@ function AdminStatsView() {
 
 type ErrorRow = { id: number; happened_at: string; kind: string; message: string; stack?: string; route?: string; ua?: string; native: boolean }
 
-/** Errori dell'app arrivati dai telefoni (anonimi): da copiare e mandare a Claude. Si vede solo se ce ne sono. */
+/** Errori dell'app arrivati dai telefoni (anonimi): da copiare e mandare a Claude. Sempre visibile, con "0 errori" se è vuoto. */
 function AdminErrors() {
   const [all, setRows] = useState<ErrorRow[] | null>(null)
   const [error, setError] = useState('')
@@ -193,6 +193,8 @@ function AdminErrors() {
     })
   }, [])
   if (error) return <p className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">Errori dell'app: {error}</p>
+  // La chiamata va attesa con then(): senza, supabase-js non la manda mai (gli errori tornavano). Svuota anche le segnalazioni.
+  const clear = () => void supabase?.rpc('admin_errors_clear').then(({ error }) => (error ? alert(`Non svuotato: ${error.message}`) : setRows([])))
   const feedback = all?.filter((r) => r.kind === 'segnalazione') ?? []
   const rows = all?.filter((r) => r.kind !== 'segnalazione') ?? []
   const whenF = (iso: string) => new Date(iso).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
@@ -208,9 +210,23 @@ function AdminErrors() {
           </li>
         ))}
       </ul>
+      {!rows.length && (
+        <button type="button" onClick={clear} className="mt-3 rounded-full px-4 py-2 text-sm font-medium text-neutral-600 ring-1 ring-neutral-200">
+          Svuota
+        </button>
+      )}
     </Section>
   )
-  if (!rows.length) return feedbackBox || null
+  if (!all) return null
+  if (!rows.length)
+    return (
+      <>
+        {feedbackBox}
+        <Section title="Errori dell'app (0)">
+          <p className="text-sm text-neutral-500">0 errori: nessun problema dai telefoni.</p>
+        </Section>
+      </>
+    )
   const when = (iso: string) => new Date(iso).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
   const device = (r: ErrorRow) => (r.native ? 'App Android' : /iPhone|iPad/.test(r.ua ?? '') ? 'Sito iPhone' : /Android/.test(r.ua ?? '') ? 'Sito Android' : 'Sito')
   const text = rows.map((r) => `${r.happened_at} [${r.kind}] ${device(r)} ${r.route ?? ''}\n${r.message}\n${r.stack ?? ''}\n${r.ua ?? ''}`).join('\n\n')
@@ -247,10 +263,7 @@ function AdminErrors() {
         </button>
         <button
           type="button"
-          onClick={() => {
-            // La chiamata va attesa con then(): senza, supabase-js non la manda mai (gli errori tornavano).
-            void supabase?.rpc('admin_errors_clear').then(({ error }) => (error ? alert(`Non svuotato: ${error.message}`) : setRows([])))
-          }}
+          onClick={clear}
           className="rounded-full px-4 py-2 text-sm font-medium text-neutral-600 ring-1 ring-neutral-200"
         >
           Svuota
