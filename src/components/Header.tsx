@@ -18,7 +18,7 @@ export function Header() {
   const special = useSpecial()
   return (
     // Sticky con sfondo pieno: iOS 26 riconosce la barra e usa il suo colore sotto l'ora invece di sfocare il contenuto.
-    <header className="sticky top-0 z-20 shrink-0 bg-neutral-50 pt-[env(safe-area-inset-top)]">
+    <header className="app-top sticky top-0 z-20 shrink-0 pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex h-14 max-w-md items-center gap-2 px-2 sm:max-w-2xl">
         <SectionMenu />
         <a href={special ? `#/${special}` : '#/scopri'} className="flex min-w-0 flex-1 flex-col items-center leading-none">

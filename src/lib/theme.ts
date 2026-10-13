@@ -11,9 +11,21 @@ const effective = (): Theme => {
   return chosen ?? (media?.matches ? 'dark' : 'light')
 }
 
+/** Colore della barra del browser = colore della barra in alto (cambia con tema e sezione). */
+function syncThemeColor() {
+  const header = document.querySelector('header')
+  const color = header ? getComputedStyle(header).backgroundColor : ''
+  const dark = document.documentElement.classList.contains('dark')
+  document.querySelector('meta[name=theme-color]')?.setAttribute('content', color && color !== 'rgba(0, 0, 0, 0)' ? color : dark ? '#0e0e10' : '#fafafa')
+}
+if (typeof window !== 'undefined') {
+  new MutationObserver(() => requestAnimationFrame(syncThemeColor)).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+  requestAnimationFrame(syncThemeColor)
+}
+
 function apply(theme: Theme) {
   document.documentElement.classList.toggle('dark', theme === 'dark')
-  document.querySelector('meta[name=theme-color]')?.setAttribute('content', theme === 'dark' ? '#0e0e10' : '#fafafa')
+  syncThemeColor()
   setSystemBarsTheme(theme === 'dark')
 }
 

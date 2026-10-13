@@ -58,7 +58,7 @@ export default function App() {
   }, [])
 
   return (
-    <div className="flex h-dvh flex-col bg-neutral-50 text-neutral-900">
+    <div className="app-bg flex h-dvh flex-col text-neutral-900">
       <Header />
       <main
         className={`mx-auto flex w-full min-h-0 flex-1 flex-col px-4 ${
