@@ -1,5 +1,6 @@
-import { BadgeCheck, BarChart3, Clapperboard, ChevronRight, Gamepad2, RotateCcw, ShieldCheck, Trash2, Undo2, UserRound } from 'lucide-react'
-import { useState, type ReactNode } from 'react'
+import { BadgeCheck, Users, BarChart3, Clapperboard, ChevronRight, Gamepad2, RotateCcw, ShieldCheck, Trash2, Undo2, UserRound } from 'lucide-react'
+import { useEffect, useState, type ReactNode } from 'react'
+import { subscribeUnseen } from '../lib/social'
 import { AccountActions, AccountCard } from '../components/AccountCard'
 import { InstallCard } from '../components/InstallCard'
 import { MyProfileCard } from '../components/MyProfileCard'
@@ -64,6 +65,7 @@ export function ProfilePage() {
       <h1 className="text-2xl font-bold">Profilo</h1>
 
       <MyProfileCard />
+      <FriendsLink />
 
       {isAdmin && (
         <a
@@ -255,5 +257,30 @@ function TopList({ title, rows }: { title: string; rows: [string, number][] }) {
         ))}
       </ol>
     </div>
+  )
+}
+
+/** Ingresso agli Amici (prima era una scheda della barra in basso): amici, consigli ricevuti, Swipe insieme. */
+function FriendsLink() {
+  const [unseen, setUnseen] = useState(0)
+  useEffect(() => subscribeUnseen(setUnseen), [])
+  return (
+    <a href={routeHref('amici')} className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5">
+      <span className="flex items-center gap-3">
+        <span className="grid size-10 place-items-center rounded-full bg-rose-50 text-rose-500">
+          <Users className="size-5" />
+        </span>
+        <span>
+          <span className="block font-semibold">Amici</span>
+          <span className="block text-xs text-neutral-500">Consigli, sondaggi e Swipe insieme</span>
+        </span>
+      </span>
+      <span className="flex items-center gap-2">
+        {unseen > 0 && (
+          <span className="min-w-5 rounded-full bg-rose-500 px-1.5 text-center text-[10px] leading-5 font-bold text-[#fff]">{unseen > 99 ? '99+' : unseen}</span>
+        )}
+        <ChevronRight className="size-5 text-neutral-400" />
+      </span>
+    </a>
   )
 }
