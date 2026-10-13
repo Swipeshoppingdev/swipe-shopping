@@ -27,18 +27,37 @@ function looksLike(p: Product) {
   return st.some((w) => t.includes(w))
 }
 
+/** Per ogni catalogo: prodotti confrontabili divisi per categoria, con la chiave del modello già calcolata
+ * (prima ogni carta nuova rifaceva il giro su tutto il catalogo: lento sui telefoni meno potenti). */
+const byCategory = new WeakMap<Product[], Map<string, { p: Product; model: string }[]>>()
+function candidates(all: Product[], category: string) {
+  let index = byCategory.get(all)
+  if (!index) {
+    index = new Map()
+    for (const p of all) {
+      if (p.availability === 'out_of_stock' || p.searchQuery) continue
+      let list = index.get(p.category)
+      if (!list) index.set(p.category, (list = []))
+      list.push({ p, model: model(p) })
+    }
+    byCategory.set(all, index)
+  }
+  return index.get(category) ?? []
+}
+
 function peersOf(product: Product, all: Product[]) {
   const own = model(product)
-  return all.filter(
-    (p) =>
+  const out: Product[] = []
+  for (const { p, model: m } of candidates(all, product.category)) {
+    if (
       p.id !== product.id &&
-      p.category === product.category &&
-      p.availability !== 'out_of_stock' &&
-      !p.searchQuery &&
       (product.gender === 'unisex' || p.gender === product.gender || p.gender === 'unisex') &&
-      model(p) !== own &&
-      freshPrice(p) !== null,
-  )
+      m !== own &&
+      freshPrice(p) !== null
+    )
+      out.push(p)
+  }
+  return out
 }
 
 export interface PriceRank {
