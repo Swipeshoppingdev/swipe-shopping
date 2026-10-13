@@ -12,6 +12,11 @@ on:
   # solo se oggi non ce n'è già uno (vedi "Già fatto oggi?"). A mano parte sempre.
   schedule:
     - cron: '53 */3 * * *'
+  # Anche i giri programmati qui li salta: si prova pure dopo ogni aggiornamento del catalogo
+  # (che parte in modo affidabile). Sempre con il controllo "Già fatto oggi?".
+  workflow_run:
+    workflows: ['Aggiorna catalogo Amazon']
+    types: [completed]
   workflow_dispatch:
     inputs:
       mail:
@@ -38,7 +43,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [ "${{ github.event_name }}" != "schedule" ]; then echo "skip=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "skip=false" >> "$GITHUB_OUTPUT"; exit 0; fi
           day=$(date -u +%Y-%m-%d)
           n=0
           for id in $(gh api "repos/${{ github.repository }}/actions/workflows/backup.yml/runs?created=>=$day&status=success" -q '.workflow_runs[].id'); do
