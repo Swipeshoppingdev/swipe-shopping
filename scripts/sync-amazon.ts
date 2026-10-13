@@ -90,7 +90,13 @@ const MAX_REQUESTS = Number(process.env.AMAZON_MAX_REQUESTS ?? 4200)
 let requests = 0
 /** Richieste riservate alle taglie (getVariations): la ricerca si ferma prima, così ne restano per loro. */
 const SIZE_REQUESTS = Math.min(Number(process.env.AMAZON_SIZE_REQUESTS ?? 800), MAX_REQUESTS)
-const SEARCH_LIMIT = MAX_REQUESTS - SIZE_REQUESTS
+/**
+ * Richieste riservate a rinnovare i prezzi dei prodotti che la ricerca di questo giro non ha ritrovato
+ * (getItems, 10 alla volta, prima i più vecchi): senza, metà catalogo restava con il prezzo scaduto
+ * e nell'app compariva "Prezzo su Amazon". Se la ricerca ne avanza, si usano anche quelle.
+ */
+const REFRESH_REQUESTS = Math.min(Number(process.env.AMAZON_REFRESH_REQUESTS ?? 1200), MAX_REQUESTS - SIZE_REQUESTS)
+const SEARCH_LIMIT = MAX_REQUESTS - SIZE_REQUESTS - REFRESH_REQUESTS
 
 const OFFER_RESOURCES = ['offersV2.listings.price', 'offersV2.listings.availability', 'offersV2.listings.isBuyBoxWinner']
 
@@ -202,6 +208,41 @@ async function refreshCurated(token: string, curated: Record<string, any>[], sum
       summary.push(`${p.externalId}:${p.price ?? '-'}${p.priceFrom ? '(da)' : ''}:${p.availability}`)
     }
   }
+}
+
+/** Rinnova prezzo e disponibilità dei prodotti non ritrovati dalla ricerca, dai più vecchi, finché ci sono richieste. */
+async function refreshKept(token: string, list: Record<string, any>[]) {
+  const limit = MAX_REQUESTS - SIZE_REQUESTS
+  const todo = [...list].sort((a, b) => Date.parse(a.priceCheckedAt ?? '') - Date.parse(b.priceCheckedAt ?? ''))
+  let done = 0
+  let priced = 0
+  for (let i = 0; i < todo.length && requests < limit; i += 10) {
+    const batch = todo.slice(i, i + 10)
+    let body: any
+    try {
+      body = await callApi('getItems', token, {
+        itemIds: batch.map((p) => p.externalId),
+        itemIdType: 'ASIN',
+        resources: [...OFFER_RESOURCES, ...dealResources],
+      })
+    } catch (e) {
+      annotate('warning', `Prezzi non rinnovati: ${e instanceof Error ? e.message : String(e)}`)
+      break
+    }
+    const items: any[] = body?.itemsResult?.items ?? []
+    for (const p of batch) {
+      const item = items.find((it) => it?.asin === p.externalId)
+      done++
+      if (!item) {
+        delete p.priceCheckedAt
+        continue
+      }
+      delete p.priceFrom
+      applyOffer(p, readListing(item))
+      if (p.priceCheckedAt === now) priced++
+    }
+  }
+  annotate('notice', `Prezzi rinnovati per i prodotti non ritrovati: ${priced} su ${done} controllati (${list.length} da rinnovare).`)
 }
 
 function applyOffer(p: Record<string, any>, offer: Offer | null) {
@@ -549,10 +590,13 @@ try {
   }
   // Trovati nel giro prima ma non in questo (le ricerche cambiano a ogni giro): restano finché il prezzo ha meno di 20 ore.
   const searchedIds = new Set(searched.map((p) => p.id))
+  // Prima si rinnovano i loro prezzi (getItems): così restano nel catalogo con un prezzo valido.
   const keepUntil = Date.now() - 20 * 3_600_000
-  const kept = catalog.filter(
-    (p) => p.source === 'ricerca' && !searchedIds.has(p.id) && !curatedIds.has(p.id) && p.priceCheckedAt && Date.parse(p.priceCheckedAt) > keepUntil,
+  const notFound = catalog.filter(
+    (p) => p.source === 'ricerca' && !searchedIds.has(p.id) && !curatedIds.has(p.id) && p.externalId && p.priceCheckedAt && Date.parse(p.priceCheckedAt) > Date.now() - 3 * 86_400_000,
   )
+  await refreshKept(token, notFound)
+  const kept = notFound.filter((p) => p.priceCheckedAt && Date.parse(p.priceCheckedAt) > keepUntil && p.availability !== 'out_of_stock')
   if (kept.length) annotate('notice', `Tenuti dal giro precedente: ${kept.length} prodotti.`)
   const others = catalog.filter((p) => p.store !== 'amazon')
   // Le taglie lette nei giri precedenti restano fino a 10 giorni (si rileggono prima le più vecchie).
