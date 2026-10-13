@@ -2,7 +2,6 @@ import { lazy, Suspense, useEffect } from 'react'
 import { BottomNav } from './components/BottomNav'
 import { ConsentBanner } from './components/ConsentBanner'
 import { Header } from './components/Header'
-import { ProductSheet } from './components/ProductSheet'
 import { useSpecialMode } from './lib/outfitMode'
 import { useHashRoute } from './lib/useHashRoute'
 import { Welcome } from './components/Welcome'
@@ -16,6 +15,7 @@ const PAGES = {
   FriendsPage: () => import('./pages/FriendsPage').then((m) => ({ default: m.FriendsPage })),
   GiftListPage: () => import('./pages/GiftListPage').then((m) => ({ default: m.GiftListPage })),
   ChatPage: () => import('./pages/ChatPage').then((m) => ({ default: m.ChatPage })),
+  ProductSheet: () => import('./components/ProductSheet').then((m) => ({ default: m.ProductSheet })),
   GiftsPage: () => import('./pages/GiftsPage').then((m) => ({ default: m.GiftsPage })),
   OutfitPage: () => import('./pages/OutfitPage').then((m) => ({ default: m.OutfitPage })),
   PollPage: () => import('./pages/PollPage').then((m) => ({ default: m.PollPage })),
@@ -30,6 +30,8 @@ const PAGES = {
   SharedListPage: () => import('./pages/SharedListPage').then((m) => ({ default: m.SharedListPage })),
   WishlistPage: () => import('./pages/WishlistPage').then((m) => ({ default: m.WishlistPage })),
 }
+// La scheda prodotto si scarica dopo l'avvio (vedi sotto), non serve per la prima carta.
+const ProductSheet = lazy(PAGES.ProductSheet)
 const AdminPage = lazy(PAGES.AdminPage)
 const FriendProfilePage = lazy(PAGES.FriendProfilePage)
 const FriendsPage = lazy(PAGES.FriendsPage)
@@ -93,7 +95,9 @@ export default function App() {
       </main>
       <ConsentBanner />
       <Welcome />
-      <ProductSheet />
+      <Suspense fallback={null}>
+        <ProductSheet />
+      </Suspense>
       <SocialWatcher />
       <BottomNav current={route} hash={hash} special={special} />
     </div>

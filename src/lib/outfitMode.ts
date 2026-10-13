@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { load, save } from './storage'
 import { useHashRoute, type Route } from './useHashRoute'
-import { giftSeason } from '../pages/GiftsPage'
+import { giftSeason } from '../lib/giftSeason'
 
 /**
  * Outfit e Regali si comportano come sezioni: aperti, anche Amici, Profilo e le altre pagine restano "in Outfit"

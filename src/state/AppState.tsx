@@ -77,6 +77,10 @@ function interleaveFollowed(list: Product[], follows: string[]) {
   return out
 }
 
+/** Carte del mazzo preparate a ogni swipe (le altre arrivano man mano) */
+const DECK_WINDOW = 400
+const BOOST_EXTRA = 40
+const FOLLOW_EXTRA = 80
 const MAX_DISLIKED = 5000
 const MAX_HISTORY = 30
 /** No di fila (senza Sì) in una categoria, negli ultimi MAX_HISTORY swipe, perché vada in fondo al mazzo */
@@ -348,20 +352,37 @@ function useAppStore() {
     // Con "La tua taglia": prima i capi con la taglia confermata, poi le novità, poi il resto.
     const fit = new Set(activeFilters.sizes.length ? mixed.filter((p) => fitSizes(p.sizes, activeFilters.sizes).length) : [])
     const ordered = [...mixed.filter((p) => fit.has(p) && fresh.has(p)), ...mixed.filter((p) => fit.has(p) && !fresh.has(p)), ...mixed.filter((p) => !fit.has(p) && fresh.has(p)), ...mixed.filter((p) => !fit.has(p) && !fresh.has(p))]
-    return { ordered, models: ordered.map(modelKey), inList: new Set(list) }
+    return { ordered, inList: new Set(list) }
   }, [modeProducts, activeFilters])
 
   const fullDeck = useMemo(() => {
     const seen = new Set([...state.disliked, ...state.wishlist.map((w) => w.product.id)])
     // Una variante per modello: niente stessa felpa in tre colori di fila. Un modello già scartato o salvato non torna.
     const seenModels = new Set([...seen].flatMap((id) => (byId.has(id) ? [modelKey(byId.get(id)!)] : [])))
+    // Si prepara solo la parte alta del mazzo (DECK_WINDOW carte), più qualche carta della categoria scelta e delle
+    // marche seguite: rifare tutto il catalogo a ogni swipe rallentava i telefoni lenti. Al prossimo swipe si ricalcola.
     const sorted: Product[] = []
-    const { ordered, models } = sectionDeck
+    const extra: Product[] = []
+    let boosted = 0
+    let followed = 0
+    const { ordered } = sectionDeck
     for (let i = 0; i < ordered.length; i++) {
-      if (seen.has(ordered[i].id) || seenModels.has(models[i])) continue
-      seenModels.add(models[i])
-      sorted.push(ordered[i])
+      const full = sorted.length >= DECK_WINDOW
+      if (full && (!boostCat || boosted >= BOOST_EXTRA) && (!follows.length || followed >= FOLLOW_EXTRA)) break
+      const p = ordered[i]
+      if (seen.has(p.id)) continue
+      // Calcolata solo per le carte che si guardano davvero, non per tutto il catalogo.
+      const model = modelKey(p)
+      if (seenModels.has(model)) continue
+      const isBoost = !!boostCat && p.category === boostCat
+      const isFollow = follows.length > 0 && isFollowed(p.brand, follows)
+      if (full && !(isBoost && boosted < BOOST_EXTRA) && !(isFollow && followed < FOLLOW_EXTRA)) continue
+      seenModels.add(model)
+      if (isBoost) boosted++
+      if (isFollow) followed++
+      ;(full ? extra : sorted).push(p)
     }
+    if (extra.length) sorted.push(...extra)
     // Scartati rimessi nel mazzo: in cima (anche se il modello era già stato visto).
     const back = state.restored.flatMap((id) => {
       const p = byId.get(id)
