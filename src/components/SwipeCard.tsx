@@ -1,4 +1,4 @@
-import { animate, motion, useMotionValue, useTransform } from 'framer-motion'
+import { animate, motion, useIsPresent, useMotionValue, useTransform } from 'framer-motion'
 import { useRef, useState, type MouseEvent, type PointerEvent } from 'react'
 import { categoryLabel } from '../config/categories'
 import { brandAndStore } from '../config/stores'
@@ -38,7 +38,10 @@ export function SwipeCard({
   index: number
   onSwipe: (dir: SwipeDir) => void
 }) {
-  const isTop = index === 0
+  // Una carta che sta uscendo resta ancora a schermo per l'animazione: non deve più ricevere tocchi.
+  // (Toccarla fermava l'uscita: la carta restava bloccata sopra il mazzo e ogni swipe salvava quelle sotto.)
+  const present = useIsPresent()
+  const isTop = index === 0 && present
   const x = useMotionValue(0)
   const rotate = useTransform(x, [-300, 0, 300], [-16, 0, 16])
   const likeOpacity = useTransform(x, [20, SWIPE_DISTANCE], [0, 1])
@@ -68,6 +71,11 @@ export function SwipeCard({
   const onPointerMove = (e: PointerEvent<HTMLElement>) => {
     const s = pan.current
     if (!s || s.id !== e.pointerId) return
+    // La carta è già partita: niente x.stop(), altrimenti resterebbe ferma sopra le altre.
+    if (!present) {
+      pan.current = null
+      return
+    }
     const dx = e.clientX - s.x0
     if (!s.active) {
       if (Math.abs(dx) < 6 && Math.abs(e.clientY - s.y0) < 6) return
@@ -90,7 +98,7 @@ export function SwipeCard({
     const s = pan.current
     if (!s || s.id !== e.pointerId) return
     pan.current = null
-    if (!s.active) return
+    if (!s.active || !present) return
     const offset = e.clientX - s.x0
     const [t0, x0] = s.samples[0]
     const [t1, x1] = s.samples[s.samples.length - 1]
@@ -107,7 +115,7 @@ export function SwipeCard({
       // Foto non trascinabili dal browser (rovinerebbero lo swipe col mouse); i tocchi vanno al riquadro della foto.
       className="absolute inset-0 flex flex-col overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-black/5 select-none [&_img]:pointer-events-none"
       // will-change: le prime due carte su un livello a parte, così muoverle non ridisegna foto e ombra a ogni fotogramma.
-      style={{ x, rotate, zIndex: 10 - index, touchAction: isTop ? 'pan-y' : undefined, willChange: index < 2 ? 'transform' : undefined }}
+      style={{ x, rotate, zIndex: 10 - index, touchAction: isTop ? 'pan-y' : undefined, pointerEvents: present ? undefined : 'none', willChange: index < 2 ? 'transform' : undefined }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerEnd}

@@ -9,10 +9,10 @@
     <link rel="preconnect" href="https://m.media-amazon.com" />
     <meta name="theme-color" content="#fafafa" />
     <script>
-      // Tema scelto (o quello del telefono) applicato prima del disegno, senza lampi bianchi.
+      // Tema scelto (scuro se l'utente non ha scelto) applicato prima del disegno, senza lampi bianchi.
       try {
         var t = JSON.parse(localStorage.getItem('swipeshop:v1:theme') || 'null')
-        if (t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)) {
+        if (t !== 'light') {
           document.documentElement.classList.add('dark')
           document.querySelector('meta[name=theme-color]').content = '#0e0e10'
         }
