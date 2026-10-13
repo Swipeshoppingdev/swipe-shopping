@@ -1,3 +1,5 @@
+import { universeOf, type CategoryId } from '../src/config/categories.ts'
+
 // Corregge la categoria in base al titolo: la ricerca Amazon per "scarpe eleganti" a volte
 // restituisce sneakers, quella per "giacca" una felpa, ecc. Si cambia solo dentro lo stesso gruppo
 // (scarpe con scarpe, abbigliamento con abbigliamento) e solo se il titolo è chiaro.
@@ -94,5 +96,10 @@ const JUNK: Record<string, RegExp[]> = {
   ],
 }
 
-/** true se il titolo non è il prodotto della categoria (accessorio, ricarica, ricambio…). */
-export const isJunk = (title: string, category: string) => (JUNK[category] ?? []).some((re) => re.test(title))
+// Moda è per adulti: capi e scarpe da bambino finiscono nelle ricerche (taglie "12 Years", "Unisex-Bambini", "Jnr").
+const KIDS =
+  /\b(?:bambin[oaie]|bimb[oaie]|neonat[oaie]|kids|junior|jnr|toddler|teen|boys|girl[’']s)\b|\b(?:da|per) ragazz[oaie]\b|\b\d{1,2}(?:-\d{1,2})?\s*(?:anni|years|mesi|months)\b/i
+
+/** true se il titolo non è il prodotto della categoria (accessorio, ricarica, ricambio, capo da bambino…). */
+export const isJunk = (title: string, category: string) =>
+  (JUNK[category] ?? []).some((re) => re.test(title)) || (universeOf(category as CategoryId) === 'moda' && KIDS.test(title))
