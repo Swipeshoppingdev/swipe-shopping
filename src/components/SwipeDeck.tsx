@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Heart, X } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { track } from '../lib/analytics'
 import { useApp } from '../state/AppState'
 import { productImageUrl, productUrl, storeLinkLabel, storeName } from '../config/stores'
@@ -28,8 +28,13 @@ function preload(url?: string) {
   if (preloaded.size > 40) preloaded.delete(preloaded.keys().next().value!)
 }
 
-/** Il mazzo della sezione aperta, oppure `cards` (es. Regali, con prodotti di tutte le sezioni: lì niente "annulla"). */
-export function SwipeDeck({ cards, onLike }: { cards?: Product[]; onLike?: (p: Product) => void } = {}) {
+/** Il mazzo della sezione aperta, oppure `cards` (es. Regali, con prodotti di tutte le sezioni e il suo `undo`). */
+export function SwipeDeck({
+  cards,
+  onLike,
+  onDislike,
+  undo,
+}: { cards?: Product[]; onLike?: (p: Product) => void; onDislike?: (p: Product) => void; undo?: ReactNode } = {}) {
   const app = useApp()
   const { actions } = app
   const deck = cards ?? app.deck
@@ -59,9 +64,12 @@ export function SwipeDeck({ cards, onLike }: { cards?: Product[]; onLike?: (p: P
           clearTimeout(savedTimer.current)
           savedTimer.current = setTimeout(() => setSaved(null), 2000)
         }
-      } else actions.dislike(top)
+      } else {
+        actions.dislike(top)
+        onDislike?.(top)
+      }
     },
-    [top, actions, onLike],
+    [top, actions, onLike, onDislike],
   )
 
   // Una "visualizzazione" per ogni card che arriva in cima.
@@ -135,7 +143,7 @@ export function SwipeDeck({ cards, onLike }: { cards?: Product[]; onLike?: (p: P
       </div>
 
       <div className="flex items-center justify-center gap-3 sm:gap-4">
-        {cards ? <span className="size-11" /> : <UndoMenu />}
+        {cards ? (undo ?? <span className="size-11" />) : <UndoMenu />}
         <button
           type="button"
           onClick={() => swipe(-1)}

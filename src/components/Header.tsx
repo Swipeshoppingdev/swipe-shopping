@@ -1,3 +1,4 @@
+import { closeBreaks } from '../lib/closeBreaks'
 import { Check, ChevronDown, Ghost, Cookie, Cpu, Gift, LayoutGrid, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun, TreePine } from 'lucide-react'
 import { giftSeason } from '../pages/GiftsPage'
 import { Reorder, useDragControls } from 'framer-motion'
@@ -143,6 +144,7 @@ function SectionMenu() {
       <button
         type="button"
         onClick={() => {
+          if (!open) closeBreaks()
           setOpen(!open)
           if (!menuSeen) {
             setMenuSeen(true)
