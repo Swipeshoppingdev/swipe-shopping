@@ -1,4 +1,4 @@
-// Notifiche push per l'app Android: quando un amico ti manda qualcosa in "Per te" (tabella inbox,
+// Notifiche push (app Android e sito, vedi webpush.ts): quando un amico ti manda qualcosa in "Per te" (tabella inbox,
 // vedi supabase/schema-5.sql e schema-6.sql). Gira su GitHub Actions ogni 5 minuti e usa Firebase
 // Cloud Messaging (API HTTP v1) con l'account di servizio nel secret FCM_SERVICE_ACCOUNT.
 // - I testi sono sempre fissi: nessun testo scritto dagli utenti finisce nelle notifiche.
@@ -6,14 +6,15 @@
 // - Le novità più vecchie di 2 ore non vengono mandate (solo segnate come fatte).
 // - I telefoni che non esistono più vengono tolti.
 // Uso: `node scripts/push.ts` (con `--dry` mostra cosa manderebbe, senza inviare).
-import { FCM_SCOPE, accessToken, fcmSender, type PushMessage, type ServiceAccount } from './google.ts'
+import type { PushMessage } from './google.ts'
+import { pushSender, vapidKeys } from './webpush.ts'
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hlsqxxcztysnlijznjng.supabase.co'
 const { SUPABASE_SERVICE_ROLE_KEY, FCM_SERVICE_ACCOUNT } = process.env
 const DRY = process.argv.includes('--dry')
 
-if (!SUPABASE_SERVICE_ROLE_KEY || (!FCM_SERVICE_ACCOUNT && !DRY)) {
-  console.log('::notice::Notifiche push non attive: mancano i secrets SUPABASE_SERVICE_ROLE_KEY e/o FCM_SERVICE_ACCOUNT.')
+if (!SUPABASE_SERVICE_ROLE_KEY) {
+  console.log('::notice::Notifiche push non attive: manca il secret SUPABASE_SERVICE_ROLE_KEY.')
   process.exit(0)
 }
 
@@ -43,6 +44,9 @@ const markPushed = async (ids: number[]) => {
       headers: { Prefer: 'return=minimal' },
     })
 }
+
+// Chiave pubblica per src/config/app.ts (WEB_PUSH_KEY): pubblica, si può mostrare.
+console.log(`Chiave pubblica Web Push: ${vapidKeys(SUPABASE_SERVICE_ROLE_KEY).publicKey}`)
 
 let items: Item[]
 try {
@@ -102,8 +106,7 @@ let send: (token: string, m: PushMessage) => Promise<'ok' | 'gone' | 'error'>
 if (DRY) {
   send = async (token, m) => (console.log(`[prova] ${token.slice(0, 12)}… → ${m.title} (${m.url})`), 'ok')
 } else {
-  const sa = JSON.parse(FCM_SERVICE_ACCOUNT!) as ServiceAccount
-  send = fcmSender(sa, await accessToken(sa, FCM_SCOPE), 'amici')
+  send = await pushSender('amici', { fcm: FCM_SERVICE_ACCOUNT, seed: SUPABASE_SERVICE_ROLE_KEY })
 }
 
 let sent = 0

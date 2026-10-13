@@ -1,5 +1,5 @@
 // Avviso "preferito in offerta": avvisa chi ha un preferito che oggi è scontato sul negozio.
-// Chi ha l'app Android con le notifiche attive riceve una notifica sul telefono (solo dalle 9 alle 21),
+// Chi ha le notifiche attive (app Android o sito) riceve una notifica (solo dalle 9 alle 21),
 // gli altri un'email. Mai entrambe: il limite di un avviso ogni 3 giorni vale per tutti e due.
 // Non confrontiamo con prezzi vecchi: le regole Amazon non permettono di conservarli oltre 24 ore.
 // Gira su GitHub Actions dopo l'aggiornamento del catalogo. Regole:
@@ -12,7 +12,7 @@
 // oppure `-- --test=indirizzo@email.it` per mandare solo un'email di esempio a quell'indirizzo).
 import { readFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
-import { FCM_SCOPE, accessToken, fcmSender, type ServiceAccount } from './google.ts'
+import { pushSender } from './webpush.ts'
 // I log di GitHub sono pubblici: nessun indirizzo email, nemmeno in parte.
 const mask = (s: string) => s.replace(/[^\s@"'<>,;:]+@[^\s@"'<>,;:]+/g, '***')
 
@@ -129,15 +129,13 @@ const sentLog = new Map(
 
 // Telefoni con le notifiche attive (schema-6.sql). Senza tabella o senza chiave Firebase: solo email.
 const phones = new Map<string, string[]>()
-let push: ReturnType<typeof fcmSender> | null = null
-if (FCM_SERVICE_ACCOUNT) {
+let push: Awaited<ReturnType<typeof pushSender>> | null = null
+{
   try {
+    // Token dell'app senza chiave Firebase: non si possono usare, quelle persone ricevono l'email.
     for (const t of await all<{ token: string; user_id: string }>('push_tokens', 'token, user_id'))
-      phones.set(t.user_id, [...(phones.get(t.user_id) ?? []), t.token])
-    if (!DRY) {
-      const sa = JSON.parse(FCM_SERVICE_ACCOUNT) as ServiceAccount
-      push = fcmSender(sa, await accessToken(sa, FCM_SCOPE))
-    }
+      if (FCM_SERVICE_ACCOUNT || t.token.startsWith('{')) phones.set(t.user_id, [...(phones.get(t.user_id) ?? []), t.token])
+    if (!DRY) push = await pushSender('offerte', { fcm: FCM_SERVICE_ACCOUNT, seed: SUPABASE_SERVICE_ROLE_KEY! })
   } catch (e) {
     console.log(`::notice::Notifiche offerte non disponibili: ${e instanceof Error ? e.message : e}`)
     phones.clear()

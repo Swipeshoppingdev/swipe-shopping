@@ -48,6 +48,11 @@ export function PrivacyPage() {
             spegnerli in ogni momento dal Profilo.
           </li>
           <li>
+            <strong>Notifiche e marche seguite:</strong> se attivi le notifiche (nell'app o dal sito) salviamo il codice che il
+            telefono o il browser ci dà per raggiungerti, legato al tuo account; se segui una marca salviamo il suo nome. Li
+            usiamo solo per avvisarti (al massimo una notifica al giorno per le novità delle marche). Le spegni dal Profilo.
+          </li>
+          <li>
             <strong>Errori e segnalazioni:</strong> se l'app si blocca, o se usi "Segnala un problema", riceviamo in forma
             anonima il tipo di problema, la pagina dell'app e il modello di browser o telefono. Nessun nome, email o account.
           </li>

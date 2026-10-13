@@ -47,7 +47,7 @@ export function BottomNav({ current, hash, special }: { current: Route; hash: st
                 href={hrefOf(route)}
                 aria-current={active ? 'page' : undefined}
                 className={`relative flex h-full flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition ${
-                  active ? 'text-neutral-900' : 'text-neutral-400'
+                  active ? 'text-neutral-900' : 'text-neutral-500'
                 }`}
               >
                 <Icon className={`size-6 ${active && route === 'preferiti' ? 'fill-rose-500 text-rose-500' : ''}`} />

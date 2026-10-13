@@ -151,7 +151,7 @@ function SectionMenu() {
         }}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label={`Sezione ${current.label}: cambia sezione`}
+        aria-label={`${current.label}: cambia sezione`}
         className="relative flex h-10 w-28 items-center justify-center gap-1.5 rounded-full border-[1.5px] border-rose-500 bg-transparent text-rose-500 active:scale-95"
       >
         {dot && (
@@ -172,7 +172,7 @@ function SectionMenu() {
               <MenuItem key={id} id={id} entry={entries[id]} onPick={() => setOpen(false)} />
             ))}
           </Reorder.Group>
-          <p className="px-2.5 pt-1 pb-0.5 text-center text-[10px] text-neutral-400">Tieni premuto e trascina per riordinare le voci</p>
+          <p className="px-2.5 pt-1 pb-0.5 text-center text-[10px] text-neutral-500">Tieni premuto e trascina per riordinare le voci</p>
           <div className="mt-1 border-t border-neutral-100 pt-1">
             <SocialLinks />
           </div>

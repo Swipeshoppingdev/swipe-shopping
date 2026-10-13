@@ -8,6 +8,7 @@ import { FriendPicker } from '../components/SocialBits'
 import { PriceTag } from '../components/PriceTag'
 import { ProductImage } from '../components/ProductImage'
 import { StoreLink } from '../components/StoreLink'
+import { WishlistStory } from '../components/WishlistStory'
 import { AMAZON_DISCLOSURE } from '../config/app'
 import { WATCH_FOLDER, compareFolders, folderLabel, isPresetFolder } from '../config/folders'
 import { universeOf } from '../config/categories'
@@ -88,7 +89,10 @@ export function WishlistPage() {
     <div className="space-y-4 pb-4">
       <div className="flex items-baseline justify-between">
         <h1 className="text-2xl font-bold">Preferiti</h1>
-        <span className="text-sm text-neutral-500">{wishlist.length} prodotti</span>
+        <span className="flex items-center gap-3 text-sm text-neutral-500">
+          {wishlist.length} prodotti
+          <WishlistStory items={wishlist.map((w) => w.product)} section={state.mode} deals={deals} />
+        </span>
       </div>
       {deals > 0 && (
         <button

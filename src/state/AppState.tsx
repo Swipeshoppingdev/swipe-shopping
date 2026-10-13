@@ -8,6 +8,7 @@ import { fetchUserData, mergeUserData, saveUserData } from '../lib/cloudSync'
 import { matchesFilters, normalizeFilters, sortProducts } from '../lib/filters'
 import { isNew, setNewBaseline } from '../lib/newness'
 import { fitSizes } from '../lib/sizes'
+import { isFollowed, useFollows } from '../lib/follows'
 import { modelKey, onePerModel } from '../lib/dedupe'
 import { discountBadge } from '../lib/price'
 import { sharedProductId } from '../lib/share'
@@ -60,6 +61,22 @@ type Action =
   | { type: 'hydrate'; wishlist: WishItem[]; disliked: string[]; filters: Filters }
   | { type: 'folder'; id: string; folder?: string }
   | { type: 'renameFolder'; from: string; to?: string }
+
+/** Mette un prodotto delle marche seguite ogni 3 carte (nella seconda posizione di ogni terna). */
+function interleaveFollowed(list: Product[], follows: string[]) {
+  const fav = list.filter((p) => isFollowed(p.brand, follows))
+  if (fav.length === 0) return list
+  const others = list.filter((p) => !isFollowed(p.brand, follows))
+  const out: Product[] = []
+  let f = 0
+  let o = 0
+  while (f < fav.length || o < others.length) {
+    if (out.length % 3 === 1 && f < fav.length) out.push(fav[f++])
+    else if (o < others.length) out.push(others[o++])
+    else out.push(fav[f++])
+  }
+  return out
+}
 
 const MAX_DISLIKED = 5000
 const MAX_HISTORY = 30
@@ -324,6 +341,9 @@ function useAppStore() {
     return [...no].filter(([c, n]) => n >= TIRED_AFTER && !yes.has(c)).map(([c]) => c).sort().join('|')
   }, [state.history])
 
+  // Marche seguite: una carta su tre è di una di loro (finché ce ne sono), senza riempire il mazzo solo di quelle.
+  const follows = useFollows()
+
   const fullDeck = useMemo(() => {
     const seen = new Set([...state.disliked, ...state.wishlist.map((w) => w.product.id)])
     const list = deckProducts.filter(
@@ -354,10 +374,10 @@ function useAppStore() {
     const rest1 = boostCat ? [...rest0.filter((p) => p.category === boostCat), ...rest0.filter((p) => p.category !== boostCat)] : rest0
     const tired = new Set(tiredKey ? tiredKey.split('|') : [])
     const rest = tired.size ? [...rest1.filter((p) => !tired.has(p.category) || p.category === boostCat), ...rest1.filter((p) => tired.has(p.category) && p.category !== boostCat)] : rest1
-    const withBack = [...back, ...rest]
+    const withBack = [...back, ...(follows.length ? interleaveFollowed(rest, follows) : rest)]
     const shared = sharedId ? deckProducts.find((p) => p.id === sharedId) : undefined
     return shared ? [shared, ...withBack.filter((p) => p.id !== shared.id)] : withBack
-  }, [deckProducts, byId, state.disliked, state.wishlist, state.mode, state.restored, activeFilters, sharedId, boostCat, tiredKey])
+  }, [deckProducts, byId, state.disliked, state.wishlist, state.mode, state.restored, activeFilters, sharedId, boostCat, tiredKey, follows])
   const deck = dropOn && !sharedId ? dropDeck : fullDeck
   // In anteprima si mostra il mazzo solo se ha abbastanza carte (altrimenti si aspetta il catalogo completo).
   const previewing = state.catalog.status === 'loading' && !!preview && deck.length >= 3
