@@ -8,7 +8,7 @@ import { ProductImage } from './ProductImage'
 import { CoachMarks } from './CoachMarks'
 import { HeartBurst, type Burst } from './HeartBurst'
 import { discountBadge } from '../lib/price'
-import { SendButton } from './SendButton'
+import { ShareButton } from './ShareButton'
 import { StoreLink } from './StoreLink'
 import { UndoMenu } from './UndoMenu'
 import { SwipeCard, type SwipeDir } from './SwipeCard'
@@ -161,7 +161,7 @@ export function SwipeDeck({
           <Heart className="size-6 fill-current" /> SÌ
         </button>
         {top ? (
-          <SendButton
+          <ShareButton
             product={top}
             className="grid size-11 place-items-center rounded-full bg-white text-neutral-600 shadow-md ring-1 ring-black/5 transition active:scale-90"
           />

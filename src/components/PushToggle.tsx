@@ -21,7 +21,7 @@ export function PushToggle({ plain = false }: { plain?: boolean }) {
         {!plain && <Bell className="size-5 text-rose-500" />}
         <span>
           Notifiche su questo telefono
-          <span className="block text-xs text-neutral-500">Quando un preferito è in offerta (al massimo ogni 3 giorni, o ogni giorno per la cartella 💸 Quando scende) e per le novità delle marche che segui.</span>
+          <span className="block text-xs text-neutral-500">Quando un preferito è in offerta (al massimo ogni 3 giorni, o ogni giorno per quelli con la campanella 🔔) e per le novità delle marche che segui.</span>
         </span>
       </span>
       <input

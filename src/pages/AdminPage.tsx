@@ -1,4 +1,4 @@
-import { BarChart3, Loader2, Lock } from 'lucide-react'
+import { BarChart3, Loader2, Lock, Megaphone } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { ADMIN_EMAIL } from '../config/app'
 import { UNIVERSES, categoryLabel, isCategoryId } from '../config/categories'
@@ -35,6 +35,26 @@ const PERIODS = [7, 30, 90] as const
 
 /** Statistiche complessive dell'app, visibili solo all'account del titolare. */
 export function AdminPage() {
+  return <AdminOnly>{() => <AdminStatsView />}</AdminOnly>
+}
+
+/** "Comunicazioni" (link in Profilo sotto Studio): email a tutti gli iscritti. Prima stava in Statistiche. */
+export function CommsPage() {
+  return (
+    <AdminOnly>
+      {() => (
+        <div className="space-y-4 pb-6">
+          <h1 className="flex items-center gap-2 text-2xl font-bold">
+            <Megaphone className="size-6" /> Comunicazioni
+          </h1>
+          <AdminBroadcast />
+        </div>
+      )}
+    </AdminOnly>
+  )
+}
+
+function AdminOnly({ children }: { children: () => ReactNode }) {
   const auth = useAuth()
   const isAdmin = auth.user?.email?.toLowerCase() === ADMIN_EMAIL
 
@@ -50,7 +70,7 @@ export function AdminPage() {
       </div>
     )
   }
-  return <AdminStatsView />
+  return <>{children()}</>
 }
 
 function AdminStatsView() {
@@ -104,7 +124,6 @@ function AdminStatsView() {
       </div>
 
       <AdminErrors />
-      <AdminBroadcast />
       <AdminReports />
 
       {loading && !stats && (

@@ -3,12 +3,13 @@ import { AmazonCart } from '../components/AmazonCart'
 import { facetValues } from '../lib/filters'
 import { fitSizes } from '../lib/sizes'
 import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
-import { Check, Heart, RefreshCw, Send, Trash2, X } from 'lucide-react'
+import { Check, Heart, RefreshCw, Trash2, X, Share2 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { OUTFITS_SAVED_EVENT } from '../components/CompleteLook'
 import { PriceRange } from '../components/PriceRange'
 import { PriceTag } from '../components/PriceTag'
 import { ProductImage } from '../components/ProductImage'
+import { FEATURES } from '../config/app'
 import { FriendPicker } from '../components/SocialBits'
 import { StoreLink } from '../components/StoreLink'
 import { UndoMenuView } from '../components/UndoMenu'
@@ -595,12 +596,12 @@ function OutfitSend({ outfit, className }: { outfit: Outfit; className?: string 
     <>
       <button
         type="button"
-        aria-label="Manda l'outfit"
-        title="Manda a un amico"
-        onClick={() => (auth.user ? setOpen(true) : void shareOutside())}
+        aria-label="Condividi l'outfit"
+        title="Condividi"
+        onClick={() => (auth.user && FEATURES.social ? setOpen(true) : void shareOutside())}
         className={`relative grid place-items-center rounded-full transition active:scale-90 ${className ?? 'size-11 bg-white text-neutral-600 shadow-md ring-1 ring-black/5'}`}
       >
-        <Send className={className ? 'size-4' : 'size-5'} />
+        <Share2 className={className ? 'size-4' : 'size-5'} />
         {toast && (
           <span className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-full bg-neutral-900 px-2 py-1 text-xs whitespace-nowrap text-white">
             {toast}

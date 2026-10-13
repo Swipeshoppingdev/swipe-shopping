@@ -16,6 +16,7 @@ import { DuelView, pickPair } from './DuelView'
 import { ProductImage } from './ProductImage'
 import { StoreLink } from './StoreLink'
 import { ChallengeStarter } from './ChallengeStarter'
+import { FEATURES } from '../config/app'
 import { useAuth } from '../state/AuthState'
 
 /** Ogni quanti swipe arriva una pausa di gioco. */
@@ -318,7 +319,7 @@ function PriceGuess({ product, price, options, onDone }: { product: Product; pri
       <p className="h-5 text-center text-sm font-semibold">
         {picked === null ? '' : right ? '🎯 Esatto! Occhio da intenditore' : `Quasi! Costa ${formatPrice(price)}`}
       </p>
-      {picked !== null && user && (
+      {picked !== null && user && FEATURES.social && (
         <button type="button" onClick={() => setChallenge(true)} className="mx-auto -my-1 text-sm font-bold text-rose-500 underline">
           🎯 Sfida un amico sui prezzi
         </button>

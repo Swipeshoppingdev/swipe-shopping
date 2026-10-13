@@ -1,4 +1,4 @@
-import { BadgeCheck, Users, BarChart3, Clapperboard, ChevronRight, Gamepad2, RotateCcw, ShieldCheck, Trash2, Undo2, UserRound } from 'lucide-react'
+import { BadgeCheck, Megaphone, Users, BarChart3, Clapperboard, ChevronRight, Gamepad2, RotateCcw, ShieldCheck, Trash2, Undo2, UserRound } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { subscribeUnseen } from '../lib/social'
 import { FEATURES } from '../config/app'
@@ -90,6 +90,17 @@ export function ProfilePage() {
         >
           <span className="flex items-center gap-2">
             <Clapperboard className="size-5" /> Studio: video per Instagram e TikTok
+          </span>
+          <ChevronRight className="size-5" />
+        </a>
+      )}
+      {isAdmin && (
+        <a
+          href={routeHref('comunicazioni')}
+          className="flex items-center justify-between rounded-2xl bg-white p-4 font-semibold shadow-sm ring-1 ring-black/5"
+        >
+          <span className="flex items-center gap-2">
+            <Megaphone className="size-5" /> Comunicazioni: email a tutti
           </span>
           <ChevronRight className="size-5" />
         </a>

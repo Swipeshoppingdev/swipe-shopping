@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { Bell, ChevronLeft, ChevronRight, Cpu, Gamepad2, Heart, Scale, ShieldCheck, Sparkles, TrendingDown, X } from 'lucide-react'
+import { Bell, ChevronLeft, ChevronRight, Cpu, Gamepad2, Heart, Scale, Sparkles, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { APP_NAME } from '../config/app'
 import { CATEGORY_GROUPS, SECTIONS, type CategoryId } from '../config/categories'
@@ -41,8 +41,8 @@ export function Welcome() {
   const [groups, setGroups] = useState<GroupId[]>([])
 
   const showSignup = auth.enabled && !auth.user
-  // 0-2: perché usarla (tre schermate brevi), 3: per chi, 4: interessi, 5: account.
-  const lastStep = showSignup ? 5 : 4
+  // 0: intro, 1: perché usarla, 2: per chi, 3: interessi, 4: account.
+  const lastStep = showSignup ? 4 : 3
 
   const finish = () => {
     save('onboarded', true)
@@ -66,13 +66,13 @@ export function Welcome() {
   }
 
   const next = () => {
-    if (step === 4) applyPreferences()
+    if (step === 3) applyPreferences()
     if (step >= lastStep) finish()
     else setStep(step + 1)
   }
 
   // Registrazione o accesso completati dal benvenuto: si entra subito nell'app.
-  const signedUpHere = step === 5 && !!auth.user
+  const signedUpHere = step === 4 && !!auth.user
   useEffect(() => {
     if (!signedUpHere) return
     save('onboarded', true)
@@ -141,28 +141,17 @@ export function Welcome() {
             {step === 1 && (
               <Why
                 emoji="💸"
-                title="Compra meglio, spendi meno"
+                title="Compra meglio, divertendoti"
                 points={[
-                  { icon: <Scale className="size-5" />, title: 'Prezzo giusto?', text: 'Ti diciamo se un prezzo è basso o alto rispetto ai prodotti simili di oggi.' },
-                  { icon: <TrendingDown className="size-5" />, title: 'Simile ma costa meno', text: 'Alternative più economiche sotto ogni prodotto, con quanto risparmi.' },
+                  { icon: <Scale className="size-5" />, title: 'Prezzo giusto?', text: 'Ti diciamo se un prezzo è buono e ti mostriamo alternative simili che costano meno.' },
                   { icon: <Bell className="size-5" />, title: 'Avvisi sui preferiti', text: 'Una notifica quando quello che hai salvato va in offerta.' },
+                  { icon: <Sparkles className="size-5" />, title: 'Outfit già pronti', text: 'Look completi abbinati per te, da mettere nel carrello Amazon con un tocco.' },
+                  { icon: <Gamepad2 className="size-5" />, title: 'Mini giochi', text: 'Indovina il prezzo, Più o meno e altri, tra uno swipe e l\'altro.' },
                 ]}
               />
             )}
 
             {step === 2 && (
-              <Why
-                emoji="🎮"
-                title="Fare shopping diventa un gioco"
-                points={[
-                  { icon: <Gamepad2 className="size-5" />, title: 'Mini giochi', text: 'Indovina il prezzo, Più o meno, la Ruota della fortuna e altri, tra uno swipe e l\'altro.' },
-                  { icon: <Sparkles className="size-5" />, title: 'Outfit già pronti', text: 'Look completi abbinati per te, da salvare e mandare agli amici.' },
-                  { icon: <ShieldCheck className="size-5" />, title: 'Prezzi controllati, acquisti sicuri', text: 'Prezzi aggiornati più volte al giorno; compri direttamente su Amazon e negli altri negozi.' },
-                ]}
-              />
-            )}
-
-            {step === 3 && (
               <>
                 <h2 className="text-center text-2xl font-bold">Per chi cerchi?</h2>
                 <div className="flex flex-col gap-3">
@@ -183,7 +172,7 @@ export function Welcome() {
               </>
             )}
 
-            {step === 4 && (
+            {step === 3 && (
               <>
                 <div className="space-y-1 text-center">
                   <h2 className="text-2xl font-bold">Cosa ti interessa?</h2>
@@ -229,7 +218,7 @@ export function Welcome() {
               </>
             )}
 
-            {step === 5 && (
+            {step === 4 && (
               <>
                 <div className="space-y-2 text-center">
                   <h2 className="text-2xl font-bold">Non perdere i tuoi preferiti</h2>
@@ -250,11 +239,11 @@ export function Welcome() {
           type="button"
           onClick={next}
           className={`flex h-13 w-full items-center justify-center gap-1 rounded-full py-3.5 text-lg font-semibold ${
-            step === 5 ? 'text-neutral-500' : 'bg-rose-500 text-[#fff] active:scale-[0.98]'
+            step === 4 ? 'text-neutral-500' : 'bg-rose-500 text-[#fff] active:scale-[0.98]'
           }`}
         >
-          {step === 5 ? 'Più tardi' : step === 4 && groups.length === 0 ? 'Mostrami tutto' : 'Continua'}
-          {step < 5 && <ChevronRight className="size-5" />}
+          {step === 4 ? 'Più tardi' : step === 3 && groups.length === 0 ? 'Mostrami tutto' : 'Continua'}
+          {step < 4 && <ChevronRight className="size-5" />}
         </button>
         {step === 0 && (
           <p className="text-center text-xs text-neutral-500">
