@@ -8,8 +8,10 @@ name: Backup database Supabase
 # Ogni notte arriva anche una mail a Kevin (Resend) con il backup cifrato e una copia del codice del repository
 # (senza catalogo e file generati, che si rifanno da soli): così ne resta una fuori da GitHub per sempre.
 on:
+  # GitHub ritarda o salta spesso i giri programmati: si prova ogni 3 ore e si fa il backup
+  # solo se oggi non ce n'è già uno (vedi "Già fatto oggi?"). A mano parte sempre.
   schedule:
-    - cron: '53 2 * * *'
+    - cron: '53 */3 * * *'
   workflow_dispatch:
     inputs:
       mail:
@@ -24,17 +26,33 @@ env:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   backup:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - name: Già fatto oggi?
+        id: today
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ]; then echo "skip=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          day=$(date -u +%Y-%m-%d)
+          n=0
+          for id in $(gh api "repos/${{ github.repository }}/actions/workflows/backup.yml/runs?created=>=$day&status=success" -q '.workflow_runs[].id'); do
+            n=$(( n + $(gh api "repos/${{ github.repository }}/actions/runs/$id/artifacts" -q '.total_count') ))
+          done
+          echo "Backup di oggi già fatti: $n"
+          if [ "$n" -gt 0 ]; then echo "skip=true" >> "$GITHUB_OUTPUT"; else echo "skip=false" >> "$GITHUB_OUTPUT"; fi
       - uses: actions/checkout@v4
+        if: steps.today.outputs.skip != 'true'
         with:
           path: repo
       - name: Controlla i segreti
         id: secrets
+        if: steps.today.outputs.skip != 'true'
         env:
           DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           PASSWORD: ${{ secrets.BACKUP_PASSWORD }}
