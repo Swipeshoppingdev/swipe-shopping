@@ -23,8 +23,12 @@ const CANDIDATES = [
   'offersV2.listings.programEligibility', 'offers.listings.deliveryInfo.isPrimeEligible', 'offers.listings.deliveryInfo.isFreeShippingEligible',
   'offers.listings.programEligibility.isPrimeExclusive', 'offers.summaries.highestPrice',
 ]
+{
+  const { body } = await get(['itemInfo.title', 'x.y'])
+  console.log(String(body?.message ?? JSON.stringify(body)).match(/\[[^\[\]]{200,}\]/)?.[0])
+}
 const ok: string[] = []
-for (const r of CANDIDATES) {
+for (const r of CANDIDATES.slice(0, 0)) {
   const { status, body } = await get(['itemInfo.title', r])
   console.log(`${r}: HTTP ${status}${status === 200 ? '' : ' ' + JSON.stringify(body).slice(0, 300)}`)
   if (status === 200) ok.push(r)
