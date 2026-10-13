@@ -229,8 +229,8 @@ function AdminErrors() {
         <button
           type="button"
           onClick={() => {
-            setRows([])
-            void supabase?.rpc('admin_errors_clear')
+            // La chiamata va attesa con then(): senza, supabase-js non la manda mai (gli errori tornavano).
+            void supabase?.rpc('admin_errors_clear').then(({ error }) => (error ? alert(`Non svuotato: ${error.message}`) : setRows([])))
           }}
           className="rounded-full px-4 py-2 text-sm font-medium text-neutral-600 ring-1 ring-neutral-200"
         >
@@ -258,7 +258,7 @@ function AdminReports() {
   }, [])
   const done = (id: string) => {
     setRows((r) => r?.filter((x) => x.id !== id) ?? null)
-    void supabase?.rpc('admin_report_done', { p_product_id: id })
+    void supabase?.rpc('admin_report_done', { p_product_id: id }).then(({ error }) => error && alert(`Non salvato: ${error.message}`))
   }
   if (error) return <p className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">Segnalazioni: {error}</p>
   if (!rows) return null
