@@ -72,8 +72,7 @@ export function webPushSender(seed: string, topic: 'amici' | 'offerte' | 'marche
         'Content-Type': 'application/octet-stream',
         TTL: String(topic === 'amici' ? 6 * 3600 : 24 * 3600),
         Urgency: topic === 'amici' ? 'high' : 'normal',
-        // Lo stesso Topic sostituisce la notifica precedente non ancora consegnata.
-        Topic: topic,
+        // Niente header Topic: Apple lo rifiuta (HTTP 400 BadWebPushTopic). Il tag nel contenuto basta.
       },
       body,
     }).catch(() => null)
