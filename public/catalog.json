@@ -12903,21 +12903,6 @@
   ]
  },
  {
-  "id": "amazon:B0HL9T64FG",
-  "store": "amazon",
-  "externalId": "B0HL9T64FG",
-  "title": "Lacoste Kids Maglietta A Maniche Corte 947644 14 Years",
-  "brand": "Lacoste",
-  "gender": "uomo",
-  "category": "tshirt",
-  "imageUrl": "https://m.media-amazon.com/images/I/51QCZWOz+HL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "price": 60,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0HCG7ND6N",
   "store": "amazon",
   "externalId": "B0HCG7ND6N",
@@ -14383,54 +14368,6 @@
    "Rosso"
   ],
   "price": 36.03,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HL3G75KD",
-  "store": "amazon",
-  "externalId": "B0HL3G75KD",
-  "title": "Levi´s ® Maglietta A Maniche Lunghe Classic 10 Years",
-  "brand": "Levi's",
-  "gender": "uomo",
-  "category": "tshirt",
-  "imageUrl": "https://m.media-amazon.com/images/I/21vXQ6ExX3L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 37.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HL3GDL7K",
-  "store": "amazon",
-  "externalId": "B0HL3GDL7K",
-  "title": "Levi´s ® Maglietta A Maniche Corte Red Tab Vintage 10 Years",
-  "brand": "Levi's",
-  "gender": "uomo",
-  "category": "tshirt",
-  "imageUrl": "https://m.media-amazon.com/images/I/31sIKPfo92L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Rosso"
-  ],
-  "price": 32.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HL43TNGF",
-  "store": "amazon",
-  "externalId": "B0HL43TNGF",
-  "title": "Levi´s ® Maglietta A Maniche Corte Meet And Greet Script 3D 12 Years",
-  "brand": "Levi's",
-  "gender": "uomo",
-  "category": "tshirt",
-  "imageUrl": "https://m.media-amazon.com/images/I/31AqdSNoSdL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 37.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -17835,24 +17772,6 @@
   ]
  },
  {
-  "id": "amazon:B0H7X51XYV",
-  "store": "amazon",
-  "externalId": "B0H7X51XYV",
-  "title": "Calvin Klein Felpa con Cappuccio CK Scuba HOODIELVCKFJB33B, Pvh Black, 16 Anni",
-  "brand": "Calvin Klein",
-  "gender": "uomo",
-  "category": "felpe",
-  "imageUrl": "https://m.media-amazon.com/images/I/31En8sx5LuL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 84.65,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0GWPYRXZ5",
   "store": "amazon",
   "externalId": "B0GWPYRXZ5",
@@ -18575,21 +18494,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0DNNRTQ19",
-  "store": "amazon",
-  "externalId": "B0DNNRTQ19",
-  "title": "PUMA Felpa con cappuccio per bambini Hello Kitty and Friends con grafica rilassata, Vetro Mare Ah25, 7",
-  "brand": "Puma",
-  "gender": "uomo",
-  "category": "felpe",
-  "imageUrl": "https://m.media-amazon.com/images/I/31QfT6LkL6L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 48.14,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0GT7K1ZW7",
   "store": "amazon",
   "externalId": "B0GT7K1ZW7",
@@ -18603,27 +18507,6 @@
   "source": "ricerca",
   "price": 59.5,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0DG9BNPBK",
-  "store": "amazon",
-  "externalId": "B0DG9BNPBK",
-  "title": "Puma Teamgoal - Felpa con Cappuccio Casual per Bambini e Ragazzi, Stile Casual, Blu",
-  "brand": "Puma",
-  "gender": "uomo",
-  "category": "felpe",
-  "imageUrl": "https://m.media-amazon.com/images/I/318vvhHl9+L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 51.81,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizes": [
-   "S"
-  ]
  },
  {
   "id": "amazon:B0FGVR868Z",
@@ -22058,21 +21941,6 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 61.9,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0FWL1DGMR",
-  "store": "amazon",
-  "externalId": "B0FWL1DGMR",
-  "title": "Jack & Jones Jjearchive Knit Crew Neck Jnr",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "maglioni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31ygwiKJpgL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "price": 25.14,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -25529,21 +25397,6 @@
   ]
  },
  {
-  "id": "amazon:B0HKNWD6XS",
-  "store": "amazon",
-  "externalId": "B0HKNWD6XS",
-  "title": "Levi´s ® Camicia A Maniche Lunghe Ruffle-Ditsy 14 Years",
-  "brand": "Levi's",
-  "gender": "uomo",
-  "category": "camicie",
-  "imageUrl": "https://m.media-amazon.com/images/I/41sxgdb9yrL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 54.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B08BLSTNQP",
   "store": "amazon",
   "externalId": "B08BLSTNQP",
@@ -26334,24 +26187,6 @@
   ]
  },
  {
-  "id": "amazon:B0GPLZD3HW",
-  "store": "amazon",
-  "externalId": "B0GPLZD3HW",
-  "title": "GUESS Bambina Leggings Rosa",
-  "brand": "Guess",
-  "gender": "uomo",
-  "category": "camicie",
-  "imageUrl": "https://m.media-amazon.com/images/I/210I7ckGn0L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Rosa"
-  ],
-  "price": 22,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0H3QD9P26",
   "store": "amazon",
   "externalId": "B0H3QD9P26",
@@ -26485,42 +26320,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0GPLZTPTW",
-  "store": "amazon",
-  "externalId": "B0GPLZTPTW",
-  "title": "GUESS Bambino Pantaloni Brushed Fleece Regular Pants Regular Fit Multicolore",
-  "brand": "Guess",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/21DfJwjBxcL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Multicolore"
-  ],
-  "price": 50,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0GPLWVWYJ",
-  "store": "amazon",
-  "externalId": "B0GPLWVWYJ",
-  "title": "GUESS Bambina Pantalone Palazzo Fleece Palazzo Pants Regular Fit Blu Scuro",
-  "brand": "Guess",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/3111Usj75sL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 46.51,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0GP2YDBF5",
   "store": "amazon",
   "externalId": "B0GP2YDBF5",
@@ -26605,24 +26404,6 @@
    "Grigio"
   ],
   "price": 90,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0GPLWQ74R",
-  "store": "amazon",
-  "externalId": "B0GPLWQ74R",
-  "title": "GUESS Bambino Pantaloni French Terry Regular Pants Regular Fit Blu",
-  "brand": "Guess",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/21MgnEZPHHL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 45,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -27115,25 +26896,6 @@
    "Blu"
   ],
   "price": 205.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0CNH5CJK8",
-  "store": "amazon",
-  "externalId": "B0CNH5CJK8",
-  "title": "Ralph Lauren Polo Oversize Top tee tie dye Crop Blu Bianco Ragazze 3 Anni 3T, Blu, 3 Years",
-  "brand": "Ralph Lauren",
-  "gender": "donna",
-  "category": "tshirt",
-  "imageUrl": "https://m.media-amazon.com/images/I/316JicxacKL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-10T20:03:31.950Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco",
-   "Blu"
-  ],
-  "price": 29.6,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -28081,21 +27843,6 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 31.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HLZSHKXY",
-  "store": "amazon",
-  "externalId": "B0HLZSHKXY",
-  "title": "Levi´s ® Jeans 578 Baggy 10 Years",
-  "brand": "Levi's",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/31eidAEEF5L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 58.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -29483,21 +29230,6 @@
    "Grigio"
   ],
   "price": 23.68,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0FWKLRVPS",
-  "store": "amazon",
-  "externalId": "B0FWKLRVPS",
-  "title": "Jack & Jones Jpstgordon Jjnewsoft Sweat Pant Noos Jnr",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/310h-koMtlL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 21.21,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -33892,24 +33624,6 @@
    "Blu"
   ],
   "price": 99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0GPLSTZTL",
-  "store": "amazon",
-  "externalId": "B0GPLSTZTL",
-  "title": "GUESS Bambino Denim Skinny Pants Core Skinny Jeans Blu",
-  "brand": "Guess",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/41SYMo9TX7L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 50,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -43483,21 +43197,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0HH9PYPZZ",
-  "store": "amazon",
-  "externalId": "B0HH9PYPZZ",
-  "title": "JACK & JONES Jeans A Vita Bassa Texas C248 Flare Fit JJXX 14 Years",
-  "brand": "Jack & Jones",
-  "gender": "donna",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/31sXY5Qh+-L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 45.46,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0H7Y4VBXS",
   "store": "amazon",
   "externalId": "B0H7Y4VBXS",
@@ -47469,51 +47168,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0HKZK9JZC",
-  "store": "amazon",
-  "externalId": "B0HKZK9JZC",
-  "title": "Liu Jo Jeans Flare in Denim Cotone con Lavaggio Used 14 Anni",
-  "brand": "Liu Jo",
-  "gender": "donna",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/31lTl2qkpsL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 89,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HKZBJ818",
-  "store": "amazon",
-  "externalId": "B0HKZBJ818",
-  "title": "Liu Jo Jeans Wide Leg a Gamba Larga in Denim Stretch Stonewash 10 Anni",
-  "brand": "Liu Jo",
-  "gender": "donna",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/21+D9K0iKmL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HKZBJ8FK",
-  "store": "amazon",
-  "externalId": "B0HKZBJ8FK",
-  "title": "Liu Jo Jeans Straight in Denim con Micro Strass 14 Anni",
-  "brand": "Liu Jo",
-  "gender": "donna",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/21mBjhymIaL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 129,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0HKZQM8S8",
   "store": "amazon",
   "externalId": "B0HKZQM8S8",
@@ -47784,21 +47438,6 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 121.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B08TMX6D3S",
-  "store": "amazon",
-  "externalId": "B08TMX6D3S",
-  "title": "Kaporal Xilo Jeans, Blubld, 10 Anni Bambina",
-  "brand": "Kaporal",
-  "gender": "donna",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/31cOyu1PWZL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 29.5,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -48443,24 +48082,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0D9WSTX4R",
-  "store": "amazon",
-  "externalId": "B0D9WSTX4R",
-  "title": "JACK & JONES Pantaloni Cargo Cargo Fit Boys Verde 140",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31l0pJfCz+L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Verde"
-  ],
-  "price": 26.95,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0GGHPQ9VJ",
   "store": "amazon",
   "externalId": "B0GGHPQ9VJ",
@@ -48628,21 +48249,6 @@
   "price": 56.98,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
   "originalPrice": 59.99
- },
- {
-  "id": "amazon:B0FWKVP3Z2",
-  "store": "amazon",
-  "externalId": "B0FWKVP3Z2",
-  "title": "Jack & Jones Jpstgordon Jjbradley Cargo Pan Noos Jnr, Scarab, 11 Anni Uomo",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/21NBdv9X-6L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 22.37,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0H8FBNMF6",
@@ -51375,24 +50981,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0BNXRJTQR",
-  "store": "amazon",
-  "externalId": "B0BNXRJTQR",
-  "title": "Ralph Lauren Pantaloni da jogging unisex per bambini, Giallo, 7 Anni",
-  "brand": "Ralph Lauren",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/310d728R5NL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Giallo"
-  ],
-  "price": 45.37,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0DDCKY4TF",
   "store": "amazon",
   "externalId": "B0DDCKY4TF",
@@ -51503,36 +51091,6 @@
    "W31",
    "W32"
   ]
- },
- {
-  "id": "amazon:B0HLT83MFW",
-  "store": "amazon",
-  "externalId": "B0HLT83MFW",
-  "title": "Pepe Jeans Pantaloni Sportivi Norman 10 Years",
-  "brand": "Pepe Jeans",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31gKxDuHwzL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 48.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HLTFB961",
-  "store": "amazon",
-  "externalId": "B0HLTFB961",
-  "title": "Pepe Jeans Pantaloni Sportivi Norman 12 Years",
-  "brand": "Pepe Jeans",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31m9ehfQhjL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 48.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0G49CF3VN",
@@ -53359,36 +52917,6 @@
   ]
  },
  {
-  "id": "amazon:B0HK4T8JQB",
-  "store": "amazon",
-  "externalId": "B0HK4T8JQB",
-  "title": "Levi´s ® Giacca Di Jeans Studded Trucker 12 Years",
-  "brand": "Levi's",
-  "gender": "uomo",
-  "category": "giacche",
-  "imageUrl": "https://m.media-amazon.com/images/I/31a83fRtrML._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 79.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HJQQC94Y",
-  "store": "amazon",
-  "externalId": "B0HJQQC94Y",
-  "title": "Levi´s ® Felpa Denim Tour Pullover 2 Years",
-  "brand": "Levi's",
-  "gender": "uomo",
-  "category": "felpe",
-  "imageUrl": "https://m.media-amazon.com/images/I/31HPpweEtOL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 58.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0HGBZDF9N",
   "store": "amazon",
   "externalId": "B0HGBZDF9N",
@@ -54247,21 +53775,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0HL53RCJS",
-  "store": "amazon",
-  "externalId": "B0HL53RCJS",
-  "title": "Pepe Jeans Giacca Imbottita Kai 10 Years",
-  "brand": "Pepe Jeans",
-  "gender": "uomo",
-  "category": "giacche",
-  "imageUrl": "https://m.media-amazon.com/images/I/51eO6BoKYWL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 102.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0GDH1G8ZV",
   "store": "amazon",
   "externalId": "B0GDH1G8ZV",
@@ -54884,24 +54397,6 @@
   ]
  },
  {
-  "id": "amazon:B0FH4P24BV",
-  "store": "amazon",
-  "externalId": "B0FH4P24BV",
-  "title": "JACK & JONES Jjilloyd Jjjacket AKM 856 Jnr, Blu Denim, Numeric_128 Uomo",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "giacche",
-  "imageUrl": "https://m.media-amazon.com/images/I/31J5F4O5A9L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 36.9,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0DKKM8R4L",
   "store": "amazon",
   "externalId": "B0DKKM8R4L",
@@ -54991,25 +54486,6 @@
    "Blu"
   ],
   "price": 44.59,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0DFMSS7ZH",
-  "store": "amazon",
-  "externalId": "B0DFMSS7ZH",
-  "title": "JACK & JONES Jorbellagio Denim Jacket Jnr uomo, Salvia argento, 140 cm",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "giacche",
-  "imageUrl": "https://m.media-amazon.com/images/I/31TQIkrpAwL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Verde",
-   "Argento"
-  ],
-  "price": 38.22,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -57231,24 +56707,6 @@
    "Nero"
   ],
   "price": 419.91,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0DT7L4KH2",
-  "store": "amazon",
-  "externalId": "B0DT7L4KH2",
-  "title": "THE NORTH FACE giubbotto piumino smanicato da ragazzo NF0A8A4G0G nero 16 anni",
-  "brand": "The North Face",
-  "gender": "uomo",
-  "category": "giacche",
-  "imageUrl": "https://m.media-amazon.com/images/I/31Ayp+pDyFL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 142,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -63651,21 +63109,6 @@
   ]
  },
  {
-  "id": "amazon:B0FWRVT7W7",
-  "store": "amazon",
-  "externalId": "B0FWRVT7W7",
-  "title": "Jack & Jones Jjejackson - Maglietta a Maniche Corte LS Jnr",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "tshirt",
-  "imageUrl": "https://m.media-amazon.com/images/I/41c7B48T4cL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 26.86,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0GJCY92TB",
   "store": "amazon",
   "externalId": "B0GJCY92TB",
@@ -65654,21 +65097,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0DZKX78TB",
-  "store": "amazon",
-  "externalId": "B0DZKX78TB",
-  "title": "NAPAPIJRI Chamois Sweatshirt 14 Years",
-  "brand": "Napapijri",
-  "gender": "donna",
-  "category": "felpe",
-  "imageUrl": "https://m.media-amazon.com/images/I/31+0qZOTPoL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "price": 33.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B09RDSFWTW",
   "store": "amazon",
   "externalId": "B09RDSFWTW",
@@ -66266,24 +65694,6 @@
    "Nero"
   ],
   "price": 193.7,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0BZWDYX9T",
-  "store": "amazon",
-  "externalId": "B0BZWDYX9T",
-  "title": "THE NORTH FACE Boys Warm Storm Rain Jacket, S, Dark Sage I0F",
-  "brand": "The North Face",
-  "gender": "uomo",
-  "category": "giacche",
-  "imageUrl": "https://m.media-amazon.com/images/I/41lTsLiI9zL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Verde"
-  ],
-  "price": 90.06,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -67980,24 +67390,6 @@
   ]
  },
  {
-  "id": "amazon:B01GOZYN3O",
-  "store": "amazon",
-  "externalId": "B01GOZYN3O",
-  "title": "Columbia Benton Springs - Giacca in pile da bambina, Paisley Purple, 18-24 Mesi",
-  "brand": "Columbia",
-  "gender": "donna",
-  "category": "giacche",
-  "imageUrl": "https://m.media-amazon.com/images/I/51-GdlqcvZL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Viola"
-  ],
-  "price": 101.06,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0HLTCMY58",
   "store": "amazon",
   "externalId": "B0HLTCMY58",
@@ -69127,24 +68519,6 @@
   "sizes": [
    "XL"
   ]
- },
- {
-  "id": "amazon:B0H7X1FKT7",
-  "store": "amazon",
-  "externalId": "B0H7X1FKT7",
-  "title": "Calvin Klein Cappotti da ragazza CLASSIC FILLED COATLVCKFJM15G Altri Cappotti, Pvh Black, 8 anni",
-  "brand": "Calvin Klein",
-  "gender": "uomo",
-  "category": "cappotti",
-  "imageUrl": "https://m.media-amazon.com/images/I/31KhMLIz0TL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 199.9,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GF4394BK",
@@ -74132,24 +73506,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0FT424YZB",
-  "store": "amazon",
-  "externalId": "B0FT424YZB",
-  "title": "adidas Unisex - Bambini e Ragazzi Terrex Anylander Mid Climaproof Children Hiking Shoes, Aurora Coffee/Wonder White/Earth Strata, 29 EU",
-  "brand": "adidas",
-  "gender": "unisex",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/316fwpu8s7L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco"
-  ],
-  "price": 50.02,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0GMSKTH8R",
   "store": "amazon",
   "externalId": "B0GMSKTH8R",
@@ -74285,24 +73641,6 @@
    "Bianco"
   ],
   "price": 33.39,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0B36BYSGP",
-  "store": "amazon",
-  "externalId": "B0B36BYSGP",
-  "title": "PUMA Evolve Ac Ps, sandali unisex per bambini, Dark Night Hero Blue Lily Pad, 28 EU",
-  "brand": "Puma",
-  "gender": "unisex",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/41DgWvwJxAL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 51.17,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -76003,24 +75341,6 @@
   ]
  },
  {
-  "id": "amazon:B0DM648JKY",
-  "store": "amazon",
-  "externalId": "B0DM648JKY",
-  "title": "adidas Jungen - Boxer in microfibra (confezione multipla), biancheria intima sportiva per bambini, ragazzi retrò (confezione da 4), Aurora Plum",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31QUiJ+3ihL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "price": 138,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizes": [
-   "L"
-  ]
- },
- {
   "id": "amazon:B0F7HX756Y",
   "store": "amazon",
   "externalId": "B0F7HX756Y",
@@ -76482,21 +75802,6 @@
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
   "price": 81.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0FYQX7XYR",
-  "store": "amazon",
-  "externalId": "B0FYQX7XYR",
-  "title": "Under Armour Reggiseno Sportivo Crossback 8 Years",
-  "brand": "Under Armour",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/41T0rT5CHLL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "price": 32.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -78715,21 +78020,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0G3L374ZK",
-  "store": "amazon",
-  "externalId": "B0G3L374ZK",
-  "title": "Under Armour Joggers Vibe Woven 18 Years",
-  "brand": "Under Armour",
-  "gender": "uomo",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31xBnU9bFEL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 47.46,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0HBXKZ666",
   "store": "amazon",
   "externalId": "B0HBXKZ666",
@@ -79162,24 +78452,6 @@
   "price": 55.8,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
   "originalPrice": 59.99
- },
- {
-  "id": "amazon:B0FZ3QXPMM",
-  "store": "amazon",
-  "externalId": "B0FZ3QXPMM",
-  "title": "Champion Pantaloni da Ragazzo con Icone Champion in Pile con Polsino a Costine, Blu Scuro, 34-37",
-  "brand": "Champion",
-  "gender": "uomo",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/218uaM7KDHL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 26.64,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B095XH1FPJ",
@@ -80278,24 +79550,6 @@
   ]
  },
  {
-  "id": "amazon:B0FVMFJT9N",
-  "store": "amazon",
-  "externalId": "B0FVMFJT9N",
-  "title": "adidas Bambine e Ragazze Satin Wide Leg Pants, Magic Mauve/Dual Lilac, 11-12 Years",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/311WCabh7kL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Viola"
-  ],
-  "price": 41.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0GT7D9822",
   "store": "amazon",
   "externalId": "B0GT7D9822",
@@ -80885,27 +80139,6 @@
   ]
  },
  {
-  "id": "amazon:B0DNJKC682",
-  "store": "amazon",
-  "externalId": "B0DNJKC682",
-  "title": "Champion Legacy Back to School, Set da Bambina, Felpa con Zip e Pantaloni, Corallo",
-  "brand": "Champion",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31i8bnDEo2L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Arancione"
-  ],
-  "price": 43.92,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizes": [
-   "XL"
-  ]
- },
- {
   "id": "amazon:B0DNJLG73B",
   "store": "amazon",
   "externalId": "B0DNJLG73B",
@@ -81024,28 +80257,6 @@
   "sizes": [
    "M",
    "L"
-  ]
- },
- {
-  "id": "amazon:B0DNJJHPYH",
-  "store": "amazon",
-  "externalId": "B0DNJJHPYH",
-  "title": "Champion Tuta Legacy Bambina, Nero",
-  "brand": "Champion",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31N2fwDkJFL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 40.5,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizes": [
-   "XS",
-   "M"
   ]
  },
  {
@@ -81951,25 +81162,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0FXXZX9JK",
-  "store": "amazon",
-  "externalId": "B0FXXZX9JK",
-  "title": "adidas Unisex - Bimbi 0-24 Essentials Hooded Jogger Track_Suit, magic lilac/clear pink, 3-6 Months",
-  "brand": "adidas",
-  "gender": "unisex",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/314jZu2ZGiL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Rosa",
-   "Viola"
-  ],
-  "price": 44.15,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0DNQDGVFB",
   "store": "amazon",
   "externalId": "B0DNQDGVFB",
@@ -81989,24 +81181,6 @@
   "sizes": [
    "3XL"
   ]
- },
- {
-  "id": "amazon:B0F7HRWL5V",
-  "store": "amazon",
-  "externalId": "B0F7HRWL5V",
-  "title": "adidas Bambine e Ragazze Sport Icons Wide Stretch Woven Pants, Black/Black, 9-10 Years",
-  "brand": "adidas",
-  "gender": "unisex",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/310hgQyQj0L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 43.34,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FVMFMJLS",
@@ -82342,24 +81516,6 @@
   "sizes": [
    "M"
   ]
- },
- {
-  "id": "amazon:B0DNNRBDXG",
-  "store": "amazon",
-  "externalId": "B0DNNRBDXG",
-  "title": "PUMA Hot Wheels - Pantaloni cargo rilassati unisex per bambini, Cool Blue Ah25, 4",
-  "brand": "Puma",
-  "gender": "uomo",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/21vZgiu+bGL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 40.28,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GLPP4FFD",
@@ -83245,24 +82401,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0CLP7B8M8",
-  "store": "amazon",
-  "externalId": "B0CLP7B8M8",
-  "title": "Jordan Pantalone Ragazzo MJ Flight MVP Felpato, Nero (8-10 Anni (128-132 cm))",
-  "brand": "Jordan",
-  "gender": "uomo",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31CGBkcPW4L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 49.9,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0GTJY6SCY",
   "store": "amazon",
   "externalId": "B0GTJY6SCY",
@@ -83764,42 +82902,6 @@
   ]
  },
  {
-  "id": "amazon:B0FWF7DP6V",
-  "store": "amazon",
-  "externalId": "B0FWF7DP6V",
-  "title": "adidas Unisex - Bimbi 0-24 Essentials Jogger Track_Suit, clear pink/power pink, 6-9 Months",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31STs4lZdzL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Rosa"
-  ],
-  "price": 49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0FVDLC61W",
-  "store": "amazon",
-  "externalId": "B0FVDLC61W",
-  "title": "adidas Unisex - Bambini e ragazzi Essentials Fleece Jogger Track_Suit, Khaki Six/Crystal Linen, 9-10 Years",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31KKCjr7CnL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Verde"
-  ],
-  "price": 58.86,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0FBSC6TWC",
   "store": "amazon",
   "externalId": "B0FBSC6TWC",
@@ -84028,24 +83130,6 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 42.06,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0D8H6MSK7",
-  "store": "amazon",
-  "externalId": "B0D8H6MSK7",
-  "title": "PUMA Pantaloni da jogging da ragazza, grigio galattico, 16 anni",
-  "brand": "Puma",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/21NVgx97KcL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Grigio"
-  ],
-  "price": 27.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -84742,24 +83826,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B098SG8CB8",
-  "store": "amazon",
-  "externalId": "B098SG8CB8",
-  "title": "Nike JORDAN BIG KIDS Pantalone Nero da Bambino 95A716-023",
-  "brand": "Jordan",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/21hNpwHXC5L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 39,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0G4RJL74X",
   "store": "amazon",
   "externalId": "B0G4RJL74X",
@@ -85417,21 +84483,6 @@
   "sizes": [
    "XXL"
   ]
- },
- {
-  "id": "amazon:B0FXLWBXFM",
-  "store": "amazon",
-  "externalId": "B0FXLWBXFM",
-  "title": "adidas Bambine e ragazze Essentials Flared Leggings Tights, maroon/Pure Turbo, 5-6 Years",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/21lov064n7L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 27.41,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0CPT8TDGH",
@@ -89974,28 +89025,6 @@
   ]
  },
  {
-  "id": "amazon:B0HMMTQ9RF",
-  "store": "amazon",
-  "externalId": "B0HMMTQ9RF",
-  "title": "adidas Scarpe da ginnastica da bambina, multicolore, motivo: Superstar, colore: bianco sporco, bianco",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "sneakers",
-  "imageUrl": "https://m.media-amazon.com/images/I/31rDuGnhXzL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco",
-   "Multicolore"
-  ],
-  "price": 82.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizes": [
-   "39"
-  ]
- },
- {
   "id": "amazon:B0DJVDFCWR",
   "store": "amazon",
   "externalId": "B0DJVDFCWR",
@@ -90197,24 +89226,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B096NBHNW5",
-  "store": "amazon",
-  "externalId": "B096NBHNW5",
-  "title": "New Balance Scarpe da Corsa Elastiche Arishi V2 per Bambini, Neo Flame Nero Limonata, 4 Wide Infant",
-  "brand": "New Balance",
-  "gender": "donna",
-  "category": "scarpe_sportive",
-  "imageUrl": "https://m.media-amazon.com/images/I/41igkl99a4L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 71.01,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0F7K2837H",
   "store": "amazon",
   "externalId": "B0F7K2837H",
@@ -90231,29 +89242,6 @@
   ],
   "price": 124.29,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HMMBT98H",
-  "store": "amazon",
-  "externalId": "B0HMMBT98H",
-  "title": "PUMA Scarpe da ginnastica da bambino, colore: Bianco/Blu Morphic, blu",
-  "brand": "Puma",
-  "gender": "donna",
-  "category": "sneakers",
-  "imageUrl": "https://m.media-amazon.com/images/I/31y5bZutiWL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco",
-   "Blu"
-  ],
-  "price": 41.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizes": [
-   "38.5",
-   "39"
-  ]
  },
  {
   "id": "amazon:B0H1J79ZPG",
@@ -90948,21 +89936,6 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 90,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0GFPH7XN4",
-  "store": "amazon",
-  "externalId": "B0GFPH7XN4",
-  "title": "Vans Brooklyn LS V - Sneaker Unisex per Bambini, Orchidea Selvatica, 12.5 UK Child",
-  "brand": "Vans",
-  "gender": "donna",
-  "category": "sneakers",
-  "imageUrl": "https://m.media-amazon.com/images/I/21hYKMVrKXL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 50,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -94198,47 +93171,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0GFNMWV29",
-  "store": "amazon",
-  "externalId": "B0GFNMWV29",
-  "title": "Clarks Premium Scarpe da Ragazza Tapa Skip Y.School Uniform, Pelle Nera",
-  "brand": "Clarks",
-  "gender": "donna",
-  "category": "scarpe_eleganti",
-  "imageUrl": "https://m.media-amazon.com/images/I/31fPuq4P66L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 60.1,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizes": [
-   "36",
-   "37",
-   "39"
-  ]
- },
- {
-  "id": "amazon:B0GFNDQTTW",
-  "store": "amazon",
-  "externalId": "B0GFNDQTTW",
-  "title": "Clarks Premium Scarpe da Ragazza Tapa Skip Y.School Uniform, Pelle Nera, 38/38.5 EU",
-  "brand": "Clarks",
-  "gender": "donna",
-  "category": "scarpe_eleganti",
-  "imageUrl": "https://m.media-amazon.com/images/I/21+lGyz7kML._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 57.06,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0CNY88DQY",
   "store": "amazon",
   "externalId": "B0CNY88DQY",
@@ -97396,27 +96328,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0HKZTP3LD",
-  "store": "amazon",
-  "externalId": "B0HKZTP3LD",
-  "title": "Mizuno Scarpe da Running Bambino Wave Rider 29 Uomo Poliuretano Nero, Nero",
-  "brand": "Mizuno",
-  "gender": "unisex",
-  "category": "scarpe_sportive",
-  "imageUrl": "https://m.media-amazon.com/images/I/31nr7IiITEL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 109.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizes": [
-   "38.5"
-  ]
- },
- {
   "id": "amazon:B0GCG6H5LF",
   "store": "amazon",
   "externalId": "B0GCG6H5LF",
@@ -97960,28 +96871,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0FSBWCB64",
-  "store": "amazon",
-  "externalId": "B0FSBWCB64",
-  "title": "Nike - Scarpe Running Nike IH2306 Verde per Bambini Air Zoom Pegasus 42 GS per: Bambini, Volt Tint Abete Nero Zaffiro",
-  "brand": "Nike",
-  "gender": "donna",
-  "category": "scarpe_sportive",
-  "imageUrl": "https://m.media-amazon.com/images/I/41sskXiXeEL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero",
-   "Verde"
-  ],
-  "price": 110,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizes": [
-   "39"
-  ]
- },
- {
   "id": "amazon:B0G2RY6H4Q",
   "store": "amazon",
   "externalId": "B0G2RY6H4Q",
@@ -98080,46 +96969,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0FYCDWV4Z",
-  "store": "amazon",
-  "externalId": "B0FYCDWV4Z",
-  "title": "Nike Scarpe da Corsa per Bambini Stellar Ride (GS) Bleached Lilac/Black-Pink Foam 36.5",
-  "brand": "Nike",
-  "gender": "donna",
-  "category": "scarpe_sportive",
-  "imageUrl": "https://m.media-amazon.com/images/I/312sQ9XrNzL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero",
-   "Rosa",
-   "Viola"
-  ],
-  "price": 55,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0GPW5SZLK",
-  "store": "amazon",
-  "externalId": "B0GPW5SZLK",
-  "title": "Nike Star Runner Utility Running Scarpe da trekking per bambini - Ragazzi Ragazze Sneakers, Nero/Bianco/Antracite, 6 Big Kid",
-  "brand": "Nike",
-  "gender": "donna",
-  "category": "scarpe_sportive",
-  "imageUrl": "https://m.media-amazon.com/images/I/31+MwmTYBvL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero",
-   "Bianco",
-   "Grigio"
-  ],
-  "price": 65,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0CVR3DX4Q",
   "store": "amazon",
   "externalId": "B0CVR3DX4Q",
@@ -98180,27 +97029,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0H4HG21VN",
-  "store": "amazon",
-  "externalId": "B0H4HG21VN",
-  "title": "adidas Originals Superstar - Sneaker unisex per bambini, Putty Grey Putty Grey Charcoal",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "sneakers",
-  "imageUrl": "https://m.media-amazon.com/images/I/31kCvucIjFL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Grigio"
-  ],
-  "price": 257,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "sizes": [
-   "37"
-  ]
- },
- {
   "id": "amazon:B0DJTX86GM",
   "store": "amazon",
   "externalId": "B0DJTX86GM",
@@ -98216,25 +97044,6 @@
    "Nero"
   ],
   "price": 119.52,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B093QLCJ7Z",
-  "store": "amazon",
-  "externalId": "B093QLCJ7Z",
-  "title": "New Balance boys Fuelcore Reveal V3 Boa Running Shoe, Neo Flame/Team Red/Infinity Blue, 1.5 Little Kid US",
-  "brand": "New Balance",
-  "gender": "donna",
-  "category": "scarpe_sportive",
-  "imageUrl": "https://m.media-amazon.com/images/I/41olE4kSYTL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu",
-   "Rosso"
-  ],
-  "price": 196.84,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -98254,45 +97063,6 @@
    "Bianco"
   ],
   "price": 260.6,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0GLFJKQ1X",
-  "store": "amazon",
-  "externalId": "B0GLFJKQ1X",
-  "title": "New Balance 1000 Lace Grade Boys Kids Running Inspired (G10009WE) (Silver Metallic/Tangerine Heat), Grigio ardesia/Nero, 6.5 Big Kid",
-  "brand": "New Balance",
-  "gender": "donna",
-  "category": "scarpe_sportive",
-  "imageUrl": "https://m.media-amazon.com/images/I/313kIHPiWAL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero",
-   "Grigio",
-   "Argento"
-  ],
-  "price": 130.25,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0GLF17GGK",
-  "store": "amazon",
-  "externalId": "B0GLF17GGK",
-  "title": "New Balance 740 Bungee Kids | Grade Boys Running Inspired (GR740SF) (argento metallizzato/verde alpino scuro), Argento metallizzato/verde alpino scuro, 6 Big Kid",
-  "brand": "New Balance",
-  "gender": "donna",
-  "category": "scarpe_sportive",
-  "imageUrl": "https://m.media-amazon.com/images/I/41B14uVdPnL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Verde",
-   "Argento"
-  ],
-  "price": 131.55,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -104863,21 +103633,6 @@
   ]
  },
  {
-  "id": "amazon:B0CQ3964WM",
-  "store": "amazon",
-  "externalId": "B0CQ3964WM",
-  "title": "Timberland Damen 6\" Premium impermeabile Schnürstiefel, Grano, 6 Toddler",
-  "brand": "Timberland",
-  "gender": "donna",
-  "category": "stivali",
-  "imageUrl": "https://m.media-amazon.com/images/I/41UazqK6kPL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 145,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0HJ4Y8S6T",
   "store": "amazon",
   "externalId": "B0HJ4Y8S6T",
@@ -106960,21 +105715,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0DWZ5PTSY",
-  "store": "amazon",
-  "externalId": "B0DWZ5PTSY",
-  "title": "Crocs Zoccoli Superhero Unisex Bambino, Ragnatela Uomo Ragno, 4 Toddler",
-  "brand": "Crocs",
-  "gender": "uomo",
-  "category": "sandali",
-  "imageUrl": "https://m.media-amazon.com/images/I/41yGkO2705L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 52.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B07CQ3CFBF",
   "store": "amazon",
   "externalId": "B07CQ3CFBF",
@@ -108003,21 +106743,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B08NYKKJW5",
-  "store": "amazon",
-  "externalId": "B08NYKKJW5",
-  "title": "Nike Sandali unisex per bambini Kawa Slide, Dd3242 600, 31.5 EU",
-  "brand": "Nike",
-  "gender": "uomo",
-  "category": "sandali",
-  "imageUrl": "https://m.media-amazon.com/images/I/21njxgqHbGL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 30,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0D68V9VZQ",
   "store": "amazon",
   "externalId": "B0D68V9VZQ",
@@ -108142,26 +106867,6 @@
   "sizes": [
    "46"
   ]
- },
- {
-  "id": "amazon:B0FN7DF56Z",
-  "store": "amazon",
-  "externalId": "B0FN7DF56Z",
-  "title": "Nike Ciabatte Kawa unisex per bambini, per bambini e bambine, Bianco/Nero/Arancione Totale, 10 Toddler",
-  "brand": "Nike",
-  "gender": "uomo",
-  "category": "sandali",
-  "imageUrl": "https://m.media-amazon.com/images/I/41iiqq6atML._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero",
-   "Bianco",
-   "Arancione"
-  ],
-  "price": 70.67,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0GCVSM99H",
@@ -108812,24 +107517,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0D63H6Q44",
-  "store": "amazon",
-  "externalId": "B0D63H6Q44",
-  "title": "BIRKENSTOCK Gizeh Flowers (Little Big Kid), Sandali Unisex-Bambini e Ragazzi, Giardino Bianco opulento, 3-3.5 Narrow",
-  "brand": "Birkenstock",
-  "gender": "donna",
-  "category": "sandali",
-  "imageUrl": "https://m.media-amazon.com/images/I/41h2Q1HWUmL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco"
-  ],
-  "price": 129.12,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0GDKGBFF9",
   "store": "amazon",
   "externalId": "B0GDKGBFF9",
@@ -109355,24 +108042,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0F4X465QR",
-  "store": "amazon",
-  "externalId": "B0F4X465QR",
-  "title": "adidas Fortarun 4.0 Bambini, Grigio Carbonio Aqua Semi Flash, 33 EU",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "sandali",
-  "imageUrl": "https://m.media-amazon.com/images/I/317imrP8cAL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Grigio"
-  ],
-  "price": 146,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0F4VN5K3X",
   "store": "amazon",
   "externalId": "B0F4VN5K3X",
@@ -109468,24 +108137,6 @@
   "sizes": [
    "40"
   ]
- },
- {
-  "id": "amazon:B0F4X6KKLP",
-  "store": "amazon",
-  "externalId": "B0F4X6KKLP",
-  "title": "adidas Kaptir 4.0 Scarpe da corsa per bambini, unisex, Grigio/limo solare",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "scarpe_sportive",
-  "imageUrl": "https://m.media-amazon.com/images/I/31NXgNFRAiL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Grigio"
-  ],
-  "price": 102.18,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0F26RDM53",
@@ -109752,21 +108403,6 @@
    "38",
    "40.5"
   ]
- },
- {
-  "id": "amazon:B0FN792L2V",
-  "store": "amazon",
-  "externalId": "B0FN792L2V",
-  "title": "Nike Da donna, 10 Toddler",
-  "brand": "Nike",
-  "gender": "donna",
-  "category": "sandali",
-  "imageUrl": "https://m.media-amazon.com/images/I/211jMOv4FJL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 25,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B07RN245FT",
@@ -110648,26 +109284,6 @@
    "Blu"
   ],
   "price": 69,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0BXWSKGHX",
-  "store": "amazon",
-  "externalId": "B0BXWSKGHX",
-  "title": "Ray-Ban Occhiali da sole unisex bambino Rj9077s, Grigio su gomma arancione/blu scuro a specchio blu, 49 mm",
-  "brand": "Ray-Ban",
-  "gender": "uomo",
-  "category": "occhiali",
-  "imageUrl": "https://m.media-amazon.com/images/I/214sr0sruhL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Grigio",
-   "Blu",
-   "Arancione"
-  ],
-  "price": 79,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -115248,25 +113864,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0GLHX1SDF",
-  "store": "amazon",
-  "externalId": "B0GLHX1SDF",
-  "title": "Tommy Hilfiger Bambini Cappellino TH X CF1 Flag Trucker cap con Branding, Nero (Black), S-M",
-  "brand": "Tommy Hilfiger",
-  "gender": "uomo",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/31cjsfXVqeL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 34.71,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "originalPrice": 39.9
- },
- {
   "id": "amazon:B0GLJRS4RQ",
   "store": "amazon",
   "externalId": "B0GLJRS4RQ",
@@ -116716,21 +115313,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0DVZRQD1N",
-  "store": "amazon",
-  "externalId": "B0DVZRQD1N",
-  "title": "Nike Berretto unisex per bambini Rise Structured Trucker",
-  "brand": "Nike",
-  "gender": "donna",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/31NX+V2zTPL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 65.95,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0DQFL526G",
   "store": "amazon",
   "externalId": "B0DQFL526G",
@@ -117012,25 +115594,6 @@
   "originalPrice": 25
  },
  {
-  "id": "amazon:B0FW34PYPT",
-  "store": "amazon",
-  "externalId": "B0FW34PYPT",
-  "title": "adidas Unisex - Bambini e Ragazzi Marvel Spider Man cap, Black/White/Pure Ruby, M-L",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/31hlxH21OaL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero",
-   "Bianco"
-  ],
-  "price": 20,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0F48VGCNX",
   "store": "amazon",
   "externalId": "B0F48VGCNX",
@@ -117064,24 +115627,6 @@
    "Verde"
   ],
   "price": 26.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0FWKS5G1R",
-  "store": "amazon",
-  "externalId": "B0FWKS5G1R",
-  "title": "adidas Unisex - Bambini e Ragazzi Little Kids Tiro_Nster cap, Magic Lilac/Pure Purple, XXS-XS",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/31djVRc8HoL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Viola"
-  ],
-  "price": 20,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -117287,25 +115832,6 @@
   ],
   "price": 42.33,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0D4JDR52Z",
-  "store": "amazon",
-  "externalId": "B0D4JDR52Z",
-  "title": "THE NORTH FACE NF0A7WHG8EC Kids Class V Rev Bucket Berretto Unisex Bambino Hero Blue TNF Topo Phan Taglia S",
-  "brand": "The North Face",
-  "gender": "donna",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/31D77VPY5nL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 24.09,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "originalPrice": 32
  },
  {
   "id": "amazon:B0D4F9DKKK",
@@ -117961,24 +116487,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0B1LDX969",
-  "store": "amazon",
-  "externalId": "B0B1LDX969",
-  "title": "Carhartt Cappello Invernale Unisex per Bambini in Acrilico, Blu Reale, 6-14 Jahre",
-  "brand": "Carhartt",
-  "gender": "donna",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/51qyc6GnhkL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 72.78,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0D4RK8395",
   "store": "amazon",
   "externalId": "B0D4RK8395",
@@ -118006,21 +116514,6 @@
   "addedAt": "2026-10-09T08:07:27.917Z",
   "source": "ricerca",
   "price": 20,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0C9MCJN8S",
-  "store": "amazon",
-  "externalId": "B0C9MCJN8S",
-  "title": "Carhartt Berretto da Donna Lavorato a Maglia per Bambini, Sorgente Sulphur, 2-5T",
-  "brand": "Carhartt",
-  "gender": "donna",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/61qyG1OE6dL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 44.36,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -131978,24 +130471,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0F4X7CV41",
-  "store": "amazon",
-  "externalId": "B0F4X7CV41",
-  "title": "adidas Lite Racer Inf, Scarpe da ginnastica unisex per bambini, Blu scuro Lucid Lemon Solar Slime, 28 EU",
-  "brand": "adidas",
-  "gender": "uomo",
-  "category": "calze",
-  "imageUrl": "https://m.media-amazon.com/images/I/31wX41QczDL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 120.12,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0DJV8TS54",
   "store": "amazon",
   "externalId": "B0DJV8TS54",
@@ -134181,25 +132656,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B09TDCFKPL",
-  "store": "amazon",
-  "externalId": "B09TDCFKPL",
-  "title": "adidas Stan Smith Boys Shoes Size 7.5, Color: White/Red",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "calze",
-  "imageUrl": "https://m.media-amazon.com/images/I/31ir5dvLstL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco",
-   "Rosso"
-  ],
-  "price": 505.43,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0FXYKM3ZH",
   "store": "amazon",
   "externalId": "B0FXYKM3ZH",
@@ -134231,24 +132687,6 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 23.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B08KRJ2GZN",
-  "store": "amazon",
-  "externalId": "B08KRJ2GZN",
-  "title": "Puma Cell Vive - Scarpe da Corsa Unisex per Bambini, Puma Castlerock Nero, 37 EU",
-  "brand": "Puma",
-  "gender": "donna",
-  "category": "calze",
-  "imageUrl": "https://m.media-amazon.com/images/I/31v65mU8LXL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 62.69,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -134663,22 +133101,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0DTT7YLW3",
-  "store": "amazon",
-  "externalId": "B0DTT7YLW3",
-  "title": "Tommy Hilfiger Stripe Classic Sock, Tommy Original, 19-22 (Pacco da 4) Unisex-Bimbi",
-  "brand": "Tommy Hilfiger",
-  "gender": "donna",
-  "category": "calze",
-  "imageUrl": "https://m.media-amazon.com/images/I/31H0m0Th6QL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 13.52,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z",
-  "originalPrice": 14.83
- },
- {
   "id": "amazon:B09JV738F8",
   "store": "amazon",
   "externalId": "B09JV738F8",
@@ -134695,24 +133117,6 @@
    "Bianco"
   ],
   "price": 45.37,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0DTT8VNN2",
-  "store": "amazon",
-  "externalId": "B0DTT8VNN2",
-  "title": "Tommy Hilfiger Stripe Quarter, Colore: Rosa, 35-38 (Pacco da 6) Unisex-Bambini",
-  "brand": "Tommy Hilfiger",
-  "gender": "donna",
-  "category": "calze",
-  "imageUrl": "https://m.media-amazon.com/images/I/31KpH1JRplL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Rosa"
-  ],
-  "price": 16.56,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -136051,45 +134455,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0HBD1KH83",
-  "store": "amazon",
-  "externalId": "B0HBD1KH83",
-  "title": "Invicta Zaino Ollie, Doppio Scomparto, Fuxia Berries, Bambine e Ragazze, rosa/nero + Portapenne Scuola Loop Shine, Nero, Effetto brillantini, Shiny, Scuola media e superiore",
-  "brand": "Invicta",
-  "gender": "unisex",
-  "category": "zaini",
-  "imageUrl": "https://m.media-amazon.com/images/I/41mGZ5JeMKL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero",
-   "Rosa"
-  ],
-  "price": 55.8,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HBCZN7LQ",
-  "store": "amazon",
-  "externalId": "B0HBCZN7LQ",
-  "title": "Invicta Zaino Ollie, Doppio Scomparto, Fuxia Berries, Bambine e Ragazze, rosa/nero + Portapenne Scuola Loop Shine, Viola, Effetto brillantini, Shiny, Scuola media e superiore",
-  "brand": "Invicta",
-  "gender": "unisex",
-  "category": "zaini",
-  "imageUrl": "https://m.media-amazon.com/images/I/41WXcjd+tAL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero",
-   "Rosa",
-   "Viola"
-  ],
-  "price": 55.8,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0HBD279YG",
   "store": "amazon",
   "externalId": "B0HBD279YG",
@@ -136536,21 +134901,6 @@
    "Verde"
   ],
   "price": 51.26,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0FYGVTZ7W",
-  "store": "amazon",
-  "externalId": "B0FYGVTZ7W",
-  "title": "Herschel Zaino junior Heritage™, HSC Slime",
-  "brand": "Herschel",
-  "gender": "unisex",
-  "category": "zaini",
-  "imageUrl": "https://m.media-amazon.com/images/I/41Wzm4LFt9L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 55,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -138268,24 +136618,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0DXCD454G",
-  "store": "amazon",
-  "externalId": "B0DXCD454G",
-  "title": "NIKE PSG Style Zaino, Nero, 8-20 Unisex-Bambini e Ragazzi",
-  "brand": "Nike",
-  "gender": "donna",
-  "category": "zaini",
-  "imageUrl": "https://m.media-amazon.com/images/I/21cj4trKQoL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 25,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0F5HTVZ1G",
   "store": "amazon",
   "externalId": "B0F5HTVZ1G",
@@ -138500,21 +136832,6 @@
    "Rosa"
   ],
   "price": 138.75,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0DH94VQJ8",
-  "store": "amazon",
-  "externalId": "B0DH94VQJ8",
-  "title": "Samsonite Zaino unisex Mother Lode Junior, Grafite er, Jr. Backpack, Madre Lode",
-  "brand": "Samsonite",
-  "gender": "donna",
-  "category": "zaini",
-  "imageUrl": "https://m.media-amazon.com/images/I/4136G815p2L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 424.68,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -140337,24 +138654,6 @@
   "price": 63.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z",
   "originalPrice": 84.9
- },
- {
-  "id": "amazon:B0F6PLMWQT",
-  "store": "amazon",
-  "externalId": "B0F6PLMWQT",
-  "title": "Tommy Hilfiger Bambini Unisex Marsupio Essential Bumbag con Chiusura a Clip, Marrone (Vintage Cerise), Taglia Unica",
-  "brand": "Tommy Hilfiger",
-  "gender": "uomo",
-  "category": "borselli",
-  "imageUrl": "https://m.media-amazon.com/images/I/31Ycfa0HUQL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Marrone"
-  ],
-  "price": 49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FDH2T2M1",
@@ -306346,25 +304645,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0GG2DQZMM",
-  "store": "amazon",
-  "externalId": "B0GG2DQZMM",
-  "title": "Tommy Hilfiger Borsa tote per ragazze, KA0KA00088, blu (blu scuro/bianco sporco), taglia unica",
-  "brand": "Tommy Hilfiger",
-  "gender": "donna",
-  "category": "borse",
-  "imageUrl": "https://m.media-amazon.com/images/I/51MrEJqlHaL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco",
-   "Blu"
-  ],
-  "price": 59.9,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0GG2Q6T5W",
   "store": "amazon",
   "externalId": "B0GG2Q6T5W",
@@ -306373,24 +304653,6 @@
   "gender": "donna",
   "category": "borse",
   "imageUrl": "https://m.media-amazon.com/images/I/511V7oSFp0L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 49.9,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0GG2GRNND",
-  "store": "amazon",
-  "externalId": "B0GG2GRNND",
-  "title": "Tommy Hilfiger Borsa da ragazza con strass festivi, KA0KA00086 Crossover, blu (blu scuro), taglia unica",
-  "brand": "Tommy Hilfiger",
-  "gender": "donna",
-  "category": "borse",
-  "imageUrl": "https://m.media-amazon.com/images/I/41HnnGaswqL._SL500_.jpg",
   "availability": "in_stock",
   "addedAt": "2026-10-13T02:02:54.674Z",
   "source": "ricerca",
@@ -307474,96 +305736,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0HK4X9S7L",
-  "store": "amazon",
-  "externalId": "B0HK4X9S7L",
-  "title": "Levi´s ® Jeans High Rise Baggy Braid 4 Years",
-  "brand": "Levi's",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/31kZejZuifL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 63.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HK5561XW",
-  "store": "amazon",
-  "externalId": "B0HK5561XW",
-  "title": "Levi´s ® Jeans Barrel 12 Years",
-  "brand": "Levi's",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/41U2ZIQgeLL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 58.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HK5217Z7",
-  "store": "amazon",
-  "externalId": "B0HK5217Z7",
-  "title": "Levi´s ® Jeans Luxe Denim High Rise Baggy 2 Years",
-  "brand": "Levi's",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/31xQsFIHjcL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 63.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HK4ZV47Q",
-  "store": "amazon",
-  "externalId": "B0HK4ZV47Q",
-  "title": "Levi´s ® Jeans Embroidered High Rise Baggy 12 Years",
-  "brand": "Levi's",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/41kCym+argL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 69.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HK52VPPN",
-  "store": "amazon",
-  "externalId": "B0HK52VPPN",
-  "title": "Levi´s ® Jeans 94 Baggy Yoke 4 Years",
-  "brand": "Levi's",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/31XxvhD+ikL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 56.51,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HK52JBKS",
-  "store": "amazon",
-  "externalId": "B0HK52JBKS",
-  "title": "Levi´s ® Jeans High Rise Baggy 8 Years",
-  "brand": "Levi's",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/31jU+1IX+hL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 53.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0CP4HJDVL",
   "store": "amazon",
   "externalId": "B0CP4HJDVL",
@@ -308115,24 +306287,6 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 39.59,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0GFG2GQ91",
-  "store": "amazon",
-  "externalId": "B0GFG2GQ91",
-  "title": "Calvin Klein Unisex Monologo Sweatpant Lvcktjc08u Pantaloni della Tuta, Nero (Pvh Nero), 8 Anni",
-  "brand": "Calvin Klein",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31Op85pK3JL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 69.9,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -309159,24 +307313,6 @@
   "sizes": [
    "3XL"
   ]
- },
- {
-  "id": "amazon:B0C9LB46YK",
-  "store": "amazon",
-  "externalId": "B0C9LB46YK",
-  "title": "Carhartt Pantaloni da ragazzo in pile con logo, caviale nero, 3 Anni",
-  "brand": "Carhartt",
-  "gender": "donna",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31zfUoXUp4L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 68.21,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0D3M4M877",
@@ -310310,21 +308446,6 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 100.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0HLTG289J",
-  "store": "amazon",
-  "externalId": "B0HLTG289J",
-  "title": "Pepe Jeans Maglietta A Maniche Corte Lalisa 16 Years",
-  "brand": "Pepe Jeans",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/317tnjFWzbL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 37.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -311612,21 +309733,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0HK4T8JP1",
-  "store": "amazon",
-  "externalId": "B0HK4T8JP1",
-  "title": "Levi´s ® Jeans 710 Super Skinny 10 Years",
-  "brand": "Levi's",
-  "gender": "donna",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/31xrgkf1YdL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 69.49,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0HMJ4LQHZ",
   "store": "amazon",
   "externalId": "B0HMJ4LQHZ",
@@ -311709,24 +309815,6 @@
   "addedAt": "2026-10-11T07:24:45.888Z",
   "source": "ricerca",
   "price": 139.9,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0G4CZ6KF2",
-  "store": "amazon",
-  "externalId": "B0G4CZ6KF2",
-  "title": "Diesel Jeans neri lavati da ragazza con vestibilità comoda - D-argjx Work, Denim Nero, 14 Years",
-  "brand": "Diesel",
-  "gender": "donna",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/41Vcca1KRZL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 128.24,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -314279,24 +312367,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0FBSRGGXR",
-  "store": "amazon",
-  "externalId": "B0FBSRGGXR",
-  "title": "Calvin Klein Flat Bi-Stretch Dress Pant, Straight Leg Fit, Belt Loops & Front Pockets Pantaloni Eleganti, Navy Infinite, 8 Bambino",
-  "brand": "Calvin Klein",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31-cDnavEdL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 52.87,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B09ZVPSRB9",
   "store": "amazon",
   "externalId": "B09ZVPSRB9",
@@ -314334,24 +312404,6 @@
   "sizes": [
    "W32"
   ]
- },
- {
-  "id": "amazon:B0878V8K3Z",
-  "store": "amazon",
-  "externalId": "B0878V8K3Z",
-  "title": "Calvin Klein 2-Piece Formal Suit Set, Includes Single Breasted Jacket & Straight Leg Dress Pants with Belt Loops & Functional Pockets Pantaloni Eleganti da Lavoro, Nero, 10 Plus Bambini e Ragazzi",
-  "brand": "Calvin Klein",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/21FqZFDFp7L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 113.92,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0D86DQGL7",
@@ -315020,24 +313072,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0FH37N9ZP",
-  "store": "amazon",
-  "externalId": "B0FH37N9ZP",
-  "title": "JACK & JONES Jpstevan Jett Chino Jnr, Nero, 134 Uomo",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/21mXMojQt5L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 27.39,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0F445RNJP",
   "store": "amazon",
   "externalId": "B0F445RNJP",
@@ -315213,36 +313247,6 @@
   ]
  },
  {
-  "id": "amazon:B0FH324CNX",
-  "store": "amazon",
-  "externalId": "B0FH324CNX",
-  "title": "JACK & JONES Jpstkane Norrebro Pantaloni della Tuta Jnr, Sky Captain, 10 Anni",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/21s1Lii5NiL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 22.88,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0F43V53SS",
-  "store": "amazon",
-  "externalId": "B0F43V53SS",
-  "title": "JACK & JONES Jpstgordon Jjbradley Cargo Pan Noos Jnr, Vetiver, 128 Uomo",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/2185C61iQ9L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 21.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0F443K6R9",
   "store": "amazon",
   "externalId": "B0F443K6R9",
@@ -315282,24 +313286,6 @@
   "sizes": [
    "W44"
   ]
- },
- {
-  "id": "amazon:B0F444QHLV",
-  "store": "amazon",
-  "externalId": "B0F444QHLV",
-  "title": "JACK & JONES Jpstpaul Jjflake AKM 542 Noos Jnr, Blue Mirage, 140 cm Uomo",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/311j09slHBL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 32.8,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FBGYS2LR",
@@ -317133,24 +315119,6 @@
   "addedAt": "2026-10-12T09:17:01.723Z",
   "source": "ricerca",
   "price": 38.97,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0FJYKW4D2",
-  "store": "amazon",
-  "externalId": "B0FJYKW4D2",
-  "title": "JACK & JONES JJIALEX JJCLASSIC SQ 737 Jnr Jeans Baggy Fit Boys Nera 176",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/31kyvEr91nL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 29.99,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -321617,24 +319585,6 @@
   ]
  },
  {
-  "id": "amazon:B0F3JFJMZS",
-  "store": "amazon",
-  "externalId": "B0F3JFJMZS",
-  "title": "JACK & JONES Pantaloni Cargo Relaxed Fit Boys Grigio 128",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/21LxNcFQOQL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "colors": [
-   "Grigio"
-  ],
-  "price": 27.95,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0DKK4JZSQ",
   "store": "amazon",
   "externalId": "B0DKK4JZSQ",
@@ -321670,21 +319620,6 @@
    "W40",
    "W44"
   ]
- },
- {
-  "id": "amazon:B0F44HPQMM",
-  "store": "amazon",
-  "externalId": "B0F44HPQMM",
-  "title": "JACK & JONES Jpstkane Jjbarkley Cargo Pantaloni Noos Jnr, Elmwood, 16 Anni",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31-wwrEBwFL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "price": 25.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0FNX6MVGF",
@@ -322445,24 +320380,6 @@
   "sizes": [
    "W26"
   ]
- },
- {
-  "id": "amazon:B0CKWGC21M",
-  "store": "amazon",
-  "externalId": "B0CKWGC21M",
-  "title": "Superdry Vintage LR Elastic Cargo Pant Pantaloni Bambino, Surplus Goods Oliva, 42 Donna",
-  "brand": "Superdry",
-  "gender": "donna",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31of3KolyML._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "colors": [
-   "Verde"
-  ],
-  "price": 56.99,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
   "id": "amazon:B0BGQ4W3M2",
@@ -323542,21 +321459,6 @@
   ]
  },
  {
-  "id": "amazon:B0HK484XRM",
-  "store": "amazon",
-  "externalId": "B0HK484XRM",
-  "title": "Pepe Jeans Pantaloni Cargo Julian 14 Years",
-  "brand": "Pepe Jeans",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31602VXcxJL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "price": 67.12,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0BSNXL687",
   "store": "amazon",
   "externalId": "B0BSNXL687",
@@ -323740,24 +321642,6 @@
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
-  "id": "amazon:B0GPLV9GMZ",
-  "store": "amazon",
-  "externalId": "B0GPLV9GMZ",
-  "title": "GUESS Bambina Pantaloni Fleece Regular Pants Regular Fit Rosa",
-  "brand": "Guess",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31NJxKvN1fL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "colors": [
-   "Rosa"
-  ],
-  "price": 30,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
   "id": "amazon:B0GPNF2JZD",
   "store": "amazon",
   "externalId": "B0GPNF2JZD",
@@ -323809,24 +321693,6 @@
    "Grigio"
   ],
   "price": 92.24,
-  "priceCheckedAt": "2026-10-13T02:02:54.674Z"
- },
- {
-  "id": "amazon:B0GPN4MFW1",
-  "store": "amazon",
-  "externalId": "B0GPN4MFW1",
-  "title": "GUESS Bambina Set Lingerie Homewear T-Shirt Pants Rosso",
-  "brand": "Guess",
-  "gender": "uomo",
-  "category": "tshirt",
-  "imageUrl": "https://m.media-amazon.com/images/I/31cBG229RtL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-13T02:02:54.674Z",
-  "source": "ricerca",
-  "colors": [
-   "Rosso"
-  ],
-  "price": 45,
   "priceCheckedAt": "2026-10-13T02:02:54.674Z"
  },
  {
@@ -327237,26 +325103,6 @@
   ]
  },
  {
-  "id": "amazon:B0CZP5YJ5K",
-  "store": "amazon",
-  "externalId": "B0CZP5YJ5K",
-  "title": "adidas Unisex - Bambini Essentials 3 Stripes T-Shirt, Black/White, 15-16 Years",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "tshirt",
-  "imageUrl": "https://m.media-amazon.com/images/I/41HOEFIt+pL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero",
-   "Bianco"
-  ],
-  "price": 12,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 20
- },
- {
   "id": "amazon:B0CZP3X5RQ",
   "store": "amazon",
   "externalId": "B0CZP3X5RQ",
@@ -328214,24 +326060,6 @@
   "sizes": [
    "L"
   ]
- },
- {
-  "id": "amazon:B0G39VQ4JW",
-  "store": "amazon",
-  "externalId": "B0G39VQ4JW",
-  "title": "Champion Graphic Shop, Felpa con Cappuccio e Zip Intera, da Ragazzo, Blu Navy",
-  "brand": "Champion",
-  "gender": "uomo",
-  "category": "felpe",
-  "imageUrl": "https://m.media-amazon.com/images/I/31LA+4UkM3L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T12:57:37.325Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 21.91,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
   "id": "amazon:B0F9PK6BWQ",
@@ -332095,28 +329923,6 @@
   "source": "ricerca",
   "price": 21.69,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0D31SR9QT",
-  "store": "amazon",
-  "externalId": "B0D31SR9QT",
-  "title": "PUMA Ess Small No. 1 Logo Relaxed Crew TR, Felpa con Cappuccio Bambina, PUMA Black",
-  "brand": "Puma",
-  "gender": "donna",
-  "category": "felpe",
-  "imageUrl": "https://m.media-amazon.com/images/I/31zoWOdIFJL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 35.99,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 44.95,
-  "sizes": [
-   "XL"
-  ]
  },
  {
   "id": "amazon:B0DJSS5R35",
@@ -344862,24 +342668,6 @@
   "originalPrice": 34.99
  },
  {
-  "id": "amazon:B0DM6JXFY3",
-  "store": "amazon",
-  "externalId": "B0DM6JXFY3",
-  "title": "Vero Moda Vmberlin Zamira MW Wide Pant Noos Vmdoffy LS - Camicetta Unisex per Bambini, Nero, (M) W x 30L",
-  "brand": "Vero Moda",
-  "gender": "donna",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/21vRM2rwPlL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T18:31:49.112Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 26.99,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B0CNDBD226",
   "store": "amazon",
   "externalId": "B0CNDBD226",
@@ -348268,24 +346056,6 @@
    "Blu"
   ],
   "price": 119.9,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0FMFC4YLJ",
-  "store": "amazon",
-  "externalId": "B0FMFC4YLJ",
-  "title": "Diesel Jeans Regular Blu Medio - 2000 per Bambine e Ragazze (IT, età, 12 Anni, Regular, Standard, Denim)",
-  "brand": "Diesel",
-  "gender": "donna",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/41ACPeEaQxL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T12:57:37.325Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 53,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
@@ -358391,24 +356161,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B01IVXYIUA",
-  "store": "amazon",
-  "externalId": "B01IVXYIUA",
-  "title": "KAPORAL - Jeans - Uomo Blu 10 Anni",
-  "brand": "Kaporal",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/413RMltzGkL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 34.3,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B07B6MC4FZ",
   "store": "amazon",
   "externalId": "B07B6MC4FZ",
@@ -361265,28 +359017,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z",
   "sizes": [
    "W34"
-  ]
- },
- {
-  "id": "amazon:B0CH1BSR2V",
-  "store": "amazon",
-  "externalId": "B0CH1BSR2V",
-  "title": "Superdry Relaxed Cargo Joggers Pantaloni Bambino, Dark Grey Green",
-  "brand": "Superdry",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31TkbH3FXUL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Grigio",
-   "Verde"
-  ],
-  "price": 85.85,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "sizes": [
-   "S"
   ]
  },
  {
@@ -365499,24 +363229,6 @@
   "sizes": [
    "S"
   ]
- },
- {
-  "id": "amazon:B0CCDJYZHN",
-  "store": "amazon",
-  "externalId": "B0CCDJYZHN",
-  "title": "Desigual Denim_MANHATH, Boxer Bambino da Donna, Blue,",
-  "brand": "Desigual",
-  "gender": "donna",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/318WTLfiFrL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 43.25,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
   "id": "amazon:B0D9KM4VD9",
@@ -369772,24 +367484,6 @@
   "sizes": [
    "M"
   ]
- },
- {
-  "id": "amazon:B0CNJMDKXT",
-  "store": "amazon",
-  "externalId": "B0CNJMDKXT",
-  "title": "THE NORTH FACE NF0A8A4BJK31 Teen 1996 Retro Nuptse Vest Gilet sportivo Unisex Bambino TNF BLACK Taglia XS",
-  "brand": "The North Face",
-  "gender": "uomo",
-  "category": "giacche",
-  "imageUrl": "https://m.media-amazon.com/images/I/31kw3IVo5oL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 152.63,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
   "id": "amazon:B0CXMFK6HN",
@@ -378904,21 +376598,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B0DZL36KMG",
-  "store": "amazon",
-  "externalId": "B0DZL36KMG",
-  "title": "NAPAPIJRI Chamois Sweatshirt 6 Years",
-  "brand": "Napapijri",
-  "gender": "donna",
-  "category": "felpe",
-  "imageUrl": "https://m.media-amazon.com/images/I/31TA-OBMBEL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "price": 25.99,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B0FFTXZV12",
   "store": "amazon",
   "externalId": "B0FFTXZV12",
@@ -382098,22 +379777,6 @@
   "price": 118.99,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z",
   "originalPrice": 180
- },
- {
-  "id": "amazon:B0DJYPYRND",
-  "store": "amazon",
-  "externalId": "B0DJYPYRND",
-  "title": "Columbia Arcadia II Jacket, Omni-Tech waterproof, Traspirante, Fodera in rete, Cappuccio regolabile, Tasche con cerniera, Dettagli riflettenti - per ragazze",
-  "brand": "Columbia",
-  "gender": "donna",
-  "category": "giacche",
-  "imageUrl": "https://m.media-amazon.com/images/I/41135qHpKNL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "price": 40.99,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 60
  },
  {
   "id": "amazon:B076VHNYHJ",
@@ -395676,22 +393339,6 @@
   "originalPrice": 44.95
  },
  {
-  "id": "amazon:B0DJSW3XS8",
-  "store": "amazon",
-  "externalId": "B0DJSW3XS8",
-  "title": "Puma Pantaloni Tuta Ess Bambina CL FL G Pantaloni",
-  "brand": "Puma",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/21w1fs0FRsL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "price": 23.91,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 29.95
- },
- {
   "id": "amazon:B0DJDHNP1P",
   "store": "amazon",
   "externalId": "B0DJDHNP1P",
@@ -396503,24 +394150,6 @@
    "Nero"
   ],
   "price": 70.14,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0CYQ8DMJP",
-  "store": "amazon",
-  "externalId": "B0CYQ8DMJP",
-  "title": "THE NORTH FACE NF0A86XV4EI1 Girl’s Never Stop Tight Pantaloni Sportivi Unisex Bambino TNF Black Vector Field Taglia L",
-  "brand": "The North Face",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/41sUlavcHlL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 31.75,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
@@ -397943,24 +395572,6 @@
   "addedAt": "2026-10-11T16:01:54.093Z",
   "source": "ricerca",
   "price": 27.63,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B082GYC471",
-  "store": "amazon",
-  "externalId": "B082GYC471",
-  "title": "Kappa - Pantaloni Tuta, Uomo, Nero, Poliestere, SPORT STREET, 222 BANDA 10 ALENZ, Taglia: 3 anni",
-  "brand": "Kappa",
-  "gender": "uomo",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31kzE06un+L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 36.99,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
@@ -399700,25 +397311,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B089Z6T66S",
-  "store": "amazon",
-  "externalId": "B089Z6T66S",
-  "title": "Puma Ess Logo Leggings G Tights Girl's, Puma Black 152",
-  "brand": "Puma",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31oPKauQPhL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 18,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 19.95
- },
- {
   "id": "amazon:B0DX2HTHM6",
   "store": "amazon",
   "externalId": "B0DX2HTHM6",
@@ -399732,24 +397324,6 @@
   "source": "ricerca",
   "price": 19.7,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0D2R5ZGJG",
-  "store": "amazon",
-  "externalId": "B0D2R5ZGJG",
-  "title": "PUMA W STRONG COLORBLOCK TIGHT - HW FL, collant bambina Unisex - Adulto, Wild Berry",
-  "brand": "Puma",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/21MwV1opRZL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "price": 17.82,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "sizes": [
-   "XXL"
-  ]
  },
  {
   "id": "amazon:B0DT51YH9G",
@@ -402875,27 +400449,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B0GPDG7CNN",
-  "store": "amazon",
-  "externalId": "B0GPDG7CNN",
-  "title": "Lacoste - Scarpe per: bambini, bianco",
-  "brand": "Lacoste",
-  "gender": "uomo",
-  "category": "sneakers",
-  "imageUrl": "https://m.media-amazon.com/images/I/21iWooRbpgL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco"
-  ],
-  "price": 65,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "sizes": [
-   "37"
-  ]
- },
- {
   "id": "amazon:B0F32SZMHC",
   "store": "amazon",
   "externalId": "B0F32SZMHC",
@@ -403138,30 +400691,6 @@
   "originalPrice": 80,
   "sizes": [
    "39"
-  ]
- },
- {
-  "id": "amazon:B0CWCFNVJP",
-  "store": "amazon",
-  "externalId": "B0CWCFNVJP",
-  "title": "adidas Unisex - Bambini e Ragazzi VL Court Bold Junior Shoes, Shadow Red/Cloud White/Pink Fusion",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "sneakers",
-  "imageUrl": "https://m.media-amazon.com/images/I/31bFN2cbZSL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco",
-   "Rosso",
-   "Rosa"
-  ],
-  "price": 42.95,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 65,
-  "sizes": [
-   "37"
   ]
  },
  {
@@ -404688,27 +402217,6 @@
   "price": 57.44,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z",
   "originalPrice": 64.95,
-  "sizes": [
-   "39"
-  ]
- },
- {
-  "id": "amazon:B0CNY6PN7J",
-  "store": "amazon",
-  "externalId": "B0CNY6PN7J",
-  "title": "Skechers Bambine e Ragazze Uno Lite Trainers, White Synthetic/Trim",
-  "brand": "Skechers",
-  "gender": "donna",
-  "category": "sneakers",
-  "imageUrl": "https://m.media-amazon.com/images/I/31smogoiywL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco"
-  ],
-  "price": 49.95,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
   "sizes": [
    "39"
   ]
@@ -413188,27 +410696,6 @@
   ]
  },
  {
-  "id": "amazon:B0DFP18CTK",
-  "store": "amazon",
-  "externalId": "B0DFP18CTK",
-  "title": "Tommy Hilfiger Logo Smooth Loafers, for Boys, Samir, Black",
-  "brand": "Tommy Hilfiger",
-  "gender": "uomo",
-  "category": "scarpe_eleganti",
-  "imageUrl": "https://m.media-amazon.com/images/I/31DSaX0lLwL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 64.99,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "sizes": [
-   "40"
-  ]
- },
- {
   "id": "amazon:B0FDDZYKD5",
   "store": "amazon",
   "externalId": "B0FDDZYKD5",
@@ -419472,24 +416959,6 @@
   ]
  },
  {
-  "id": "amazon:B01N9XMLIB",
-  "store": "amazon",
-  "externalId": "B01N9XMLIB",
-  "title": "UGG Classic II Stivali classici da Unisex - Bambini e ragazzi, Marrone Chestnut, 25 EU",
-  "brand": "UGG",
-  "gender": "donna",
-  "category": "stivali",
-  "imageUrl": "https://m.media-amazon.com/images/I/41p+hSoFrCL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Marrone"
-  ],
-  "price": 149.95,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B0CQFBXZBL",
   "store": "amazon",
   "externalId": "B0CQFBXZBL",
@@ -423373,25 +420842,6 @@
   ]
  },
  {
-  "id": "amazon:B0F33YS91V",
-  "store": "amazon",
-  "externalId": "B0F33YS91V",
-  "title": "adidas Unisex Kids Vl Court 3.0 Kids Ftwr White/Bliss Pink/Alumina 6.5 UK 40 EU",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "sandali",
-  "imageUrl": "https://m.media-amazon.com/images/I/21jgcR1qlhL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco",
-   "Rosa"
-  ],
-  "price": 29.8,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B0F3433VYR",
   "store": "amazon",
   "externalId": "B0F3433VYR",
@@ -423733,28 +421183,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z",
   "sizes": [
    "39"
-  ]
- },
- {
-  "id": "amazon:B07QXK2XD3",
-  "store": "amazon",
-  "externalId": "B07QXK2XD3",
-  "title": "Nike Nike Air Max 97 (GS) - Scarpe da Atletica Leggera Bambino, Bianco (White/White/Metallic Silver 000)",
-  "brand": "Nike",
-  "gender": "donna",
-  "category": "sandali",
-  "imageUrl": "https://m.media-amazon.com/images/I/31NLXbIiPzL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco",
-   "Argento"
-  ],
-  "price": 132,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "sizes": [
-   "38"
   ]
  },
  {
@@ -425941,26 +423369,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B075FCT32B",
-  "store": "amazon",
-  "externalId": "B075FCT32B",
-  "title": "Ray-Ban 0rj9506s 223/71 52 Occhiali da Sole, Oro (Gold/Green), Unisex-bambino",
-  "brand": "Ray-Ban",
-  "gender": "donna",
-  "category": "occhiali",
-  "imageUrl": "https://m.media-amazon.com/images/I/213Rj2DmdYL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Verde",
-   "Oro"
-  ],
-  "price": 50,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 69
- },
- {
   "id": "amazon:B06ZZSL3KM",
   "store": "amazon",
   "externalId": "B06ZZSL3KM",
@@ -428059,42 +425467,6 @@
   "originalPrice": 22.99
  },
  {
-  "id": "amazon:B0C53D1GCN",
-  "store": "amazon",
-  "externalId": "B0C53D1GCN",
-  "title": "Nike Club Berretto da Baseball, Nero, Taglia Unica Unisex-Bambini e Ragazzi",
-  "brand": "Nike",
-  "gender": "unisex",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/31cCR8qxDwL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 22.99,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0C53CPDVP",
-  "store": "amazon",
-  "externalId": "B0C53CPDVP",
-  "title": "Nike Noi CB Mtswsh Cappuccio, Blu Scuro, Taglia Unica Unisex-Bambini e Ragazzi",
-  "brand": "Nike",
-  "gender": "uomo",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/31OkGBlmPNL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 22.99,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B0D4F9NLMB",
   "store": "amazon",
   "externalId": "B0D4F9NLMB",
@@ -429596,24 +426968,6 @@
   "price": 21.56,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z",
   "originalPrice": 29
- },
- {
-  "id": "amazon:B0C53G7GYG",
-  "store": "amazon",
-  "externalId": "B0C53G7GYG",
-  "title": "Nike Club Berretto da Baseball, Bianco, Taglia Unica Unisex-Bambini e Ragazzi",
-  "brand": "Nike",
-  "gender": "donna",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/21A773FJimL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco"
-  ],
-  "price": 22.99,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
   "id": "amazon:B0CP88JG16",
@@ -443773,25 +441127,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B0DCC9F33G",
-  "store": "amazon",
-  "externalId": "B0DCC9F33G",
-  "title": "PUMA Easy Rider Junior 5p, Calzini Unisex - Bambini e ragazzi, Black - New, 39-42",
-  "brand": "Puma",
-  "gender": "uomo",
-  "category": "calze",
-  "imageUrl": "https://m.media-amazon.com/images/I/31F1e7op+LL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 12.95,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 16.9
- },
- {
   "id": "amazon:B0DCC7RX5Q",
   "store": "amazon",
   "externalId": "B0DCC7RX5Q",
@@ -445497,21 +442832,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B0D47G964L",
-  "store": "amazon",
-  "externalId": "B0D47G964L",
-  "title": "Nike 3Pk Gripper Qtr Calzini per Bimbi Nike Polar 12/24 Mesi",
-  "brand": "Nike",
-  "gender": "donna",
-  "category": "calze",
-  "imageUrl": "https://m.media-amazon.com/images/I/41thQW0TerL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "price": 21.41,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B0CM6WRDCD",
   "store": "amazon",
   "externalId": "B0CM6WRDCD",
@@ -445605,24 +442925,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B089QPGC59",
-  "store": "amazon",
-  "externalId": "B089QPGC59",
-  "title": "PUMA Crew, Calzini Unisex - Bambini e Ragazzi, Nero, 35-38 (Pacco da 3)",
-  "brand": "Puma",
-  "gender": "donna",
-  "category": "calze",
-  "imageUrl": "https://m.media-amazon.com/images/I/316Df-hu3zL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 8,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B0CVB76RRQ",
   "store": "amazon",
   "externalId": "B0CVB76RRQ",
@@ -445639,45 +442941,6 @@
   ],
   "price": 18.59,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0CZ44YYX9",
-  "store": "amazon",
-  "externalId": "B0CZ44YYX9",
-  "title": "PUMA Quarter 3p, Calzini Unisex - Bambini e ragazzi, Black - New, 39-42",
-  "brand": "Puma",
-  "gender": "donna",
-  "category": "calze",
-  "imageUrl": "https://m.media-amazon.com/images/I/41XkoT9eT8L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 8.41,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0D8VW5VXQ",
-  "store": "amazon",
-  "externalId": "B0D8VW5VXQ",
-  "title": "PUMA Bwt Sneaker 3p, Calzini Unisex - Bambini e ragazzi, White/Grey/Black - New, 35-38",
-  "brand": "Puma",
-  "gender": "donna",
-  "category": "calze",
-  "imageUrl": "https://m.media-amazon.com/images/I/2107WstVBBL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero",
-   "Bianco",
-   "Grigio"
-  ],
-  "price": 8.28,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 8.99
  },
  {
   "id": "amazon:B014QWJQ9I",
@@ -448179,25 +445442,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B0FVMMB8PB",
-  "store": "amazon",
-  "externalId": "B0FVMMB8PB",
-  "title": "adidas Unisex - Bambini e ragazzi Apwr Youth Backpack, black/white, One Size",
-  "brand": "adidas",
-  "gender": "uomo",
-  "category": "zaini",
-  "imageUrl": "https://m.media-amazon.com/images/I/31hHAlV4xHL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T13:13:14.967Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero",
-   "Bianco"
-  ],
-  "price": 28,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B0DMYPB8PK",
   "store": "amazon",
   "externalId": "B0DMYPB8PK",
@@ -448305,24 +445549,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B0FVMMZWBK",
-  "store": "amazon",
-  "externalId": "B0FVMMZWBK",
-  "title": "adidas Unisex - Bambini e ragazzi Little Kids Neon Backpack, glory purple, One Size",
-  "brand": "adidas",
-  "gender": "uomo",
-  "category": "zaini",
-  "imageUrl": "https://m.media-amazon.com/images/I/41NZl8KC3yL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Viola"
-  ],
-  "price": 28,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B0DMV1MQT6",
   "store": "amazon",
   "externalId": "B0DMV1MQT6",
@@ -448339,24 +445565,6 @@
    "Argento"
   ],
   "price": 34.99,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0FVMM7JPC",
-  "store": "amazon",
-  "externalId": "B0FVMM7JPC",
-  "title": "adidas Unisex - Bambini e ragazzi Little Kids Tiro_Nster Aop Backpack, Pure Purple/Pure Turbo, One Size",
-  "brand": "adidas",
-  "gender": "uomo",
-  "category": "zaini",
-  "imageUrl": "https://m.media-amazon.com/images/I/41p4bWgDoWL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Viola"
-  ],
-  "price": 25.45,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
@@ -449230,21 +446438,6 @@
   "addedAt": "2026-10-12T12:57:37.325Z",
   "source": "ricerca",
   "price": 143.99,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0DFYTLM3G",
-  "store": "amazon",
-  "externalId": "B0DFYTLM3G",
-  "title": "THE NORTH FACE Teen Box NSE Regular Pullover Hoodie",
-  "brand": "The North Face",
-  "gender": "donna",
-  "category": "zaini",
-  "imageUrl": "https://m.media-amazon.com/images/I/316PDXbmIdL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "price": 47.99,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
@@ -452789,25 +449982,6 @@
   "addedAt": "2026-10-09T08:07:27.917Z",
   "source": "ricerca",
   "price": 31.5,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0D6QXPD4H",
-  "store": "amazon",
-  "externalId": "B0D6QXPD4H",
-  "title": "Nike Heritage Waistpack - Fa21, Borsa Unisex Adulto, Black/Black/White, Taglia Unica & Club Berretto da Baseball, Nero, Taglia Unica Unisex-Bambini e Ragazzi",
-  "brand": "Nike",
-  "gender": "uomo",
-  "category": "borselli",
-  "imageUrl": "https://m.media-amazon.com/images/I/21SbYjyXRKL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero",
-   "Bianco"
-  ],
-  "price": 54.96,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
@@ -573303,21 +570477,6 @@
   "originalPrice": 149
  },
  {
-  "id": "amazon:B0HKZJSPFZ",
-  "store": "amazon",
-  "externalId": "B0HKZJSPFZ",
-  "title": "Liu Jo Giacca Check Principe di Galles 16 Anni",
-  "brand": "Liu Jo",
-  "gender": "donna",
-  "category": "giacche",
-  "imageUrl": "https://m.media-amazon.com/images/I/31FdpqWS39L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "price": 139,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B0B8347KV3",
   "store": "amazon",
   "externalId": "B0B8347KV3",
@@ -576753,27 +573912,6 @@
   ]
  },
  {
-  "id": "amazon:B0B9HXCD9R",
-  "store": "amazon",
-  "externalId": "B0B9HXCD9R",
-  "title": "Superdry Vintage Slim Jeans, Pantaloni Bambino Uomo, Mercer Mid Blue,",
-  "brand": "Superdry",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/3182brUaIFL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 48.99,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "sizes": [
-   "W28"
-  ]
- },
- {
   "id": "amazon:B0B9HXR58K",
   "store": "amazon",
   "externalId": "B0B9HXR58K",
@@ -576852,24 +573990,6 @@
   ]
  },
  {
-  "id": "amazon:B0C37QK986",
-  "store": "amazon",
-  "externalId": "B0C37QK986",
-  "title": "Superdry Vintage Slim Jeans Pantaloni Bambino, Gris",
-  "brand": "Superdry",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/31EMTUU12jL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "price": 87.76,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "sizes": [
-   "W30"
-  ]
- },
- {
   "id": "amazon:B0CJ2X7D9J",
   "store": "amazon",
   "externalId": "B0CJ2X7D9J",
@@ -576907,24 +574027,6 @@
   "sizes": [
    "W34"
   ]
- },
- {
-  "id": "amazon:B0B7BPLRZZ",
-  "store": "amazon",
-  "externalId": "B0B7BPLRZZ",
-  "title": "Superdry Vintage Slim Straight Jeans, Pantaloni Bambino Uomo, Mercer Mid Blue,",
-  "brand": "Superdry",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/31CPK3HV9QL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T12:57:37.325Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 65.99,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
   "id": "amazon:B0FVHMP98Z",
@@ -577457,24 +574559,6 @@
   "addedAt": "2026-10-11T16:01:54.093Z",
   "source": "ricerca",
   "price": 44.8,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0B1JMH3HY",
-  "store": "amazon",
-  "externalId": "B0B1JMH3HY",
-  "title": "Orologio Unisex Smartwatch Teen Arancione Liu Jo",
-  "brand": "Liu Jo",
-  "gender": "uomo",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/417cIrsgeVL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Arancione"
-  ],
-  "price": 67,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
@@ -578218,24 +575302,6 @@
   ]
  },
  {
-  "id": "amazon:B0BDKJN45K",
-  "store": "amazon",
-  "externalId": "B0BDKJN45K",
-  "title": "Superdry Vintage Mid Rise Skinny Jeans, Pantaloni Bambino Donna, Walcott Black Stone,",
-  "brand": "Superdry",
-  "gender": "donna",
-  "category": "jeans",
-  "imageUrl": "https://m.media-amazon.com/images/I/31HbbKEiJnL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 58.99,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B0BDLBQZ7M",
   "store": "amazon",
   "externalId": "B0BDLBQZ7M",
@@ -578273,24 +575339,6 @@
   ],
   "price": 79.2,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0C5JMV4S9",
-  "store": "amazon",
-  "externalId": "B0C5JMV4S9",
-  "title": "Superdry Vintage Wide Jean, Pantaloni Bambino Donna, Blanco,",
-  "brand": "Superdry",
-  "gender": "donna",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31i5sWiStiL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "price": 50.49,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "sizes": [
-   "W28"
-  ]
  },
  {
   "id": "amazon:B0CFXX2P33",
@@ -582229,24 +579277,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B09QMP5DBV",
-  "store": "amazon",
-  "externalId": "B09QMP5DBV",
-  "title": "Desigual Pant_SEUL, 5000, Boxer Bambino Uomini, Blue, 30",
-  "brand": "Desigual",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31vG2HQZPYL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 22.52,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B09DT9PXW3",
   "store": "amazon",
   "externalId": "B09DT9PXW3",
@@ -582262,42 +579292,6 @@
    "Giallo"
   ],
   "price": 64.5,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0CCVBZ1ZQ",
-  "store": "amazon",
-  "externalId": "B0CCVBZ1ZQ",
-  "title": "Desigual Pant_Beltran Pantaloni Casual, Blu, 6 Anni Bambini e Ragazzi",
-  "brand": "Desigual",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/31NBHlWS8KL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 24.04,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B09QMS85ZL",
-  "store": "amazon",
-  "externalId": "B09QMS85ZL",
-  "title": "Desigual Pant_SEUL, 7002 Boxer Bambino, Orange, 32 Uomini",
-  "brand": "Desigual",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/41H+fdfxJBL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Arancione"
-  ],
-  "price": 29.12,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
@@ -584987,24 +581981,6 @@
   "sizes": [
    "M"
   ]
- },
- {
-  "id": "amazon:B07TWR89VJ",
-  "store": "amazon",
-  "externalId": "B07TWR89VJ",
-  "title": "Wrangler Uomo Icons 124mj Sherpa Giacca in jeans Not Applicable, Blu (3 Years 10k), Xxxx-Large",
-  "brand": "Wrangler",
-  "gender": "uomo",
-  "category": "giacche",
-  "imageUrl": "https://m.media-amazon.com/images/I/51ApNSzM2-L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 99.58,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
   "id": "amazon:B0BMQSZ5P9",
@@ -598874,27 +595850,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B0DNJMZNQD",
-  "store": "amazon",
-  "externalId": "B0DNJMZNQD",
-  "title": "Champion Tuta Legacy Bambina, Beige",
-  "brand": "Champion",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31DWxLMsdoL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T12:57:37.325Z",
-  "source": "ricerca",
-  "colors": [
-   "Beige"
-  ],
-  "price": 29.8,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "sizes": [
-   "XXS"
-  ]
- },
- {
   "id": "amazon:B0814TV8TJ",
   "store": "amazon",
   "externalId": "B0814TV8TJ",
@@ -599272,26 +596227,6 @@
   ],
   "price": 35.99,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0CZPSCH12",
-  "store": "amazon",
-  "externalId": "B0CZPSCH12",
-  "title": "adidas Unisex - Bambini SEASONAL ESSENTIALS TIBERIO 3 STRIPES TRICOT TRACKSUIT, Royal Blue/White/Glow Blue, 13-14 Years",
-  "brand": "adidas",
-  "gender": "uomo",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31iKNyZszfL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T12:57:37.325Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco",
-   "Blu"
-  ],
-  "price": 35.19,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 55
  },
  {
   "id": "amazon:B0CZXRRW3V",
@@ -600191,24 +597126,6 @@
   ]
  },
  {
-  "id": "amazon:B08WDJF5T9",
-  "store": "amazon",
-  "externalId": "B08WDJF5T9",
-  "title": "FILA Logo Ralph Pantaloni da Jogging, Iris Nero, Taglia Unica Bambino",
-  "brand": "Fila",
-  "gender": "uomo",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31ScBQgc4EL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 27.3,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B097C946KQ",
   "store": "amazon",
   "externalId": "B097C946KQ",
@@ -600517,26 +597434,6 @@
   "sizes": [
    "XXL"
   ]
- },
- {
-  "id": "amazon:B0CZPBZWP8",
-  "store": "amazon",
-  "externalId": "B0CZPBZWP8",
-  "title": "adidas Bambina Essentials Pants, Black/White, 14-15 Years",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/21dPv7OCKFL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T12:57:37.325Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero",
-   "Bianco"
-  ],
-  "price": 27.01,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 35
  },
  {
   "id": "amazon:B0CLM2LMG2",
@@ -601206,24 +598103,6 @@
    "Nero"
   ],
   "price": 380,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0CYQ9J57T",
-  "store": "amazon",
-  "externalId": "B0CYQ9J57T",
-  "title": "THE NORTH FACE NF0A86XVNL41 Girl’s Never Stop Tight Pantaloni Sportivi Unisex Bambino Peak Purple Taglia L",
-  "brand": "The North Face",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31idZObRNoL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Viola"
-  ],
-  "price": 45,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
@@ -602456,27 +599335,6 @@
   ]
  },
  {
-  "id": "amazon:B08J3P5Y4W",
-  "store": "amazon",
-  "externalId": "B08J3P5Y4W",
-  "title": "Kappa Sanremo Pantaloni Corti Unisex Bambini, Blu Navy",
-  "brand": "Kappa",
-  "gender": "uomo",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/21mK-W8eogL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 28,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "sizes": [
-   "4XL"
-  ]
- },
- {
   "id": "amazon:B08DJJ6BSG",
   "store": "amazon",
   "externalId": "B08DJJ6BSG",
@@ -602784,26 +599642,6 @@
   "sizes": [
    "M"
   ]
- },
- {
-  "id": "amazon:B0DJFGX8LZ",
-  "store": "amazon",
-  "externalId": "B0DJFGX8LZ",
-  "title": "adidas Unisex - Bimbi 0-24 Essentials Hooded Jogger Track Suit, Royal Blue/White/White, 9-12 Months",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/41vyZMZ3t1L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Bianco",
-   "Blu"
-  ],
-  "price": 36.9,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 45
  },
  {
   "id": "amazon:B0CZPBGWS7",
@@ -604432,25 +601270,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B0F6PYSWC9",
-  "store": "amazon",
-  "externalId": "B0F6PYSWC9",
-  "title": "Tommy Hilfiger Bambini Unisex Cappellino Essential con Chiusura Snapback, Blu (Majesty Blue), L-XL",
-  "brand": "Tommy Hilfiger",
-  "gender": "uomo",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/316X9+3EcbL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 20.09,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 24.9
- },
- {
   "id": "amazon:B09XY58XT6",
   "store": "amazon",
   "externalId": "B09XY58XT6",
@@ -604539,25 +601358,6 @@
   "price": 42.58,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z",
   "originalPrice": 49.9
- },
- {
-  "id": "amazon:B0C8ZF4KD8",
-  "store": "amazon",
-  "externalId": "B0C8ZF4KD8",
-  "title": "Tommy Hilfiger Cappellino Bambini Unisex Small Flag Cappellino da Baseball, Blu (Space Blue), L-XL",
-  "brand": "Tommy Hilfiger",
-  "gender": "uomo",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/41B2j8hSDaL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T16:01:54.093Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 21.87,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z",
-  "originalPrice": 24.9
  },
  {
   "id": "amazon:B0G2S2D6N6",
@@ -605165,24 +601965,6 @@
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
-  "id": "amazon:B0C8ZDNJ44",
-  "store": "amazon",
-  "externalId": "B0C8ZDNJ44",
-  "title": "Tommy Hilfiger Cappellino Bambini Unisex Small Flag Cappellino da Baseball, Blu (Space Blue), S-M",
-  "brand": "Tommy Hilfiger",
-  "gender": "donna",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/319-YYMssHL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T08:07:27.917Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 25.52,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
   "id": "amazon:B0BXQ4NBHX",
   "store": "amazon",
   "externalId": "B0BXQ4NBHX",
@@ -605198,24 +601980,6 @@
    "Nero"
   ],
   "price": 28,
-  "priceCheckedAt": "2026-10-12T12:57:37.325Z"
- },
- {
-  "id": "amazon:B0BSFWZBV5",
-  "store": "amazon",
-  "externalId": "B0BSFWZBV5",
-  "title": "Tommy Hilfiger Cappellino Unisex Bambini Essential Cappellino da Baseball, Blu (Space Blue), L-XL",
-  "brand": "Tommy Hilfiger",
-  "gender": "donna",
-  "category": "cappellini",
-  "imageUrl": "https://m.media-amazon.com/images/I/311w8s+vukL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T12:57:37.325Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 25.53,
   "priceCheckedAt": "2026-10-12T12:57:37.325Z"
  },
  {
@@ -609140,21 +605904,6 @@
   ]
  },
  {
-  "id": "amazon:B0HL564JK7",
-  "store": "amazon",
-  "externalId": "B0HL564JK7",
-  "title": "Felpa Bimba Guess Art LV047G820G",
-  "brand": "Calvin Klein",
-  "gender": "donna",
-  "category": "felpe",
-  "imageUrl": "https://m.media-amazon.com/images/I/41BwFwTnm7L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 87.2,
-  "priceCheckedAt": "2026-10-12T09:17:01.723Z"
- },
- {
   "id": "amazon:B077VTG2L6",
   "store": "amazon",
   "externalId": "B077VTG2L6",
@@ -610067,24 +606816,6 @@
    "Nero"
   ],
   "price": 61.72,
-  "priceCheckedAt": "2026-10-12T09:17:01.723Z"
- },
- {
-  "id": "amazon:B0FH376J7D",
-  "store": "amazon",
-  "externalId": "B0FH376J7D",
-  "title": "JACK & JONES Jpstkane Rocco Hybrid Jogger Jnr, Blazer Navy, 9 Anni",
-  "brand": "Jack & Jones",
-  "gender": "uomo",
-  "category": "pantaloni",
-  "imageUrl": "https://m.media-amazon.com/images/I/21YQa9liTgL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Blu"
-  ],
-  "price": 26.59,
   "priceCheckedAt": "2026-10-12T09:17:01.723Z"
  },
  {
@@ -611728,25 +608459,6 @@
   "priceCheckedAt": "2026-10-12T09:17:01.723Z"
  },
  {
-  "id": "amazon:B0FWBJHKPT",
-  "store": "amazon",
-  "externalId": "B0FWBJHKPT",
-  "title": "adidas Fortarun 4.0 Shoes Children - Scarpe da corsa, unisex, per bambini, Lavanda Ghiacciata Rosa Trasparente Lilla, 30 EU",
-  "brand": "adidas",
-  "gender": "donna",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/31n2P5tyPGL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "colors": [
-   "Rosa",
-   "Viola"
-  ],
-  "price": 147.27,
-  "priceCheckedAt": "2026-10-12T09:17:01.723Z"
- },
- {
   "id": "amazon:B0HM3TKG4Z",
   "store": "amazon",
   "externalId": "B0HM3TKG4Z",
@@ -612178,21 +608890,6 @@
    "Grigio"
   ],
   "price": 54.29,
-  "priceCheckedAt": "2026-10-12T09:17:01.723Z"
- },
- {
-  "id": "amazon:B0HLN2S9WX",
-  "store": "amazon",
-  "externalId": "B0HLN2S9WX",
-  "title": "Under Armour Joggers Rival Lightweight 7 Years",
-  "brand": "Under Armour",
-  "gender": "uomo",
-  "category": "sportivo",
-  "imageUrl": "https://m.media-amazon.com/images/I/314rHWjjE3L._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-12T09:17:01.723Z",
-  "source": "ricerca",
-  "price": 38.01,
   "priceCheckedAt": "2026-10-12T09:17:01.723Z"
  },
  {
@@ -613226,24 +609923,6 @@
   "priceCheckedAt": "2026-10-12T09:17:01.723Z"
  },
  {
-  "id": "amazon:B0GFPBFTJ2",
-  "store": "amazon",
-  "externalId": "B0GFPBFTJ2",
-  "title": "Vans Brooklyn LsSneaker Unisex per Bambini, Orchidea Selvatica",
-  "brand": "Vans",
-  "gender": "donna",
-  "category": "sneakers",
-  "imageUrl": "https://m.media-amazon.com/images/I/21c2RcHb8FL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "price": 56.51,
-  "priceCheckedAt": "2026-10-12T09:17:01.723Z",
-  "sizes": [
-   "34.5"
-  ]
- },
- {
   "id": "amazon:B0GSS889RM",
   "store": "amazon",
   "externalId": "B0GSS889RM",
@@ -614042,24 +610721,6 @@
    "Oro"
   ],
   "price": 112,
-  "priceCheckedAt": "2026-10-12T09:17:01.723Z"
- },
- {
-  "id": "amazon:B09VCTD1LH",
-  "store": "amazon",
-  "externalId": "B09VCTD1LH",
-  "title": "adidas Adicane SlidesShoes unisex per bambini, Carbon Carbon Black, 7.5 UK Men/ 8.5 UK Women",
-  "brand": "adidas",
-  "gender": "uomo",
-  "category": "sandali",
-  "imageUrl": "https://m.media-amazon.com/images/I/21nxLaoFebL._SL500_.jpg",
-  "availability": "in_stock",
-  "addedAt": "2026-10-11T07:24:45.888Z",
-  "source": "ricerca",
-  "colors": [
-   "Nero"
-  ],
-  "price": 55.83,
   "priceCheckedAt": "2026-10-12T09:17:01.723Z"
  },
  {
