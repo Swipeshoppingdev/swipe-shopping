@@ -25,7 +25,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: scripts
+          # src/lib e src/config: isAdminEmail (src/lib/admin.ts) per riconoscere l'admin.
+          sparse-checkout: |
+            scripts
+            src/lib
+            src/config
       - uses: actions/setup-node@v4
         with:
           node-version: 22
