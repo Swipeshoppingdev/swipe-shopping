@@ -4,6 +4,7 @@
 //   node scripts/appstore.ts profile <id certificato> <uscita.mobileprovision>
 //       prepara l'ID app (con "Accedi con Apple" e le notifiche) e crea un profilo App Store nuovo, così contiene sempre
 //       le funzioni attive; stampa il nome del profilo.
+//   node scripts/appstore.ts build-status <numero build>   aspetta (fino a 40 minuti) che Apple finisca di elaborare la build
 // Variabili: APPSTORE_KEY_ID, APPSTORE_ISSUER_ID, APPSTORE_KEY_PATH (file .p8).
 import { sign } from 'node:crypto'
 import { readFileSync, writeFileSync } from 'node:fs'
@@ -91,7 +92,22 @@ async function createProfile(certId: string, outPath: string) {
   console.log(PROFILE_NAME)
 }
 
+async function buildStatus(number: string) {
+  const app = (await list(`apps?filter[bundleId]=${BUNDLE_ID}&limit=1`))[0]
+  if (!app) throw new Error(`App ${BUNDLE_ID} non trovata`)
+  for (let i = 0; i < 80; i++) {
+    const build = (await list(`builds?filter[app]=${app.id}&filter[version]=${number}&limit=1`))[0]
+    const state = String(build?.attributes.processingState ?? 'NON ANCORA ARRIVATA')
+    console.log(`${new Date().toISOString()} build ${number}: ${state}`)
+    if (state === 'VALID') return
+    if (state === 'FAILED' || state === 'INVALID') throw new Error(`Build ${number}: ${state}`)
+    await new Promise((r) => setTimeout(r, 30_000))
+  }
+  throw new Error(`Build ${number} ancora in elaborazione dopo 40 minuti`)
+}
+
 const [cmd, a, b] = process.argv.slice(2)
 if (cmd === 'cert') await createCertificate(a, b)
 else if (cmd === 'profile') await createProfile(a, b)
-else throw new Error('Uso: appstore.ts cert <csr> <cer> | profile <certId> <mobileprovision>')
+else if (cmd === 'build-status') await buildStatus(a)
+else throw new Error('Uso: appstore.ts cert <csr> <cer> | profile <certId> <mobileprovision> | build-status <numero>')
