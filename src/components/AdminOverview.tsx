@@ -37,13 +37,17 @@ export function AdminOverview() {
     [
       'Utenti registrati',
       [
-        ['Totale', n('users_total'), `+${n('users_new_7d')} in 7 gg`],
+        // Contano solo gli account con email confermata (o Google): chi si è iscritto e non ha mai confermato
+        // non è un utente vero (email sbagliate, ripensamenti) e prima gonfiava il totale.
+        missing
+          ? ['Account creati', n('users_total'), `+${n('users_new_7d')} in 7 gg`]
+          : ['Registrati veri', n('users_confirmed'), `su ${n('users_total')} iscrizioni`],
         ...(missing
           ? []
           : ([
-              ['Nuovi oggi', n('users_new_today'), `${n('users_new_30d')} in 30 gg`],
-              ['Email confermate', n('users_confirmed'), pct(n('users_confirmed'), n('users_total'))],
-              ['Con Google', n('users_google'), pct(n('users_google'), n('users_total'))],
+              ['Nuove iscrizioni oggi', n('users_new_today'), `${n('users_new_7d')} in 7 gg · ${n('users_new_30d')} in 30 gg`],
+              ['Mai confermati', n('users_total') - n('users_confirmed'), pct(n('users_total') - n('users_confirmed'), n('users_total'))],
+              ['Con Google', n('users_google'), pct(n('users_google'), n('users_confirmed'))],
               ['Entrati in 7 gg', n('users_active_7d')],
               ['Con preferiti', n('users_with_wishlist'), `${n('wishlist_items')} salvati`],
             ] as [string, number | string, string?][])),
@@ -55,7 +59,7 @@ export function AdminOverview() {
           [
             'Contatti e avvisi',
             [
-              ['Newsletter sì', n('news_optin'), pct(n('news_optin'), n('users_total'))],
+              ['Newsletter sì', n('news_optin'), pct(n('news_optin'), n('users_confirmed'))],
               ['Avvisi prezzo email', n('alerts_on')],
               ['Notifiche app Android', n('push_android')],
               ['Notifiche dal sito', n('push_web')],
