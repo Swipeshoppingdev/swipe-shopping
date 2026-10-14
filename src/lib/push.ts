@@ -8,12 +8,14 @@ import { supabase } from './supabase'
  * Notifiche push. Le manda scripts/push.ts quando un amico ti manda qualcosa in "Per te",
  * scripts/price-alerts.ts quando un preferito è in offerta e scripts/brand-alerts.ts per le marche seguite.
  * - App Android: Firebase Cloud Messaging, solo se costruita con google-services.json (android.yml imposta VITE_PUSH=1).
+ * - App iPhone: Apple Push (APNs) diretto, scripts/apns.ts. Il token si salva come "apns:<token>".
  * - Sito: Web Push standard (scripts/webpush.ts). Su iPhone solo col sito aggiunto alla schermata Home (iOS 16.4+).
  */
 const androidPush = isNative && Capacitor.getPlatform() === 'android' && import.meta.env.VITE_PUSH === '1'
 const webPush =
   !isNative && !!WEB_PUSH_KEY && typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window
-export const pushAvailable = androidPush || webPush
+const iosPush = isNative && Capacitor.getPlatform() === 'ios'
+export const pushAvailable = androidPush || iosPush || webPush
 
 const isStandalone = () =>
   window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true
@@ -41,12 +43,29 @@ async function listen() {
   listening = true
   const push = await plugin()
   // Canale delle notifiche (lo stesso indicato in AndroidManifest.xml).
-  await push.createChannel({ id: 'amici', name: 'Amici', description: 'Consigli, sondaggi e liste dai tuoi amici', importance: 4 }).catch(() => {})
-  await push.createChannel({ id: 'offerte', name: 'Offerte sui preferiti', description: 'Quando un tuo preferito è scontato (al massimo ogni 3 giorni)', importance: 3 }).catch(() => {})
+  await push
+    .createChannel({
+      id: 'amici',
+      name: 'Amici',
+      description: 'Consigli, sondaggi e liste dai tuoi amici',
+      importance: 4,
+    })
+    .catch(() => {})
+  await push
+    .createChannel({
+      id: 'offerte',
+      name: 'Offerte sui preferiti',
+      description: 'Quando un tuo preferito è scontato (al massimo ogni 3 giorni)',
+      importance: 3,
+    })
+    .catch(() => {})
   await push.addListener('registration', ({ value }) => {
-    save(TOKEN_KEY, value)
+    const token = iosPush ? `apns:${value}` : value
+    save(TOKEN_KEY, token)
     // .then() fa partire davvero la richiesta.
-    void supabase?.rpc('push_register', { p_token: value, p_platform: 'android' }).then(({ error }) => error && console.warn(error.message))
+    void supabase
+      ?.rpc('push_register', { p_token: token, p_platform: iosPush ? 'ios' : 'android' })
+      .then(({ error }) => error && console.warn(error.message))
   })
   await push.addListener('registrationError', (e) => console.warn('Notifiche non attive:', e.error))
   // Tocco sulla notifica: si apre la pagina giusta (es. #/sondaggio/…).
@@ -97,7 +116,8 @@ async function webSubscription() {
   return (await swReady())?.pushManager.getSubscription() ?? null
 }
 const keyBytes = () => Uint8Array.from(atob(WEB_PUSH_KEY.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0))
-const sameKey = (a: ArrayBuffer | null | undefined, b: Uint8Array) => !!a && a.byteLength === b.length && new Uint8Array(a).every((x, i) => x === b[i])
+const sameKey = (a: ArrayBuffer | null | undefined, b: Uint8Array) =>
+  !!a && a.byteLength === b.length && new Uint8Array(a).every((x, i) => x === b[i])
 
 async function enableWebPush() {
   // Prima cosa dopo il tocco: Safari chiede il permesso solo se la richiesta parte subito dal gesto.

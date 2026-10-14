@@ -7,6 +7,7 @@
 // `node scripts/webpush.ts` stampa la chiave pubblica da mettere in src/config/app.ts (WEB_PUSH_KEY).
 import { createCipheriv, createECDH, createPrivateKey, hkdfSync, randomBytes, sign } from 'node:crypto'
 import { FCM_SCOPE, accessToken, fcmSender, type PushMessage, type ServiceAccount } from './google.ts'
+import { apnsFromEnv, isApnsToken } from './apns.ts'
 
 const b64url = (b: Buffer | string) => Buffer.from(b).toString('base64url')
 const SUBJECT = 'mailto:noreply@swipeshopping.app'
@@ -96,7 +97,17 @@ export async function pushSender(channel: 'amici' | 'offerte' | 'marche', env: {
     fcm = fcmSender(sa, await accessToken(sa, FCM_SCOPE), channel === 'amici' ? 'amici' : 'offerte')
   }
   const web = webPushSender(env.seed, channel)
-  return async (token: string, m: PushMessage) => (isWebToken(token) ? web(token, m) : fcm ? fcm(token, m) : ('error' as const))
+  const apns = apnsFromEnv(channel)
+  return async (token: string, m: PushMessage) =>
+    isWebToken(token)
+      ? web(token, m)
+      : isApnsToken(token)
+        ? apns
+          ? apns(token, m)
+          : ('error' as const)
+        : fcm
+          ? fcm(token, m)
+          : ('error' as const)
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

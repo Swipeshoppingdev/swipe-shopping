@@ -2,7 +2,7 @@
 # - A ogni push su ios/: solo una prova di compilazione (simulatore, senza firma).
 # - Avvio a mano ("Run workflow"): build firmata e caricata su TestFlight, se ci sono i segreti
 #   APPSTORE_ISSUER_ID, APPSTORE_KEY_ID, APPSTORE_KEY (testo del file .p8, ruolo Admin) e APPLE_TEAM_ID.
-#   La firma è automatica (certificati gestiti da Apple tramite la chiave API), nessun certificato nel repository.
+#   Certificato e profilo li prepara scripts/appstore.ts con la chiave API (il certificato, cifrato, sta in ios/signing/).
 name: App iPhone
 
 on:
@@ -17,7 +17,8 @@ on:
     paths: ['ios/**', 'capacitor.config.ts', '.github/workflows/ios.yml']
 
 permissions:
-  contents: read
+  # write: la prima build salva il certificato di distribuzione cifrato (ios/signing/).
+  contents: write
 
 concurrency:
   group: ios
@@ -65,6 +66,89 @@ jobs:
           mkdir -p "$RUNNER_TEMP/keys"
           printf '%s\n' "$KEY" | tr -d '\r' > "$RUNNER_TEMP/keys/AuthKey.p8"
           grep -q 'BEGIN PRIVATE KEY' "$RUNNER_TEMP/keys/AuthKey.p8" || { echo "::error::APPSTORE_KEY non sembra il testo del file .p8 (manca BEGIN PRIVATE KEY)"; exit 1; }
+          # Password del certificato di distribuzione cifrato nel repository: ricavata dalla chiave API (nessun segreto in più).
+          PASS=$(printf '%s' "$KEY" | tr -d '\r' | shasum -a 256 | cut -c1-64)
+          echo "::add-mask::$PASS"
+          {
+            echo "TEAM=$TEAM"
+            echo "P12_PASS=$PASS"
+            echo "APPSTORE_KEY_ID=$KEY_ID"
+            echo "APPSTORE_ISSUER_ID=$ISSUER"
+            echo "APPSTORE_KEY_PATH=$RUNNER_TEMP/keys/AuthKey.p8"
+            echo "AUTH=-allowProvisioningUpdates -authenticationKeyPath $RUNNER_TEMP/keys/AuthKey.p8 -authenticationKeyID $KEY_ID -authenticationKeyIssuerID $ISSUER"
+          } >> "$GITHUB_ENV"
+
+      # Certificato di distribuzione Apple: creato la prima volta con l'API e salvato cifrato in ios/signing/.
+      # (Apple ne permette pochi: non va ricreato a ogni build.)
+      - name: Certificato di distribuzione
+        if: env.SIGNED == 'true'
+        run: |
+          set -e
+          SSL=/usr/bin/openssl   # LibreSSL di macOS: crea .p12 che il portachiavi accetta
+          T="$RUNNER_TEMP/keys"
+          if [ ! -f ios/signing/dist.p12.enc ]; then
+            mkdir -p ios/signing
+            $SSL genrsa -out "$T/dist.key" 2048
+            $SSL req -new -key "$T/dist.key" -subj "/CN=Swipe Shopping/C=IT" -out "$T/dist.csr"
+            node scripts/appstore.ts cert "$T/dist.csr" "$T/dist.cer" > ios/signing/cert-id.txt
+            $SSL x509 -inform DER -in "$T/dist.cer" -out "$T/dist.pem"
+            $SSL pkcs12 -export -inkey "$T/dist.key" -in "$T/dist.pem" -out "$T/dist.p12" -passout "pass:$P12_PASS"
+            $SSL enc -aes-256-cbc -md sha256 -salt -in "$T/dist.p12" -out ios/signing/dist.p12.enc -pass "pass:$P12_PASS"
+            git config user.name "catalog-bot"
+            git config user.email "catalog-bot@users.noreply.github.com"
+            git add ios/signing
+            git commit -m "Certificato di distribuzione iPhone (cifrato)"
+            git pull --no-rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+          $SSL enc -d -aes-256-cbc -md sha256 -in ios/signing/dist.p12.enc -out "$T/dist.p12" -pass "pass:$P12_PASS"
+          KC="$RUNNER_TEMP/signing.keychain-db"
+          KCP=$(uuidgen)
+          security create-keychain -p "$KCP" "$KC"
+          security set-keychain-settings -lut 21600 "$KC"
+          security unlock-keychain -p "$KCP" "$KC"
+          security import "$T/dist.p12" -P "$P12_PASS" -A -t cert -f pkcs12 -k "$KC"
+          security set-key-partition-list -S apple-tool:,apple: -k "$KCP" "$KC" > /dev/null
+          security list-keychains -d user -s "$KC" $(security list-keychains -d user | tr -d '"')
+          rm -f "$T/dist.key" "$T/dist.p12"
+
+      - name: Profilo App Store
+        if: env.SIGNED == 'true'
+        run: |
+          set -e
+          P="$RUNNER_TEMP/keys/app.mobileprovision"
+          NAME=$(node scripts/appstore.ts profile "$(cat ios/signing/cert-id.txt)" "$P")
+          UUID=$(security cms -D -i "$P" | plutil -extract UUID raw -)
+          for d in "$HOME/Library/MobileDevice/Provisioning Profiles" "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"; do
+            mkdir -p "$d"
+            cp "$P" "$d/$UUID.mobileprovision"
+          done
+          echo "PROFILE=$NAME" >> "$GITHUB_ENV"
+          # Firma manuale solo per l'app (non per i pacchetti Swift), con il certificato e il profilo appena preparati.
+          python3 - "$TEAM" "$NAME" <<'PY'
+          import sys
+          team, name = sys.argv[1], sys.argv[2]
+          p = 'ios/App/App.xcodeproj/project.pbxproj'
+          s = open(p).read()
+          s = s.replace('CODE_SIGN_IDENTITY = "iPhone Developer";', 'CODE_SIGN_IDENTITY = "Apple Distribution";')
+          s = s.replace('CODE_SIGN_STYLE = Automatic;',
+              f'CODE_SIGN_STYLE = Manual;\n\t\t\t\tDEVELOPMENT_TEAM = {team};\n\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "{name}";')
+          open(p, 'w').write(s)
+          PY
+
+      - name: Archivio firmato
+        if: env.SIGNED == 'true'
+        run: |
+          set -o pipefail
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath build/App.xcarchive \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} archive | tail -n 60
+          codesign -d --entitlements - build/App.xcarchive/Products/Applications/App.app
+
+      - name: Caricamento su TestFlight
+        if: env.SIGNED == 'true'
+        run: |
+          set -o pipefail
           cat > "$RUNNER_TEMP/export.plist" <<PLIST
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -72,34 +156,19 @@ jobs:
             <key>method</key><string>app-store-connect</string>
             <key>destination</key><string>upload</string>
             <key>teamID</key><string>$TEAM</string>
-            <key>signingStyle</key><string>automatic</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>signingCertificate</key><string>Apple Distribution</string>
+            <key>provisioningProfiles</key><dict><key>app.swipeshopping</key><string>$PROFILE</string></dict>
             <key>manageAppVersionAndBuildNumber</key><false/>
           </dict></plist>
           PLIST
-          echo "TEAM=$TEAM" >> "$GITHUB_ENV"
-          echo "AUTH=-allowProvisioningUpdates -authenticationKeyPath $RUNNER_TEMP/keys/AuthKey.p8 -authenticationKeyID $KEY_ID -authenticationKeyIssuerID $ISSUER" >> "$GITHUB_ENV"
-
-      # L'archivio si crea senza firma: la firma automatica qui vorrebbe un profilo "sviluppo", che Apple dà solo
-      # con un iPhone registrato. La firma vera (distribuzione App Store) la fa l'esportazione qui sotto.
-      - name: Archivio
-        if: env.SIGNED == 'true'
-        run: |
-          set -o pipefail
-          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release \
-            -destination 'generic/platform=iOS' -archivePath build/App.xcarchive \
-            DEVELOPMENT_TEAM="$TEAM" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
-            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
-            archive | tail -n 60
-
-      - name: Caricamento su TestFlight
-        if: env.SIGNED == 'true'
-        run: |
-          set -o pipefail
           xcodebuild -exportArchive -archivePath build/App.xcarchive \
             -exportOptionsPlist "$RUNNER_TEMP/export.plist" -exportPath build/export \
             $AUTH | tail -n 60
           echo "Build ${{ github.run_number }} caricata: compare in App Store Connect > TestFlight dopo qualche minuto di elaborazione." >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Pulizia chiave
+      - name: Pulizia chiavi
         if: always()
-        run: rm -rf "$RUNNER_TEMP/keys"
+        run: |
+          rm -rf "$RUNNER_TEMP/keys"
+          security delete-keychain "$RUNNER_TEMP/signing.keychain-db" 2>/dev/null || true

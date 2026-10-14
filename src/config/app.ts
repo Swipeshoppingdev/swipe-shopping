@@ -10,9 +10,9 @@ export const GENERIC_DISCLOSURE =
 /** Titolare del trattamento mostrato nella pagina Privacy (GDPR, art. 13). */
 export const PRIVACY_OWNER = {
   name: 'Kevin Conti',
-  email: 'rispondea@gmail.com',
+  email: 'info@swipeshopping.app',
 }
-export const PRIVACY_UPDATED = '13 ottobre 2026'
+export const PRIVACY_UPDATED = '14 ottobre 2026'
 
 /** Profili social dell'app (mostrati nel Profilo). Per aggiungerne uno basta inserirlo qui e in SocialLinks. */
 export const SOCIAL_LINKS = {
@@ -38,6 +38,12 @@ export const FEATURES = {
   feedSaves: false,
   /** "Continua con Google": si accende quando Google è attivo in Supabase (Authentication → Providers). */
   googleLogin: true,
+  /**
+   * "Continua con Apple" (solo app iPhone, foglio nativo: ios/App/App/AppleSignIn.swift). Si accende quando Apple è attivo
+   * in Supabase (Authentication → Providers → Apple, Client ID app.swipeshopping). Finché è spento, nell'app iPhone
+   * non c'è nemmeno Google: Apple rifiuta le app con login Google senza "Accedi con Apple" (regola 4.8).
+   */
+  appleLogin: false,
   /**
    * Parte Amici (profilo con @tag e follower, QR, Amici in Profilo, "Consiglia a un amico", Manda agli amici).
    * Nascosta il 13/10/2026 da Kevin finché non ci saranno più utenti: i link già mandati funzionano ancora.

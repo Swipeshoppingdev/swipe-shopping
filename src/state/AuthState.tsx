@@ -76,7 +76,12 @@ function useAppAuthLinks(onError: (message: string) => void) {
       // Si apre il Profilo: lì si vede l'accesso fatto, il modulo per la nuova password o l'errore.
       window.location.hash = '#/profilo'
       // Parametri sia dopo ? sia dopo # (Supabase mette gli errori nel #).
-      const params = new URLSearchParams(url.slice(APP_AUTH_URL.length).replace(/^[/?#]+/, '').replace('#', '&'))
+      const params = new URLSearchParams(
+        url
+          .slice(APP_AUTH_URL.length)
+          .replace(/^[/?#]+/, '')
+          .replace('#', '&'),
+      )
       const code = params.get('code')
       const err = params.get('error_description')
       if (code) {
@@ -165,9 +170,25 @@ function useAuthStore() {
         const { Browser } = await import('@capacitor/browser')
         await Browser.open({ url: data.url })
       },
+      /** "Continua con Apple" nell'app iPhone: foglio nativo di Apple, poi il token passa a Supabase. */
+      signInWithApple: async () => {
+        const raw = Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, '0')).join('')
+        const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw))
+        const nonce = Array.from(new Uint8Array(hash), (b) => b.toString(16).padStart(2, '0')).join('')
+        const { registerPlugin } = await import('@capacitor/core')
+        const apple = registerPlugin<{ authorize(o: { nonce: string }): Promise<{ identityToken: string }> }>('AppleSignIn')
+        let token: string
+        try {
+          token = (await apple.authorize({ nonce })).identityToken
+        } catch (e) {
+          // Annullato dall'utente: nessun messaggio di errore.
+          if (e instanceof Error && e.message === 'canceled') return
+          throw new Error(friendlyError(e instanceof Error ? e.message : 'Qualcosa è andato storto.'))
+        }
+        await run(() => supabase!.auth.signInWithIdToken({ provider: 'apple', token, nonce: raw }))
+      },
       /** Accesso con il token del pulsante ufficiale di Google (solo sito, vedi GoogleButton). */
-      signInWithGoogleToken: (token: string, nonce: string) =>
-        run(() => supabase!.auth.signInWithIdToken({ provider: 'google', token, nonce })),
+      signInWithGoogleToken: (token: string, nonce: string) => run(() => supabase!.auth.signInWithIdToken({ provider: 'google', token, nonce })),
       signIn: (email: string, password: string) => run(() => supabase!.auth.signInWithPassword({ email, password })),
       signOut: async () => {
         pendingSignup = null
@@ -176,8 +197,7 @@ function useAuthStore() {
         // Solo questo dispositivo: con il valore di base ("global") uscire dal telefono faceva uscire anche dal sito e dall'app.
         return run(() => supabase!.auth.signOut({ scope: 'local' }))
       },
-      resetPassword: (email: string) =>
-        run(() => supabase!.auth.resetPasswordForEmail(email, { redirectTo: authRedirectUrl() })),
+      resetPassword: (email: string) => run(() => supabase!.auth.resetPasswordForEmail(email, { redirectTo: authRedirectUrl() })),
       updatePassword: async (password: string) => {
         await run(() => supabase!.auth.updateUser({ password }))
         setRecovering(false)
