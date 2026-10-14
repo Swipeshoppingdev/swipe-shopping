@@ -1,5 +1,5 @@
 import { closeBreaks } from '../lib/closeBreaks'
-import { Check, ChevronDown, Ghost, Cookie, Cpu, Gift, LayoutGrid, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun, TreePine } from 'lucide-react'
+import { Check, Ghost, Cookie, Cpu, Gift, LayoutGrid, Menu, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun, TreePine } from 'lucide-react'
 import { giftSeason } from '../lib/giftSeason'
 import { Reorder, useDragControls } from 'framer-motion'
 import { useEffect, useRef, useState, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react'
@@ -11,7 +11,7 @@ import { SocialLinks } from './SocialLinks'
 import { useApp } from '../state/AppState'
 import { useSpecial } from '../lib/outfitMode'
 
-/** Barra in alto: menu delle sezioni a sinistra, logo al centro, tema chiaro/scuro a destra. */
+/** Barra in alto: menu delle sezioni (tre linee del colore della sezione) a sinistra, logo al centro, tema chiaro/scuro a destra. */
 export function Header() {
   const { theme, toggle } = useTheme()
   const { state } = useApp()
@@ -28,8 +28,6 @@ export function Header() {
           </span>
           <span className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-rose-500">{special === 'outfit' ? 'Outfit' : special === 'regali' ? (giftSeason().id === 'halloween' ? 'Halloween' : 'Regali') : sectionOf(state.mode).label}</span>
         </a>
-        {/* Spazio vuoto a destra per tenere il logo centrato (Outfit si apre dal menu Sezioni, scelta di Kevin). */}
-        <span className="w-18 max-[389px]:w-9" aria-hidden />
         <button
           type="button"
           onClick={toggle}
@@ -66,7 +64,6 @@ function SectionMenu() {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const current = onOutfit ? { ...sectionOf('moda'), label: 'Outfit' } : onGifts ? { ...sectionOf(state.mode), label: giftSeason().id === 'halloween' ? 'Halloween' : 'Regali' } : sectionOf(state.mode)
-  const Icon = onOutfit ? LayoutGrid : onGifts ? (giftSeason().id === 'halloween' ? Ghost : TreePine) : ICONS[current.id]
   const [visited, setVisited] = useState(() => load<Universe[]>('sectionsVisited', []))
   const [menuSeen, setMenuSeen] = useState(() => load<boolean>('sectionsMenuSeen:3', false))
   const isNew = (u: Universe) => NEW_SECTIONS.includes(u) && !visited.includes(u) && u !== state.mode
@@ -154,17 +151,12 @@ function SectionMenu() {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={`${current.label}: cambia sezione`}
-        className="relative flex h-10 w-28 items-center justify-center gap-1.5 rounded-full border-[1.5px] border-rose-500 bg-transparent text-rose-500 active:scale-95"
+        className="relative grid size-10 place-items-center rounded-full text-rose-500 transition active:scale-90 active:bg-neutral-100"
       >
         {dot && (
-          <span className="absolute -top-0.5 -right-0.5 size-3 rounded-full bg-[#8b5cf6] ring-2 ring-neutral-50" aria-label="Nuove sezioni" />
+          <span className="absolute top-0.5 right-0.5 size-3 rounded-full bg-[#8b5cf6] ring-2 ring-neutral-50" aria-label="Nuove sezioni" />
         )}
-        <Icon className="size-4 shrink-0" />
-        <span className="flex flex-col items-start leading-none">
-          <span className="text-[9px] font-semibold uppercase tracking-wide opacity-80">Sezioni</span>
-          <span className="text-sm font-bold">{current.label}</span>
-        </span>
-        <ChevronDown className={`size-3.5 shrink-0 transition ${open ? 'rotate-180' : ''}`} />
+        <Menu className="size-7" strokeWidth={2.5} />
       </button>
       {open && (
         <div role="menu" className="absolute top-12 left-0 z-30 max-h-[calc(100dvh-10.5rem-env(safe-area-inset-bottom))] w-72 overflow-y-auto rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-neutral-200">
