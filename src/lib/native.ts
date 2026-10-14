@@ -21,38 +21,57 @@ export function setSystemBarsTheme(dark: boolean) {
 }
 
 /**
- * Comportamenti da app: i link ai negozi si aprono nel browser (Chrome/Safari) e non dentro l'app,
+ * Apre un link fuori dall'app come farebbe il telefono: se è installata l'app del negozio (Amazon, Instagram…)
+ * si apre quella, altrimenti il browser. Browser.open (Safari/Chrome dentro l'app) non apre mai le altre app.
+ */
+async function openOutside(url: string) {
+  try {
+    const { AppLauncher } = await import('@capacitor/app-launcher')
+    if ((await AppLauncher.openUrl({ url })).completed) return
+  } catch {
+    // Plugin assente o errore: si usa il browser.
+  }
+  const { Browser } = await import('@capacitor/browser')
+  await Browser.open({ url })
+}
+
+/**
+ * Comportamenti da app: i link ai negozi si aprono nell'app del negozio se c'è (altrimenti nel browser),
  * il tasto Indietro di Android torna alla pagina precedente o chiude l'app.
  */
 export async function setupNative() {
   if (!isNative) return
-  const [{ App }, { Browser }, { SplashScreen }] = await Promise.all([
+  const [{ App }, { SplashScreen }] = await Promise.all([
     import('@capacitor/app'),
-    import('@capacitor/browser'),
     import('@capacitor/splash-screen'),
   ])
 
+  // Il controllo si aggancia al link stesso: lì arriva prima che un elemento più in alto fermi il click
+  // (la scheda prodotto lo fa) e dopo i gestori in cattura di React (la carta annulla il click dopo un trascinamento).
+  const onLinkClick = (e: Event) => {
+    const a = e.currentTarget as HTMLAnchorElement
+    if (e.defaultPrevented) return
+    const url = new URL(a.href, window.location.href)
+    if (url.origin === window.location.origin) {
+      // Link interni con target="_blank" (es. Privacy): nell'app si apre la pagina, senza nuove finestre.
+      if (a.target === '_blank') {
+        e.preventDefault()
+        window.location.hash = url.hash
+      }
+      return
+    }
+    if (!/^https?:$/.test(url.protocol)) return
+    // Gli altri gestori (es. il tracciamento del click sul negozio) partono lo stesso.
+    e.preventDefault()
+    void openOutside(url.href)
+  }
   document.addEventListener(
     'click',
     (e) => {
-      if (e.defaultPrevented) return
       const a = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null
-      if (!a) return
-      const url = new URL(a.href, window.location.href)
-      if (url.origin === window.location.origin) {
-        // Link interni con target="_blank" (es. Privacy): nell'app si apre la pagina, senza nuove finestre.
-        if (a.target === '_blank') {
-          e.preventDefault()
-          window.location.hash = url.hash
-        }
-        return
-      }
-      if (!/^https?:$/.test(url.protocol)) return
-      e.preventDefault()
-      void Browser.open({ url: url.href })
+      if (a) a.addEventListener('click', onLinkClick, { once: true })
     },
-    // Dopo gli altri gestori (es. il tracciamento del click sul negozio).
-    false,
+    true,
   )
 
   void App.addListener('backButton', ({ canGoBack }) => {
