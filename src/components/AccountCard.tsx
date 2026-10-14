@@ -1,5 +1,6 @@
 import { CheckCircle2, CloudOff, Loader2, LogOut, Mail, Trash2, UserRound } from 'lucide-react'
 import { useState, type FormEvent, type ReactNode } from 'react'
+import { Captcha } from './Captcha'
 import { GoogleButton } from './GoogleButton'
 import { EmailAlertsToggle, EmailNewsToggle } from './EmailAlertsToggle'
 import { PushToggle } from './PushToggle'
@@ -146,6 +147,26 @@ export function AccountActions({ children }: { children?: ReactNode }) {
   )
 }
 
+/** "Password dimenticata": al massimo 3 link all'ora da questo dispositivo (Supabase ne limita anche per indirizzo). */
+const MAX_RESETS = 3
+const RESETS_KEY = 'resetRequests'
+const recentResets = (): number[] => {
+  try {
+    const list = JSON.parse(localStorage.getItem(RESETS_KEY) ?? '[]') as unknown
+    return Array.isArray(list) ? list.filter((t): t is number => typeof t === 'number' && Date.now() - t < 3_600_000) : []
+  } catch {
+    return []
+  }
+}
+const resetsLeft = () => MAX_RESETS - recentResets().length
+const noteReset = () => {
+  try {
+    localStorage.setItem(RESETS_KEY, JSON.stringify([...recentResets(), Date.now()]))
+  } catch {
+    // Senza memoria del browser resta solo il limite di Supabase.
+  }
+}
+
 export function AuthForm({ initialMode = 'accedi' }: { initialMode?: Mode }) {
   const auth = useAuth()
   const [mode, setMode] = useState<Mode>(initialMode)
@@ -198,7 +219,13 @@ export function AuthForm({ initialMode = 'accedi' }: { initialMode?: Mode }) {
         setInfo(`Ti abbiamo mandato un'email a ${email.trim()}: apri il link per confermare l'account. Poi torna qui: entri in automatico.`)
       }
       if (mode === 'recupera') {
+        const left = resetsLeft()
+        if (left <= 0) {
+          setError(`Hai già chiesto ${MAX_RESETS} link nell'ultima ora. Controlla la posta (anche lo Spam) o riprova più tardi.`)
+          return
+        }
         await auth.resetPassword(email.trim())
+        noteReset()
         setInfo("Se l'email è registrata riceverai un link per scegliere una nuova password.")
       }
     } catch (err) {
@@ -308,6 +335,7 @@ export function AuthForm({ initialMode = 'accedi' }: { initialMode?: Mode }) {
           {info}
         </p>
       )}
+      <Captcha />
       <button
         type="submit"
         disabled={busy}

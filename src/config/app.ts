@@ -61,6 +61,14 @@ export const GOOGLE_CLIENT_ID = '104770095773-o6avbplvppk8lkgvq5ogc9trcj5uc55m.a
 
 
 /**
+ * Chiave pubblica (site key) di Cloudflare Turnstile, il controllo anti-bot su accesso, registrazione e
+ * "Password dimenticata". Il widget gira in public/verifica.html sul sito, dentro un iframe: così funziona
+ * anche nelle app (il dominio controllato da Cloudflare è sempre swipeshopping.app). La chiave segreta va solo
+ * in Supabase (Authentication → Attack Protection → Turnstile). Vuota = nessun controllo.
+ */
+export const CAPTCHA_SITE_KEY = ''
+
+/**
  * Chiave pubblica Web Push (notifiche dal sito, anche su iPhone con il sito nella schermata Home).
  * Si ricava dal secret SUPABASE_SERVICE_ROLE_KEY: `node scripts/webpush.ts` (la stampa anche il log di push.yml).
  * Vuota = notifiche solo nell'app Android.

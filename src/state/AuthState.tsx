@@ -1,6 +1,7 @@
 import type { Session } from '@supabase/supabase-js'
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { APP_AUTH_URL, isNative } from '../lib/native'
+import { captchaOn, captchaOptions } from '../lib/captcha'
 import { disablePush } from '../lib/push'
 import { authRedirectUrl, getSupabase, hasSupabase } from '../lib/supabase'
 
@@ -14,6 +15,7 @@ function friendlyError(message: string) {
   if (m.includes('email not confirmed')) return "Conferma prima l'email: ti abbiamo mandato un link."
   if (m.includes('already registered')) return 'Esiste già un account con questa email. Prova ad accedere.'
   if (m.includes('password should be at least')) return 'La password deve avere almeno 8 caratteri.'
+  if (m.includes('captcha')) return 'Verifica anti-bot non riuscita. Riprova tra qualche secondo.'
   if (m.includes('rate limit')) return 'Troppi tentativi. Riprova tra qualche minuto.'
   if (m.includes('sending') && m.includes('email')) return "Non siamo riusciti a inviare l'email. Riprova tra qualche minuto."
   if (m.includes('provider is not enabled') || m.includes('unsupported provider')) return "L'accesso con Google non è ancora attivo."
@@ -47,14 +49,21 @@ function useAutoLoginAfterConfirm(loggedIn: boolean) {
       }
       busy = true
       // Finché l'email non è confermata Supabase risponde con un errore: riproviamo più tardi.
-      const { error } = await (await sb()).auth.signInWithPassword({ email: p.email, password: p.password })
+      // Con il controllo anti-bot si prova solo se il token è già pronto (non si aspetta il widget).
+      const options = await captchaOptions(0)
+      if (captchaOn && !options.captchaToken) {
+        busy = false
+        return
+      }
+      const { error } = await (await sb()).auth.signInWithPassword({ email: p.email, password: p.password, options })
       if (!error) pendingSignup = null
       busy = false
     }
     document.addEventListener('visibilitychange', tryLogin)
     window.addEventListener('focus', tryLogin)
     // Anche senza uscire dall'app (conferma da un altro dispositivo).
-    const timer = window.setInterval(tryLogin, 10_000)
+    // Non con il controllo anti-bot: ogni tentativo consuma un token di Cloudflare.
+    const timer = captchaOn ? 0 : window.setInterval(tryLogin, 10_000)
     return () => {
       document.removeEventListener('visibilitychange', tryLogin)
       window.removeEventListener('focus', tryLogin)
@@ -160,7 +169,7 @@ function useAuthStore() {
             email,
             password,
             // Copiata in user_data.email_news da un trigger (supabase/schema-3.sql).
-            options: { emailRedirectTo: authRedirectUrl(), data: { email_news: emailNews } },
+            options: { emailRedirectTo: authRedirectUrl(), data: { email_news: emailNews }, ...(await captchaOptions()) },
           }),
         )
         pendingSignup = { email, password, until: Date.now() + PENDING_MS }
@@ -196,11 +205,11 @@ function useAuthStore() {
           if (e instanceof Error && e.message === 'canceled') return
           throw new Error(friendlyError(e instanceof Error ? e.message : 'Qualcosa è andato storto.'))
         }
-        await run(async () => (await sb()).auth.signInWithIdToken({ provider: 'apple', token, nonce: raw }))
+        await run(async () => (await sb()).auth.signInWithIdToken({ provider: 'apple', token, nonce: raw, options: await captchaOptions() }))
       },
       /** Accesso con il token del pulsante ufficiale di Google (solo sito, vedi GoogleButton). */
-      signInWithGoogleToken: (token: string, nonce: string) => run(async () => (await sb()).auth.signInWithIdToken({ provider: 'google', token, nonce })),
-      signIn: (email: string, password: string) => run(async () => (await sb()).auth.signInWithPassword({ email, password })),
+      signInWithGoogleToken: (token: string, nonce: string) => run(async () => (await sb()).auth.signInWithIdToken({ provider: 'google', token, nonce, options: await captchaOptions() })),
+      signIn: (email: string, password: string) => run(async () => (await sb()).auth.signInWithPassword({ email, password, options: await captchaOptions() })),
       signOut: async () => {
         pendingSignup = null
         // Questo telefono non riceve più le notifiche di questo account.
@@ -208,7 +217,7 @@ function useAuthStore() {
         // Solo questo dispositivo: con il valore di base ("global") uscire dal telefono faceva uscire anche dal sito e dall'app.
         return run(async () => (await sb()).auth.signOut({ scope: 'local' }))
       },
-      resetPassword: (email: string) => run(async () => (await sb()).auth.resetPasswordForEmail(email, { redirectTo: authRedirectUrl() })),
+      resetPassword: (email: string) => run(async () => (await sb()).auth.resetPasswordForEmail(email, { redirectTo: authRedirectUrl(), ...(await captchaOptions()) })),
       updatePassword: async (password: string) => {
         await run(async () => (await sb()).auth.updateUser({ password }))
         setRecovering(false)

@@ -3,7 +3,7 @@
 import { readdirSync, rmSync } from 'node:fs'
 
 const catalogs = readdirSync(new URL('../dist/', import.meta.url)).filter((f) => /^catalog(-[\w-]+)?\.json$/.test(f))
-for (const path of [...catalogs, 'details', 'email', 'play', 'appstore', 'sw.js']) {
+for (const path of [...catalogs, 'details', 'email', 'play', 'appstore', 'verifica.html', 'sw.js']) {
   rmSync(new URL(`../dist/${path}`, import.meta.url), { recursive: true, force: true })
 }
 console.log('Pacchetto app pronto: dati dal sito online.')

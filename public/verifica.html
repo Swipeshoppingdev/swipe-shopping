@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Verifica</title>
+<style>html,body{margin:0;background:transparent;overflow:hidden}body{display:flex;justify-content:center}</style>
+<!-- Controllo anti-bot (Cloudflare Turnstile) aperto in un iframe dal modulo di accesso (src/lib/captcha.ts).
+     Manda il token alla pagina che lo contiene con postMessage. -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=start&render=explicit" async defer></script>
+</head>
+<body>
+<div id="w"></div>
+<script>
+  var send = function (m) { m.type = 'turnstile'; parent.postMessage(m, '*') }
+  function start() {
+    var key = new URLSearchParams(location.search).get('k')
+    if (!key) return send({ error: 'no-key' })
+    turnstile.render('#w', {
+      sitekey: key,
+      language: 'it',
+      appearance: 'interaction-only',
+      'refresh-expired': 'auto',
+      callback: function (token) { send({ token: token }) },
+      'expired-callback': function () { send({ expired: true }) },
+      'error-callback': function () { send({ error: 'failed' }) },
+      'before-interactive-callback': function () { send({ show: true }) },
+      'after-interactive-callback': function () { send({ show: false }) },
+    })
+  }
+</script>
+</body>
+</html>
