@@ -2,7 +2,7 @@ import { Capacitor } from '@capacitor/core'
 import { WEB_PUSH_KEY } from '../config/app'
 import { isNative } from './native'
 import { load, remove, save } from './storage'
-import { supabase } from './supabase'
+import { getSupabase } from './supabase'
 
 /**
  * Notifiche push. Le manda scripts/push.ts quando un amico ti manda qualcosa in "Per te",
@@ -66,9 +66,9 @@ async function listen() {
     const token = iosPush ? `apns:${value}` : value
     save(TOKEN_KEY, token)
     // .then() fa partire davvero la richiesta.
-    void supabase
-      ?.rpc('push_register', { p_token: token, p_platform: iosPush ? 'ios' : 'android' })
-      .then(({ error }) => error && console.warn(error.message))
+    void getSupabase()
+      .then((supabase) => supabase?.rpc('push_register', { p_token: token, p_platform: iosPush ? 'ios' : 'android' }))
+      .then((res) => res?.error && console.warn(res.error.message))
   })
   await push.addListener('registrationError', (e) => console.warn('Notifiche non attive:', e.error))
   // Tocco sulla notifica: si apre la pagina giusta (es. #/sondaggio/…).
@@ -104,7 +104,7 @@ export async function disablePush(byUser = true) {
   if (byUser) save('pushOff', true)
   if (!token) return
   remove(TOKEN_KEY)
-  await supabase?.rpc('push_unregister', { p_token: token })
+  await (await getSupabase())?.rpc('push_unregister', { p_token: token })
   if (webPush) await (await webSubscription())?.unsubscribe().catch(() => false)
   else if (pushAvailable) await (await plugin()).push.unregister().catch(() => {})
 }
@@ -138,6 +138,7 @@ async function enableWebPush() {
   sub ??= await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: key })
   const token = JSON.stringify(sub.toJSON())
   const old = load<string | null>(TOKEN_KEY, null)
+  const supabase = await getSupabase()
   if (old && old !== token) await supabase?.rpc('push_unregister', { p_token: old })
   const res = await supabase?.rpc('push_register', { p_token: token, p_platform: 'web' })
   if (!res || res.error) {

@@ -8,7 +8,12 @@ import { freshPrice } from './price'
  */
 
 /** Stesso articolo in più taglie o colori: non si confronta con se stesso. */
-const model = (p: Product) => `${p.brand ?? ''}|${p.title.replace(/,\s*[^,]{1,14}$/, '').toLowerCase()}`
+const models = new WeakMap<Product, string>()
+const model = (p: Product) => {
+  let m = models.get(p)
+  if (m === undefined) models.set(p, (m = `${p.brand ?? ''}|${p.title.replace(/,\s*[^,]{1,14}$/, '').toLowerCase()}`))
+  return m
+}
 const MIN_PEERS = 12
 
 /** Il titolo contiene una parola del nome della categoria (Pantaloni → "pantalon"): scarta prodotti classificati male. */
@@ -28,8 +33,9 @@ export function looksLike(p: Product) {
 }
 
 /** Per ogni catalogo: prodotti confrontabili divisi per categoria, con la chiave del modello già calcolata
- * (prima ogni carta nuova rifaceva il giro su tutto il catalogo: lento sui telefoni meno potenti). */
-const byCategory = new WeakMap<Product[], Map<string, { p: Product; model: string }[]>>()
+ * (prima ogni carta nuova rifaceva il giro su tutto il catalogo: lento sui telefoni meno potenti).
+ * L'indice si costruisce in un solo giro; la chiave del modello solo quando serve (e resta per prodotto). */
+const byCategory = new WeakMap<Product[], Map<string, Product[]>>()
 function candidates(all: Product[], category: string) {
   let index = byCategory.get(all)
   if (!index) {
@@ -38,7 +44,7 @@ function candidates(all: Product[], category: string) {
       if (p.availability === 'out_of_stock' || p.searchQuery) continue
       let list = index.get(p.category)
       if (!list) index.set(p.category, (list = []))
-      list.push({ p, model: model(p) })
+      list.push(p)
     }
     byCategory.set(all, index)
   }
@@ -48,11 +54,11 @@ function candidates(all: Product[], category: string) {
 function peersOf(product: Product, all: Product[]) {
   const own = model(product)
   const out: Product[] = []
-  for (const { p, model: m } of candidates(all, product.category)) {
+  for (const p of candidates(all, product.category)) {
     if (
       p.id !== product.id &&
       (product.gender === 'unisex' || p.gender === product.gender || p.gender === 'unisex') &&
-      m !== own &&
+      model(p) !== own &&
       freshPrice(p) !== null
     )
       out.push(p)

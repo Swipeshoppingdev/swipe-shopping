@@ -1,7 +1,7 @@
 import { useEffect, useSyncExternalStore } from 'react'
 import { useAuth } from '../state/AuthState'
 import { load, save } from './storage'
-import { supabase } from './supabase'
+import { getSupabase, hasSupabase } from './supabase'
 
 /**
  * "Segui una marca": i prodotti delle marche seguite escono più spesso nel mazzo (una carta su tre)
@@ -42,6 +42,7 @@ export function useFollows() {
 
 let userId: string | null = null
 async function pushCloud() {
+  const supabase = await getSupabase()
   if (!supabase || !userId) return
   const { error } = await supabase.from('user_data').update({ follows: current }).eq('user_id', userId)
   if (error) console.warn('Marche seguite non salvate:', error.message)
@@ -52,13 +53,13 @@ export function useFollowsSync() {
   const id = useAuth().user?.id ?? null
   useEffect(() => {
     userId = id
-    if (!id || !supabase) return
+    if (!id || !hasSupabase) return
     let stop = false
-    void supabase
-      .from('user_data')
+    void getSupabase()
+      .then((supabase) => supabase!.from('user_data')
       .select('follows')
       .eq('user_id', id)
-      .maybeSingle()
+      .maybeSingle())
       .then(({ data, error }) => {
         // Colonna assente (schema-17 non eseguito) o nessuna riga: restano quelle del dispositivo.
         if (stop || error || !data) return

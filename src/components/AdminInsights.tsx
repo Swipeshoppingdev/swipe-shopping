@@ -3,7 +3,7 @@ import { SECTIONS, categoryLabel, isCategoryId, universeOf } from '../config/cat
 import { STORES, type StoreId } from '../config/stores'
 import { STYLE_LABEL, type OutfitStyle } from '../lib/outfits'
 import { freshPrice } from '../lib/price'
-import { supabase } from '../lib/supabase'
+import { hasSupabase, supabaseRpc } from '../lib/supabase'
 import { useApp } from '../state/AppState'
 
 interface Counts {
@@ -44,9 +44,9 @@ const fmtPct = (v: number) => `${v.toFixed(v < 10 ? 1 : 0)}%`
 export function AdminInsights({ days, current }: { days: number; current: PeriodTotals | null }) {
   const [result, setResult] = useState<{ days: number; data?: Insights; error?: string } | null>(null)
   useEffect(() => {
-    if (!supabase) return
+    if (!hasSupabase) return
     let cancelled = false
-    supabase.rpc('admin_insights', { days }).then(({ data, error }) => {
+    supabaseRpc('admin_insights', { days }).then(({ data, error }) => {
       if (cancelled) return
       setResult(
         error

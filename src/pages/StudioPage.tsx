@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { Heart, Play, RefreshCw, X } from 'lucide-react'
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import { supabase } from '../lib/supabase'
+import { hasSupabase, supabaseRpc } from '../lib/supabase'
 import { ProductImage } from '../components/ProductImage'
 import { ADMIN_EMAIL } from '../config/app'
 import { categoryLabel, universeOf, type CategoryId } from '../config/categories'
@@ -1273,8 +1273,8 @@ function SwipeCardFace({ product }: { product: Product }) {
 function useWeeklyBrands(enabled: boolean) {
   const [brands, setBrands] = useState<{ id: string; like: number }[] | null>(null)
   useEffect(() => {
-    if (!enabled || !supabase || brands) return
-    supabase.rpc('admin_insights', { days: 7 }).then(({ data }) => {
+    if (!enabled || !hasSupabase || brands) return
+    supabaseRpc('admin_insights', { days: 7 }).then(({ data }) => {
       const rows = ((data as { brands?: { id: string; views: number; likes: number }[] } | null)?.brands ?? [])
       const min = rows.filter((r) => r.views >= 20).length >= 5 ? 20 : 8
       setBrands(

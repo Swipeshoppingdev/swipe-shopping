@@ -2,7 +2,10 @@ import type { Session } from '@supabase/supabase-js'
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { APP_AUTH_URL, isNative } from '../lib/native'
 import { disablePush } from '../lib/push'
-import { authRedirectUrl, supabase } from '../lib/supabase'
+import { authRedirectUrl, getSupabase, hasSupabase } from '../lib/supabase'
+
+/** Il client (caricato a parte, vedi getSupabase): qui si usa solo quando hasSupabase è vero. */
+const sb = async () => (await getSupabase())!
 
 /** Messaggi d'errore di Supabase tradotti in italiano semplice. */
 function friendlyError(message: string) {
@@ -33,7 +36,7 @@ const PENDING_MS = 30 * 60_000
 
 function useAutoLoginAfterConfirm(loggedIn: boolean) {
   useEffect(() => {
-    if (!supabase || loggedIn) return
+    if (!hasSupabase || loggedIn) return
     let busy = false
     const tryLogin = async () => {
       const p = pendingSignup
@@ -44,7 +47,7 @@ function useAutoLoginAfterConfirm(loggedIn: boolean) {
       }
       busy = true
       // Finché l'email non è confermata Supabase risponde con un errore: riproviamo più tardi.
-      const { error } = await supabase!.auth.signInWithPassword({ email: p.email, password: p.password })
+      const { error } = await (await sb()).auth.signInWithPassword({ email: p.email, password: p.password })
       if (!error) pendingSignup = null
       busy = false
     }
@@ -66,7 +69,7 @@ function useAutoLoginAfterConfirm(loggedIn: boolean) {
  */
 function useAppAuthLinks(onError: (message: string) => void) {
   useEffect(() => {
-    if (!supabase || !isNative) return
+    if (!hasSupabase || !isNative) return
     let remove: (() => void) | undefined
     let cancelled = false
     const handle = async (url: string | undefined) => {
@@ -85,7 +88,7 @@ function useAppAuthLinks(onError: (message: string) => void) {
       const code = params.get('code')
       const err = params.get('error_description')
       if (code) {
-        const { error } = await supabase!.auth.exchangeCodeForSession(code)
+        const { error } = await (await sb()).auth.exchangeCodeForSession(code)
         if (!error) pendingSignup = null
         else onError(friendlyError(error.message))
       } else if (err) {
@@ -110,27 +113,36 @@ function useAppAuthLinks(onError: (message: string) => void) {
 
 function useAuthStore() {
   const [session, setSession] = useState<Session | null>(null)
-  const [ready, setReady] = useState(!supabase)
+  const [ready, setReady] = useState(!hasSupabase)
   /** true quando l'utente arriva dal link "password dimenticata" */
   const [recovering, setRecovering] = useState(false)
   /** errore del link email aperto nell'app (es. link scaduto) */
   const [linkError, setLinkError] = useState('')
 
   useEffect(() => {
-    if (!supabase) return
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session)
-      setReady(true)
+    if (!hasSupabase) return
+    let cancelled = false
+    let unsubscribe: (() => void) | undefined
+    void sb().then((supabase) => {
+      if (cancelled) return
+      const { data } = supabase.auth.onAuthStateChange((event, s) => {
+        setSession(s)
+        if (event === 'PASSWORD_RECOVERY') setRecovering(true)
+      })
+      unsubscribe = () => data.subscription.unsubscribe()
+      void supabase.auth.getSession().then(({ data }) => {
+        setSession(data.session)
+        setReady(true)
+        // Togliamo ?code=... dall'indirizzo dopo il ritorno dal link email (il client l'ha già letto).
+        if (window.location.search.includes('code=')) {
+          window.history.replaceState(null, '', authRedirectUrl() + window.location.hash)
+        }
+      })
     })
-    const { data } = supabase.auth.onAuthStateChange((event, s) => {
-      setSession(s)
-      if (event === 'PASSWORD_RECOVERY') setRecovering(true)
-    })
-    // Togliamo ?code=... dall'indirizzo dopo il ritorno dal link email.
-    if (window.location.search.includes('code=')) {
-      window.history.replaceState(null, '', authRedirectUrl() + window.location.hash)
+    return () => {
+      cancelled = true
+      unsubscribe?.()
     }
-    return () => data.subscription.unsubscribe()
   }, [])
 
   useAutoLoginAfterConfirm(!!session)
@@ -138,14 +150,13 @@ function useAuthStore() {
 
   return useMemo(
     () => ({
-      enabled: !!supabase,
+      enabled: hasSupabase,
       ready,
       user: session?.user ?? null,
       recovering,
       linkError,
       signUp: async (email: string, password: string, emailNews: boolean) => {
-        await run(() =>
-          supabase!.auth.signUp({
+        await run(async () => (await sb()).auth.signUp({
             email,
             password,
             // Copiata in user_data.email_news da un trigger (supabase/schema-3.sql).
@@ -160,9 +171,9 @@ function useAuthStore() {
        */
       signInWithGoogle: async () => {
         if (!isNative) {
-          return run(() => supabase!.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: authRedirectUrl() } }))
+          return run(async () => (await sb()).auth.signInWithOAuth({ provider: 'google', options: { redirectTo: authRedirectUrl() } }))
         }
-        const { data, error } = await supabase!.auth.signInWithOAuth({
+        const { data, error } = await (await sb()).auth.signInWithOAuth({
           provider: 'google',
           options: { redirectTo: APP_AUTH_URL, skipBrowserRedirect: true },
         })
@@ -185,26 +196,26 @@ function useAuthStore() {
           if (e instanceof Error && e.message === 'canceled') return
           throw new Error(friendlyError(e instanceof Error ? e.message : 'Qualcosa è andato storto.'))
         }
-        await run(() => supabase!.auth.signInWithIdToken({ provider: 'apple', token, nonce: raw }))
+        await run(async () => (await sb()).auth.signInWithIdToken({ provider: 'apple', token, nonce: raw }))
       },
       /** Accesso con il token del pulsante ufficiale di Google (solo sito, vedi GoogleButton). */
-      signInWithGoogleToken: (token: string, nonce: string) => run(() => supabase!.auth.signInWithIdToken({ provider: 'google', token, nonce })),
-      signIn: (email: string, password: string) => run(() => supabase!.auth.signInWithPassword({ email, password })),
+      signInWithGoogleToken: (token: string, nonce: string) => run(async () => (await sb()).auth.signInWithIdToken({ provider: 'google', token, nonce })),
+      signIn: (email: string, password: string) => run(async () => (await sb()).auth.signInWithPassword({ email, password })),
       signOut: async () => {
         pendingSignup = null
         // Questo telefono non riceve più le notifiche di questo account.
         await disablePush(false).catch(() => {})
         // Solo questo dispositivo: con il valore di base ("global") uscire dal telefono faceva uscire anche dal sito e dall'app.
-        return run(() => supabase!.auth.signOut({ scope: 'local' }))
+        return run(async () => (await sb()).auth.signOut({ scope: 'local' }))
       },
-      resetPassword: (email: string) => run(() => supabase!.auth.resetPasswordForEmail(email, { redirectTo: authRedirectUrl() })),
+      resetPassword: (email: string) => run(async () => (await sb()).auth.resetPasswordForEmail(email, { redirectTo: authRedirectUrl() })),
       updatePassword: async (password: string) => {
-        await run(() => supabase!.auth.updateUser({ password }))
+        await run(async () => (await sb()).auth.updateUser({ password }))
         setRecovering(false)
       },
       deleteAccount: async () => {
-        await run(async () => supabase!.rpc('delete_my_account'))
-        await supabase!.auth.signOut()
+        await run(async () => (await sb()).rpc('delete_my_account'))
+        await (await sb()).auth.signOut()
       },
     }),
     [session, ready, recovering, linkError],

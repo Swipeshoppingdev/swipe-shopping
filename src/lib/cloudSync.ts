@@ -1,5 +1,5 @@
 import type { Filters } from '../types/product'
-import { supabase } from './supabase'
+import { getSupabase } from './supabase'
 
 export interface UserData {
   wishlist: { product: { id: string }; savedAt: number }[]
@@ -8,6 +8,7 @@ export interface UserData {
 }
 
 export async function fetchUserData(userId: string): Promise<UserData | null> {
+  const supabase = await getSupabase()
   if (!supabase) return null
   const { data, error } = await supabase
     .from('user_data')
@@ -19,6 +20,7 @@ export async function fetchUserData(userId: string): Promise<UserData | null> {
 }
 
 export async function saveUserData(userId: string, data: UserData) {
+  const supabase = await getSupabase()
   if (!supabase) return
   const { error } = await supabase
     .from('user_data')

@@ -51,7 +51,16 @@ export function sortProducts(list: Product[], sort: Filters['sort'], seed = '') 
       }
       return k
     }
-    // Chiavi calcolate prima e ordinamento su numeri: con ~20.000 prodotti è molto più veloce che leggere la cache nel confronto.
+    // Chiave (32 bit) e posizione (21 bit) in un solo numero: l'ordinamento nativo di Float64Array, senza funzione di
+    // confronto, è molto più veloce con ~20.000 prodotti. A parità di chiave vince la posizione, come prima.
+    if (list.length < 2 ** 21) {
+      const packed = new Float64Array(list.length)
+      for (let i = 0; i < list.length; i++) packed[i] = key(list[i]) * 2 ** 21 + i
+      packed.sort()
+      const out = new Array<Product>(list.length)
+      for (let i = 0; i < packed.length; i++) out[i] = list[packed[i] % 2 ** 21]
+      return out
+    }
     const keyed = list.map((p) => ({ k: key(p), p }))
     keyed.sort((a, b) => a.k - b.k)
     return keyed.map((x) => x.p)

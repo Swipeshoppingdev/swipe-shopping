@@ -18,7 +18,7 @@ export interface CatalogResult {
  * Sorgente del catalogo. Il build scrive `catalog-<sezione>.json` (compatti):
  * si scarica prima la sezione aperta, poi le altre. In sviluppo c'è solo `catalog.json` (tutto).
  */
-export async function loadCatalog(section: Universe, signal?: AbortSignal): Promise<CatalogResult> {
+export async function loadCatalog(section: Universe, signal?: AbortSignal, beforeParse?: () => Promise<void>): Promise<CatalogResult> {
   let res = await fetch(`${DATA_BASE}catalog-${section}.json`, { signal })
   let sections: Universe[] = [section]
   if (!res.ok) {
@@ -26,7 +26,11 @@ export async function loadCatalog(section: Universe, signal?: AbortSignal): Prom
     sections = [...UNIVERSES]
   }
   if (!res.ok) throw new Error(`Catalogo non disponibile (HTTP ${res.status})`)
-  const { valid, invalid } = quickCheck((await res.json()).map(expand))
+  // Leggere il catalogo (alcuni MB) blocca il telefono per un attimo: chi chiama può farlo aspettare un momento libero,
+  // così non capita in mezzo a uno swipe.
+  const text = await res.text()
+  await beforeParse?.()
+  const { valid, invalid } = quickCheck((JSON.parse(text) as Record<string, unknown>[]).map(expand))
   if (invalid) console.warn('Prodotti scartati dal catalogo:', invalid)
   const available = valid.filter((p) => p.availability !== 'out_of_stock')
   if (available.length === 0 && sections.length > 1) return { products: buildExploreCards(), exploreMode: true, skipped: invalid, sections }
@@ -59,8 +63,8 @@ function quickCheck(list: Record<string, unknown>[]) {
 }
 
 /** Ricostruisce i campi tolti dal build per risparmiare peso (vedi scripts/build-catalog.ts). */
-function expand(raw: Record<string, unknown>) {
-  const p = { ...raw }
+// Modifica l'oggetto appena letto dal JSON invece di copiarlo: con decine di migliaia di prodotti la copia pesa.
+function expand(p: Record<string, unknown>) {
   if (p.externalId === undefined && typeof p.id === 'string') p.externalId = p.id.slice(p.id.indexOf(':') + 1)
   if (p.availability === undefined) p.availability = 'in_stock'
   return p

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { pushAvailable } from '../lib/push'
-import { supabase } from '../lib/supabase'
+import { getSupabase, hasSupabase } from '../lib/supabase'
 import { useAuth } from '../state/AuthState'
 
 /** Preferenza "avvisami (notifica o email) quando un preferito è in offerta" (colonna user_data.email_alerts). */
@@ -26,13 +26,10 @@ function EmailPrefToggle({ column, label, hint }: { column: 'email_alerts' | 'em
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!supabase || !userId) return
+    if (!hasSupabase || !userId) return
     let cancelled = false
-    supabase
-      .from('user_data')
-      .select(column)
-      .eq('user_id', userId)
-      .maybeSingle()
+    void getSupabase()
+      .then((supabase) => supabase!.from('user_data').select(column).eq('user_id', userId).maybeSingle())
       .then(({ data, error }) => {
         // Colonna assente (script non ancora eseguito): nascondo l'opzione.
         if (!cancelled && !error) setValue({ userId, on: (data as Record<string, boolean | undefined> | null)?.[column] ?? true })
@@ -42,12 +39,12 @@ function EmailPrefToggle({ column, label, hint }: { column: 'email_alerts' | 'em
     }
   }, [userId, column])
 
-  if (!supabase || !userId || value?.userId !== userId) return null
+  if (!hasSupabase || !userId || value?.userId !== userId) return null
 
   const change = async (on: boolean) => {
     setValue({ userId, on })
     setError('')
-    const { error } = await supabase!.from('user_data').upsert({ user_id: userId, [column]: on })
+    const { error } = await (await getSupabase())!.from('user_data').upsert({ user_id: userId, [column]: on })
     if (error) {
       setValue({ userId, on: !on })
       setError('Non sono riuscito a salvare, riprova.')

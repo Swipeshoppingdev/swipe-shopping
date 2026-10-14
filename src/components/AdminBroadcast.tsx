@@ -1,6 +1,6 @@
 import { Loader2, Mail, Send } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { hasSupabase, supabaseRpc } from '../lib/supabase'
 
 interface Item {
   id: number
@@ -34,9 +34,9 @@ export function AdminBroadcast() {
   const refresh = () => setVersion((v) => v + 1)
 
   useEffect(() => {
-    if (!supabase) return
+    if (!hasSupabase) return
     let cancelled = false
-    supabase.rpc('admin_broadcasts').then(({ data, error }) => {
+    supabaseRpc('admin_broadcasts').then(({ data, error }) => {
       if (cancelled) return
       if (error) setError(error.message.includes('admin_broadcasts') ? 'Manca lo script schema-3.sql in Supabase.' : error.message)
       else setInfo(data as { recipients: number; items: Item[] })
@@ -50,11 +50,11 @@ export function AdminBroadcast() {
   const valid = subject.trim().length >= 3 && body.trim().length >= 10 && !amazonLink
 
   const queue = async (test: boolean) => {
-    if (!supabase || !valid || busy) return
+    if (!hasSupabase || !valid || busy) return
     if (!test && !window.confirm(`Inviare "${subject.trim()}" a ${info?.recipients ?? 0} persone? Non si può annullare una volta partita.`)) return
     setBusy(true)
     setNotice('')
-    const { error } = await supabase.rpc('admin_broadcast_create', { subject: subject.trim(), body: body.trim(), test })
+    const { error } = await supabaseRpc('admin_broadcast_create', { subject: subject.trim(), body: body.trim(), test })
     setBusy(false)
     if (error) {
       setError(error.message)
@@ -69,8 +69,8 @@ export function AdminBroadcast() {
   }
 
   const cancel = async (id: number) => {
-    if (!supabase) return
-    await supabase.rpc('admin_broadcast_cancel', { broadcast_id: id })
+    if (!hasSupabase) return
+    await supabaseRpc('admin_broadcast_cancel', { broadcast_id: id })
     refresh()
   }
 

@@ -36,7 +36,7 @@ export async function sendCrashes() {
   if (sending) return
   sending = true
   try {
-    const { supabase } = await import('./supabase')
+    const supabase = await (await import('./supabase')).getSupabase()
     if (!supabase) return
     const native = !!(window as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform?.()
     for (const e of crashLog().filter((x) => !x.sent)) {

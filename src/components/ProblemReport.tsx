@@ -26,7 +26,7 @@ export function ProblemReport() {
     if (n >= MAX_PER_DAY) return setStatus('limit')
     setStatus('sending')
     try {
-      const { supabase } = await import('../lib/supabase')
+      const supabase = await (await import('../lib/supabase')).getSupabase()
       const native = !!(window as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform?.()
       const { error } = supabase
         ? await supabase.rpc('report_error', {
