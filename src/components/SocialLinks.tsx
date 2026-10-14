@@ -41,12 +41,11 @@ const LINKS = [
   { label: 'X', href: SOCIAL_LINKS.x, Icon: XIcon },
 ]
 
-/** I profili social dell'app, come riga "Seguici" con icone tonde (in fondo al menu Sezioni). */
+/** I profili social dell'app, come riga di icone tonde (solo i loghi, scelta di Kevin) (in fondo al menu Sezioni). */
 export function SocialLinks() {
   return (
-    <div className="flex items-center justify-between gap-3 px-2.5 py-2">
-      <span className="text-sm font-semibold">Seguici</span>
-      <span className="flex gap-1.5">
+    <div className="flex items-center justify-center px-2.5 py-2">
+      <span className="flex gap-2.5">
         {LINKS.map(({ label, href, Icon }) => (
           <a
             key={label}
