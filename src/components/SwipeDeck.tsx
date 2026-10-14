@@ -57,6 +57,14 @@ export function SwipeDeck({
   // "Salvato! Vedi su Amazon": per qualche secondo dopo un Sì, quando l'interesse è più alto.
   const [saved, setSaved] = useState<Product | null>(null)
   const savedTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const hideSavedIn = useCallback((ms: number) => {
+    clearTimeout(savedTimer.current)
+    savedTimer.current = setTimeout(() => setSaved(null), ms)
+  }, [])
+  // Il tempo parte quando il popup è davvero sullo schermo (sui telefoni lenti arriva un attimo dopo il Sì).
+  useEffect(() => {
+    if (saved) hideSavedIn(SAVED_MS)
+  }, [saved, hideSavedIn])
   // Carte già swipate ma non ancora registrate (vedi COMMIT_MS): spariscono subito dal mazzo mostrato.
   const [leaving, setLeaving] = useState<string[]>([])
   const pending = useRef<{ run: () => void; timer: ReturnType<typeof setTimeout> }[]>([])
@@ -130,9 +138,8 @@ export function SwipeDeck({
         setTimeout(() => setBursts((b) => b.filter((x) => x.id !== id)), 1400)
         navigator.vibrate?.((discount ?? 0) >= 30 ? [15, 40, 25, 40, 35] : 15)
         if (withPopup) {
-          startTransition(() => setSaved(p))
           clearTimeout(savedTimer.current)
-          savedTimer.current = setTimeout(() => setSaved(null), SAVED_MS)
+          startTransition(() => setSaved(p))
         }
       }
     },
@@ -193,12 +200,20 @@ export function SwipeDeck({
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -16, opacity: 0 }}
               className="absolute inset-x-0 top-3 z-30 flex justify-center px-3"
+              // Con il dito sopra il popup resta: se spariva a metà tocco, il tocco finiva sulla carta sotto
+              // (si apriva la scheda) e il link Amazon sembrava non rispondere.
+              onPointerDown={() => clearTimeout(savedTimer.current)}
+              onPointerUp={() => hideSavedIn(SAVED_MS)}
+              onPointerCancel={() => hideSavedIn(SAVED_MS)}
             >
               <StoreLink
                 product={saved}
                 icon={false}
                 // Si va su Amazon: il Sì si registra subito dopo aver aperto il link (vedi SAVED_COMMIT_MS).
-                onClickCapture={() => setTimeout(flush, 250)}
+                onClickCapture={() => {
+                  setTimeout(flush, 250)
+                  hideSavedIn(600)
+                }}
                 className="flex w-full max-w-sm items-center gap-3 rounded-2xl bg-[#18181b]/95 p-2 pr-2.5 text-[#fff] shadow-2xl ring-1 ring-[#fff]/10 active:scale-[0.98]"
               >
                 <span className="size-11 shrink-0 overflow-hidden rounded-xl bg-[#fff] p-0.5 ring-2 ring-rose-500">

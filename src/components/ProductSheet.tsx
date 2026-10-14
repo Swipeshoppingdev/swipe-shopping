@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, Heart, X } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
 import { categoryLabel } from '../config/categories'
 import { brandAndStore, storeLinkLabel, storeName } from '../config/stores'
 import { galleryOf } from '../lib/gallery'
@@ -146,12 +146,22 @@ function useSwipeDown(panel: React.RefObject<HTMLDivElement | null>, drag: React
   }, [panel, drag, open])
 }
 
+/** Dopo la salita della scheda (molla di circa 0,4 s). */
+const EXTRAS_MS = 450
+
 function SheetContent({ product }: { product: Product }) {
   const fresh = freshPrice(product)
   const { wishlist, actions, allProducts } = useApp()
+  // Le liste in fondo (costa meno, completa il look, simili) scorrono tutto il catalogo: si calcolano quando la scheda
+  // è già salita, così si apre subito anche sui telefoni lenti.
+  const [extras, setExtras] = useState(false)
+  useEffect(() => {
+    const t = setTimeout(() => startTransition(() => setExtras(true)), EXTRAS_MS)
+    return () => clearTimeout(t)
+  }, [])
   // Con "Simile ma costa meno" i "Simili" in fondo non servono (Kevin: troppe liste uguali).
-  const cheaper = useMemo(() => cheaperAlternatives(product, allProducts), [product, allProducts])
-  const similar = useMemo(() => (cheaper.length ? [] : similarProducts(product, allProducts)), [cheaper, product, allProducts])
+  const cheaper = useMemo(() => (extras ? cheaperAlternatives(product, allProducts) : []), [extras, product, allProducts])
+  const similar = useMemo(() => (!extras || cheaper.length ? [] : similarProducts(product, allProducts)), [extras, cheaper, product, allProducts])
   const details = useDetails(product.id)
   const photos = galleryOf(product, details)
   const saved = wishlist.some((w) => w.product.id === product.id)
@@ -259,7 +269,7 @@ function SheetContent({ product }: { product: Product }) {
 
         <CheaperAlternatives list={cheaper} />
 
-        <CompleteLook product={product} />
+        {extras && <CompleteLook product={product} />}
 
         {details?.features && details.features.length > 0 && (
           <div>

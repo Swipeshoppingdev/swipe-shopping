@@ -69,3 +69,24 @@ export function stylesOf(p: Product): StyleId[] {
   cache.set(p, out)
   return out
 }
+
+/**
+ * Calcola in anticipo gli stili di tutti i prodotti, a pezzi e quando il telefono è libero: così il primo tocco
+ * su un filtro Stile non deve leggere tutto il catalogo in una volta. Restituisce la funzione per fermarsi.
+ */
+export function warmStyles(products: Product[]) {
+  let i = 0
+  let stopped = false
+  const idle = (fn: (d?: IdleDeadline) => void) =>
+    'requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1000 }) : setTimeout(fn, 16)
+  const step = (deadline?: IdleDeadline) => {
+    if (stopped) return
+    const until = performance.now() + Math.min(12, deadline?.timeRemaining() ?? 12)
+    while (i < products.length && performance.now() < until) stylesOf(products[i++])
+    if (i < products.length) idle(step)
+  }
+  idle(step)
+  return () => {
+    stopped = true
+  }
+}
