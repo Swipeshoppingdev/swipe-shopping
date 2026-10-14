@@ -5,12 +5,12 @@
 // - Niente link Amazon nelle email (regole Amazon Associates): se ci sono, l'invio viene bloccato.
 // - Se Resend si ferma (limite giornaliero), la volta dopo si riparte da chi non l'ha ancora ricevuta.
 // Uso: `node scripts/broadcast.ts` (con `--dry` mostra a chi andrebbe, senza inviare).
+import { isAdminEmail } from '../src/lib/admin.ts'
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hlsqxxcztysnlijznjng.supabase.co'
 const { SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY } = process.env
 const DRY = process.argv.includes('--dry')
 const FROM = 'Swipe Shopping <noreply@swipeshopping.app>'
 const APP_URL = 'https://swipeshopping.app'
-const ADMIN_EMAIL = 'kevinconti0118@gmail.com'
 // I log di GitHub sono pubblici: nessun indirizzo email, nemmeno in parte.
 const mask = (s: string) => s.replace(/[^\s@"'<>,;:]+@[^\s@"'<>,;:]+/g, '***')
 
@@ -67,6 +67,16 @@ async function recipients(): Promise<{ id: string; email: string }[]> {
   }
 }
 
+/** Le prove vanno solo all'amministratore, trovato tra gli account dall'impronta della sua email (src/lib/admin.ts). */
+async function adminRecipient(): Promise<{ id: string; email: string }[]> {
+  for (let page = 1; ; page++) {
+    const { users } = await rest<{ users: { id: string; email?: string }[] }>(`/auth/v1/admin/users?page=${page}&per_page=1000`)
+    const admin = users.find((u) => isAdminEmail(u.email))
+    if (admin?.email) return [{ id: 'test', email: admin.email }]
+    if (users.length < 1000) return []
+  }
+}
+
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
 const linkify = (s: string) => s.replace(/https?:\/\/[^\s<]+/g, (u) => `<a href="${u}" style="color:#f43f5e">${u}</a>`)
 
@@ -109,7 +119,7 @@ for (const b of queue) {
     console.log(`::warning::Comunicazione ${b.id} bloccata: contiene un link Amazon.`)
     continue
   }
-  const all = b.test ? [{ id: 'test', email: ADMIN_EMAIL }] : await recipients()
+  const all = b.test ? await adminRecipient() : await recipients()
   const done = new Set(b.sent_to ?? [])
   const todo = all.filter((r) => !done.has(r.id))
   console.log(`Comunicazione ${b.id}${b.test ? ' (prova)' : ''}: "${b.subject}" → ${todo.length} da inviare su ${all.length}.`)

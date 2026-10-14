@@ -7,7 +7,8 @@ import { InstallCard } from '../components/InstallCard'
 import { MyProfileCard } from '../components/MyProfileCard'
 import { CrashLogCard } from '../components/CrashLogCard'
 import { ProblemReport, ProblemReportIcon } from '../components/ProblemReport'
-import { ADMIN_EMAIL, AMAZON_DISCLOSURE, APP_NAME, GENERIC_DISCLOSURE } from '../config/app'
+import { AMAZON_DISCLOSURE, APP_NAME, GENERIC_DISCLOSURE } from '../config/app'
+import { isAdminEmail } from '../lib/admin'
 import { setConsent } from '../lib/analytics'
 import { load, remove, save } from '../lib/storage'
 import { useConsent } from '../lib/useConsent'
@@ -21,7 +22,7 @@ export function ProfilePage() {
   const consent = useConsent()
   const follows = useFollows()
   const { user } = useAuth()
-  const isAdmin = user?.email?.toLowerCase() === ADMIN_EMAIL
+  const isAdmin = isAdminEmail(user?.email)
   const [confirmClear, setConfirmClear] = useState(false)
   const [games, setGames] = useState(() => !load<boolean>('gamesOff', false))
 

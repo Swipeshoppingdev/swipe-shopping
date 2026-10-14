@@ -23,8 +23,12 @@ export const SOCIAL_LINKS = {
   x: 'https://x.com/SwipeShopping_',
 }
 
-/** Unico account che vede la pagina Statistiche (#/admin). Il controllo vero è in Supabase (admin_stats). */
-export const ADMIN_EMAIL = 'kevinconti0118@gmail.com'
+/**
+ * Unico account che vede la pagina Statistiche (#/admin) e lo Studio: l'SHA-256 della sua email (minuscola).
+ * Solo l'impronta, mai l'indirizzo: il repository e il sito sono pubblici. Il controllo vero è in Supabase (is_admin).
+ * Per calcolarla: printf '%s' 'email' | sha256sum
+ */
+export const ADMIN_EMAIL_SHA256 = '661c2c44e6697e27434485a2dba44328ebfc61392493690bfbb3442360a7af92'
 
 /**
  * Funzioni di Amici nascoste per ora (codice e dati restano: basta rimettere true).

@@ -37,7 +37,7 @@ security definer
 set search_path = ''
 as $$
 begin
-  if coalesce(auth.jwt() ->> 'email', '') <> 'kevinconti0118@gmail.com' then
+  if encode(sha256(convert_to(lower(coalesce(auth.jwt() ->> 'email', '')), 'UTF8')), 'hex') <> '661c2c44e6697e27434485a2dba44328ebfc61392493690bfbb3442360a7af92' then
     raise exception 'non autorizzato';
   end if;
   return (
@@ -70,7 +70,7 @@ security definer
 set search_path = ''
 as $$
 begin
-  if coalesce(auth.jwt() ->> 'email', '') <> 'kevinconti0118@gmail.com' then
+  if encode(sha256(convert_to(lower(coalesce(auth.jwt() ->> 'email', '')), 'UTF8')), 'hex') <> '661c2c44e6697e27434485a2dba44328ebfc61392493690bfbb3442360a7af92' then
     raise exception 'non autorizzato';
   end if;
   delete from public.product_reports where product_id = p_product_id;
