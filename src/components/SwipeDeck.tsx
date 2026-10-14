@@ -24,6 +24,13 @@ const AHEAD = 8
  * pesa e, fatto subito, faceva scattare l'animazione di uscita sui telefoni lenti.
  */
 const COMMIT_MS = 380
+/** Quanto resta il popup "Salvato! Vedi su Amazon" dopo un Sì. */
+const SAVED_MS = 1500
+/**
+ * Con il popup aperto il Sì si registra dopo che il popup si è chiuso: il ricalcolo del mazzo, fatto mentre
+ * il popup appare, rallentava il tocco sul link Amazon sui telefoni lenti.
+ */
+const SAVED_COMMIT_MS = SAVED_MS + 200
 const preloaded = new Map<string, HTMLImageElement>()
 function preload(url?: string) {
   if (!url || preloaded.has(url)) return
@@ -62,6 +69,12 @@ export function SwipeDeck({
     }
     setLeaving([])
   }, [])
+  // Se l'app va in background (es. si apre Amazon) gli swipe in sospeso si registrano subito.
+  useEffect(() => {
+    const onHide = () => document.visibilityState === 'hidden' && flush()
+    document.addEventListener('visibilitychange', onHide)
+    return () => document.removeEventListener('visibilitychange', onHide)
+  }, [flush])
   // Uscendo dalla pagina gli swipe in sospeso si registrano subito.
   useEffect(
     () => () => {
@@ -96,6 +109,7 @@ export function SwipeDeck({
         }
       }
       setLeaving((l) => [...l, p.id])
+      const withPopup = dir === 1 && !!productUrl(p)
       const item = {
         run,
         timer: setTimeout(() => {
@@ -105,7 +119,7 @@ export function SwipeDeck({
             run()
             setLeaving((l) => l.filter((id) => id !== p.id))
           })
-        }, COMMIT_MS),
+        }, withPopup ? SAVED_COMMIT_MS : COMMIT_MS),
       }
       pending.current.push(item)
       if (dir === 1) {
@@ -115,10 +129,10 @@ export function SwipeDeck({
         setBursts((b) => [...b.slice(-2), { id, discount }])
         setTimeout(() => setBursts((b) => b.filter((x) => x.id !== id)), 1400)
         navigator.vibrate?.((discount ?? 0) >= 30 ? [15, 40, 25, 40, 35] : 15)
-        if (productUrl(top)) {
+        if (withPopup) {
           startTransition(() => setSaved(p))
           clearTimeout(savedTimer.current)
-          savedTimer.current = setTimeout(() => setSaved(null), 1500)
+          savedTimer.current = setTimeout(() => setSaved(null), SAVED_MS)
         }
       }
     },
@@ -183,6 +197,8 @@ export function SwipeDeck({
               <StoreLink
                 product={saved}
                 icon={false}
+                // Si va su Amazon: il Sì si registra subito dopo aver aperto il link (vedi SAVED_COMMIT_MS).
+                onClickCapture={() => setTimeout(flush, 250)}
                 className="flex w-full max-w-sm items-center gap-3 rounded-2xl bg-[#18181b]/95 p-2 pr-2.5 text-[#fff] shadow-2xl ring-1 ring-[#fff]/10 active:scale-[0.98]"
               >
                 <span className="size-11 shrink-0 overflow-hidden rounded-xl bg-[#fff] p-0.5 ring-2 ring-rose-500">
