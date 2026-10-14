@@ -23,7 +23,7 @@ export { giftSeason, type GiftSeason }
 /** Prodotti di Halloween: la categoria dedicata o "halloween" nel titolo (es. LEGO, candele). */
 const isHalloween = (p: Product) => p.category === 'halloween' || /halloween/i.test(p.title)
 
-type Who = 'lei' | 'lui' | 'tech' | 'casa' | 'gadget' | 'golosi' | 'animali'
+type Who = 'lei' | 'lui' | 'tech' | 'casa' | 'gadget' | 'golosi' | 'animali' | 'musica'
 const WHO: { id: Who; label: string; fits: (p: Product, u: Universe) => boolean }[] = [
   { id: 'lei', label: '👩 Per lei', fits: (p, u) => (u === 'moda' || u === 'beauty') && p.gender !== 'uomo' },
   { id: 'lui', label: '👨 Per lui', fits: (p, u) => (u === 'moda' || u === 'beauty') && p.gender !== 'donna' },
@@ -32,6 +32,7 @@ const WHO: { id: Who; label: string; fits: (p: Product, u: Universe) => boolean 
   { id: 'gadget', label: '🎁 Curiosi', fits: (_, u) => u === 'gadget' },
   { id: 'golosi', label: '🍫 Golosi', fits: (_, u) => u === 'snack' },
   { id: 'animali', label: '🐾 Animali', fits: (_, u) => u === 'animali' },
+  { id: 'musica', label: '🎸 Musicisti', fits: (_, u) => u === 'musica' },
 ]
 const BUDGETS = [20, 50, 100]
 const SEED = 'regali'

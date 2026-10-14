@@ -163,6 +163,23 @@ body {
   --color-rose-700: #fde047;
 }
 
+/* Sezione Musica: azzurro. */
+:root.musica {
+  --color-rose-50: #f0f9ff;
+  --color-rose-100: #e0f2fe;
+  --color-rose-300: #7dd3fc;
+  --color-rose-400: #38bdf8;
+  --color-rose-500: #0284c7;
+  --color-rose-600: #0369a1;
+  --color-rose-700: #075985;
+}
+:root.musica.dark {
+  --color-rose-50: #082f49;
+  --color-rose-100: #0c4a6e;
+  --color-rose-500: #0ea5e9;
+  --color-rose-700: #bae6fd;
+}
+
 body {
   background: var(--color-neutral-50);
 }

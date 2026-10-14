@@ -203,8 +203,10 @@ const OTHER = {
     dealsIntro: 'Piccoli elettrodomestici, pentole, oggetti di design, candele, robot aspirapolvere e domotica scontati almeno del 5%, aggiornati più volte al giorno.' },
   animali: { what: 'accessori per cani e gatti', deals: 'Offerte per animali: cani e gatti', dealsH1: 'Offerte per cani e gatti di oggi',
     dealsIntro: 'Pettorine, cucce, tiragraffi, fontanelle, giochi e snack per cani e gatti scontati almeno del 5%, aggiornati più volte al giorno.' },
+  musica: { what: 'strumenti musicali e attrezzatura audio', deals: 'Offerte musica di oggi: chitarre, tastiere, microfoni', dealsH1: 'Offerte musica di oggi',
+    dealsIntro: 'Chitarre, tastiere, ukulele, microfoni, schede audio, controller DJ e giradischi scontati almeno del 5%, aggiornati più volte al giorno.' },
 } as const
-for (const section of ['beauty', 'tech', 'casa', 'gadget', 'snack', 'animali'] as const) {
+for (const section of ['beauty', 'tech', 'casa', 'gadget', 'snack', 'animali', 'musica'] as const) {
   const t = OTHER[section]
   const list = products.filter((p) => universeOf(p.category) === section)
   for (const group of groupsOf(section)) {
@@ -625,6 +627,11 @@ const INDEX = {
     title: 'Accessori per cani e gatti in offerta | Swipe Shopping',
     description: 'Pettorine, cucce, tiragraffi, fontanelle, giochi e snack per cani e gatti delle migliori marche, con le offerte del giorno.',
     h1: 'Cani e gatti: accessori in offerta',
+  },
+  musica: {
+    title: 'Strumenti musicali in offerta: chitarre, tastiere, microfoni | Swipe Shopping',
+    description: 'Chitarre, tastiere, ukulele, batterie, microfoni, schede audio, controller DJ e giradischi delle migliori marche, con le offerte del giorno.',
+    h1: 'Strumenti musicali in offerta',
   },
   snack: {
     title: 'Snack in offerta: cioccolato, caramelle, patatine, caffè | Swipe Shopping',

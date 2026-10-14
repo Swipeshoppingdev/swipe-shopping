@@ -313,7 +313,43 @@ export const ANIMALI_GROUPS = [
   },
 ] as const
 
-export type Universe = 'moda' | 'tech' | 'gadget' | 'snack' | 'beauty' | 'casa' | 'animali'
+/** La sezione Musica: strumenti, studio e ascolto (Kevin, 14/10/2026). */
+export const MUSICA_GROUPS = [
+  {
+    id: 'strumenti',
+    label: 'Strumenti',
+    emoji: '🎸',
+    items: [
+      { id: 'chitarre', label: 'Chitarre' },
+      { id: 'tastiere', label: 'Tastiere e pianoforti' },
+      { id: 'ukulele', label: 'Ukulele' },
+      { id: 'percussioni', label: 'Batterie e percussioni' },
+      { id: 'amplificatori', label: 'Amplificatori' },
+    ],
+  },
+  {
+    id: 'studio',
+    label: 'Studio e DJ',
+    emoji: '🎙️',
+    items: [
+      { id: 'microfoni', label: 'Microfoni' },
+      { id: 'schede_audio', label: 'Schede audio' },
+      { id: 'controller_dj', label: 'Controller DJ e MIDI' },
+    ],
+  },
+  {
+    id: 'ascolto',
+    label: 'Ascolto e accessori',
+    emoji: '🎧',
+    items: [
+      { id: 'giradischi', label: 'Giradischi' },
+      { id: 'cuffie_studio', label: 'Cuffie da studio' },
+      { id: 'accessori_strumenti', label: 'Corde, pedali e accordatori' },
+    ],
+  },
+] as const
+
+export type Universe = 'moda' | 'tech' | 'gadget' | 'snack' | 'beauty' | 'casa' | 'animali' | 'musica'
 
 /**
  * Le sezioni dell'app, come app separate: ognuna con categorie, filtri e preferiti suoi.
@@ -327,6 +363,7 @@ export const SECTIONS: { id: Universe; label: string; hint: string; color: strin
   { id: 'gadget', label: 'Gadget', hint: 'Idee regalo e oggetti curiosi', color: '#8b5cf6' },
   { id: 'snack', label: 'Snack', hint: 'Dolci, salati, proteici, caffè', color: '#0d9488' },
   { id: 'animali', label: 'Animali', hint: 'Cani e gatti: giochi, cucce', color: '#a16207' },
+  { id: 'musica', label: 'Musica', hint: 'Strumenti, microfoni, giradischi', color: '#0284c7' },
 ]
 export const UNIVERSES = SECTIONS.map((s) => s.id)
 export const isUniverse = (v: unknown): v is Universe => UNIVERSES.includes(v as Universe)
@@ -341,6 +378,7 @@ const GROUPS = {
   gadget: GADGET_GROUPS,
   snack: SNACK_GROUPS,
   animali: ANIMALI_GROUPS,
+  musica: MUSICA_GROUPS,
 } as const satisfies Record<Universe, readonly unknown[]>
 
 export type CategoryGroup = (typeof GROUPS)[Universe][number]

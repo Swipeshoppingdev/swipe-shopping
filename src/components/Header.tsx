@@ -1,5 +1,5 @@
 import { closeBreaks } from '../lib/closeBreaks'
-import { Check, Ghost, Cookie, Cpu, Gift, LayoutGrid, Menu, Moon, PawPrint, Shirt, Sofa, Sparkles, Sun, TreePine } from 'lucide-react'
+import { Check, Ghost, Cookie, Cpu, Gift, LayoutGrid, Menu, Moon, Music, PawPrint, Shirt, Sofa, Sparkles, Sun, TreePine } from 'lucide-react'
 import { giftSeason } from '../lib/giftSeason'
 import { Reorder, useDragControls } from 'framer-motion'
 import { useEffect, useRef, useState, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react'
@@ -50,10 +50,11 @@ const ICONS: Record<Universe, typeof Shirt> = {
   gadget: Gift,
   snack: Cookie,
   animali: PawPrint,
+  musica: Music,
 }
 
 /** Sezioni nuove: hanno il segno "Nuovo" finché l'utente non le apre. Aggiungere qui le prossime. */
-const NEW_SECTIONS: Universe[] = ['beauty', 'casa', 'gadget', 'snack', 'animali']
+const NEW_SECTIONS: Universe[] = ['beauty', 'casa', 'gadget', 'snack', 'animali', 'musica']
 
 /** Menu delle sezioni: ognuna è come un'app a sé, con filtri e preferiti suoi. */
 function SectionMenu() {
@@ -65,7 +66,7 @@ function SectionMenu() {
   const ref = useRef<HTMLDivElement>(null)
   const current = onOutfit ? { ...sectionOf('moda'), label: 'Outfit' } : onGifts ? { ...sectionOf(state.mode), label: giftSeason().id === 'halloween' ? 'Halloween' : 'Regali' } : sectionOf(state.mode)
   const [visited, setVisited] = useState(() => load<Universe[]>('sectionsVisited', []))
-  const [menuSeen, setMenuSeen] = useState(() => load<boolean>('sectionsMenuSeen:3', false))
+  const [menuSeen, setMenuSeen] = useState(() => load<boolean>('sectionsMenuSeen:4', false))
   const isNew = (u: Universe) => NEW_SECTIONS.includes(u) && !visited.includes(u) && u !== state.mode
   // Il pallino sul pulsante sparisce alla prima apertura del menu; il "Nuovo" nel menu quando si apre la sezione.
   // Outfit è "Nuovo" finché non lo si apre.
@@ -145,7 +146,7 @@ function SectionMenu() {
           setOpen(!open)
           if (!menuSeen) {
             setMenuSeen(true)
-            save('sectionsMenuSeen:3', true)
+            save('sectionsMenuSeen:4', true)
           }
         }}
         aria-haspopup="menu"
@@ -181,7 +182,7 @@ type MenuId = Universe | 'outfit' | 'regali'
 type MenuEntry = { label: string; hint: string; color: string; Icon: typeof Shirt; isNew: boolean; active: boolean; href?: string; onSelect?: () => void }
 
 /** Ordine di partenza scelto da Kevin (chi lo riordina tiene il suo). */
-const DEFAULT_ORDER: MenuId[] = ['moda', 'tech', 'snack', 'outfit', 'regali', 'gadget', 'casa', 'beauty', 'animali']
+const DEFAULT_ORDER: MenuId[] = ['moda', 'tech', 'snack', 'outfit', 'regali', 'gadget', 'casa', 'beauty', 'animali', 'musica']
 
 /** Ordine salvato; le voci nuove (aggiunte dopo) entrano nella loro posizione di partenza. */
 function loadMenuOrder(): MenuId[] {

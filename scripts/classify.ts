@@ -66,6 +66,15 @@ const ACC_FOR = new RegExp(`^[^+]*\\b${ACC}\\s+(?:per|for|compatibile|compatible
 const startsWith = (words: string, n = 2) => new RegExp(`^(?:\\S+\\s+){0,${n}}(?:${words})\\b`, 'i')
 
 const JUNK: Record<string, RegExp[]> = {
+  // Musica: custodie, supporti e ricambi al posto dello strumento.
+  chitarre: [startsWith('custodia|borsa|gig ?bag|supporto|reggi|tracolla|corde|capotasto|plettr\\w*|cavo|pedale|accordatore'), ACC_FOR],
+  tastiere: [startsWith('custodia|borsa|supporto|copritastiera|copertura|panca|sgabello|pedale|alimentatore|cavo|leggio'), ACC_FOR],
+  ukulele: [startsWith('custodia|borsa|corde|supporto|tracolla|accordatore'), ACC_FOR],
+  percussioni: [startsWith('custodia|borsa|bacchette|pelle|pelli|supporto|sgabello|tappeto|pedale'), ACC_FOR],
+  amplificatori: [startsWith('cover|custodia|cavo|footswitch|valvol\\w*|alimentatore'), ACC_FOR],
+  microfoni: [startsWith('asta|supporto|braccio|filtro|antipop|anti-pop|spugna|cavo|ragno|shock'), ACC_FOR],
+  giradischi: [startsWith('puntina|testina|cinghia|tappetino|copertura|coperchio|cover|pulizia|spazzola'), ACC_FOR],
+  cuffie_studio: [startsWith('cuscinetti|earpads?|custodia|cavo|supporto|adattatore'), ACC_FOR],
   smartphone: [startsWith('cover|custodia|pellicola|vetro|protezione|cavo|caricatore|caricabatterie|alimentatore|power ?bank|supporto|batteria', 1), ACC_FOR],
   tablet: [
     startsWith('keyboard|tastiera|cover|custodia|pellicola|penna|pencil|stylus|caricatore|cavo'),

@@ -18,7 +18,7 @@
         }
         // Sezioni oltre la moda: tenere allineato con SECTIONS in src/config/categories.ts.
         var m = (/[?&]sezione=(\w+)/.exec(location.search) || [])[1] || JSON.parse(localStorage.getItem('swipeshop:v1:mode') || 'null')
-        if (['tech', 'gadget', 'snack', 'beauty', 'casa', 'animali'].indexOf(m) >= 0) document.documentElement.classList.add(m)
+        if (['tech', 'gadget', 'snack', 'beauty', 'casa', 'animali', 'musica'].indexOf(m) >= 0) document.documentElement.classList.add(m)
         // All'apertura (senza una pagina precisa) si torna dove si era: le sezioni ricordano già la loro, Outfit va riaperto qui.
         var sp = JSON.parse(localStorage.getItem('swipeshop:v1:inOutfit') || 'false') ? 'outfit' : JSON.parse(localStorage.getItem('swipeshop:v1:inGifts') || 'false') ? 'regali' : null
         if (sp && !/[?&]sezione=/.test(location.search) && /^(#\/?(scopri)?)?$/.test(location.hash)) history.replaceState(null, '', '#/' + sp)
@@ -39,7 +39,7 @@
       // Nell'app (Capacitor) il catalogo arriva dal sito online, non da qui.
       if (!window.Capacitor) {
         var c = document.documentElement.classList
-        var sec = ['tech', 'gadget', 'snack', 'beauty', 'casa', 'animali'].filter(function (x) { return c.contains(x) })[0] || 'moda'
+        var sec = ['tech', 'gadget', 'snack', 'beauty', 'casa', 'animali', 'musica'].filter(function (x) { return c.contains(x) })[0] || 'moda'
         // Prima l'anteprima (piccola: le prime carte), poi il catalogo completo.
         ;['-anteprima.json', '.json'].forEach(function (end) {
           var l = document.createElement('link')
@@ -85,7 +85,7 @@
         <h1 style="margin:0;font-size:26px;font-weight:900;color:#171717">Swipe<span style="color:#f43f5e">Shopping</span></h1>
         <p style="margin:0;font-size:14px">Moda, beauty, tech e idee outfit di marca: scorri, salva e trova le offerte.</p>
         <nav style="font-size:12px;line-height:2">
-          <a href="/moda/" style="color:inherit">Moda</a> · <a href="/moda/outfit/" style="color:inherit">Outfit</a> · <a href="/beauty/" style="color:inherit">Beauty</a> · <a href="/tech/" style="color:inherit">Tech</a> · <a href="/casa/" style="color:inherit">Casa</a> · <a href="/gadget/" style="color:inherit">Gadget</a> · <a href="/snack/" style="color:inherit">Snack</a> · <a href="/animali/" style="color:inherit">Animali</a> · <a href="/moda/offerte/" style="color:inherit">Offerte moda</a>
+          <a href="/moda/" style="color:inherit">Moda</a> · <a href="/moda/outfit/" style="color:inherit">Outfit</a> · <a href="/beauty/" style="color:inherit">Beauty</a> · <a href="/tech/" style="color:inherit">Tech</a> · <a href="/casa/" style="color:inherit">Casa</a> · <a href="/gadget/" style="color:inherit">Gadget</a> · <a href="/snack/" style="color:inherit">Snack</a> · <a href="/animali/" style="color:inherit">Animali</a> · <a href="/musica/" style="color:inherit">Musica</a> · <a href="/moda/offerte/" style="color:inherit">Offerte moda</a>
         </nav>
       </div>
     </div>
