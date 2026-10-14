@@ -60,6 +60,14 @@ let throttled = 0
 // Il token di Amazon scade dopo un'ora e un giro dura di più: alla prima risposta "scaduto" se ne prende uno nuovo.
 let renewedToken: string | null = null
 
+/**
+ * Tempo massimo per le richieste ad Amazon: dopo si salva quello che c'è. Il job ha 120 minuti e dopo la sincronizzazione
+ * restano pulizia e salvataggio; il 14/10 le taglie (rallentate dalle risposte 429) hanno sforato e il giro è andato perso.
+ */
+const STARTED = Date.now()
+const TIME_BUDGET_MS = Number(process.env.AMAZON_TIME_BUDGET_MIN ?? 95) * 60_000
+const outOfTime = () => Date.now() - STARTED > TIME_BUDGET_MS
+
 async function callApi(op: string, token: string, payload: Record<string, unknown>) {
   for (let attempt = 0; ; attempt++) {
     await sleep(Math.max(0, lastCall + MIN_GAP_MS - Date.now()))
@@ -76,7 +84,9 @@ async function callApi(op: string, token: string, payload: Record<string, unknow
       await sleep(2000 * 2 ** attempt)
       continue
     }
-    if (res.status === 401 && attempt < 2 && /expired/i.test(JSON.stringify(body))) {
+    if (res.status === 401 && attempt < 3 && /expired/i.test(JSON.stringify(body))) {
+      // Appena scaduto, Amazon può ridare per qualche secondo lo stesso token: si aspetta un attimo prima di chiederlo.
+      if (attempt > 0) await sleep(5000 * attempt)
       renewedToken = await getToken()
       annotate('notice', 'Token Amazon scaduto: rinnovato.')
       continue
@@ -228,7 +238,7 @@ async function refreshKept(token: string, list: Record<string, any>[]) {
   const todo = [...list].sort((a, b) => Date.parse(a.priceCheckedAt ?? '') - Date.parse(b.priceCheckedAt ?? ''))
   let done = 0
   let priced = 0
-  for (let i = 0; i < todo.length && requests < limit; i += 10) {
+  for (let i = 0; i < todo.length && requests < limit && !outOfTime(); i += 10) {
     const batch = todo.slice(i, i + 10)
     let body: any
     try {
@@ -539,6 +549,10 @@ async function refreshSizes(token: string, products: Record<string, any>[]) {
   let priced = 0
   for (const p of candidates) {
     if (requests >= MAX_REQUESTS) break
+    if (outOfTime()) {
+      annotate('notice', 'Taglie: tempo finito, il resto al prossimo giro.')
+      break
+    }
     if (done.has(p.externalId)) continue
     if (p.sizesAt && Date.now() - Date.parse(p.sizesAt) < 20 * 3_600_000) break // tutti già controllati da poco
     const variants: { asin: string; color: string; size: string | null; ok: boolean; offer: Offer | null }[] = []
