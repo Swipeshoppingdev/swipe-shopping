@@ -54,6 +54,8 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 // Amazon concede circa una richiesta al secondo: le distanziamo e ritentiamo se rifiutate.
 const MIN_GAP_MS = 1100
 let lastCall = 0
+/** Risposte 429 (troppe richieste): dicono se il limite giornaliero di Amazon è più basso di quanto usiamo. */
+let throttled = 0
 
 // Il token di Amazon scade dopo un'ora e un giro dura di più: alla prima risposta "scaduto" se ne prende uno nuovo.
 let renewedToken: string | null = null
@@ -69,6 +71,7 @@ async function callApi(op: string, token: string, payload: Record<string, unknow
       body: JSON.stringify({ marketplace: MARKETPLACE, partnerTag: PARTNER_TAG, languagesOfPreference: ['it_IT'], ...payload }),
     })
     const body = await res.json().catch(() => ({}))
+    if (res.status === 429) throttled++
     if (res.status === 429 && attempt < 4) {
       await sleep(2000 * 2 ** attempt)
       continue
@@ -591,6 +594,7 @@ if (process.env.AMAZON_SIZES_ONLY) {
   const sample = catalog.filter((p) => p.sizesAt && p.sizes?.length).slice(0, 8)
   for (const p of sample) console.log(`${p.externalId} ${p.category}: ${p.sizes.join(' ')}`)
   console.log(`${requests} richieste.`)
+  annotate('notice', `Prova: ${requests} richieste, ${throttled} risposte 429 (troppe richieste).`)
   process.exit(0)
 }
 
@@ -649,7 +653,7 @@ try {
     annotate('warning', `Taglie non aggiornate: ${e instanceof Error ? e.message : String(e)}`)
   }
   writeFileSync(file, JSON.stringify(next, null, 1) + '\n')
-  annotate('notice', `Catalogo: ${next.length} prodotti (${searched.length} dalla ricerca), ${requests} richieste ad Amazon.`)
+  annotate('notice', `Catalogo: ${next.length} prodotti (${searched.length} dalla ricerca), ${requests} richieste ad Amazon, ${throttled} risposte 429.`)
   const few = next.filter((p) => p.fewLeft).length
   const kinds = [...availabilitySeen].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([k, n]) => `${k}: ${n}`)
   annotate('notice', `Offerte a tempo: ${next.filter((p) => p.dealBadge).length} prodotti (${[...new Set(next.map((p) => p.dealBadge).filter(Boolean))].slice(0, 5).join(', ')}).`)

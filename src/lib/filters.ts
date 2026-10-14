@@ -1,4 +1,4 @@
-import { NO_CATEGORY, categoryIdsOf, isCategoryId, universeOf } from '../config/categories'
+import { NO_CATEGORY, categoryGroupOf, categoryIdsOf, isCategoryId, universeOf, type CategoryId } from '../config/categories'
 import { COLOR_ORDER } from '../config/colors'
 import type { Filters, Product } from '../types/product'
 import { discountBadge, freshPrice } from './price'
@@ -117,13 +117,23 @@ export function facetValues(products: Product[]) {
  */
 export function normalizeFilters(f: Filters): Filters {
   // "Escludi tutto": nessuna categoria inclusa, resta così finché l'utente non ne riaccende una.
-  if (f.categories.includes(NO_CATEGORY)) return { ...stripOld(f), sort: 'mix', categories: [NO_CATEGORY] }
+  if (f.categories.includes(NO_CATEGORY)) return { ...stripOld(f), sort: 'mix', categories: [NO_CATEGORY], catsV: CATS_V }
   const unique = [...new Set(f.categories.filter(isCategoryId))]
+  // Categorie nuove: chi aveva scelto solo alcune categorie le riceve se ha già scelto qualcosa dello stesso gruppo
+  // (es. Gonne a chi ha l'Abbigliamento). Una volta sola: se poi le toglie, restano tolte.
+  if ((f.catsV ?? 0) < CATS_V && unique.length) {
+    const groups = new Set(unique.map(categoryGroupOf))
+    for (const c of NEW_CATEGORIES) if (!unique.includes(c) && groups.has(categoryGroupOf(c))) unique.push(c)
+  }
   // Tutte le categorie della sezione (moda o tech) = nessun filtro.
   const all = unique.length > 0 && unique.length >= categoryIdsOf(universeOf(unique[0])).length
   // "Ordina per" non c'è più: il mazzo usa sempre il mix consigliato.
-  return { ...stripOld(f), sort: 'mix', categories: all ? [] : unique }
+  return { ...stripOld(f), sort: 'mix', categories: all ? [] : unique, catsV: CATS_V }
 }
+
+/** Categorie aggiunte dopo il lancio (14/10/2026). Per le prossime: aggiungerle qui e alzare CATS_V. */
+const NEW_CATEGORIES: CategoryId[] = ['gonne', 'pigiami', 'pantofole', 'sciarpe', 'berretti', 'cravatte']
+const CATS_V = 1
 
 /** "Solo novità" e le vecchie "sezioni extra" non esistono più: le togliamo dai filtri salvati. */
 function stripOld(f: Filters): Filters {

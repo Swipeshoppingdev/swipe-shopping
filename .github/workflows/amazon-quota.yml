@@ -1,0 +1,37 @@
+name: Prova limite Amazon
+
+# Prova a mano: poche richieste (solo taglie, non salva niente) per vedere se Amazon risponde
+# "troppe richieste" (429) dopo i giri del giorno, cioè se il limite giornaliero è già raggiunto.
+on:
+  workflow_dispatch:
+    inputs:
+      requests:
+        description: Quante richieste provare
+        default: '300'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-amazon
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node scripts/sync-amazon.ts
+        env:
+          AMAZON_SIZES_ONLY: '1'
+          AMAZON_MAX_REQUESTS: ${{ inputs.requests }}
+          AMAZON_SIZE_REQUESTS: ${{ inputs.requests }}
+          AMAZON_CREDENTIAL_ID: ${{ secrets.AMAZON_CREDENTIAL_ID }}
+          AMAZON_CREDENTIAL_SECRET: ${{ secrets.AMAZON_CREDENTIAL_SECRET }}
+          AMAZON_CREDENTIAL_VERSION: ${{ secrets.AMAZON_CREDENTIAL_VERSION }}
