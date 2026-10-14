@@ -8,6 +8,7 @@ import { validateProduct } from '../src/lib/validate.ts'
 import { DETAIL_SHARDS, detailShard, type ProductDetails } from '../src/lib/details.ts'
 import { OUTFIT_PRIORITY, SEARCH_PLAN, inSeason, normalizeBrand } from './search-plan.ts'
 import { hasSizes, sortSizes, splitSize } from '../src/lib/sizes.ts'
+import { universeOf, type CategoryId } from '../src/config/categories.ts'
 
 const { AMAZON_CREDENTIAL_ID, AMAZON_CREDENTIAL_SECRET, AMAZON_CREDENTIAL_VERSION, AMAZON_TOKEN_URL } = process.env
 const PARTNER_TAG = process.env.VITE_AMAZON_TAG || 'mrofferta09-21'
@@ -97,6 +98,12 @@ const SIZE_REQUESTS = Math.min(Number(process.env.AMAZON_SIZE_REQUESTS ?? 800), 
  */
 const REFRESH_REQUESTS = Math.min(Number(process.env.AMAZON_REFRESH_REQUESTS ?? 1200), MAX_REQUESTS - SIZE_REQUESTS)
 const SEARCH_LIMIT = MAX_REQUESTS - SIZE_REQUESTS - REFRESH_REQUESTS
+/**
+ * Parte della ricerca per le sezioni diverse dalla Moda (Tech, Casa, Beauty…): la Moda è il cuore dell'app
+ * e prende il resto. Le altre sezioni fanno una pagina per ricerca e a ogni giro metà delle ricerche
+ * (a rotazione): i loro prodotti trovati nel giro prima restano, quindi in un giorno si passano tutte.
+ */
+const OTHER_SHARE = Number(process.env.AMAZON_OTHER_SHARE ?? 0.25)
 
 const OFFER_RESOURCES = ['offersV2.listings.price', 'offersV2.listings.availability', 'offersV2.listings.isBuyBoxWinner']
 
@@ -436,16 +443,20 @@ async function searchCatalog(token: string) {
           return items.length
   }
 
-  // Prime pagine di tutte le ricerche; quelle con altri risultati si segnano per andare più a fondo.
+  const active = SEARCH_PLAN.filter((pl) => inSeason(pl))
+  const isModa = (pl: (typeof SEARCH_PLAN)[number]) => universeOf(pl.category as CategoryId) === 'moda'
+  const otherBudget = Math.round((SEARCH_LIMIT - requests) * OTHER_SHARE)
+
+  // Moda: prime pagine di tutte le ricerche (lasciando la parte delle altre sezioni); quelle con altri
+  // risultati si segnano per andare più a fondo.
   const deeper: [(typeof SEARCH_PLAN)[number], string, string][] = []
-  let stopped = false
-  outer: for (const plan of SEARCH_PLAN.filter((pl) => inSeason(pl))) {
+  const modaLimit = SEARCH_LIMIT - otherBudget
+  outer: for (const plan of active.filter(isModa)) {
     for (const gender of plan.genders) {
       for (const brand of plan.brands) {
         for (let page = 1; page <= pages; page++) {
-          if (requests >= SEARCH_LIMIT) {
-            annotate('warning', `Raggiunto il tetto di ${SEARCH_LIMIT} richieste: ricerca interrotta a ${plan.category}.`)
-            stopped = true
+          if (requests >= modaLimit) {
+            annotate('warning', `Raggiunto il tetto di ${modaLimit} richieste per la Moda: ricerca interrotta a ${plan.category}.`)
             break outer
           }
           const n = await searchPage(plan, gender, brand, page)
@@ -455,8 +466,23 @@ async function searchCatalog(token: string) {
       }
     }
   }
+  const modaFound = found.size
+
+  // Altre sezioni: la prima pagina, ogni giro dal punto in cui si era fermato il giro prima.
+  const others = active.filter((pl) => !isModa(pl)).flatMap((plan) => plan.genders.flatMap((gender) => plan.brands.map((brand) => [plan, gender, brand] as const)))
+  if (others.length) {
+    const otherLimit = Math.min(SEARCH_LIMIT, requests + otherBudget)
+    const start = (Math.floor(Date.now() / (12 * 3_600_000)) * Math.max(1, otherBudget)) % others.length
+    let done = 0
+    for (; done < others.length && requests < otherLimit; done++) {
+      const [plan, gender, brand] = others[(start + done) % others.length]
+      await searchPage(plan, gender, brand, 1)
+    }
+    annotate('notice', `Altre sezioni: ${done}/${others.length} ricerche in questo giro, ${found.size - modaFound} prodotti.`)
+  }
+
   // Con le richieste avanzate: pagine 3 e 4, ogni giro da un punto diverso, così in pochi giorni si passa tutto.
-  if (!stopped && deeper.length) {
+  if (deeper.length && requests < SEARCH_LIMIT) {
     const before = found.size
     const start = (Math.floor(Date.now() / (12 * 3_600_000)) * 97) % deeper.length
     // Prima sempre le categorie che servono agli outfit, poi le altre a rotazione.
