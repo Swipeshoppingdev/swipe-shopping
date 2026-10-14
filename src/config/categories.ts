@@ -17,6 +17,8 @@ export const CATEGORY_GROUPS = [
       { id: 'giacche', label: 'Giacche' },
       { id: 'cappotti', label: 'Cappotti' },
       { id: 'vestiti', label: 'Vestiti' },
+      { id: 'gonne', label: 'Gonne' },
+      { id: 'pigiami', label: 'Pigiami' },
       { id: 'sportivo', label: 'Abbigliamento sportivo' },
     ],
   },
@@ -30,6 +32,7 @@ export const CATEGORY_GROUPS = [
       { id: 'scarpe_sportive', label: 'Scarpe sportive' },
       { id: 'stivali', label: 'Stivali' },
       { id: 'sandali', label: 'Sandali' },
+      { id: 'pantofole', label: 'Pantofole' },
     ],
   },
   {
@@ -44,6 +47,9 @@ export const CATEGORY_GROUPS = [
       { id: 'gioielli', label: 'Gioielli' },
       { id: 'portafogli', label: 'Portafogli' },
       { id: 'calze', label: 'Calze' },
+      { id: 'sciarpe', label: 'Sciarpe' },
+      { id: 'berretti', label: 'Berretti e guanti' },
+      { id: 'cravatte', label: 'Cravatte' },
     ],
   },
   {

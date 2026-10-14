@@ -103,7 +103,7 @@ const SEARCH_LIMIT = MAX_REQUESTS - SIZE_REQUESTS - REFRESH_REQUESTS
  * e prende il resto. Le altre sezioni fanno una pagina per ricerca e a ogni giro metà delle ricerche
  * (a rotazione): i loro prodotti trovati nel giro prima restano, quindi in un giorno si passano tutte.
  */
-const OTHER_SHARE = Number(process.env.AMAZON_OTHER_SHARE ?? 0.25)
+const OTHER_SHARE = Number(process.env.AMAZON_OTHER_SHARE ?? 0.2)
 
 const OFFER_RESOURCES = ['offersV2.listings.price', 'offersV2.listings.availability', 'offersV2.listings.isBuyBoxWinner']
 
