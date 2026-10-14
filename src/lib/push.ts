@@ -25,15 +25,18 @@ export const pushNeedsInstall = !isNative && !!WEB_PUSH_KEY && /iphone|ipad|ipod
 const TOKEN_KEY = 'pushToken'
 let listening = false
 
+/** Il plugin va dentro un oggetto: restituito da solo da una funzione async, la Promise lo tratterebbe come
+ *  "thenable" e chiamerebbe PushNotifications.then() (errore "not implemented on ios"). */
 async function plugin() {
-  return (await import('@capacitor/push-notifications')).PushNotifications
+  const { PushNotifications } = await import('@capacitor/push-notifications')
+  return { push: PushNotifications }
 }
 
 /** Permesso già dato (o negato) dall'utente. */
 export async function pushPermission(): Promise<'granted' | 'denied' | 'prompt'> {
   if (webPush) return Notification.permission === 'default' ? 'prompt' : Notification.permission
   if (!pushAvailable) return 'denied'
-  const { receive } = await (await plugin()).checkPermissions()
+  const { receive } = await (await plugin()).push.checkPermissions()
   return receive === 'granted' ? 'granted' : receive === 'denied' ? 'denied' : 'prompt'
 }
 
@@ -41,7 +44,7 @@ export async function pushPermission(): Promise<'granted' | 'denied' | 'prompt'>
 async function listen() {
   if (listening) return
   listening = true
-  const push = await plugin()
+  const { push } = await plugin()
   // Canale delle notifiche (lo stesso indicato in AndroidManifest.xml).
   await push
     .createChannel({
@@ -79,7 +82,7 @@ async function listen() {
 export async function enablePush(): Promise<boolean> {
   if (webPush) return enableWebPush()
   if (!pushAvailable) return false
-  const push = await plugin()
+  const { push } = await plugin()
   let { receive } = await push.checkPermissions()
   if (receive === 'prompt' || receive === 'prompt-with-rationale') receive = (await push.requestPermissions()).receive
   if (receive !== 'granted') return false
@@ -103,7 +106,7 @@ export async function disablePush(byUser = true) {
   remove(TOKEN_KEY)
   await supabase?.rpc('push_unregister', { p_token: token })
   if (webPush) await (await webSubscription())?.unsubscribe().catch(() => false)
-  else if (pushAvailable) await (await plugin()).unregister().catch(() => {})
+  else if (pushAvailable) await (await plugin()).push.unregister().catch(() => {})
 }
 
 // ── Sito (Web Push) ──────────────────────────────────────────────────────────

@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { logCrash } from '../lib/crashLog'
+import { isStaleChunk, reloadForUpdate } from '../lib/staleChunk'
 
 /** Se un errore blocca l'app, invece della pagina vuota si vede un messaggio con "Riprova" (e l'errore resta nel registro). */
 export class ErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -10,6 +11,8 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, { failed: 
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
+    // Sito appena aggiornato: basta ricaricare per avere i file nuovi.
+    if (isStaleChunk(error) && reloadForUpdate()) return
     logCrash('react', error, info.componentStack ?? undefined)
   }
 
