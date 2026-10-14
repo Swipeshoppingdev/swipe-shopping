@@ -63,6 +63,8 @@ export interface Filters {
   stores: StoreId[]
   sizes: string[]
   colors: string[]
+  /** Stili della Moda inclusi (vuoto = tutti), vedi lib/styles */
+  styles?: string[]
   sort: SortOrder
   /** Solo prodotti scontati */
   onlyDeals?: boolean

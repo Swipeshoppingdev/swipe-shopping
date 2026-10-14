@@ -3,6 +3,7 @@ import { COLOR_ORDER } from '../config/colors'
 import type { Filters, Product } from '../types/product'
 import { discountBadge, freshPrice } from './price'
 import { sizeChip, sortSizes } from './sizes'
+import { stylesOf } from './styles'
 
 export function matchesFilters(p: Product, f: Filters) {
   if (f.gender !== 'tutti' && p.gender !== f.gender && p.gender !== 'unisex') return false
@@ -16,6 +17,7 @@ export function matchesFilters(p: Product, f: Filters) {
       if (f.colors.length * 2 <= COLOR_ORDER.length) return false
     } else if (!p.colors.some((c) => f.colors.includes(c))) return false
   }
+  if (f.styles?.length && !stylesOf(p).some((s) => f.styles!.includes(s))) return false
   if (f.onlyDeals && discountBadge(p) === null) return false
   if (f.priceMin !== undefined || f.priceMax !== undefined) {
     // Con un filtro prezzo attivo escludiamo i prodotti senza prezzo verificato.
@@ -87,6 +89,7 @@ export function activeFilterCount(f: Filters) {
     (f.stores.length ? 1 : 0) +
     (f.sizes.length ? 1 : 0) +
     (f.colors.length ? 1 : 0) +
+    (f.styles?.length ? 1 : 0) +
     (f.priceMin !== undefined ? 1 : 0) +
     (f.priceMax !== undefined ? 1 : 0)
   )
