@@ -44,7 +44,7 @@ export const FEATURES = {
    * in Supabase (Authentication → Providers → Apple, Client ID app.swipeshopping). Finché è spento, nell'app iPhone
    * non c'è nemmeno Google: Apple rifiuta le app con login Google senza "Accedi con Apple" (regola 4.8).
    */
-  appleLogin: false,
+  appleLogin: true,
   /**
    * Parte Amici (profilo con @tag e follower, QR, Amici in Profilo, "Consiglia a un amico", Manda agli amici).
    * Nascosta il 13/10/2026 da Kevin finché non ci saranno più utenti: i link già mandati funzionano ancora.
