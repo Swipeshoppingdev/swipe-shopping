@@ -7,12 +7,14 @@ import { BrandPicker } from '../components/BrandPicker'
 import { PriceRange } from '../components/PriceRange'
 import { STORES, type StoreId } from '../config/stores'
 import { activeFilterCount, facetValues, matchesFilters } from '../lib/filters'
+import { STYLES } from '../lib/styles'
 import { routeHref } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
 import { DEFAULT_FILTERS, type Filters } from '../types/product'
 
 /** "Escludi tutto" per marche e colori: nessun prodotto ha questo valore, quindi tutto è rosso. */
 const NONE = 'nessuno'
+const STYLE_IDS: string[] = STYLES.map((s) => s.id)
 
 /** Verde/rosso: lista vuota = tutto incluso (tutto verde). */
 const isIn = <T,>(list: T[], value: T) => list.length === 0 || list.includes(value)
@@ -113,16 +115,27 @@ export function FiltersPage() {
         </Section>
       )}
 
-      <Section title="Offerte">
-        <div className="rounded-2xl bg-white ring-1 ring-neutral-200">
-          <Toggle
-            label="Solo prodotti in offerta"
-            hint="Scontati almeno del 5%"
-            checked={!!f.onlyDeals}
-            onChange={(v) => set({ onlyDeals: v || undefined })}
-          />
-        </div>
-      </Section>
+      {state.mode === 'moda' && (
+        <Section
+          title="Stile"
+          actions={
+            <AllNone
+              all={!f.styles?.length}
+              none={!!f.styles?.includes(NONE)}
+              onAll={() => set({ styles: [] })}
+              onNone={() => set({ styles: [NONE] })}
+            />
+          }
+        >
+          <div className="flex flex-wrap gap-2">
+            {STYLES.map(({ id, label }) => (
+              <Chip key={id} active={isIn(f.styles ?? [], id)} onClick={() => set({ styles: flipKeepOne(f.styles ?? [], id, STYLE_IDS) })}>
+                {label}
+              </Chip>
+            ))}
+          </div>
+        </Section>
+      )}
 
       <Section title="Prezzo" hint="Con un limite di prezzo vedi solo prodotti con prezzo aggiornato">
         <PriceRange min={f.priceMin} max={f.priceMax} onChange={(priceMin, priceMax) => set({ priceMin, priceMax })} />
@@ -273,18 +286,6 @@ export function AllNone({ all, none, onAll, onNone }: { all: boolean; none: bool
         Escludi tutto
       </button>
     </>
-  )
-}
-
-function Toggle({ label, hint, checked, onChange }: { label: string; hint: string; checked: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <label className="flex items-center justify-between gap-4 px-4 py-3">
-      <span>
-        <span className="block font-medium">{label}</span>
-        <span className="text-xs text-neutral-500">{hint}</span>
-      </span>
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="size-6 accent-rose-500" />
-    </label>
   )
 }
 

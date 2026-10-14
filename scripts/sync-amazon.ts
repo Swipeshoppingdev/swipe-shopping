@@ -454,21 +454,20 @@ async function searchCatalog(token: string) {
   // risultati si segnano per andare più a fondo.
   const deeper: [(typeof SEARCH_PLAN)[number], string, string][] = []
   const modaLimit = SEARCH_LIMIT - otherBudget
-  outer: for (const plan of active.filter(isModa)) {
-    for (const gender of plan.genders) {
-      for (const brand of plan.brands) {
-        for (let page = 1; page <= pages; page++) {
-          if (requests >= modaLimit) {
-            annotate('warning', `Raggiunto il tetto di ${modaLimit} richieste per la Moda: ricerca interrotta a ${plan.category}.`)
-            break outer
-          }
-          const n = await searchPage(plan, gender, brand, page)
-          if (n < 10) break
-          if (page === pages) deeper.push([plan, gender, brand])
-        }
-      }
+  // Se le ricerche della Moda non ci stanno tutte, ogni giro parte da un punto diverso (così nessuna resta sempre fuori).
+  const moda = active.filter(isModa).flatMap((plan) => plan.genders.flatMap((gender) => plan.brands.map((brand) => [plan, gender, brand] as const)))
+  const modaRoom = Math.floor((modaLimit - requests) / pages)
+  const modaStart = moda.length > modaRoom && modaRoom > 0 ? (Math.floor(Date.now() / (12 * 3_600_000)) * modaRoom) % moda.length : 0
+  let modaDone = 0
+  for (; modaDone < moda.length && requests < modaLimit; modaDone++) {
+    const [plan, gender, brand] = moda[(modaStart + modaDone) % moda.length]
+    for (let page = 1; page <= pages && requests < modaLimit; page++) {
+      const n = await searchPage(plan, gender, brand, page)
+      if (n < 10) break
+      if (page === pages) deeper.push([plan, gender, brand])
     }
   }
+  if (modaDone < moda.length) annotate('warning', `Tetto di ${modaLimit} richieste per la Moda: ${modaDone}/${moda.length} ricerche in questo giro (le altre al prossimo).`)
   const modaFound = found.size
 
   // Altre sezioni: la prima pagina, ogni giro dal punto in cui si era fermato il giro prima.
