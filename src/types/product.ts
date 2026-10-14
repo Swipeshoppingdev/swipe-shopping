@@ -66,6 +66,8 @@ export interface Filters {
   sort: SortOrder
   /** Solo prodotti scontati */
   onlyDeals?: boolean
+  /** Ultime categorie nuove già aggiunte a chi aveva scelto solo alcune categorie (vedi NEW_CATEGORIES in lib/filters) */
+  catsV?: number
 }
 
 export const DEFAULT_FILTERS: Filters = {
@@ -76,4 +78,5 @@ export const DEFAULT_FILTERS: Filters = {
   sizes: [],
   colors: [],
   sort: 'mix',
+  catsV: 1,
 }
