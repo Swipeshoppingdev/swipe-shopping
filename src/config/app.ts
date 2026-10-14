@@ -66,7 +66,7 @@ export const GOOGLE_CLIENT_ID = '104770095773-o6avbplvppk8lkgvq5ogc9trcj5uc55m.a
  * anche nelle app (il dominio controllato da Cloudflare è sempre swipeshopping.app). La chiave segreta va solo
  * in Supabase (Authentication → Attack Protection → Turnstile). Vuota = nessun controllo.
  */
-export const CAPTCHA_SITE_KEY = ''
+export const CAPTCHA_SITE_KEY = '0x4AAAAAAFW8Yg8a7q9ledBu'
 
 /**
  * Chiave pubblica Web Push (notifiche dal sito, anche su iPhone con il sito nella schermata Home).
