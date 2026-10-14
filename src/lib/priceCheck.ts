@@ -13,7 +13,7 @@ const MIN_PEERS = 12
 
 /** Il titolo contiene una parola del nome della categoria (Pantaloni → "pantalon"): scarta prodotti classificati male. */
 const stems = new Map<string, string[]>()
-function looksLike(p: Product) {
+export function looksLike(p: Product) {
   let st = stems.get(p.category)
   if (!st) {
     st = categoryLabel(p.category as CategoryId)
