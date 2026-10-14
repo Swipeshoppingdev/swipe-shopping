@@ -1,9 +1,10 @@
 name: Aggiorna catalogo Amazon
 
 on:
-  # Due aggiornamenti al giorno (prezzi sempre con meno di 24 ore, come richiede Amazon).
+  # Tre aggiornamenti al giorno (prezzi sempre con meno di 24 ore, come richiede Amazon; la prova del 14/10
+  # con 300 richieste subito dopo un giro intero non ha avuto risposte 429).
   # GitHub a volte ritarda o salta le partenze programmate: si prova ogni 2 ore e il giro parte
-  # solo se l'ultimo catalogo ha più di 10 ore (vedi il job "check"). A mano parte sempre.
+  # solo se l'ultimo catalogo ha più di 7 ore (vedi il job "check"). A mano parte sempre.
   schedule:
     - cron: '17 */2 * * *'
   # GitHub salta molte partenze programmate (il 13/10 nessuna tra le 03:25 e le 16:40): si controlla anche
@@ -39,7 +40,7 @@ jobs:
           if [ -z "$last" ] || [ "$last" = "null" ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
           age=$(( ($(date +%s) - $(date -d "$last" +%s)) / 3600 ))
           echo "Ultimo aggiornamento da Amazon: $last ($age ore fa)"
-          if [ "$age" -ge 10 ]; then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "run=false" >> "$GITHUB_OUTPUT"; fi
+          if [ "$age" -ge 7 ]; then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "run=false" >> "$GITHUB_OUTPUT"; fi
   sync:
     needs: check
     if: needs.check.outputs.run == 'true'
