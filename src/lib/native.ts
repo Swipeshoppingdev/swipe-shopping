@@ -80,4 +80,6 @@ export async function setupNative() {
   })
 
   void SplashScreen.hide()
+  // Pronto in anticipo: il primo tocco su un link non aspetta il caricamento del plugin.
+  void import('@capacitor/app-launcher').catch(() => {})
 }
