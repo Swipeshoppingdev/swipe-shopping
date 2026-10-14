@@ -83,6 +83,24 @@ await p.waitForTimeout(3000)
 await shot(p, '8-preferiti')
 await p.close()
 
+// 9. Tema scuro
+p = await page('moda', { theme: 'dark' })
+await p.goto(`${BASE}/#/scopri`)
+await ready(p)
+await shot(p, '9-scuro')
+await p.close()
+
+// 10-11. Mini giochi: Indovina il prezzo e Gratta lo sconto (partono dopo 10 swipe, qui manca solo l'ultimo)
+for (const [name, kind] of [['10-prezzo', 0], ['11-gratta', 6]]) {
+  p = await page('moda', { breakCount: 9, breakKind: kind })
+  await p.goto(`${BASE}/#/scopri`)
+  await ready(p)
+  await p.getByRole('button', { name: 'No, scarta' }).click()
+  await p.waitForTimeout(2500)
+  await shot(p, name)
+  await p.close()
+}
+
 // --- Screenshot con titolo, 1080x1920 ---
 const SLIDES = [
   ['1-moda', 'Scorri. Ti piace? Salvalo.', '#f43f5e'],
@@ -107,14 +125,22 @@ for (const [name, title, color] of SLIDES) {
   await frame.screenshot({ path: new URL(`screenshot/${name}.png`, OUT).pathname })
 }
 
-// --- Screenshot per l'App Store (iPhone 6,9", 1320x2868): stessi titoli, cornice più alta ---
+// --- Screenshot per l'App Store (iPhone 6,3", 1206x2622): massimo 10, con tema scuro e mini giochi ---
+const IOS_SLIDES = [
+  SLIDES[0],
+  ['10-prezzo', 'Indovina il prezzo tra uno swipe e l\'altro', '#7c3aed'],
+  SLIDES[1],
+  ['9-scuro', 'Anche con il tema scuro', '#171717'],
+  ['11-gratta', 'Gratta e scopri lo sconto', '#16a34a'],
+  SLIDES[2], SLIDES[4], SLIDES[5], SLIDES[7], SLIDES[3],
+]
 mkdirSync(new URL('appstore/', OUT), { recursive: true })
-const ios = await browser.newPage({ viewport: { width: 440, height: 956 }, deviceScaleFactor: 3 })
-for (const [name, title, color] of SLIDES) {
+const ios = await browser.newPage({ viewport: { width: 402, height: 874 }, deviceScaleFactor: 3 })
+for (const [name, title, color] of IOS_SLIDES) {
   const img = readFileSync(new URL(`raw/${name}.png`, OUT)).toString('base64')
-  await ios.setContent(`<!doctype html><html><body style="margin:0;width:440px;height:956px;overflow:hidden;background:${color};font-family:Inter,-apple-system,Roboto,sans-serif">
-    <div style="height:190px;display:flex;align-items:center;justify-content:center;padding:0 34px;text-align:center;color:#fff;font-weight:800;font-size:36px;line-height:1.12;letter-spacing:-.02em">${title}</div>
-    <div style="margin:0 auto;width:388px;border-radius:44px;overflow:hidden;box-shadow:0 22px 50px rgba(0,0,0,.35);border:8px solid #111;background:#fff">
+  await ios.setContent(`<!doctype html><html><body style="margin:0;width:402px;height:874px;overflow:hidden;background:${color};font-family:Inter,-apple-system,Roboto,sans-serif">
+    <div style="height:174px;display:flex;align-items:center;justify-content:center;padding:0 30px;text-align:center;color:#fff;font-weight:800;font-size:33px;line-height:1.12;letter-spacing:-.02em">${title}</div>
+    <div style="margin:0 auto;width:354px;border-radius:40px;overflow:hidden;box-shadow:0 22px 50px rgba(0,0,0,.35);border:7px solid #111;background:#fff">
       <img src="data:image/png;base64,${img}" style="width:100%;display:block">
     </div></body></html>`)
   await ios.waitForTimeout(200)
