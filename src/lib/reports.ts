@@ -1,5 +1,5 @@
 import { load, save } from './storage'
-import { supabase } from './supabase'
+import { getSupabase } from './supabase'
 
 /** Motivi per segnalare un prodotto: solo scelte già pronte, niente testo scritto. */
 export const REPORT_REASONS = [
@@ -19,6 +19,7 @@ export const alreadyReported = (id: string) => load<string[]>(KEY, []).includes(
 
 export async function reportProduct(productId: string, reason: ReportReason) {
   save(KEY, [...load<string[]>(KEY, []), productId].slice(-500))
+  const supabase = await getSupabase()
   if (!supabase) return
   await supabase.rpc('report_product', { p_product_id: productId, p_reason: reason })
 }

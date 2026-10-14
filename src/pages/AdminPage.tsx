@@ -4,7 +4,7 @@ import { ADMIN_EMAIL } from '../config/app'
 import { UNIVERSES, categoryLabel, isCategoryId } from '../config/categories'
 import { reasonLabel, type ReportRow } from '../lib/reports'
 import { openProduct } from '../lib/productSheet'
-import { supabase } from '../lib/supabase'
+import { hasSupabase, supabaseRpc } from '../lib/supabase'
 import { AdminBroadcast } from '../components/AdminBroadcast'
 import { AdminInsights } from '../components/AdminInsights'
 import { AdminOverview, PhoneStats } from '../components/AdminOverview'
@@ -80,9 +80,9 @@ function AdminStatsView() {
   const [result, setResult] = useState<{ days: number; stats?: AdminStats; error?: string } | null>(null)
 
   useEffect(() => {
-    if (!supabase) return
+    if (!hasSupabase) return
     let cancelled = false
-    supabase.rpc('admin_stats', { days }).then(({ data, error }) => {
+    supabaseRpc('admin_stats', { days }).then(({ data, error }) => {
       if (cancelled) return
       setResult(
         error
@@ -193,15 +193,15 @@ function AdminErrors() {
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
   useEffect(() => {
-    if (!supabase) return
-    supabase.rpc('admin_errors').then(({ data, error }) => {
+    if (!hasSupabase) return
+    supabaseRpc('admin_errors').then(({ data, error }) => {
       if (error) setError(error.message.includes('admin_errors') ? 'Manca lo script schema-16.sql in Supabase.' : error.message)
       else setRows((data as ErrorRow[]) ?? [])
     })
   }, [])
   if (error) return <p className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">Errori dell'app: {error}</p>
   // La chiamata va attesa con then(): senza, supabase-js non la manda mai (gli errori tornavano). Svuota anche le segnalazioni.
-  const clear = () => void supabase?.rpc('admin_errors_clear').then(({ error }) => (error ? alert(`Non svuotato: ${error.message}`) : setRows([])))
+  const clear = () => void supabaseRpc('admin_errors_clear').then(({ error }) => (error ? alert(`Non svuotato: ${error.message}`) : setRows([])))
   const feedback = all?.filter((r) => r.kind === 'segnalazione') ?? []
   const rows = all?.filter((r) => r.kind !== 'segnalazione') ?? []
   const whenF = (iso: string) => new Date(iso).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
@@ -289,15 +289,15 @@ function AdminReports() {
   const [rows, setRows] = useState<ReportRow[] | null>(null)
   const [error, setError] = useState('')
   useEffect(() => {
-    if (!supabase) return
-    supabase.rpc('admin_reports').then(({ data, error }) => {
+    if (!hasSupabase) return
+    supabaseRpc('admin_reports').then(({ data, error }) => {
       if (error) setError(error.message.includes('admin_reports') ? 'Manca lo script schema-12.sql in Supabase.' : error.message)
       else setRows((data as ReportRow[]) ?? [])
     })
   }, [])
   const done = (id: string) => {
     setRows((r) => r?.filter((x) => x.id !== id) ?? null)
-    void supabase?.rpc('admin_report_done', { p_product_id: id }).then(({ error }) => error && alert(`Non salvato: ${error.message}`))
+    void supabaseRpc('admin_report_done', { p_product_id: id }).then(({ error }) => error && alert(`Non salvato: ${error.message}`))
   }
   if (error) return <p className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">Segnalazioni: {error}</p>
   if (!rows) return null

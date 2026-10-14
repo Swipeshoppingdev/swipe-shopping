@@ -1,5 +1,5 @@
 import { load, save } from './storage'
-import { supabase } from './supabase'
+import { getSupabase } from './supabase'
 
 /**
  * Parte social (supabase/schema-4.sql): profili con nome generato, amici, liste regalo, sondaggi.
@@ -212,6 +212,7 @@ function friendly(message: string) {
 }
 
 async function rpc<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
+  const supabase = await getSupabase()
   if (!supabase) throw new Error('Account non disponibile.')
   const { data, error } = await supabase.rpc(fn, args)
   if (error) throw new Error(friendly(error.message))

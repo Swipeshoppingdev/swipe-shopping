@@ -1,6 +1,6 @@
 import { addSink, getConsent, onConsentChange, type AnalyticsEvent } from './analytics'
 import { load, save } from './storage'
-import { supabase } from './supabase'
+import { getSupabase, hasSupabase } from './supabase'
 
 /**
  * Invia a Supabase gli eventi anonimi (solo con consenso), a blocchi.
@@ -30,10 +30,12 @@ let queue: Row[] = []
 let timer: ReturnType<typeof setTimeout> | undefined
 let sessionSent = false
 
-function flush() {
+async function flush() {
   clearTimeout(timer)
   timer = undefined
-  if (!supabase || queue.length === 0 || getConsent() !== 'granted') return
+  if (!hasSupabase || queue.length === 0 || getConsent() !== 'granted') return
+  const supabase = await getSupabase()
+  if (!supabase) return
   // Gli eventi degli outfit vanno a parte: se in Supabase manca ancora schema-13.sql falliscono solo loro.
   const rows = queue.filter((r) => !r.name.startsWith('outfit_'))
   const outfitRows = queue.filter((r) => r.name.startsWith('outfit_'))
@@ -62,7 +64,7 @@ function startSession() {
 }
 
 export function startRemoteAnalytics() {
-  if (!supabase) return
+  if (!hasSupabase) return
   addSink((e) => enqueue({ name: e.name, product_id: e.productId, category: e.category, brand: e.brand }))
   onConsentChange((c) => {
     if (c === 'granted') startSession()

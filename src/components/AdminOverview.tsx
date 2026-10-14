@@ -12,7 +12,8 @@ export function AdminOverview() {
   const [missing, setMissing] = useState(false)
   useEffect(() => {
     let alive = true
-    void import('../lib/supabase').then(async ({ supabase }) => {
+    void import('../lib/supabase').then(async ({ getSupabase }) => {
+      const supabase = await getSupabase()
       if (!supabase) return
       const { data, error } = await supabase.rpc('admin_overview')
       if (!alive) return

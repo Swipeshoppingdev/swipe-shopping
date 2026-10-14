@@ -1,5 +1,6 @@
 import { useBoost } from '../lib/boost'
 import { countLikeForReview } from '../lib/review'
+import { whenIdle } from '../lib/idle'
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import { UNIVERSES, isUniverse, universeOf, type Universe } from '../config/categories'
 import { track } from '../lib/analytics'
@@ -259,7 +260,8 @@ function useAppStore() {
         if (!full && !signal?.aborted && p.length) setPreview(p)
       })
       .catch(() => {})
-    loadCatalog(first, signal)
+    // Se l'anteprima è già sullo schermo, il catalogo completo si legge in un momento libero (non a metà swipe).
+    loadCatalog(first, signal, () => (previewShown.current ? whenIdle() : Promise.resolve()))
       .then(async (r) => {
         full = true
         if (previewShown.current) dispatch({ type: 'pin', ids: deckRef.current.slice(0, 3).map((p) => p.id) })
@@ -276,9 +278,29 @@ function useAppStore() {
             resolve()
           }
         })
+        // Le altre sezioni una alla volta, quando il telefono è libero (prima tutte insieme: un blocco di quasi un secondo
+        // proprio mentre si fanno i primi swipe). La sezione aperta passa davanti e non aspetta.
+        let urgent = false
+        wakeRest.current = () => {
+          urgent = true
+        }
+        const rest: (Awaited<ReturnType<typeof loadCatalog>> | null)[] = []
+        const pending = [...others]
+        while (pending.length) {
+          if (signal?.aborted) return
+          const i = Math.max(0, pending.indexOf(modeRef.current))
+          urgent = false
+          const section = pending.splice(i, 1)[0]
+          rest.push(await loadCatalog(section, signal, () => (urgent || section === modeRef.current ? Promise.resolve() : whenIdle())).catch(() => null))
+          // Chi ha aperto proprio questa sezione la vede subito, senza aspettare le altre.
+          if (section === modeRef.current && pending.length && !signal?.aborted) {
+            const sofar = [...r.products, ...rest.flatMap((x) => x?.products ?? [])]
+            const sections = [...r.sections, ...others.filter((u) => !pending.includes(u))]
+            setNewBaseline(sofar)
+            dispatch({ type: 'catalog', catalog: { status: 'ready', products: sofar, exploreMode: false, sections } })
+          }
+        }
         wakeRest.current = null
-        if (signal?.aborted) return
-        const rest = await Promise.all(others.map((u) => loadCatalog(u, signal).catch(() => null)))
         if (signal?.aborted) return
         const products = [...r.products, ...rest.flatMap((x) => x?.products ?? [])]
         setNewBaseline(products)
@@ -349,10 +371,11 @@ function useAppStore() {
     const list = modeProducts.filter((p) => p.availability !== 'out_of_stock' && matchesFilters(p, activeFilters))
     const mixed = sortProducts(list, activeFilters.sort, MIX_SEED)
     // I prodotti appena arrivati per primi (sempre mescolati), poi tutti gli altri.
-    const fresh = new Set(mixed.filter((p) => isNew(p)))
-    // Con "La tua taglia": prima i capi con la taglia confermata, poi le novità, poi il resto.
-    const fit = new Set(activeFilters.sizes.length ? mixed.filter((p) => fitSizes(p.sizes, activeFilters.sizes).length) : [])
-    const ordered = [...mixed.filter((p) => fit.has(p) && fresh.has(p)), ...mixed.filter((p) => fit.has(p) && !fresh.has(p)), ...mixed.filter((p) => !fit.has(p) && fresh.has(p)), ...mixed.filter((p) => !fit.has(p) && !fresh.has(p))]
+    // Con "La tua taglia": prima i capi con la taglia confermata, poi le novità, poi il resto (un solo giro sulla lista).
+    const sizes = activeFilters.sizes
+    const buckets: Product[][] = [[], [], [], []]
+    for (const p of mixed) buckets[(sizes.length && fitSizes(p.sizes, sizes).length ? 0 : 2) + (isNew(p) ? 0 : 1)].push(p)
+    const ordered = buckets.flat()
     return { ordered, inList: new Set(list) }
   }, [modeProducts, activeFilters])
 
