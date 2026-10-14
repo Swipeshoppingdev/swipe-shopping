@@ -50,7 +50,9 @@ async function networkWithTimeout(event, req) {
 
 async function networkFirst(req) {
   try {
-    const res = await fetch(req)
+    // La pagina sempre ricontrollata col server (senza la cache HTTP di 10 minuti di GitHub Pages):
+    // dopo un aggiornamento del sito deve puntare ai file JS nuovi, quelli vecchi non esistono più.
+    const res = await fetch(req.mode === 'navigate' ? new Request(req.url, { cache: 'no-cache', credentials: 'same-origin' }) : req)
     if (res.ok) (await caches.open(CACHE)).put(req, res.clone())
     return res
   } catch (err) {
