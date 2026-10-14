@@ -1,6 +1,6 @@
 import { BarChart3, Loader2, Lock, Megaphone } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
-import { ADMIN_EMAIL } from '../config/app'
+import { isAdminEmail } from '../lib/admin'
 import { UNIVERSES, categoryLabel, isCategoryId } from '../config/categories'
 import { reasonLabel, type ReportRow } from '../lib/reports'
 import { openProduct } from '../lib/productSheet'
@@ -57,7 +57,7 @@ export function CommsPage() {
 
 function AdminOnly({ children }: { children: () => ReactNode }) {
   const auth = useAuth()
-  const isAdmin = auth.user?.email?.toLowerCase() === ADMIN_EMAIL
+  const isAdmin = isAdminEmail(auth.user?.email)
 
   if (!auth.ready) return <p className="py-10 text-center text-sm text-neutral-500">Caricamento…</p>
   if (!isAdmin) {

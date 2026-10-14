@@ -27,7 +27,8 @@ on:
 env:
   # 'weekly' = solo il lunedì, 'daily' = ogni notte, 'off' = mai.
   BACKUP_MAIL: daily
-  BACKUP_MAIL_TO: kevinconti0118@gmail.com
+  # L'indirizzo sta nel secret BACKUP_MAIL_TO (il repository è pubblico); senza secret va a info@ (inoltro Cloudflare).
+  BACKUP_MAIL_TO: ${{ secrets.BACKUP_MAIL_TO || 'info@swipeshopping.app' }}
 
 permissions:
   contents: read

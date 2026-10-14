@@ -8,6 +8,7 @@
 // Uso: `node scripts/push.ts` (con `--dry` mostra cosa manderebbe, senza inviare).
 import type { PushMessage } from './google.ts'
 import { pushSender, vapidKeys } from './webpush.ts'
+import { isAdminEmail } from '../src/lib/admin.ts'
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hlsqxxcztysnlijznjng.supabase.co'
 const { SUPABASE_SERVICE_ROLE_KEY, FCM_SERVICE_ACCOUNT } = process.env
@@ -50,9 +51,8 @@ console.log(`Chiave pubblica Web Push: ${vapidKeys(SUPABASE_SERVICE_ROLE_KEY).pu
 
 // Prova (push.yml con "prova"): una notifica fissa ai telefoni e browser dell'amministratore, per vedere se arriva.
 if (process.argv.includes('--prova')) {
-  const ADMIN = 'kevinconti0118@gmail.com' // src/config/app.ts ADMIN_EMAIL
   const { users } = await rest<{ users: { id: string; email?: string }[] }>('/auth/v1/admin/users?per_page=1000')
-  const admin = users.find((u) => u.email?.toLowerCase() === ADMIN)
+  const admin = users.find((u) => isAdminEmail(u.email))
   const mine = admin ? await rest<{ token: string; platform: string }[]>(`/rest/v1/push_tokens?user_id=eq.${admin.id}&select=token,platform`) : []
   const send = await pushSender('amici', { fcm: FCM_SERVICE_ACCOUNT, seed: SUPABASE_SERVICE_ROLE_KEY })
   for (const t of mine) console.log(`Prova ${t.platform}: ${await send(t.token, { title: 'Notifica di prova ✅', body: 'Le notifiche di Swipe Shopping funzionano', url: '#/profilo' })}`)

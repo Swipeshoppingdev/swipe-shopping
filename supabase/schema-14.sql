@@ -15,7 +15,7 @@ set search_path = ''
 as $$
   select exists (
     select 1 from auth.users
-    where id = auth.uid() and email = 'kevinconti0118@gmail.com' and email_confirmed_at is not null
+    where id = auth.uid() and encode(sha256(convert_to(lower(email), 'UTF8')), 'hex') = '661c2c44e6697e27434485a2dba44328ebfc61392493690bfbb3442360a7af92' and email_confirmed_at is not null
   );
 $$;
 revoke all on function public.is_admin() from public, anon;

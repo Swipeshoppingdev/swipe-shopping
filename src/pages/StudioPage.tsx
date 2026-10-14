@@ -3,7 +3,7 @@ import { Heart, Play, RefreshCw, X } from 'lucide-react'
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { hasSupabase, supabaseRpc } from '../lib/supabase'
 import { ProductImage } from '../components/ProductImage'
-import { ADMIN_EMAIL } from '../config/app'
+import { isAdminEmail } from '../lib/admin'
 import { categoryLabel, universeOf, type CategoryId } from '../config/categories'
 import { STYLE_LABEL, buildOutfits, outfitTotal, type Outfit } from '../lib/outfits'
 import { formatPrice, freshPrice } from '../lib/price'
@@ -255,7 +255,7 @@ const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab']
 export function StudioPage() {
   const auth = useAuth()
   if (!auth.ready) return null
-  if (auth.user?.email?.toLowerCase() !== ADMIN_EMAIL) {
+  if (!isAdminEmail(auth.user?.email)) {
     return <p className="py-16 text-center text-sm text-[#737373]">Questa pagina è riservata.</p>
   }
   return <Studio />

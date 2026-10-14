@@ -147,21 +147,20 @@ export function AccountActions({ children }: { children?: ReactNode }) {
   )
 }
 
-/** "Password dimenticata": al massimo 3 link all'ora da questo dispositivo (Supabase ne limita anche per indirizzo). */
-const MAX_RESETS = 3
-const RESETS_KEY = 'resetRequests'
-const recentResets = (): number[] => {
+/** "Password dimenticata": un link al minuto da questo dispositivo, come in Supabase (Minimum interval 60 s). */
+const RESET_GAP_MS = 60_000
+const RESET_KEY = 'lastResetRequest'
+const resetWait = () => {
   try {
-    const list = JSON.parse(localStorage.getItem(RESETS_KEY) ?? '[]') as unknown
-    return Array.isArray(list) ? list.filter((t): t is number => typeof t === 'number' && Date.now() - t < 3_600_000) : []
+    const last = Number(localStorage.getItem(RESET_KEY)) || 0
+    return Math.max(0, Math.ceil((last + RESET_GAP_MS - Date.now()) / 1000))
   } catch {
-    return []
+    return 0
   }
 }
-const resetsLeft = () => MAX_RESETS - recentResets().length
 const noteReset = () => {
   try {
-    localStorage.setItem(RESETS_KEY, JSON.stringify([...recentResets(), Date.now()]))
+    localStorage.setItem(RESET_KEY, String(Date.now()))
   } catch {
     // Senza memoria del browser resta solo il limite di Supabase.
   }
@@ -219,9 +218,9 @@ export function AuthForm({ initialMode = 'accedi' }: { initialMode?: Mode }) {
         setInfo(`Ti abbiamo mandato un'email a ${email.trim()}: apri il link per confermare l'account. Poi torna qui: entri in automatico.`)
       }
       if (mode === 'recupera') {
-        const left = resetsLeft()
-        if (left <= 0) {
-          setError(`Hai già chiesto ${MAX_RESETS} link nell'ultima ora. Controlla la posta (anche lo Spam) o riprova più tardi.`)
+        const wait = resetWait()
+        if (wait > 0) {
+          setError(`Ti abbiamo appena mandato un link: controlla la posta (anche lo Spam). Puoi chiederne un altro tra ${wait} secondi.`)
           return
         }
         await auth.resetPassword(email.trim())
