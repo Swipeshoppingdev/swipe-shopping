@@ -25,7 +25,8 @@ concurrency:
 
 jobs:
   build:
-    runs-on: macos-15
+    # Apple accetta solo app compilate con Xcode 26 (SDK iOS 26) o più recente.
+    runs-on: macos-26
     timeout-minutes: 60
     env:
       SIGNED: ${{ github.event_name == 'workflow_dispatch' && inputs.testflight }}
@@ -35,6 +36,11 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: Xcode più recente
+        run: |
+          x=$(ls -d /Applications/Xcode_*.app | grep -v beta | sort -V | tail -n 1)
+          sudo xcode-select -s "$x"
+          xcodebuild -version
       - run: npm ci
       - run: npm run build:app
       - name: Compila per il simulatore (senza firma)
