@@ -57,6 +57,8 @@ export function SwipeDeck({
   // "Salvato! Vedi su Amazon": per qualche secondo dopo un Sì, quando l'interesse è più alto.
   const [saved, setSaved] = useState<Product | null>(null)
   const savedTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const popTap = useRef<{ x: number; y: number; at: number } | null>(null)
+  const popOpened = useRef(0)
   const hideSavedIn = useCallback((ms: number) => {
     clearTimeout(savedTimer.current)
     savedTimer.current = setTimeout(() => setSaved(null), ms)
@@ -202,15 +204,39 @@ export function SwipeDeck({
               className="absolute inset-x-0 top-3 z-30 flex justify-center px-3"
               // Con il dito sopra il popup resta: se spariva a metà tocco, il tocco finiva sulla carta sotto
               // (si apriva la scheda) e il link Amazon sembrava non rispondere.
-              onPointerDown={() => clearTimeout(savedTimer.current)}
-              onPointerUp={() => hideSavedIn(SAVED_MS)}
-              onPointerCancel={() => hideSavedIn(SAVED_MS)}
+              onPointerDown={(e) => {
+                clearTimeout(savedTimer.current)
+                popTap.current = { x: e.clientX, y: e.clientY, at: e.timeStamp }
+              }}
+              onPointerUp={(e) => {
+                hideSavedIn(SAVED_MS)
+                // Su Android il primo tocco sul popup appena comparso spesso non diventava un click (ne servivano due):
+                // a dito alzato, se è stato un tocco breve e fermo, il link si apre da qui.
+                const t = popTap.current
+                popTap.current = null
+                if (e.pointerType === 'mouse' || !t) return
+                if (Math.hypot(e.clientX - t.x, e.clientY - t.y) > 12 || e.timeStamp - t.at > 800) return
+                const a = (e.currentTarget as HTMLElement).querySelector('a')
+                if (!a) return
+                popOpened.current = Date.now()
+                a.click()
+              }}
+              onPointerCancel={() => {
+                popTap.current = null
+                hideSavedIn(SAVED_MS)
+              }}
             >
               <StoreLink
                 product={saved}
                 icon={false}
                 // Si va su Amazon: il Sì si registra subito dopo aver aperto il link (vedi SAVED_COMMIT_MS).
-                onClickCapture={() => {
+                onClickCapture={(e) => {
+                  // Il click vero che arriva dopo quello fatto a dito alzato non riapre il link.
+                  if (e.nativeEvent.isTrusted && Date.now() - popOpened.current < 1000) {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    return
+                  }
                   setTimeout(flush, 250)
                   hideSavedIn(600)
                 }}
