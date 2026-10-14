@@ -144,7 +144,7 @@ function AdminStatsView() {
               <Stat label="Oggi" value={stats.devices_today} />
               <Stat label="Ultimi 7 giorni" value={stats.devices_7d} />
               <Stat label={`Ultimi ${days} giorni`} value={stats.devices_period} />
-              <Stat label="Utenti registrati" value={stats.users_total} hint={`+${stats.users_new_7d} in 7 gg`} />
+              <Stat label="Account creati (anche non confermati)" value={stats.users_total} hint={`+${stats.users_new_7d} in 7 gg`} />
             </Grid>
             <p className="mt-2 text-xs text-neutral-500">
               Conta i dispositivi che hanno accettato le statistiche anonime. {stats.alerts_on} account ricevono gli avvisi
