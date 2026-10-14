@@ -1,4 +1,4 @@
-// Screenshot e grafica per la scheda di Google Play, con i prodotti veri del catalogo.
+// Screenshot e grafica per le schede di Google Play e App Store, con i prodotti veri del catalogo.
 // Si usa dal workflow "Grafica store" (serve internet per le foto Amazon): node scripts/store/shots.mjs
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { chromium } from 'playwright'
@@ -105,6 +105,20 @@ for (const [name, title, color] of SLIDES) {
     </div></body></html>`)
   await frame.waitForTimeout(200)
   await frame.screenshot({ path: new URL(`screenshot/${name}.png`, OUT).pathname })
+}
+
+// --- Screenshot per l'App Store (iPhone 6,9", 1320x2868): stessi titoli, cornice più alta ---
+mkdirSync(new URL('appstore/', OUT), { recursive: true })
+const ios = await browser.newPage({ viewport: { width: 440, height: 956 }, deviceScaleFactor: 3 })
+for (const [name, title, color] of SLIDES) {
+  const img = readFileSync(new URL(`raw/${name}.png`, OUT)).toString('base64')
+  await ios.setContent(`<!doctype html><html><body style="margin:0;width:440px;height:956px;overflow:hidden;background:${color};font-family:Inter,-apple-system,Roboto,sans-serif">
+    <div style="height:190px;display:flex;align-items:center;justify-content:center;padding:0 34px;text-align:center;color:#fff;font-weight:800;font-size:36px;line-height:1.12;letter-spacing:-.02em">${title}</div>
+    <div style="margin:0 auto;width:388px;border-radius:44px;overflow:hidden;box-shadow:0 22px 50px rgba(0,0,0,.35);border:8px solid #111;background:#fff">
+      <img src="data:image/png;base64,${img}" style="width:100%;display:block">
+    </div></body></html>`)
+  await ios.waitForTimeout(200)
+  await ios.screenshot({ path: new URL(`appstore/${name}.png`, OUT).pathname })
 }
 
 // --- Grafica in evidenza, 1024x500 ---
