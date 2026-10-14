@@ -8,7 +8,8 @@ import { categoryLabel, universeOf, type CategoryId } from '../config/categories
 import { STYLE_LABEL, buildOutfits, outfitTotal, type Outfit } from '../lib/outfits'
 import { formatPrice, freshPrice } from '../lib/price'
 import { colorSwatch } from '../config/colors'
-import { cheaperAlternatives } from '../lib/priceCheck'
+import { cheaperAlternatives, looksLike } from '../lib/priceCheck'
+import { priceOptions } from '../lib/priceGame'
 import { routeHref } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
 import { useAuth } from '../state/AuthState'
@@ -23,8 +24,10 @@ type Format =
   | 'offerte' | 'sfida' | 'outfit' | 'swipe' | 'meme' | 'prezzo' | 'sconto' | 'marche' | 'caro' | 'budget' | 'sotto' | 'regali'
   | 'colore' | 'vetrina' | 'mood' | 'pioggia' | 'stop' | 'mese' | 'tieni' | 'chat' | 'notifiche' | 'scontrino' | 'ruota'
   | 'slot' | 'cerca' | 'note' | 'furbo'
-type Group = 'offerte' | 'giochi' | 'stile' | 'risate' | 'belli'
+  | 'quale' | 'stima' | 'voto' | 'completa' | 'classifica' | 'intruso' | 'domanda'
+type Group = 'offerte' | 'giochi' | 'stile' | 'risate' | 'belli' | 'post'
 const GROUPS: { id: Group; label: string }[] = [
+  { id: 'post', label: '💬 Post X, Threads, WhatsApp' },
   { id: 'risate', label: '😂 Divertenti' },
   { id: 'giochi', label: '🎮 Giochi' },
   { id: 'belli', label: '✨ Belli da vedere' },
@@ -33,6 +36,13 @@ const GROUPS: { id: Group; label: string }[] = [
 ]
 /** Ogni formato: nome, icona, a cosa serve (una riga) e il gruppo del menu. */
 const FORMATS: { id: Format; label: string; emoji: string; desc: string; group: Group }[] = [
+  { id: 'quale', label: 'Quale scegli?', emoji: '🔢', desc: '4 pezzi numerati, si risponde col numero', group: 'post' },
+  { id: 'stima', label: 'Quanto costa?', emoji: '🤑', desc: 'Prezzo nascosto, A, B o C', group: 'post' },
+  { id: 'voto', label: 'Voto da 1 a 10', emoji: '💯', desc: 'Un pezzo solo, tutti danno il voto', group: 'post' },
+  { id: 'completa', label: 'Completa l\'outfit', emoji: '🧩', desc: 'Manca un pezzo: cosa ci metti?', group: 'post' },
+  { id: 'classifica', label: 'Fai la classifica', emoji: '📊', desc: 'A, B, C, D dal più bello', group: 'post' },
+  { id: 'intruso', label: 'Uno costa il triplo', emoji: '🕵️', desc: 'Trova quello carissimo', group: 'post' },
+  { id: 'domanda', label: 'Domanda del giorno', emoji: '❓', desc: 'Solo testo, fa discutere', group: 'post' },
   { id: 'stop', label: 'Ferma il video', emoji: '✋', desc: 'Quello che esce è il tuo regalo', group: 'risate' },
   { id: 'mese', label: 'Il tuo mese', emoji: '📅', desc: 'Il mese di nascita è il tuo outfit', group: 'risate' },
   { id: 'chat', label: 'Chat', emoji: '💬', desc: 'Conversazione con un finale da ridere', group: 'risate' },
@@ -62,7 +72,7 @@ const FORMATS: { id: Format; label: string; emoji: string; desc: string; group: 
   { id: 'marche', label: 'Marche più amate', emoji: '🏆', desc: 'Classifica dai Sì della settimana', group: 'stile' },
 ]
 /** Formati con uomo/donna (gli outfit) */
-const WITH_GENDER: Format[] = ['sfida', 'outfit', 'budget', 'regali', 'colore', 'vetrina', 'mood', 'stop', 'mese', 'tieni', 'chat', 'slot', 'cerca', 'note', 'furbo']
+const WITH_GENDER: Format[] = ['quale', 'voto', 'completa', 'classifica', 'sfida', 'outfit', 'budget', 'regali', 'colore', 'vetrina', 'mood', 'stop', 'mese', 'tieni', 'chat', 'slot', 'cerca', 'note', 'furbo']
 
 /**
  * Meme in tre stili, tutti con layout nostri (nessun template coperto da diritti):
@@ -161,6 +171,56 @@ function pick<T>(list: T[], n: number, rand: () => number) {
   return out
 }
 
+/**
+ * Post da commentare per X, Threads e il canale WhatsApp: un'immagine ferma 4:5 (la mostrano intera tutti e tre),
+ * da salvare con uno screenshot. Sul canale WhatsApp non si commenta: si risponde con le reazioni o con un sondaggio.
+ */
+const POSTS: Format[] = ['quale', 'stima', 'voto', 'completa', 'classifica', 'intruso', 'domanda']
+/** Reazioni rapide di WhatsApp, una per risposta (1-4 o A-D) */
+const WA_REACT = ['👍', '❤️', '😂', '😮']
+const POST_FOOT = 'swipeshopping.app #pubblicità'
+/** Domande solo testo: niente prodotti, fanno rispondere tutti (anche chi non compra). */
+const DOMANDE: { kicker: string; text: string; a?: string; b?: string }[] = [
+  { kicker: 'Questo o quello', text: 'Sneakers bianche o sneakers nere?', a: 'Bianche', b: 'Nere' },
+  { kicker: 'Questo o quello', text: 'Jeans larghi o jeans skinny?', a: 'Larghi', b: 'Skinny' },
+  { kicker: 'Questo o quello', text: 'Borsa grande o borsa piccola?', a: 'Grande', b: 'Piccola' },
+  { kicker: 'Questo o quello', text: 'Felpa o maglione?', a: 'Felpa', b: 'Maglione' },
+  { kicker: 'Questo o quello', text: 'Shopping in negozio o online?', a: 'Negozio', b: 'Online' },
+  { kicker: 'Questo o quello', text: 'Oro o argento?', a: 'Oro', b: 'Argento' },
+  { kicker: 'Questo o quello', text: 'Stivali o anfibi?', a: 'Stivali', b: 'Anfibi' },
+  { kicker: 'Questo o quello', text: 'Profumo dolce o fresco?', a: 'Dolce', b: 'Fresco' },
+  { kicker: 'Questo o quello', text: 'Cappotto lungo o piumino?', a: 'Cappotto', b: 'Piumino' },
+  { kicker: 'Questo o quello', text: 'Tutto nero o tutto colorato?', a: 'Nero', b: 'Colori' },
+  { kicker: 'Questo o quello', text: 'Zaino o borsa a tracolla?', a: 'Zaino', b: 'Tracolla' },
+  { kicker: 'Questo o quello', text: 'Comprare una cosa costosa o tre economiche?', a: 'Una costosa', b: 'Tre economiche' },
+  { kicker: 'Opinione impopolare', text: 'I calzini con i sandali stanno bene. D\'accordo?', a: 'D\'accordo', b: 'Mai' },
+  { kicker: 'Opinione impopolare', text: 'Il Black Friday non conviene davvero. D\'accordo?', a: 'D\'accordo', b: 'Conviene' },
+  { kicker: 'Opinione impopolare', text: 'Le sneakers con il vestito elegante stanno benissimo.', a: 'Vero', b: 'No' },
+  { kicker: 'Opinione impopolare', text: 'Il marrone è più elegante del nero.', a: 'Vero', b: 'No' },
+  { kicker: 'Opinione impopolare', text: 'Le marche costose non durano di più.', a: 'Vero', b: 'Falso' },
+  { kicker: 'Opinione impopolare', text: 'La tuta va bene anche per uscire.', a: 'Sì', b: 'No' },
+  { kicker: 'Dimmi la verità', text: 'Quanti vestiti hai che non hai mai messo?', a: 'Zero', b: 'Troppi' },
+  { kicker: 'Dimmi la verità', text: 'Hai mai comprato una cosa solo perché era scontata?', a: 'Sì', b: 'Mai' },
+  { kicker: 'Dimmi la verità', text: 'Quante volte apri un\'app di shopping al giorno?', a: '1 o 2', b: 'Ho perso il conto' },
+  { kicker: 'Dimmi la verità', text: 'Nascondi i pacchi a casa?', a: 'Sì', b: 'No' },
+  { kicker: 'Dimmi la verità', text: 'Il carrello pieno che non compri mai: ce l\'hai?', a: 'Sì', b: 'No' },
+  { kicker: 'Dimmi la verità', text: 'Hai mai tenuto un vestito che dovevi restituire?', a: 'Sì', b: 'No' },
+  { kicker: 'Domanda del giorno', text: 'Qual è l\'acquisto che rimpiangi di più?' },
+  { kicker: 'Domanda del giorno', text: 'Il capo che metti di più in assoluto?' },
+  { kicker: 'Domanda del giorno', text: 'Quanto spenderesti al massimo per un paio di scarpe?' },
+  { kicker: 'Domanda del giorno', text: 'Descrivi il tuo stile in 3 emoji.' },
+  { kicker: 'Domanda del giorno', text: 'Il regalo più bello che hai ricevuto?' },
+  { kicker: 'Domanda del giorno', text: 'La marca che compri sempre?' },
+  { kicker: 'Domanda del giorno', text: 'Cosa non può mancare nel tuo armadio?' },
+  { kicker: 'Domanda del giorno', text: 'Il colore che non metteresti mai?' },
+  { kicker: 'Domanda del giorno', text: 'Cosa compreresti con 50 € adesso?' },
+  { kicker: 'Domanda del giorno', text: 'Il tuo outfit perfetto per il primo appuntamento?' },
+  { kicker: 'Completa la frase', text: 'Non esco mai di casa senza…' },
+  { kicker: 'Completa la frase', text: 'Il mio armadio in una parola è…' },
+  { kicker: 'Completa la frase', text: 'Se vinco 1000 € compro subito…' },
+  { kicker: 'Completa la frase', text: 'La moda che non capirò mai è…' },
+]
+
 /** Un fotogramma del video: cosa mostrare e per quanti millisecondi */
 interface Slide {
   ms: number
@@ -170,9 +230,9 @@ interface Slide {
   /** Fotogrammi consecutivi con lo stesso group restano fermi: cambia solo il contenuto (es. i secondi del countdown) */
   group?: string
 }
-/** I fotogrammi e la didascalia pronta per il post */
-type Slides = Slide[] & { caption?: string }
-const withCaption = (caption: string, slides: Slide[]): Slides => Object.assign(slides, { caption })
+/** I fotogrammi e la didascalia pronta per il post; per i post anche la versione per il canale WhatsApp e una nota solo per il titolare (la risposta giusta) */
+type Slides = Slide[] & { caption?: string; wa?: string; note?: string }
+const withCaption = (caption: string, slides: Slide[], extra?: { wa?: string; note?: string }): Slides => Object.assign(slides, { caption }, extra)
 
 const TAGS = '#swipeshopping #shoppingonline #moda #offerte #outfit'
 /** In fondo a ogni post: dove trovare l'app e la dicitura obbligatoria per i link di affiliazione. */
@@ -359,6 +419,120 @@ function Studio() {
     }
     // Moda del genere scelto (e unisex)
     const forGender = (p: Product) => p.gender === gender || p.gender === 'unisex'
+    if (POSTS.includes(format)) {
+      // Post fermi: n prodotti della stessa categoria (titolo coerente con la categoria), marche diverse.
+      const sameCategory = (pool: Product[], n: number) => {
+        const byCat = new Map<string, Product[]>()
+        for (const p of pick(pool, 1500, rand)) {
+          const list = byCat.get(p.category) ?? []
+          if (list.some((x) => x.brand === p.brand)) continue
+          list.push(p)
+          if (list.length === n) return list
+          byCat.set(p.category, list)
+        }
+        return null
+      }
+      const modaPool = moda.filter((p) => inStock(p) && forGender(p) && looksLike(p) && !freshPrice(p)!.from)
+      const label = (p: Product) => categoryLabel(p.category as CategoryId)
+      if (format === 'quale') {
+        const items = sameCategory(modaPool, 4)
+        if (!items) return []
+        const cat = label(items[0]).toLowerCase()
+        return withCaption(
+          `Quale scegli? 1, 2, 3 o 4? 👇\n\n${label(items[0])} da ${gender}, prezzi di oggi.\n\n${POST_FOOT}`,
+          [{ ms: 60_000, node: <PostGrid kicker={`${cat} da ${gender}`} title="QUALE SCEGLI?" items={items} labels={['1', '2', '3', '4']} prices /> }],
+          { wa: `Quale scegli? 🤔 Rispondi con una reazione:\n${WA_REACT.map((e, i) => `${e} = ${i + 1}`).join('   ')}\n\nswipeshopping.app` },
+        )
+      }
+      if (format === 'classifica') {
+        const items = sameCategory(modaPool, 4)
+        if (!items) return []
+        return withCaption(
+          `Mettili in classifica dal più bello al meno bello 👇\nTipo: B, A, D, C\n\n${label(items[0])} da ${gender}.\n\n${POST_FOOT}`,
+          [{ ms: 60_000, node: <PostGrid kicker={`${label(items[0]).toLowerCase()} da ${gender}`} title="FAI LA CLASSIFICA" sub="dal più bello al meno bello" items={items} labels={['A', 'B', 'C', 'D']} /> }],
+          { wa: `Il più bello per te? Rispondi con una reazione:\n${WA_REACT.map((e, i) => `${e} = ${'ABCD'[i]}`).join('   ')}\n\nswipeshopping.app` },
+        )
+      }
+      if (format === 'intruso') {
+        // Quattro pezzi della stessa categoria: uno costa almeno il triplo degli altri tre.
+        const pool = allProducts.filter((p) => inStock(p) && looksLike(p) && !freshPrice(p)!.from && (universeOf(p.category) !== 'moda' || forGender(p)))
+        const byCat = new Map<string, Product[]>()
+        for (const p of pick(pool, 3000, rand)) byCat.set(p.category, [...(byCat.get(p.category) ?? []), p])
+        for (const list of byCat.values()) {
+          const top = list.reduce((m, p) => (freshPrice(p)!.price > freshPrice(m)!.price ? p : m), list[0])
+          const cheap: Product[] = []
+          for (const p of list) {
+            if (cheap.length < 3 && p.brand !== top.brand && freshPrice(p)!.price * 3 <= freshPrice(top)!.price && !cheap.some((x) => x.brand === p.brand)) cheap.push(p)
+          }
+          if (cheap.length < 3 || freshPrice(top)!.price < 30) continue
+          const items = pick([top, ...cheap], 4, rand)
+          const n = items.indexOf(top) + 1
+          return withCaption(
+            `Uno di questi costa almeno il triplo degli altri. Quale? 🕵️ 1, 2, 3 o 4? 👇\n\nRisposta tra qualche ora.\n\n${POST_FOOT}`,
+            [{ ms: 60_000, node: <PostGrid kicker={label(top).toLowerCase()} title="UNO COSTA IL TRIPLO" sub="Quale?" items={items} labels={['1', '2', '3', '4']} /> }],
+            {
+              wa: `Uno costa almeno il triplo degli altri: quale? 🕵️\n${WA_REACT.map((e, i) => `${e} = ${i + 1}`).join('   ')}\n\nswipeshopping.app`,
+              note: `Risposta: il numero ${n} (${top.brand ?? ''}, ${formatPrice(freshPrice(top)!.price)}). Gli altri: ${items.filter((p) => p !== top).map((p) => formatPrice(freshPrice(p)!.price)).join(', ')}.`,
+            },
+          )
+        }
+        return []
+      }
+      if (format === 'stima') {
+        for (const p of pick(allProducts.filter((p) => inStock(p) && looksLike(p) && freshPrice(p)!.price >= 20), 60, rand)) {
+          const opts = priceOptions(p, rand)
+          if (!opts) continue
+          const right = 'ABC'[opts.options.indexOf(opts.price)]
+          return withCaption(
+            `Quanto costa? 🤑 A, B o C? Scrivilo nei commenti 👇\n\nRisposta tra qualche ora.\n\n${POST_FOOT}`,
+            [{ ms: 60_000, node: <PostGuess product={p} options={opts.options} /> }],
+            {
+              wa: `Quanto costa? 🤑\n${opts.options.map((o, i) => `${WA_REACT[i]} = ${formatPrice(o)}`).join('\n')}\n\nswipeshopping.app`,
+              note: `Risposta: ${right} (${formatPrice(opts.price)}). Scrivila sotto il post dopo qualche ora.`,
+            },
+          )
+        }
+        return []
+      }
+      if (format === 'voto') {
+        const [p] = pick(modaPool.filter((p) => p.brand), 1, rand)
+        if (!p) return []
+        return withCaption(
+          `Voto da 1 a 10? 👇 Si accettano anche gli 0.\n\n${p.brand} a ${formatPrice(freshPrice(p)!.price)}, oggi.\n\n${POST_FOOT}`,
+          [{ ms: 60_000, node: <PostVote product={p} /> }],
+          { wa: `Lo prenderesti? 🤔\n🔥 = sì subito   👍 = forse   😂 = mai\n\nswipeshopping.app` },
+        )
+      }
+      if (format === 'completa') {
+        const SHOES = /scarpe|sneaker|stivali|anfibi|mocassin|décolleté|sandali|ballerine/i
+        const ok = outfits.filter((o) => o.items.length === 4)
+        const [o] = pick(ok, 1, rand)
+        if (!o) return []
+        const missing = o.items.find((p) => SHOES.test(label(p))) ?? o.items[3]
+        const shown = o.items.filter((p) => p !== missing)
+        const what = label(missing).toLowerCase()
+        return withCaption(
+          `Completa l'outfit 🧩 Manca un pezzo: ${what}. Cosa ci metteresti? 👇\n\n${POST_FOOT}`,
+          [{ ms: 60_000, node: <PostMissing items={shown} what={label(missing)} gender={o.gender} /> }],
+          {
+            wa: `Completa l'outfit 🧩 Manca: ${what}.\n👍 = classico   ❤️ = colorato   😮 = esagerato\n\nswipeshopping.app`,
+            note: `Nel look originale: ${missing.brand ?? ''} ${label(missing)} a ${formatPrice(freshPrice(missing)?.price ?? 0)}.`,
+          },
+        )
+      }
+      // Domanda del giorno: solo testo
+      const [q] = pick(DOMANDE, 1, rand)
+      const choice = q.a && q.b
+      return withCaption(
+        `${q.text} 👇\n\nswipeshopping.app`,
+        [{ ms: 60_000, node: <PostQuestion kicker={q.kicker} text={q.text} a={q.a} b={q.b} /> }],
+        {
+          wa: choice
+            ? `${q.text}\n👍 = ${q.a}   ❤️ = ${q.b}\n\nswipeshopping.app`
+            : `${q.text}\nRispondi con un'emoji 👇\n\nswipeshopping.app`,
+        },
+      )
+    }
     if (format === 'budget') {
       // Con un budget fisso: capi di categorie diverse finché il totale ci sta.
       const budget = [30, 50, 100][Math.floor(rand() * 3)]
@@ -693,12 +867,13 @@ function Studio() {
   // Anteprima: il primo fotogramma "vero" (dopo il titolo), così si vede cosa uscirà.
   const previewAt: Partial<Record<Format, number>> = { swipe: 0, meme: 0, prezzo: 4, sconto: 2, caro: 4, budget: 1, colore: 5, vetrina: 1, mood: 0, pioggia: 0, stop: 1, mese: 1, tieni: 1, chat: 0, notifiche: 0, scontrino: 0, ruota: 0, slot: 1, cerca: 0, note: 0, furbo: 3 }
   const current = slides[playing ? step : Math.min(previewAt[format] ?? 1, slides.length - 1)]
+  const isPost = POSTS.includes(format)
 
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center bg-[#000]">
-      {/* Il palco: 9:16, grande quanto lo schermo del telefono */}
+      {/* Il palco: 9:16, grande quanto lo schermo del telefono; 4:5 per i post fermi */}
       <div
-        className="relative h-full max-h-[calc(100vw*16/9)] w-full max-w-[calc(100dvh*9/16)] overflow-hidden bg-gradient-to-b from-[#1a0b14] via-[#14080f] to-[#000] text-[#fff]"
+        className={`@container relative ${isPost ? 'aspect-[4/5] w-full max-w-[calc(100dvh*4/5)]' : 'h-full max-h-[calc(100vw*16/9)] w-full max-w-[calc(100dvh*9/16)]'} overflow-hidden bg-gradient-to-b from-[#1a0b14] via-[#14080f] to-[#000] text-[#fff]`}
         onClick={() => (playing ? stop() : setPanel((v) => !v))}
       >
         {/* Luci di sfondo con gradienti radiali e non con blur: su iPhone il blur fa comparire riquadri scuri nelle registrazioni */}
@@ -712,7 +887,7 @@ function Studio() {
           <motion.div
             key={`${format}-${variant}-${playing ? (current?.group ?? step) : 'preview'}`}
             // Zona sicura dei Reels/TikTok, valida per tutti i formati: margine a destra (icone) e sotto (nome e didascalia), contenuto centrato in altezza.
-            className="absolute top-[15%] right-[12%] bottom-[18%] left-[9%] flex flex-col"
+            className={`absolute flex flex-col ${isPost ? 'inset-[5%]' : 'top-[15%] right-[12%] bottom-[18%] left-[9%]'}`}
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -24 }}
@@ -750,15 +925,17 @@ function Studio() {
             <button type="button" onClick={() => setVariant((v) => v + 1)} className="inline-flex items-center gap-1.5 rounded-full bg-[#2a2a30] px-4 py-2 text-sm font-semibold text-[#fff] ring-1 ring-[#fff]/20">
               <RefreshCw className="size-4" /> Altri
             </button>
-            <button type="button" onClick={start} disabled={!slides.length} className="inline-flex items-center gap-1.5 rounded-full bg-[#f43f5e] px-5 py-2 text-sm font-bold text-[#fff] disabled:opacity-40">
+            {!isPost && <button type="button" onClick={start} disabled={!slides.length} className="inline-flex items-center gap-1.5 rounded-full bg-[#f43f5e] px-5 py-2 text-sm font-bold text-[#fff] disabled:opacity-40">
               <Play className="size-4 fill-current" /> Avvia
-            </button>
+            </button>}
             <a href={routeHref('profilo')} aria-label="Chiudi Studio" className="grid size-9 place-items-center rounded-full bg-[#2a2a30] text-[#fff] ring-1 ring-[#fff]/20">
               <X className="size-5" />
             </a>
           </div>
           <Calendar current={format} onPick={setFormat} />
-          {slides.caption && <CaptionBox text={slides.caption} />}
+          {slides.note && <p className="rounded-xl bg-[#facc15]/15 p-2.5 text-xs text-[#fde68a] ring-1 ring-[#facc15]/30">🔒 Solo per te. {slides.note}</p>}
+          {slides.caption && <CaptionBox text={slides.caption} label={isPost ? 'X e Threads' : undefined} />}
+          {slides.wa && <CaptionBox text={slides.wa} label="Canale WhatsApp (lì si risponde con le reazioni)" />}
           {format === 'meme' && (
             <div className="space-y-2">
               <div className="flex flex-wrap justify-center gap-2">
@@ -798,7 +975,7 @@ function Studio() {
             </div>
           )}
           <p className="text-center text-xs text-[#fff]/75">
-            Avvia la registrazione schermo, poi tocca Avvia. Tocca il video per fermarlo. Tocca l'anteprima per nascondere o mostrare i comandi.
+            {isPost ? 'Tocca l\'immagine per nascondere i comandi, fai uno screenshot e ritaglialo sul riquadro. "Altri" cambia i prodotti.' : <>Avvia la registrazione schermo, poi tocca Avvia. Tocca il video per fermarlo. Tocca l'anteprima per nascondere o mostrare i comandi.</>}
           </p>
         </div>
       )}
@@ -1901,7 +2078,7 @@ function Calendar({ current, onPick }: { current: Format; onPick: (f: Format) =>
 }
 
 /** Didascalia pronta per il post, da copiare con un tocco. */
-function CaptionBox({ text }: { text: string }) {
+function CaptionBox({ text, label }: { text: string; label?: string }) {
   const [copied, setCopied] = useState(false)
   const [open, setOpen] = useState(false)
   const copy = async () => {
@@ -1915,6 +2092,7 @@ function CaptionBox({ text }: { text: string }) {
   }
   return (
     <div className="rounded-xl bg-[#1c1c21] p-2.5 ring-1 ring-[#fff]/15">
+      {label && <p className="mb-1 text-[11px] font-bold text-[#fff]/60 uppercase">{label}</p>}
       <button type="button" onClick={() => setOpen(!open)} className={`w-full text-left text-xs whitespace-pre-line text-[#fff]/85 ${open ? 'max-h-40 overflow-y-auto' : 'line-clamp-2'}`}>
         {text}
       </button>
@@ -2147,5 +2325,103 @@ function Dupe({ a, b, stage }: { a: Product; b: Product; stage: number }) {
         )}
       </div>
     </div>
+  )
+}
+
+/** Post fermo 4:5: titolo in alto, contenuto, firma in basso (l'immagine gira da sola, senza didascalia). */
+function PostFrame({ kicker, title, sub, children }: { kicker: string; title: string; sub?: string; children: ReactNode }) {
+  return (
+    <div className="flex flex-1 flex-col gap-[3cqw]">
+      <div className="text-center">
+        <p className="text-[3.4cqw] font-bold tracking-[0.25em] text-[#fb7185] uppercase">{kicker}</p>
+        <h1 className="mt-[1cqw] text-[8.5cqw] leading-none font-black tracking-tight">{title}</h1>
+        {sub && <p className="mt-[1.2cqw] text-[4cqw] text-[#fff]/75">{sub}</p>}
+      </div>
+      <div className="flex min-h-0 flex-1 flex-col justify-center">{children}</div>
+      <div className="flex items-center justify-between text-[3.4cqw] text-[#fff]/70">
+        <Logo className="!text-[4.6cqw]" />
+        <span className="font-semibold">swipeshopping.app</span>
+      </div>
+    </div>
+  )
+}
+
+function PostTile({ product, label, price }: { product: Product; label: string; price?: boolean }) {
+  return (
+    <div className="relative">
+      <ProductImage product={product} eager className="aspect-square w-full overflow-hidden rounded-[3cqw]" />
+      <span className="absolute top-[1.6cqw] left-[1.6cqw] grid size-[9cqw] place-items-center rounded-full bg-[#fff] text-[5cqw] font-black text-[#111] shadow-lg">{label}</span>
+      {price && (
+        <span className="absolute right-[1.6cqw] bottom-[1.6cqw] rounded-full bg-[#000]/80 px-[2cqw] py-[0.6cqw] text-[3.6cqw] font-bold">{formatPrice(freshPrice(product)!.price)}</span>
+      )}
+    </div>
+  )
+}
+
+function PostGrid({ kicker, title, sub, items, labels, prices }: { kicker: string; title: string; sub?: string; items: Product[]; labels: string[]; prices?: boolean }) {
+  return (
+    <PostFrame kicker={kicker} title={title} sub={sub}>
+      <div className="mx-auto grid w-[76%] grid-cols-2 gap-[2.4cqw]">
+        {items.map((p, i) => <PostTile key={p.id} product={p} label={labels[i]} price={prices} />)}
+      </div>
+    </PostFrame>
+  )
+}
+
+function PostGuess({ product, options }: { product: Product; options: number[] }) {
+  return (
+    <PostFrame kicker={product.brand ?? categoryLabel(product.category as CategoryId)} title="QUANTO COSTA?">
+      <ProductImage product={product} eager className="mx-auto aspect-square w-[62%] overflow-hidden rounded-[4cqw]" />
+      <div className="mt-[3cqw] grid grid-cols-3 gap-[2cqw]">
+        {options.map((o, i) => (
+          <div key={o} className="rounded-[3cqw] bg-[#fff]/10 py-[2cqw] text-center ring-1 ring-[#fff]/25">
+            <p className="text-[4cqw] font-black text-[#fb7185]">{'ABC'[i]}</p>
+            <p className="text-[5cqw] font-black">{formatPrice(o)}</p>
+          </div>
+        ))}
+      </div>
+    </PostFrame>
+  )
+}
+
+function PostVote({ product }: { product: Product }) {
+  return (
+    <PostFrame kicker={`${product.brand} · ${formatPrice(freshPrice(product)!.price)}`} title="VOTO DA 1 A 10?">
+      <ProductImage product={product} eager className="mx-auto aspect-square w-[70%] overflow-hidden rounded-[4cqw]" />
+      <div className="mt-[3.5cqw] flex justify-center gap-[1.2cqw]">
+        {Array.from({ length: 10 }, (_, i) => (
+          <span key={i} className="grid size-[7cqw] place-items-center rounded-full bg-[#fff]/12 text-[3.6cqw] font-bold ring-1 ring-[#fff]/25">{i + 1}</span>
+        ))}
+      </div>
+    </PostFrame>
+  )
+}
+
+function PostMissing({ items, what, gender }: { items: Product[]; what: string; gender: string }) {
+  return (
+    <PostFrame kicker={`Outfit da ${gender}`} title="COMPLETA L'OUTFIT" sub={`Manca: ${what.toLowerCase()}`}>
+      <div className="mx-auto grid w-[76%] grid-cols-2 gap-[2.4cqw]">
+        {items.map((p) => <ProductImage key={p.id} product={p} eager className="aspect-square w-full overflow-hidden rounded-[3cqw]" />)}
+        <div className="grid aspect-square place-items-center rounded-[3cqw] border-[0.8cqw] border-dashed border-[#fff]/50 bg-[#fff]/5">
+          <span className="text-[18cqw] leading-none font-black text-[#fb7185]">?</span>
+        </div>
+      </div>
+    </PostFrame>
+  )
+}
+
+function PostQuestion({ kicker, text, a, b }: { kicker: string; text: string; a?: string; b?: string }) {
+  return (
+    <PostFrame kicker={kicker} title="">
+      <p className="px-[3cqw] text-center text-[9cqw] leading-[1.1] font-black tracking-tight">{text}</p>
+      {a && b && (
+        <div className="mt-[6cqw] grid grid-cols-2 gap-[3cqw] px-[3cqw]">
+          {[a, b].map((t, i) => (
+            <div key={t} className={`rounded-[4cqw] py-[3.5cqw] text-center text-[5.5cqw] font-black ${i ? 'bg-[#6366f1]' : 'bg-[#f43f5e]'}`}>{t}</div>
+          ))}
+        </div>
+      )}
+      <p className="mt-[6cqw] text-center text-[4.4cqw] text-[#fff]/75">Dimmi la tua 👇</p>
+    </PostFrame>
   )
 }
