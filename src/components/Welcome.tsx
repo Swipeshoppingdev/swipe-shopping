@@ -20,6 +20,7 @@ const EXTRA_SECTIONS = [
   { id: 'casa', emoji: '🛋️', label: 'Casa', hint: 'cucina, design, smart', bg: 'bg-[#eff6ff] ring-[#2563eb]' },
   { id: 'snack', emoji: '🍫', label: 'Snack', hint: 'dolci, salati, caffè', bg: 'bg-[#f0fdfa] ring-[#0d9488]' },
   { id: 'animali', emoji: '🐾', label: 'Animali', hint: 'cani e gatti', bg: 'bg-[#fefce8] ring-[#a16207]' },
+  { id: 'musica', emoji: '🎸', label: 'Musica', hint: 'strumenti, studio, vinili', bg: 'bg-[#f0f9ff] ring-[#0284c7]' },
 ] as const
 
 const GENDERS: { value: Filters['gender']; label: string }[] = [

@@ -107,6 +107,8 @@ const SEARCH_LIMIT = MAX_REQUESTS - SIZE_REQUESTS - REFRESH_REQUESTS
  * (a rotazione): i loro prodotti trovati nel giro prima restano, quindi in un giorno si passano tutte.
  */
 const OTHER_SHARE = Number(process.env.AMAZON_OTHER_SHARE ?? 0.2)
+/** Una sezione con meno prodotti di così è "nuova": le sue ricerche si fanno prima di tutte le altre. */
+const NEW_SECTION_MIN = 150
 
 const OFFER_RESOURCES = ['offersV2.listings.price', 'offersV2.listings.availability', 'offersV2.listings.isBuyBoxWinner']
 
@@ -472,6 +474,19 @@ async function searchCatalog(token: string) {
 
   // Altre sezioni: la prima pagina, ogni giro dal punto in cui si era fermato il giro prima.
   const others = active.filter((pl) => !isModa(pl)).flatMap((plan) => plan.genders.flatMap((gender) => plan.brands.map((brand) => [plan, gender, brand] as const)))
+  // Sezioni nuove (quasi vuote nel catalogo): le loro ricerche passano davanti, così si riempiono al primo giro.
+  const perSection = new Map<string, number>()
+  for (const p of catalog) {
+    const u = universeOf(p.category as CategoryId)
+    perSection.set(u, (perSection.get(u) ?? 0) + 1)
+  }
+  const isEmptySection = (pl: (typeof SEARCH_PLAN)[number]) => (perSection.get(universeOf(pl.category as CategoryId)) ?? 0) < NEW_SECTION_MIN
+  const fresh = others.filter(([plan]) => isEmptySection(plan))
+  for (const [plan, gender, brand] of fresh) {
+    if (requests >= SEARCH_LIMIT) break
+    await searchPage(plan, gender, brand, 1)
+  }
+  if (fresh.length) annotate('notice', `Sezioni nuove: ${fresh.length} ricerche fatte per prime.`)
   if (others.length) {
     const otherLimit = Math.min(SEARCH_LIMIT, requests + otherBudget)
     const start = (Math.floor(Date.now() / (12 * 3_600_000)) * Math.max(1, otherBudget)) % others.length

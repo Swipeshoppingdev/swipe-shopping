@@ -32,6 +32,8 @@ const GADGET = { genders: TECH, minRating: 4, minReviews: 50 }
 const BEAUTY = { searchIndex: 'Beauty', minRating: 4, minReviews: 50 }
 /** Casa e animali: per tutti, solo prodotti ben recensiti */
 const HOME = { genders: TECH, minRating: 4, minReviews: 50 }
+/** Reparto Amazon degli strumenti musicali */
+const MUSIC = 'MusicalInstruments'
 /** Snack: come i gadget, nel reparto Alimentari */
 const SNACK = { ...GADGET, searchIndex: 'GroceryAndGourmetFood' }
 
@@ -516,6 +518,44 @@ export const SEARCH_PLAN: CategoryPlan[] = [
     brands: ['Catsan', "Cat's Best", 'Ever Clean', 'Sanicat', 'Vitakraft', 'Trixie', 'Ferplast', 'Catit'] },
   { category: 'trasportini', keywords: 'trasportino', searchIndex: 'PetSupplies', minPrice: 15, ...HOME,
     brands: ['Ferplast', 'Trixie', 'Petmate', 'Catit', 'Feandrea', 'Stefanplast', 'Kerbl'] },
+
+  // Musica (14/10/2026): strumenti e attrezzatura delle marche note, ben recensiti.
+  { category: 'chitarre', keywords: 'chitarra acustica', searchIndex: MUSIC, minPrice: 60, ...HOME,
+    brands: ['Yamaha', 'Fender', 'Epiphone', 'Ibanez', 'Cort', 'Takamine'] },
+  { category: 'chitarre', keywords: 'chitarra elettrica', searchIndex: MUSIC, minPrice: 100, ...HOME,
+    brands: ['Fender', 'Squier', 'Epiphone', 'Ibanez', 'Yamaha', 'Jackson', 'ESP'] },
+  { category: 'chitarre', keywords: 'chitarra classica', searchIndex: MUSIC, minPrice: 50, ...HOME,
+    brands: ['Yamaha', 'Admira', 'Alhambra', 'Cort', 'Valencia'] },
+  { category: 'tastiere', keywords: 'pianoforte digitale', searchIndex: MUSIC, minPrice: 150, ...HOME,
+    brands: ['Yamaha', 'Casio', 'Roland', 'Kawai', 'Korg', 'Alesis'] },
+  { category: 'tastiere', keywords: 'tastiera musicale', searchIndex: MUSIC, minPrice: 60, ...HOME,
+    brands: ['Yamaha', 'Casio', 'Roland', 'Korg', 'Alesis'] },
+  { category: 'ukulele', keywords: 'ukulele', searchIndex: MUSIC, minPrice: 25, ...HOME,
+    brands: ['Kala', 'Mahalo', 'Fender', 'Yamaha', 'Enya', 'Cascha'] },
+  { category: 'percussioni', keywords: 'batteria elettronica', searchIndex: MUSIC, minPrice: 150, ...HOME,
+    brands: ['Alesis', 'Roland', 'Yamaha', 'Donner'] },
+  { category: 'percussioni', keywords: 'cajon', searchIndex: MUSIC, minPrice: 50, ...HOME,
+    brands: ['Meinl', 'Schlagwerk', 'Sela', 'LP'] },
+  { category: 'amplificatori', keywords: 'amplificatore chitarra', searchIndex: MUSIC, minPrice: 50, ...HOME,
+    brands: ['Fender', 'Marshall', 'Boss', 'Vox', 'Orange', 'Blackstar', 'Positive Grid', 'Line 6'] },
+  { category: 'microfoni', keywords: 'microfono', searchIndex: MUSIC, minPrice: 40, ...HOME,
+    brands: ['Shure', 'RØDE', 'Audio-Technica', 'AKG', 'Sennheiser', 'Elgato', 'Behringer'] },
+  { category: 'schede_audio', keywords: 'scheda audio', searchIndex: MUSIC, minPrice: 50, ...HOME,
+    brands: ['Focusrite', 'PreSonus', 'Steinberg', 'Behringer', 'M-Audio', 'Universal Audio', 'MOTU'] },
+  { category: 'controller_dj', keywords: 'controller dj', searchIndex: MUSIC, minPrice: 80, ...HOME,
+    brands: ['Pioneer DJ', 'Numark', 'Hercules', 'Native Instruments', 'Denon DJ'] },
+  { category: 'controller_dj', keywords: 'tastiera midi', searchIndex: MUSIC, minPrice: 50, ...HOME,
+    brands: ['Akai', 'Arturia', 'Novation', 'M-Audio', 'Nektar', 'Native Instruments'] },
+  { category: 'giradischi', keywords: 'giradischi', searchIndex: 'Electronics', minPrice: 60, ...HOME,
+    brands: ['Audio-Technica', 'Pro-Ject', 'Sony', 'Denon', 'Lenco', 'Victrola', 'Crosley', 'Thorens'] },
+  { category: 'cuffie_studio', keywords: 'cuffie da studio', searchIndex: MUSIC, minPrice: 40, ...HOME,
+    brands: ['Audio-Technica', 'Beyerdynamic', 'AKG', 'Sennheiser', 'Sony', 'Shure'] },
+  { category: 'accessori_strumenti', keywords: 'pedale effetti chitarra', searchIndex: MUSIC, minPrice: 30, ...HOME,
+    brands: ['Boss', 'Electro-Harmonix', 'TC Electronic', 'MXR', 'Ibanez'] },
+  { category: 'accessori_strumenti', keywords: 'corde chitarra', searchIndex: MUSIC, minPrice: 8, ...HOME,
+    brands: ["D'Addario", 'Ernie Ball', 'Elixir', 'Martin'] },
+  { category: 'accessori_strumenti', keywords: 'accordatore', searchIndex: MUSIC, minPrice: 10, ...HOME,
+    brands: ['Korg', 'Boss', "D'Addario", 'Snark', 'TC Electronic'] },
 ]
 
 /** Confronto tollerante tra marche ("TOMMY HILFIGER" = "Tommy Hilfiger", "Levi's" = "Levis"). */
