@@ -1,4 +1,5 @@
 import { useBoost } from '../lib/boost'
+import { countLikeForReview } from '../lib/review'
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import { UNIVERSES, isUniverse, universeOf, type Universe } from '../config/categories'
 import { track } from '../lib/analytics'
@@ -447,6 +448,7 @@ function useAppStore() {
         setSharedId(null)
         track('like', product)
         dispatch({ type: 'like', product })
+        countLikeForReview()
       },
       dislike: (product: Product) => {
         setSharedId(null)
