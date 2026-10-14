@@ -24,7 +24,7 @@ type Format =
   | 'offerte' | 'sfida' | 'outfit' | 'swipe' | 'meme' | 'prezzo' | 'sconto' | 'marche' | 'caro' | 'budget' | 'sotto' | 'regali'
   | 'colore' | 'vetrina' | 'mood' | 'pioggia' | 'stop' | 'mese' | 'tieni' | 'chat' | 'notifiche' | 'scontrino' | 'ruota'
   | 'slot' | 'cerca' | 'note' | 'furbo'
-  | 'quale' | 'stima' | 'voto' | 'completa' | 'classifica' | 'intruso' | 'domanda'
+  | 'quale' | 'stima' | 'voto' | 'completa' | 'classifica' | 'intruso' | 'domanda' | 'ab' | 'marca'
 type Group = 'offerte' | 'giochi' | 'stile' | 'risate' | 'belli' | 'post'
 const GROUPS: { id: Group; label: string }[] = [
   { id: 'post', label: '💬 Post X, Threads, WhatsApp' },
@@ -42,6 +42,8 @@ const FORMATS: { id: Format; label: string; emoji: string; desc: string; group: 
   { id: 'completa', label: 'Completa l\'outfit', emoji: '🧩', desc: 'Manca un pezzo: cosa ci metti?', group: 'post' },
   { id: 'classifica', label: 'Fai la classifica', emoji: '📊', desc: 'A, B, C, D dal più bello', group: 'post' },
   { id: 'intruso', label: 'Uno costa il triplo', emoji: '🕵️', desc: 'Trova quello carissimo', group: 'post' },
+  { id: 'ab', label: 'A o B?', emoji: '⚖️', desc: 'Due pezzi a confronto, si vota', group: 'post' },
+  { id: 'marca', label: 'Di che marca è?', emoji: '🏷️', desc: 'Marca nascosta, A, B o C', group: 'post' },
   { id: 'domanda', label: 'Domanda del giorno', emoji: '❓', desc: 'Solo testo, fa discutere', group: 'post' },
   { id: 'stop', label: 'Ferma il video', emoji: '✋', desc: 'Quello che esce è il tuo regalo', group: 'risate' },
   { id: 'mese', label: 'Il tuo mese', emoji: '📅', desc: 'Il mese di nascita è il tuo outfit', group: 'risate' },
@@ -72,7 +74,7 @@ const FORMATS: { id: Format; label: string; emoji: string; desc: string; group: 
   { id: 'marche', label: 'Marche più amate', emoji: '🏆', desc: 'Classifica dai Sì della settimana', group: 'stile' },
 ]
 /** Formati con uomo/donna (gli outfit) */
-const WITH_GENDER: Format[] = ['quale', 'voto', 'completa', 'classifica', 'sfida', 'outfit', 'budget', 'regali', 'colore', 'vetrina', 'mood', 'stop', 'mese', 'tieni', 'chat', 'slot', 'cerca', 'note', 'furbo']
+const WITH_GENDER: Format[] = ['ab', 'marca', 'quale', 'voto', 'completa', 'classifica', 'sfida', 'outfit', 'budget', 'regali', 'colore', 'vetrina', 'mood', 'stop', 'mese', 'tieni', 'chat', 'slot', 'cerca', 'note', 'furbo']
 
 /**
  * Meme in tre stili, tutti con layout nostri (nessun template coperto da diritti):
@@ -175,7 +177,11 @@ function pick<T>(list: T[], n: number, rand: () => number) {
  * Post da commentare per X, Threads e il canale WhatsApp: un'immagine ferma 4:5 (la mostrano intera tutti e tre),
  * da salvare con uno screenshot. Sul canale WhatsApp non si commenta: si risponde con le reazioni o con un sondaggio.
  */
-const POSTS: Format[] = ['quale', 'stima', 'voto', 'completa', 'classifica', 'intruso', 'domanda']
+const POSTS: Format[] = ['quale', 'stima', 'voto', 'completa', 'classifica', 'intruso', 'domanda', 'ab', 'marca']
+/** Il post del giorno per X, Threads e il canale WhatsApp (0 = domenica) */
+const WEEK_POST: Format[] = ['domanda', 'quale', 'stima', 'ab', 'completa', 'voto', 'marca']
+/** Categorie dove la marca non si legge sul prodotto: "Di che marca è?" resta un gioco vero */
+const NO_LOGO = new Set(['scarpe_eleganti', 'stivali', 'camicie', 'cappotti', 'vestiti', 'maglioni', 'giacche', 'pantaloni'])
 /** Reazioni rapide di WhatsApp, una per risposta (1-4 o A-D) */
 const WA_REACT = ['👍', '❤️', '😂', '😮']
 const POST_FOOT = 'swipeshopping.app #pubblicità'
@@ -443,6 +449,34 @@ function Studio() {
           [{ ms: 60_000, node: <PostGrid kicker={`${cat} da ${gender}`} title="QUALE SCEGLI?" items={items} labels={['1', '2', '3', '4']} prices /> }],
           { wa: `Quale scegli? 🤔 Rispondi con una reazione:\n${WA_REACT.map((e, i) => `${e} = ${i + 1}`).join('   ')}\n\nswipeshopping.app` },
         )
+      }
+      if (format === 'ab') {
+        const items = sameCategory(modaPool, 2)
+        if (!items) return []
+        return withCaption(
+          `A o B? ⚖️ Scrivilo nei commenti 👇\n\n${label(items[0])} da ${gender}, prezzi di oggi.\n\n${POST_FOOT}`,
+          [{ ms: 60_000, node: <PostPair kicker={`${label(items[0]).toLowerCase()} da ${gender}`} items={items} /> }],
+          { wa: `A o B? ⚖️\n👍 = A   ❤️ = B\n\nswipeshopping.app` },
+        )
+      }
+      if (format === 'marca') {
+        // La marca vera e due marche finte della stessa categoria (vere marche del catalogo).
+        const pool = modaPool.filter((p) => p.brand && NO_LOGO.has(p.category))
+        for (const p of pick(pool, 80, rand)) {
+          const others = [...new Set(pool.filter((x) => x.category === p.category && x.brand !== p.brand).map((x) => x.brand!))]
+          if (others.length < 2) continue
+          const opts = pick([p.brand!, ...pick(others, 2, rand)], 3, rand)
+          const right = 'ABC'[opts.indexOf(p.brand!)]
+          return withCaption(
+            `Di che marca è? 🏷️ A, B o C? 👇\n\nRisposta tra qualche ora.\n\n${POST_FOOT}`,
+            [{ ms: 60_000, node: <PostBrand product={p} options={opts} /> }],
+            {
+              wa: `Di che marca è? 🏷️\n${opts.map((o, i) => `${WA_REACT[i]} = ${o}`).join('\n')}\n\nswipeshopping.app`,
+              note: `Risposta: ${right} (${p.brand}, ${formatPrice(freshPrice(p)!.price)}).`,
+            },
+          )
+        }
+        return []
       }
       if (format === 'classifica') {
         const items = sameCategory(modaPool, 4)
@@ -2057,6 +2091,9 @@ function Calendar({ current, onPick }: { current: Format; onPick: (f: Format) =>
       <p className="text-center text-xs text-[#fff]/75">
         Oggi pubblica: <b className="text-[#fff]">{label(WEEK[day])}</b> e, se vuoi un secondo post, <b className="text-[#fff]">{label(WEEK2[day])}</b> · nelle storie: Swipe in diretta
       </p>
+      <button type="button" onClick={() => onPick(WEEK_POST[day])} className={`w-full rounded-lg py-1.5 text-xs font-semibold ${current === WEEK_POST[day] ? 'bg-[#fff] text-[#111]' : 'bg-[#2a2a30] text-[#fff]'}`}>
+        💬 Su X, Threads e WhatsApp oggi: {label(WEEK_POST[day])}
+      </button>
       <div className="grid grid-cols-7 gap-1">
         {[1, 2, 3, 4, 5, 6, 0].map((d) => (
           <button
@@ -2422,6 +2459,37 @@ function PostQuestion({ kicker, text, a, b }: { kicker: string; text: string; a?
         </div>
       )}
       <p className="mt-[6cqw] text-center text-[4.4cqw] text-[#fff]/75">Dimmi la tua 👇</p>
+    </PostFrame>
+  )
+}
+
+function PostPair({ kicker, items }: { kicker: string; items: Product[] }) {
+  return (
+    <PostFrame kicker={kicker} title="A O B?">
+      <div className="grid grid-cols-2 gap-[2.4cqw]">
+        {items.map((p, i) => (
+          <div key={p.id} className="space-y-[1.6cqw]">
+            <PostTile product={p} label={'AB'[i]} />
+            <p className="text-center text-[4cqw] font-bold">{formatPrice(freshPrice(p)!.price)}</p>
+          </div>
+        ))}
+      </div>
+    </PostFrame>
+  )
+}
+
+function PostBrand({ product, options }: { product: Product; options: string[] }) {
+  return (
+    <PostFrame kicker={categoryLabel(product.category as CategoryId)} title="DI CHE MARCA È?">
+      <ProductImage product={product} eager className="mx-auto aspect-square w-[54%] overflow-hidden rounded-[4cqw]" />
+      <div className="mt-[3cqw] space-y-[1.6cqw]">
+        {options.map((o, i) => (
+          <div key={o} className="flex items-center gap-[2.4cqw] rounded-[3cqw] bg-[#fff]/10 px-[3cqw] py-[1.6cqw] ring-1 ring-[#fff]/25">
+            <span className="text-[4.4cqw] font-black text-[#fb7185]">{'ABC'[i]}</span>
+            <span className="truncate text-[4.6cqw] font-bold">{o}</span>
+          </div>
+        ))}
+      </div>
     </PostFrame>
   )
 }
