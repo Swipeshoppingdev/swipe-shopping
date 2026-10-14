@@ -1,13 +1,13 @@
 import { SIZE_HINT, SizePicker } from '../components/SizePicker'
 import { Check, X } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { NO_CATEGORY, categoryIdsOf, groupsOf, sectionOf, type CategoryId } from '../config/categories'
 import { colorSwatch } from '../config/colors'
 import { BrandPicker } from '../components/BrandPicker'
 import { PriceRange } from '../components/PriceRange'
 import { STORES, type StoreId } from '../config/stores'
 import { activeFilterCount, facetValues, matchesFilters } from '../lib/filters'
-import { STYLES } from '../lib/styles'
+import { STYLES, warmStyles } from '../lib/styles'
 import { routeHref } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
 import { DEFAULT_FILTERS, type Filters } from '../types/product'
@@ -30,6 +30,8 @@ export function FiltersPage() {
   const { state, products, actions } = useApp()
   const f = state.filters
   const set = (patch: Partial<Filters>) => actions.setFilters({ ...f, ...patch })
+  const moda = state.mode === 'moda'
+  useEffect(() => (moda ? warmStyles(products) : undefined), [moda, products])
   // Genere e colore solo nelle sezioni che li hanno (vedi SECTIONS).
   const section = sectionOf(state.mode)
   const facets = facetValues(products)
