@@ -2,6 +2,8 @@ import { Capacitor, SystemBars, SystemBarsStyle } from '@capacitor/core'
 
 /** true dentro l'app Android/iOS (Capacitor), false nel sito. */
 export const isNative = Capacitor.isNativePlatform()
+/** true solo nell'app iPhone. */
+export const isIOSApp = isNative && Capacitor.getPlatform() === 'ios'
 
 /** Il sito: da qui l'app scarica catalogo e dettagli sempre aggiornati, e qui tornano i link delle email. */
 export const SITE = 'https://swipeshopping.app/'
