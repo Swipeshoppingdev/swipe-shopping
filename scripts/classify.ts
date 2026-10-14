@@ -8,6 +8,7 @@ type Rule = [category: string, pattern: RegExp]
 
 const SHOES: Rule[] = [
   ['scarpe_sportive', /\b(running|corsa|trail|jogging|scarpe da (?:corsa|running))\b/i],
+  ['pantofole', /\b(pantofol\w*|slippers?)\b/i],
   ['sandali', /\b(sandal\w*|ciabatt\w*|infradito|zoccol\w*|slides?|flip.?flop)\b/i],
   ['stivali', /\b(stival\w*|anfibi\w*|boots?|chelsea|chukka)\b/i],
   ['sneakers', /\b(sneakers?|scarpe da ginnastica|trainers?|basket)\b/i],
@@ -15,6 +16,8 @@ const SHOES: Rule[] = [
 ]
 
 const CLOTHES: Rule[] = [
+  ['pigiami', /\b(pigiam\w*|pyjama\w*|pajama\w*)\b/i],
+  ['gonne', /\b(gonn[ae]\w*|skirt)\b/i],
   ['cappotti', /\b(cappott\w*|parka|trench)\b/i],
   ['giacche', /\b(giacc\w*|giubbott\w*|piumin\w*|jacket|bomber|gilet)\b/i],
   ['vestiti', /\b(vestit\w*|abito|dress)\b/i],

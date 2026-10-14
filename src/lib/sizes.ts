@@ -19,8 +19,8 @@ const LETTER_ALIASES: Record<string, string> = {
   'TAGLIA UNICA': 'Unica', 'ONE SIZE': 'Unica', 'EINHEITSGRÖSSE': 'Unica', 'EINHEITSGROSSE': 'Unica', UNICA: 'Unica',
 }
 
-const SHOE_CATEGORIES = new Set(['sneakers', 'scarpe_eleganti', 'scarpe_sportive', 'stivali', 'sandali'])
-const CLOTHES_CATEGORIES = new Set(['tshirt', 'felpe', 'maglioni', 'camicie', 'pantaloni', 'jeans', 'giacche', 'cappotti', 'vestiti', 'sportivo'])
+const SHOE_CATEGORIES = new Set(['sneakers', 'scarpe_eleganti', 'scarpe_sportive', 'stivali', 'sandali', 'pantofole'])
+const CLOTHES_CATEGORIES = new Set(['tshirt', 'felpe', 'maglioni', 'camicie', 'pantaloni', 'jeans', 'giacche', 'cappotti', 'vestiti', 'sportivo', 'gonne', 'pigiami'])
 
 /** Le categorie che hanno taglie (capi e scarpe). */
 export const hasSizes = (category: string) => SHOE_CATEGORIES.has(category) || CLOTHES_CATEGORIES.has(category)
