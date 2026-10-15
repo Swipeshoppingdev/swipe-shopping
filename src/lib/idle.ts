@@ -25,3 +25,15 @@ export function whenIdle() {
     check()
   })
 }
+
+/** Si risolve dopo il prossimo disegno dello schermo (quello che React ha appena preparato è visibile). */
+export function afterPaint() {
+  return new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(resolve, 0))))
+}
+
+/** Lascia passare tocchi e disegno dello schermo prima del prossimo pezzo di lavoro. */
+export function yieldToMain() {
+  const s = (globalThis as { scheduler?: { yield?: () => Promise<void> } }).scheduler
+  if (s?.yield) return s.yield()
+  return new Promise<void>((resolve) => setTimeout(resolve, 0))
+}

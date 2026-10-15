@@ -2,6 +2,7 @@ import { NO_CATEGORY, categoryGroupOf, categoryIdsOf, isCategoryId, universeOf, 
 import { COLOR_ORDER } from '../config/colors'
 import type { Filters, Product } from '../types/product'
 import { discountBadge, freshPrice } from './price'
+import { yieldToMain } from './idle'
 import { sizeChip, sortSizes } from './sizes'
 import { stylesOf } from './styles'
 
@@ -37,6 +38,20 @@ function hash(text: string) {
 }
 
 const mixKeys = new Map<string, WeakMap<Product, number>>()
+
+/**
+ * Chiavi dell'ordine "mix" calcolate prima, a blocchi con pause (vedi yieldToMain): quando il catalogo arriva,
+ * il primo ordinamento del mazzo non deve farle tutte insieme (sui telefoni economici era un blocco lungo).
+ */
+export async function warmMixKeys(list: Product[], seed: string) {
+  const cache = mixKeys.get(seed) ?? new WeakMap<Product, number>()
+  mixKeys.set(seed, cache)
+  for (let i = 0; i < list.length; i++) {
+    if (i && i % 5000 === 0) await yieldToMain()
+    const p = list[i]
+    if (!cache.has(p)) cache.set(p, hash(seed + p.id))
+  }
+}
 
 export function sortProducts(list: Product[], sort: Filters['sort'], seed = '') {
   const sorted = [...list]
