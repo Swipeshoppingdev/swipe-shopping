@@ -1,3 +1,4 @@
+import { isReloading } from './staleChunk'
 import { load, save } from './storage'
 
 /**
@@ -10,6 +11,8 @@ const KEY = 'crashLog'
 const MAX = 5
 
 export function logCrash(where: string, err: unknown, extra?: string) {
+  // Pagina che si ricarica con i file nuovi: gli errori di quel momento non sono guasti veri.
+  if (isReloading()) return
   try {
     const e = err instanceof Error ? err : new Error(String(err))
     const entry: CrashEntry = {
