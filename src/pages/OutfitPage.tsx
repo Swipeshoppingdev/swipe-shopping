@@ -27,6 +27,7 @@ import { useHashRoute } from '../lib/useHashRoute'
 import { useApp } from '../state/AppState'
 import { useAuth } from '../state/AuthState'
 import type { Product } from '../types/product'
+import { useBackClose } from '../lib/backClose'
 
 /** Outfit salvato: solo gli id dei capi (i dati arrivano dal catalogo aggiornato). */
 interface SavedOutfit {
@@ -394,6 +395,7 @@ function Collage({ items, eager }: { items: Product[]; eager?: boolean }) {
 
 function OutfitSheet(props: { outfit: Outfit; saved: boolean; onSave: () => void; onSwap: (index: number) => boolean; onClose: () => void }) {
   const { outfit, saved, onSave, onClose } = props
+  useBackClose(true, onClose)
   const { wishlist, actions } = useApp()
   // Capi per cui non c'è un'altra scelta che si abbini.
   const [noMore, setNoMore] = useState<string[]>([])

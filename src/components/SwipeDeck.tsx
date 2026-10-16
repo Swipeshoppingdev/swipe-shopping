@@ -16,6 +16,7 @@ import { StoreLink } from './StoreLink'
 import { UndoMenu } from './UndoMenu'
 import { SwipeCard, type SwipeDir } from './SwipeCard'
 import type { Product } from '../types/product'
+import { likeTap } from '../lib/haptics'
 
 /**
  * Lo swipe si registra (preferiti, mazzo, statistiche) solo quando la carta è già uscita: il ricalcolo del mazzo
@@ -121,12 +122,12 @@ export function SwipeDeck({
       }
       pending.current.push(item)
       if (dir === 1) {
-        // Cuori che esplodono; più grandi (e vibrazione più forte) per gli sconti veri dal 30% in su.
+        // Cuori che esplodono, più grandi per gli sconti veri dal 30% in su, e un tocco leggerissimo.
         const discount = discountBadge(top)
         const id = Date.now()
         setBursts((b) => [...b.slice(-2), { id, discount }])
         setTimeout(() => setBursts((b) => b.filter((x) => x.id !== id)), 1400)
-        navigator.vibrate?.((discount ?? 0) >= 30 ? [15, 40, 25, 40, 35] : 15)
+        likeTap()
         if (withPopup) {
           clearTimeout(savedTimer.current)
           startTransition(() => setSaved(p))

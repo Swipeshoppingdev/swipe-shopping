@@ -24,6 +24,7 @@ import { ShareButton } from './ShareButton'
 import { SendToFriends } from './SocialBits'
 import { FEATURES } from '../config/app'
 import { StoreLink } from './StoreLink'
+import { useBackClose } from '../lib/backClose'
 
 /** Scheda prodotto a tutto schermo: più foto, caratteristiche e pulsanti. */
 export function ProductSheet() {
@@ -31,6 +32,7 @@ export function ProductSheet() {
   const panel = useRef<HTMLDivElement>(null)
   const drag = useRef<HTMLDivElement>(null)
   useSwipeDown(panel, drag, !!product)
+  useBackClose(!!product, closeProduct)
   // Aprendo un prodotto simile si riparte dall'alto della scheda.
   useEffect(() => {
     panel.current?.scrollTo({ top: 0 })

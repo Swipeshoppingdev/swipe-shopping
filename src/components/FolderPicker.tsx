@@ -2,9 +2,11 @@ import { Check, X } from 'lucide-react'
 import { FOLDERS, WATCH_FOLDER, compareFolders, folderLabel, isPresetFolder } from '../config/folders'
 import { useApp } from '../state/AppState'
 import type { Product } from '../types/product'
+import { useBackClose } from '../lib/backClose'
 
 /** Finestra per spostare un preferito in una cartella (nomi già pronti). */
 export function FolderPicker({ product, onClose }: { product: Product; onClose: () => void }) {
+  useBackClose(true, onClose)
   const { wishlist, actions } = useApp()
   const current = wishlist.find((w) => w.product.id === product.id)?.folder
   // Cartelle vecchie con un nome scelto a mano: restano finché contengono qualcosa.
