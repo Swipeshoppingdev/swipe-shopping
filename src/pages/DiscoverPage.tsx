@@ -5,10 +5,11 @@ import { FavDeals } from '../components/FavDeals'
 import { routeHref } from '../lib/useHashRoute'
 import { widenSuggestions } from '../lib/widen'
 import { lazy, Suspense, useMemo } from 'react'
+import { loadChunk } from '../lib/staleChunk'
 import { useApp } from '../state/AppState'
 
 // I mini giochi compaiono dopo qualche swipe: si scaricano dopo la prima carta.
-const Breaks = lazy(() => import('../components/Breaks').then((m) => ({ default: m.Breaks })))
+const Breaks = lazy(loadChunk(() => import('../components/Breaks').then((m) => ({ default: m.Breaks }))))
 
 export function DiscoverPage() {
   const { state, deck, products, wishlist, actions, previewing } = useApp()

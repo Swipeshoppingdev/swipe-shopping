@@ -6,14 +6,17 @@ import './index.css'
 import { watchErrors } from './lib/crashLog'
 import { isNative, setupNative } from './lib/native'
 import { startRemoteAnalytics } from './lib/remoteAnalytics'
-import { reloadForUpdate } from './lib/staleChunk'
+import { cleanReloadParam, reloadForUpdate } from './lib/staleChunk'
 import { AppStateProvider } from './state/AppState.tsx'
 import { AuthProvider } from './state/AuthState.tsx'
 
+cleanReloadParam()
 watchErrors()
 // Un pezzo dell'app non si carica perché il sito è stato aggiornato nel frattempo: si ricarica con i file nuovi.
-window.addEventListener('vite:preloadError', (e) => {
-  if (reloadForUpdate()) e.preventDefault()
+// L'errore prosegue comunque (niente preventDefault, che farebbe arrivare a React un modulo vuoto: "reading 'default'"):
+// loadChunk e il registro errori sanno che la pagina si sta ricaricando e non mostrano né salvano nulla.
+window.addEventListener('vite:preloadError', () => {
+  reloadForUpdate()
 })
 startRemoteAnalytics()
 void setupNative()

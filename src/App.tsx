@@ -3,6 +3,7 @@ import { BottomNav } from './components/BottomNav'
 import { ConsentBanner } from './components/ConsentBanner'
 import { Header } from './components/Header'
 import { useSpecialMode } from './lib/outfitMode'
+import { loadChunk } from './lib/staleChunk'
 import { useHashRoute } from './lib/useHashRoute'
 import { Welcome } from './components/Welcome'
 import { SocialWatcher } from './components/SocialWatcher'
@@ -10,25 +11,25 @@ import { DiscoverPage } from './pages/DiscoverPage'
 
 // Solo Scopri è nel codice iniziale: le altre pagine si scaricano quando servono (e in anticipo, a app ferma).
 const PAGES = {
-  AdminPage: () => import('./pages/AdminPage').then((m) => ({ default: m.AdminPage })),
-  FriendProfilePage: () => import('./pages/FriendProfilePage').then((m) => ({ default: m.FriendProfilePage })),
-  FriendsPage: () => import('./pages/FriendsPage').then((m) => ({ default: m.FriendsPage })),
-  GiftListPage: () => import('./pages/GiftListPage').then((m) => ({ default: m.GiftListPage })),
-  ChatPage: () => import('./pages/ChatPage').then((m) => ({ default: m.ChatPage })),
-  ProductSheet: () => import('./components/ProductSheet').then((m) => ({ default: m.ProductSheet })),
-  GiftsPage: () => import('./pages/GiftsPage').then((m) => ({ default: m.GiftsPage })),
-  OutfitPage: () => import('./pages/OutfitPage').then((m) => ({ default: m.OutfitPage })),
-  PollPage: () => import('./pages/PollPage').then((m) => ({ default: m.PollPage })),
-  SantaPage: () => import('./pages/SantaPage').then((m) => ({ default: m.SantaPage })),
-  CommsPage: () => import('./pages/AdminPage').then((m) => ({ default: m.CommsPage })),
-  StudioPage: () => import('./pages/StudioPage').then((m) => ({ default: m.StudioPage })),
-  SwipeTogetherPage: () => import('./pages/SwipeTogetherPage').then((m) => ({ default: m.SwipeTogetherPage })),
-  ChallengePage: () => import('./pages/ChallengePage').then((m) => ({ default: m.ChallengePage })),
-  FiltersPage: () => import('./pages/FiltersPage').then((m) => ({ default: m.FiltersPage })),
-  PrivacyPage: () => import('./pages/PrivacyPage').then((m) => ({ default: m.PrivacyPage })),
-  ProfilePage: () => import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
-  SharedListPage: () => import('./pages/SharedListPage').then((m) => ({ default: m.SharedListPage })),
-  WishlistPage: () => import('./pages/WishlistPage').then((m) => ({ default: m.WishlistPage })),
+  AdminPage: loadChunk(() => import('./pages/AdminPage').then((m) => ({ default: m.AdminPage }))),
+  FriendProfilePage: loadChunk(() => import('./pages/FriendProfilePage').then((m) => ({ default: m.FriendProfilePage }))),
+  FriendsPage: loadChunk(() => import('./pages/FriendsPage').then((m) => ({ default: m.FriendsPage }))),
+  GiftListPage: loadChunk(() => import('./pages/GiftListPage').then((m) => ({ default: m.GiftListPage }))),
+  ChatPage: loadChunk(() => import('./pages/ChatPage').then((m) => ({ default: m.ChatPage }))),
+  ProductSheet: loadChunk(() => import('./components/ProductSheet').then((m) => ({ default: m.ProductSheet }))),
+  GiftsPage: loadChunk(() => import('./pages/GiftsPage').then((m) => ({ default: m.GiftsPage }))),
+  OutfitPage: loadChunk(() => import('./pages/OutfitPage').then((m) => ({ default: m.OutfitPage }))),
+  PollPage: loadChunk(() => import('./pages/PollPage').then((m) => ({ default: m.PollPage }))),
+  SantaPage: loadChunk(() => import('./pages/SantaPage').then((m) => ({ default: m.SantaPage }))),
+  CommsPage: loadChunk(() => import('./pages/AdminPage').then((m) => ({ default: m.CommsPage }))),
+  StudioPage: loadChunk(() => import('./pages/StudioPage').then((m) => ({ default: m.StudioPage }))),
+  SwipeTogetherPage: loadChunk(() => import('./pages/SwipeTogetherPage').then((m) => ({ default: m.SwipeTogetherPage }))),
+  ChallengePage: loadChunk(() => import('./pages/ChallengePage').then((m) => ({ default: m.ChallengePage }))),
+  FiltersPage: loadChunk(() => import('./pages/FiltersPage').then((m) => ({ default: m.FiltersPage }))),
+  PrivacyPage: loadChunk(() => import('./pages/PrivacyPage').then((m) => ({ default: m.PrivacyPage }))),
+  ProfilePage: loadChunk(() => import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage }))),
+  SharedListPage: loadChunk(() => import('./pages/SharedListPage').then((m) => ({ default: m.SharedListPage }))),
+  WishlistPage: loadChunk(() => import('./pages/WishlistPage').then((m) => ({ default: m.WishlistPage }))),
 }
 // La scheda prodotto si scarica dopo l'avvio (vedi sotto), non serve per la prima carta.
 const ProductSheet = lazy(PAGES.ProductSheet)

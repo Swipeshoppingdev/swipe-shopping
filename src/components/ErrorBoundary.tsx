@@ -1,6 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { logCrash } from '../lib/crashLog'
-import { isStaleChunk, reloadForUpdate } from '../lib/staleChunk'
+import { isReloading, isStaleChunk, reloadForUpdate } from '../lib/staleChunk'
 
 /** Se un errore blocca l'app, invece della pagina vuota si vede un messaggio con "Riprova" (e l'errore resta nel registro). */
 export class ErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -12,12 +12,14 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, { failed: 
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     // Sito appena aggiornato: basta ricaricare per avere i file nuovi.
-    if (isStaleChunk(error) && reloadForUpdate()) return
+    if (isReloading() || (isStaleChunk(error) && reloadForUpdate())) return
     logCrash('react', error, info.componentStack ?? undefined)
   }
 
   render() {
     if (!this.state.failed) return this.props.children
+    // Si sta ricaricando con i file nuovi: niente "Ops" per un attimo, la pagina riparte da sola.
+    if (isReloading()) return null
     // Colori fissi: il tema potrebbe essere proprio la parte rotta.
     return (
       <div style={{ position: 'fixed', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24, background: '#fafafa', color: '#171717', textAlign: 'center', fontFamily: 'system-ui, sans-serif' }}>
