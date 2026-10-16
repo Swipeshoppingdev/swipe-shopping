@@ -1,7 +1,8 @@
 import type { CategoryId } from '../config/categories'
-import { freshPrice } from './price.ts'
+import { freshPriceValue } from './price.ts'
 import { modelKey } from './dedupe.ts'
 import { isNew } from './newness.ts'
+import { yieldToMain } from './idle.ts'
 import type { Product } from '../types/product'
 
 /**
@@ -227,14 +228,23 @@ function fits(p: Product, gender: 'uomo' | 'donna') {
 }
 
 export function outfitTotal(items: Product[]) {
-  let total = 0
+  // Ricalcolato al massimo una volta al minuto per outfit: il mazzo ne filtra migliaia per prezzo a ogni apertura.
+  const now = Date.now()
+  const cached = totals.get(items)
+  if (cached && now - cached.at < 60_000) return cached.total
+  let total: number | null = 0
   for (const p of items) {
-    const price = freshPrice(p)?.price
-    if (price === undefined) return null
+    const price = freshPriceValue(p, now)
+    if (price === undefined) {
+      total = null
+      break
+    }
     total += price
   }
+  totals.set(items, { at: now, total })
   return total
 }
+const totals = new WeakMap<Product[], { at: number; total: number | null }>()
 
 /** I capi che possono entrare negli outfit di un genere, divisi per categoria (calcolati una volta per catalogo). */
 function outfitPool(products: Product[], gender: 'uomo' | 'donna', cold: boolean) {
@@ -242,17 +252,28 @@ function outfitPool(products: Product[], gender: 'uomo' | 'donna', cold: boolean
   if (!byKey) pools.set(products, (byKey = new Map()))
   const key = `${gender}:${cold}`
   let pool = byKey.get(key)
-  if (!pool) byKey.set(key, (pool = buildPool(products, gender, cold)))
+  if (!pool) byKey.set(key, (pool = runSync(poolSteps(products, gender, cold))))
   return pool
 }
 const pools = new WeakMap<Product[], Map<string, Map<CategoryId, Product[]>>>()
 
-function buildPool(products: Product[], gender: 'uomo' | 'donna', cold: boolean) {
+/** Esegue tutto e subito un lavoro diviso a passi (vedi buildOutfitsAsync per la versione con le pause). */
+function runSync<T>(steps: Generator<void, T>): T {
+  for (;;) {
+    const r = steps.next()
+    if (r.done) return r.value
+  }
+}
+
+/** Il calcolo di outfitPool a passi: si ferma (yield) ogni tanto, così chi vuole può fare una pausa. */
+function* poolSteps(products: Product[], gender: 'uomo' | 'donna', cold: boolean): Generator<void, Map<CategoryId, Product[]>> {
   const offSeason = cold ? SUMMER_ONLY : WINTER_ONLY
   const pool = new Map<CategoryId, Product[]>()
   const seenModel = new Set<string>()
-  for (const p of products) {
-    if (p.store !== 'amazon' || p.availability === 'out_of_stock' || !p.imageUrl || !freshPrice(p) || !mainColor(p)) continue
+  for (let i = 0; i < products.length; i++) {
+    if (i && i % 3000 === 0) yield
+    const p = products[i]
+    if (p.store !== 'amazon' || p.availability === 'out_of_stock' || !p.imageUrl || freshPriceValue(p) === undefined || !mainColor(p)) continue
     if (offSeason.test(p.title)) continue
     if ((p.gender !== gender && p.gender !== 'unisex') || !fits(p, gender)) continue
     // Una variante per modello: niente stessa felpa in due colori.
@@ -348,8 +369,58 @@ export function completeLook(item: Product, products: Product[], gender: 'uomo' 
  * Solo capi Amazon: le foto degli altri negozi sono quasi sempre indossate, e nel collage stonano.
  */
 export function buildOutfits(products: Product[], gender: 'uomo' | 'donna', month = new Date().getMonth()): Outfit[] {
+  const key = `${gender}:${isColdSeason(month)}`
+  const cached = builtFor(products).get(key)
+  if (cached && !(cached instanceof Promise)) return cached
+  const list = runSync(outfitSteps(products, gender, month))
+  builtFor(products).set(key, list)
+  return list
+}
+
+/**
+ * Come buildOutfits, ma con una pausa tra un blocco e l'altro: sui telefoni economici comporre migliaia di outfit
+ * bloccava lo schermo per secondi. Il risultato resta in memoria finché il catalogo non cambia (si rientra subito).
+ */
+export function buildOutfitsAsync(products: Product[], gender: 'uomo' | 'donna', month = new Date().getMonth()): Promise<Outfit[]> {
+  const key = `${gender}:${isColdSeason(month)}`
+  const byKey = builtFor(products)
+  const cached = byKey.get(key)
+  if (cached) return Promise.resolve(cached)
+  const job = (async () => {
+    const steps = outfitSteps(products, gender, month)
+    for (;;) {
+      const r = steps.next()
+      if (r.done) {
+        byKey.set(key, r.value)
+        return r.value
+      }
+      await yieldToMain()
+    }
+  })()
+  byKey.set(key, job)
+  return job
+}
+
+/** Outfit già pronti per un catalogo (lista, o lavoro in corso). */
+export function outfitsReady(products: Product[], gender: 'uomo' | 'donna', month = new Date().getMonth()): Outfit[] | null {
+  const cached = built.get(products)?.get(`${gender}:${isColdSeason(month)}`)
+  return cached && !(cached instanceof Promise) ? cached : null
+}
+
+const built = new WeakMap<Product[], Map<string, Outfit[] | Promise<Outfit[]>>>()
+function builtFor(products: Product[]) {
+  let m = built.get(products)
+  if (!m) built.set(products, (m = new Map()))
+  return m
+}
+
+function* outfitSteps(products: Product[], gender: 'uomo' | 'donna', month: number): Generator<void, Outfit[]> {
   const cold = isColdSeason(month)
-  const pool = outfitPool(products, gender, cold)
+  let byKey = pools.get(products)
+  if (!byKey) pools.set(products, (byKey = new Map()))
+  const poolKey = `${gender}:${cold}`
+  let pool = byKey.get(poolKey)
+  if (!pool) byKey.set(poolKey, (pool = yield* poolSteps(products, gender, cold)))
   const uses = new Map<string, number>()
   const ids = new Set<string>()
   const outfits: Outfit[] = []
@@ -411,7 +482,10 @@ export function buildOutfits(products: Product[], gender: 'uomo' | 'donna', mont
         }
       }
     })
-  for (let upTo = BATCH; upTo <= MAX_PER_STYLE; upTo += BATCH) for (const make of makers) make(upTo)
+  for (let upTo = BATCH; upTo <= MAX_PER_STYLE; upTo += BATCH) {
+    for (const make of makers) make(upTo)
+    yield
+  }
   // Stili mescolati, sempre nello stesso ordine; prima quelli con capi appena arrivati.
   const rand = rng(hash(gender))
   const mixed = outfits.map((o) => [rand(), o] as const).sort((a, b) => a[0] - b[0]).map(([, o]) => o)

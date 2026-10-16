@@ -15,7 +15,7 @@ import { StoreLink } from '../components/StoreLink'
 import { UndoMenuView } from '../components/UndoMenu'
 import { universeOf } from '../config/categories'
 import { brandAndStore } from '../config/stores'
-import { STYLE_LABEL, buildOutfits, outfitId, outfitTotal, swapOptions, type Outfit, type OutfitStyle } from '../lib/outfits'
+import { STYLE_LABEL, buildOutfitsAsync, outfitsReady, outfitId, outfitTotal, swapOptions, type Outfit, type OutfitStyle } from '../lib/outfits'
 import { AllNone, Chip } from './FiltersPage'
 import { openProduct } from '../lib/productSheet'
 import { trackOutfit } from '../lib/analytics'
@@ -38,12 +38,32 @@ interface SavedOutfit {
 }
 
 const now = () => Date.now()
+const NO_OUTFITS: Outfit[] = []
+const byIdCache = new WeakMap<Product[], Map<string, Product>>()
+function byIdOf(list: Product[]) {
+  let m = byIdCache.get(list)
+  if (!m) {
+    m = new Map()
+    for (const p of list) m.set(p.id, p)
+    byIdCache.set(list, m)
+  }
+  return m
+}
+/** I capi Moda del catalogo, calcolati una volta per catalogo (così gli outfit già composti si ritrovano). */
+const modaOf = (() => {
+  const cache = new WeakMap<Product[], Product[]>()
+  return (all: Product[]) => {
+    let list = cache.get(all)
+    if (!list) cache.set(all, (list = all.filter((p) => universeOf(p.category) === 'moda')))
+    return list
+  }
+})()
 const euro = (n: number) => n.toLocaleString('it-IT', { style: 'currency', currency: 'EUR' })
 
 /** Outfit (#/outfit): look completi composti in automatico dai capi della Moda, da swipare come i prodotti. */
 export function OutfitPage() {
   const { state, allProducts, actions } = useApp()
-  const moda = useMemo(() => allProducts.filter((p) => universeOf(p.category) === 'moda'), [allProducts])
+  const moda = modaOf(allProducts)
   const ready = state.catalog.status === 'ready' && state.catalog.sections.includes('moda')
   const [gender, setGenderState] = useState<'uomo' | 'donna'>(() =>
     load<'uomo' | 'donna' | null>('outfitGender', null) ?? (state.filters.gender === 'uomo' ? 'uomo' : 'donna'),
@@ -100,7 +120,22 @@ export function OutfitPage() {
     if (state.mode !== 'moda' && window.location.hash.startsWith('#/outfit')) actions.setMode('moda')
   }, [state.mode, actions])
 
-  const all = useMemo(() => (ready ? buildOutfits(moda, gender) : []), [ready, moda, gender])
+  // Comporre migliaia di outfit pesa: a blocchi con pause (e una volta sola per catalogo), con il segnaposto intanto.
+  const [built, setBuilt] = useState<{ from: Product[]; gender: string; list: Outfit[] } | null>(null)
+  const instant = ready ? outfitsReady(moda, gender) : null
+  useEffect(() => {
+    if (!ready || instant) return
+    let live = true
+    void buildOutfitsAsync(moda, gender).then((list) => live && setBuilt({ from: moda, gender, list }))
+    return () => {
+      live = false
+    }
+  }, [ready, moda, gender, instant])
+  const pending = ready && !instant && !(built?.from === moda && built.gender === gender)
+  const all = useMemo(
+    () => instant ?? (built?.from === moda && built.gender === gender ? built.list : NO_OUTFITS),
+    [instant, built, moda, gender],
+  )
   // Il prezzo conta sul totale dell'outfit.
   const inBudget = useMemo(
     () =>
@@ -121,9 +156,10 @@ export function OutfitPage() {
     const fit = new Map(list.map((o) => [o, o.items.filter((p) => fitSizes(p.sizes, mySizes).length).length]))
     return [...list].sort((a, b) => fit.get(b)! - fit.get(a)!)
   }, [inBudget, seen, saved, mySizes])
-  const sizeValues = useMemo(() => facetValues(moda).sizes, [moda])
+  // Solo nella pagina dei filtri (sono decine di migliaia di capi da guardare).
+  const sizeValues = useMemo(() => (tab === 'filtri' ? facetValues(moda).sizes : []), [tab, moda])
 
-  const byId = useMemo(() => new Map(moda.map((p) => [p.id, p])), [moda])
+  const byId = byIdOf(moda)
   const savedOutfits = saved.map((s) => ({ ...s, products: s.items.flatMap((id) => (byId.has(id) ? [byId.get(id)!] : [])) }))
 
   // Outfit arrivato da un link condiviso (#/outfit/v/<stile>/<capi>): si apre con i capi ancora in catalogo.
@@ -185,7 +221,7 @@ export function OutfitPage() {
           onOpen={(s) => setOpen({ id: s.id, gender: s.gender, style: s.style, items: s.products })}
           onDelete={(id) => setSaved(saved.filter((s) => s.id !== id))}
         />
-      ) : !ready ? (
+      ) : !ready || pending ? (
         <div className="flex-1 animate-pulse rounded-3xl bg-neutral-200/70" aria-busy="true" aria-label="Caricamento outfit" />
       ) : deck.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">

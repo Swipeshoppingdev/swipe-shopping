@@ -14,6 +14,14 @@ function checkedTime(p: Product, at: string) {
   return t
 }
 
+/** Solo il prezzo valido (come freshPrice, senza preparare il resto): per i conti su migliaia di prodotti. */
+export function freshPriceValue(p: Product, now = Date.now()): number | undefined {
+  if (p.price === undefined || !p.priceCheckedAt) return undefined
+  const checked = checkedTime(p, p.priceCheckedAt)
+  if (Number.isNaN(checked) || now - checked > STORES[p.store].priceMaxAgeHours * 3_600_000) return undefined
+  return p.price
+}
+
 /** Un prezzo si mostra solo se è stato verificato entro la finestra consentita dal negozio. */
 export function freshPrice(p: Product, now = Date.now()) {
   if (p.price === undefined || !p.priceCheckedAt) return null
