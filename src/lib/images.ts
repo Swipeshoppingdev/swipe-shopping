@@ -92,3 +92,20 @@ export function preloadImages(urls: (string | null | undefined)[]) {
 
 /** Quante carte avanti conviene scaricare: con rete lenta meno, per lasciare la linea alla prossima. */
 export const aheadCount = () => (slowNetwork() ? 4 : 8)
+
+/** Foto scaricate in anticipo con priorità bassa, fuori dalla coda del mazzo (es. prime carte delle altre sezioni). */
+const warming = new Set<HTMLImageElement>()
+export function warmImages(urls: (string | null | undefined)[]) {
+  if (slowNetwork()) return
+  for (const url of urls) {
+    const src = sizedImage(url)
+    if (!src || kept.has(src)) continue
+    const img = new Image()
+    img.fetchPriority = 'low'
+    img.decoding = 'async'
+    const done = () => warming.delete(img)
+    img.onload = img.onerror = done
+    img.src = src
+    warming.add(img)
+  }
+}

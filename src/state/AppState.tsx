@@ -1,7 +1,8 @@
 import { useBoost } from '../lib/boost'
 import { countLikeForReview } from '../lib/review'
 import { afterPaint, whenIdle } from '../lib/idle'
-import { firstImage } from '../lib/images'
+import { firstImage, warmImages } from '../lib/images'
+import { productImageUrl } from '../config/stores'
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import { UNIVERSES, isUniverse, universeOf, type Universe } from '../config/categories'
 import { track } from '../lib/analytics'
@@ -108,6 +109,51 @@ function initialMode(): Universe {
   }
   const saved = load<string>('mode', 'moda')
   return isUniverse(saved) ? saved : 'moda'
+}
+
+const NO_PRODUCTS: Product[] = []
+/** Foto scaricate in anticipo per ogni altra sezione (la prima carta e quella sotto). */
+const WARM_CARDS = 2
+
+const sectionDecks = new WeakMap<Product[], WeakMap<Filters, { ordered: Product[]; inList: Set<Product> }>>()
+/**
+ * Prodotti della sezione filtrati e in ordine di mazzo, tenuti per lista e filtri: preparati in anticipo per le altre
+ * sezioni (vedi sopra), cambiare sezione non li ricalcola.
+ */
+function buildSectionDeck(modeProducts: Product[], f: Filters) {
+  let byFilters = sectionDecks.get(modeProducts)
+  if (!byFilters) sectionDecks.set(modeProducts, (byFilters = new WeakMap()))
+  const cached = byFilters.get(f)
+  if (cached) return cached
+  const list = modeProducts.filter((p) => p.availability !== 'out_of_stock' && matchesFilters(p, f))
+  const mixed = sortProducts(list, f.sort, MIX_SEED)
+  // I prodotti appena arrivati per primi (sempre mescolati), poi tutti gli altri.
+  // Con "La tua taglia": prima i capi con la taglia confermata, poi le novità, poi il resto (un solo giro sulla lista).
+  const sizes = f.sizes
+  const buckets: Product[][] = [[], [], [], []]
+  for (const p of mixed) buckets[(sizes.length && fitSizes(p.sizes, sizes).length ? 0 : 2) + (isNew(p) ? 0 : 1)].push(p)
+  const result = { ordered: buckets.flat(), inList: new Set(list) }
+  byFilters.set(f, result)
+  return result
+}
+const sectionsOf = new WeakMap<Product[], Map<Universe, Product[]>>()
+/**
+ * Prodotti divisi per sezione, una volta sola per catalogo: cambiare sezione non rifà il giro su tutti i prodotti
+ * (decine di migliaia, due volte, sui telefoni lenti si sentiva).
+ */
+function bySection(list: Product[]) {
+  let m = sectionsOf.get(list)
+  if (!m) {
+    m = new Map()
+    for (const p of list) {
+      const u = universeOf(p.category)
+      const arr = m.get(u)
+      if (arr) arr.push(p)
+      else m.set(u, [p])
+    }
+    sectionsOf.set(list, m)
+  }
+  return m
 }
 
 /** Copia salvata nei preferiti senza prezzi: i prezzi si leggono sempre dal catalogo aggiornato. */
@@ -387,23 +433,48 @@ function useAppStore() {
   // così il mazzo non si ricalcola (era il blocco più lungo dopo l'avvio).
   const modeProductsRef = useRef<Product[]>([])
   const modeProducts = useMemo(() => {
-    const next = deckProducts.filter((p) => universeOf(p.category) === state.mode)
+    const next = bySection(deckProducts).get(state.mode) ?? NO_PRODUCTS
     const prev = modeProductsRef.current
     if (prev.length === next.length && next.every((p, i) => p === prev[i])) return prev
     modeProductsRef.current = next
     return next
   }, [deckProducts, state.mode])
-  const sectionDeck = useMemo(() => {
-    const list = modeProducts.filter((p) => p.availability !== 'out_of_stock' && matchesFilters(p, activeFilters))
-    const mixed = sortProducts(list, activeFilters.sort, MIX_SEED)
-    // I prodotti appena arrivati per primi (sempre mescolati), poi tutti gli altri.
-    // Con "La tua taglia": prima i capi con la taglia confermata, poi le novità, poi il resto (un solo giro sulla lista).
-    const sizes = activeFilters.sizes
-    const buckets: Product[][] = [[], [], [], []]
-    for (const p of mixed) buckets[(sizes.length && fitSizes(p.sizes, sizes).length ? 0 : 2) + (isNew(p) ? 0 : 1)].push(p)
-    const ordered = buckets.flat()
-    return { ordered, inList: new Set(list) }
-  }, [modeProducts, activeFilters])
+  const sectionDeck = useMemo(() => buildSectionDeck(modeProducts, activeFilters), [modeProducts, activeFilters])
+
+  // Catalogo completo arrivato: a telefono fermo si preparano i mazzi delle altre sezioni e si scaricano le foto
+  // delle loro prime carte, così cambiando sezione le carte sono già pronte (con rete lenta niente foto: servono
+  // a quella aperta).
+  const allSections = state.catalog.status === 'ready' && state.catalog.sections.length === UNIVERSES.length
+  const warmRef = useRef(state)
+  useEffect(() => {
+    warmRef.current = state
+  })
+  useEffect(() => {
+    if (!allSections) return
+    let stop = false
+    void (async () => {
+      for (const u of UNIVERSES) {
+        await whenIdle()
+        if (stop) return
+        const { mode, filters, sectionFilters, disliked, wishlist } = warmRef.current
+        const seen = new Set([...disliked, ...wishlist.map((w) => w.product.id)])
+        if (u === mode) continue
+        const { ordered } = buildSectionDeck(bySection(products).get(u) ?? NO_PRODUCTS, u === 'moda' ? filters : sectionFilters[u])
+        const models = new Set<string>()
+        const first: Product[] = []
+        for (const p of ordered) {
+          if (first.length >= WARM_CARDS) break
+          if (seen.has(p.id) || models.has(modelKey(p))) continue
+          models.add(modelKey(p))
+          first.push(p)
+        }
+        warmImages(first.map(productImageUrl))
+      }
+    })()
+    return () => {
+      stop = true
+    }
+  }, [allSections, products])
 
   const fullDeck = useMemo(() => {
     const seen = new Set([...state.disliked, ...state.wishlist.map((w) => w.product.id)])
@@ -531,7 +602,7 @@ function useAppStore() {
   // Per il resto dell'app `state.filters` sono i filtri della sezione aperta.
   const view = useMemo(() => ({ ...state, filters: activeFilters }), [state, activeFilters])
   /** Prodotti della sezione aperta (per i filtri) */
-  const sectionProducts = useMemo(() => products.filter((p) => universeOf(p.category) === state.mode), [products, state.mode])
+  const sectionProducts = useMemo(() => bySection(products).get(state.mode) ?? NO_PRODUCTS, [products, state.mode])
   return { state: view, products: sectionProducts, allProducts: products, deck, previewing, sectionDisliked, wishlist, actions, sync, unseenDeals, markDealsSeen }
 }
 
