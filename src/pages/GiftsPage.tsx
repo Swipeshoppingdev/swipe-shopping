@@ -1,5 +1,5 @@
 import { Gift, SlidersHorizontal, Trash2 } from 'lucide-react'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { PriceTag } from '../components/PriceTag'
 import { ProductImage } from '../components/ProductImage'
 import { StoreLink } from '../components/StoreLink'
@@ -9,10 +9,11 @@ import { brandAndStore } from '../config/stores'
 import { openProduct } from '../lib/productSheet'
 import { useHashRoute } from '../lib/useHashRoute'
 import { universeOf, type Universe } from '../config/categories'
-import { modelKey, onePerModel } from '../lib/dedupe'
+import { modelKey } from '../lib/dedupe'
 import { sortProducts } from '../lib/filters'
-import { discountBadge, freshPrice } from '../lib/price'
+import { discountBadge, freshPriceValue } from '../lib/price'
 import { load, save } from '../lib/storage'
+import { yieldToMain } from '../lib/idle'
 import { useApp } from '../state/AppState'
 import type { Product } from '../types/product'
 
@@ -36,6 +37,8 @@ const WHO: { id: Who; label: string; fits: (p: Product, u: Universe) => boolean 
 ]
 const BUDGETS = [20, 50, 100]
 const SEED = 'regali'
+/** Carte preparate per volta nel mazzo Regali (al prossimo swipe si rifà) */
+const GIFT_WINDOW = 300
 
 interface GiftFilters {
   who: Who | null
@@ -83,12 +86,13 @@ export function GiftsPage() {
     return nos.filter((id) => disliked.has(id))
   }, [nos, state.disliked])
 
-  const cards = useMemo(() => {
-    const seen = new Set([...state.disliked, ...wishlist.map((w) => w.product.id)])
+  // I regali adatti (per chi, budget, offerte), già in ordine: si ricalcolano solo se cambiano catalogo o filtri,
+  // non a ogni swipe (sono decine di migliaia di prodotti di tutte le sezioni).
+  const pool = useMemo(() => {
     const who = WHO.find((w) => w.id === f.who)
     const list = allProducts.filter((p) => {
-      if (p.availability === 'out_of_stock' || seen.has(p.id) || p.searchQuery) return false
-      const price = freshPrice(p)?.price
+      if (p.availability === 'out_of_stock' || p.searchQuery) return false
+      const price = freshPriceValue(p)
       // Un regalo senza prezzo verificato non si può scegliere per budget: fuori.
       if (price === undefined || (f.max !== null && price > f.max)) return false
       if (f.deals && discountBadge(p) === null) return false
@@ -101,13 +105,56 @@ export function GiftsPage() {
       const band = (p: Product) => Math.floor((discountBadge(p) ?? 0) / 10)
       sorted = [...sorted].sort((a, b) => band(b) - band(a))
     }
+    return { sorted }
+  }, [allProducts, f, halloween])
+
+  // Il mazzo: solo la parte alta (GIFT_WINDOW carte), una variante per modello. A ogni swipe si rifà solo questa.
+  const cards = useMemo(() => {
+    const seen = new Set([...state.disliked, ...wishlist.map((w) => w.product.id)])
     const seenModels = new Set(wishlist.map((w) => modelKey(w.product as Product)))
-    const deck = onePerModel(sorted, seenModels)
+    const deck: Product[] = []
+    for (const p of pool.sorted) {
+      if (deck.length >= GIFT_WINDOW) break
+      if (seen.has(p.id)) continue
+      const k = modelKey(p)
+      if (seenModels.has(k)) continue
+      seenModels.add(k)
+      deck.push(p)
+    }
     // Annullati e "no" rivisti: tornano in cima, il più recente per primo.
-    const byId = new Map(list.map((p) => [p.id, p]))
-    const back = state.restored.flatMap((id) => (byId.has(id) ? [byId.get(id)!] : []))
+    const byId = new Map<string, Product>()
+    for (const p of pool.sorted) byId.set(p.id, p)
+    const back = state.restored.flatMap((id) => (byId.has(id) && !seen.has(id) ? [byId.get(id)!] : []))
     return back.length ? [...back, ...deck.filter((p) => !back.includes(p))] : deck
-  }, [allProducts, state.disliked, state.restored, wishlist, f, halloween])
+  }, [pool, state.disliked, state.restored, wishlist])
+
+  // Quanti regali in tutto (pagina dei filtri): contarli vuol dire guardare ogni modello, quindi solo lì e a blocchi,
+  // con una pausa ogni tanto (il numero compare un attimo dopo, la pagina si apre subito).
+  const [total, setTotal] = useState<{ of: unknown; n: number } | null>(null)
+  useEffect(() => {
+    if (tab !== 'filtri') return
+    let live = true
+    const key = pool
+    void (async () => {
+      const seen = new Set([...state.disliked, ...wishlist.map((w) => w.product.id)])
+      const seenModels = new Set(wishlist.map((w) => modelKey(w.product as Product)))
+      let n = 0
+      for (let i = 0; i < pool.sorted.length; i++) {
+        if (i && i % 4000 === 0) await yieldToMain()
+        if (!live) return
+        const p = pool.sorted[i]
+        if (seen.has(p.id)) continue
+        const k = modelKey(p)
+        if (seenModels.has(k)) continue
+        seenModels.add(k)
+        n++
+      }
+      if (live) setTotal({ of: key, n })
+    })()
+    return () => {
+      live = false
+    }
+  }, [tab, pool, state.disliked, wishlist])
 
   const ready = state.catalog.status === 'ready'
   const summary = [
@@ -116,7 +163,7 @@ export function GiftsPage() {
     f.deals && 'in offerta',
   ].filter(Boolean)
 
-  if (tab === 'filtri') return <GiftFiltersTab f={f} set={set} count={ready ? cards.length : null} season={season} />
+  if (tab === 'filtri') return <GiftFiltersTab f={f} set={set} count={ready && total?.of === pool ? total.n : null} season={season} />
   if (tab === 'salvati') {
     const saved = liked.map((id) => wishlist.find((w) => w.product.id === id)?.product).filter((p): p is Product => !!p)
     return <GiftsSaved products={saved} onRemove={(p) => actions.remove(p)} />
