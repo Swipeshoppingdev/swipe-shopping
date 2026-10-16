@@ -1,8 +1,8 @@
 import { Check, Heart, RefreshCw } from 'lucide-react'
 import { AmazonCart } from './AmazonCart'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { universeOf } from '../config/categories'
-import { STYLE_LABEL, completeLook, outfitTotal } from '../lib/outfits'
+import { STYLE_LABEL, completeLook, hasOutfitPool, outfitTotal, prepareOutfitPool } from '../lib/outfits'
 import { openProduct } from '../lib/productSheet'
 import { load, save } from '../lib/storage'
 import { useApp } from '../state/AppState'
@@ -27,9 +27,23 @@ export function CompleteLook({ product }: { product: Product }) {
   const [variant, setVariant] = useState(0)
   const [savedIds, setSavedIds] = useState(() => load<SavedOutfit[]>('outfitsSaved', []).map((s) => s.id))
   const gender = product.gender === 'uomo' || product.gender === 'donna' ? product.gender : state.filters.gender === 'uomo' ? 'uomo' : 'donna'
+  const moda = universeOf(product.category) === 'moda'
+  // I capi adatti si preparano a passi (vedi prepareOutfitPool): la scheda si apre subito, il look arriva dopo.
+  const ready = moda && hasOutfitPool(allProducts, gender)
+  const [, setPrepared] = useState(0)
+  useEffect(() => {
+    if (!moda || ready) return
+    let live = true
+    void prepareOutfitPool(allProducts, gender).then(() => {
+      if (live) setPrepared((n) => n + 1)
+    })
+    return () => {
+      live = false
+    }
+  }, [moda, ready, allProducts, gender])
   const look = useMemo(
-    () => (universeOf(product.category) === 'moda' ? completeLook(product, allProducts, gender, variant) : null),
-    [product, allProducts, gender, variant],
+    () => (ready ? completeLook(product, allProducts, gender, variant) : null),
+    [ready, product, allProducts, gender, variant],
   )
   if (!look) return null
   const others = look.items.filter((p) => p.id !== product.id)

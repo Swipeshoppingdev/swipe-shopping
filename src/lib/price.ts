@@ -22,6 +22,12 @@ export function freshPriceValue(p: Product, now = Date.now()): number | undefine
   return p.price
 }
 
+/** Fino a quando (ms) il prezzo resta valido: -Infinity se non c'è, NaN se la data è rotta. */
+export function priceExpiry(p: Product) {
+  if (p.price === undefined || !p.priceCheckedAt) return -Infinity
+  return checkedTime(p, p.priceCheckedAt) + STORES[p.store].priceMaxAgeHours * 3_600_000
+}
+
 /** Un prezzo si mostra solo se è stato verificato entro la finestra consentita dal negozio. */
 export function freshPrice(p: Product, now = Date.now()) {
   if (p.price === undefined || !p.priceCheckedAt) return null

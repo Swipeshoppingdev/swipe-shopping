@@ -11,20 +11,24 @@ export interface ProductDetails {
 }
 
 export const DETAIL_SHARDS = 64
+/** Gli stessi dettagli in file piccoli (details/p/<n>.json), scritti dal build: vedi scripts/build-catalog.ts. */
+export const SMALL_SHARDS = 1024
 
-export function detailShard(id: string) {
+export function detailShard(id: string, shards = DETAIL_SHARDS) {
   let h = 0
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0
-  return h % DETAIL_SHARDS
+  return h % shards
 }
 
 const shards = new Map<number, Promise<Record<string, ProductDetails>>>()
 
 export function loadDetails(id: string): Promise<ProductDetails | null> {
-  const n = detailShard(id)
+  const n = detailShard(id, SMALL_SHARDS)
   let shard = shards.get(n)
   if (!shard) {
-    shard = fetch(`${base()}details/${n}.json`)
+    // Il file piccolo (~3 KB invece di ~40 KB per carta); se manca (sviluppo) quello grande.
+    shard = fetch(`${base()}details/p/${n}.json`)
+      .then((r) => (r.ok && r.headers.get('content-type')?.includes('json') ? r : fetch(`${base()}details/${detailShard(id)}.json`)))
       .then((r) => (r.ok ? r.json() : {}))
       .catch(() => {
         shards.delete(n) // offline: riprovo la prossima volta
