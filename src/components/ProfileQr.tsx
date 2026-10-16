@@ -2,9 +2,11 @@ import { X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { profileUrl, type SocialCard } from '../lib/social'
 import { Avatar } from './SocialBits'
+import { useBackClose } from '../lib/backClose'
 
 /** QR del mio profilo: un amico lo inquadra con la fotocamera e mi segue (link #/u/<codice>). */
 export function ProfileQr({ me, onClose }: { me: SocialCard; onClose: () => void }) {
+  useBackClose(true, onClose)
   const [svg, setSvg] = useState('')
   useEffect(() => {
     // Sempre nero su bianco, anche in tema scuro: le fotocamere lo leggono meglio.

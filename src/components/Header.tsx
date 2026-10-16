@@ -11,6 +11,7 @@ import { useApp } from '../state/AppState'
 import { useSpecial } from '../lib/outfitMode'
 import { loadChunk } from '../lib/staleChunk'
 import type { MenuEntry, MenuId } from './MenuList'
+import { useBackClose } from '../lib/backClose'
 
 // Elenco riordinabile (con il trascinamento di framer-motion): scaricato a parte, appena l'app è ferma o al primo tocco sul menu.
 const loadMenuList = loadChunk(() => import('./MenuList').then((m) => ({ default: m.MenuList })))
@@ -68,6 +69,7 @@ function SectionMenu() {
   const onOutfit = special === 'outfit'
   const onGifts = special === 'regali'
   const [open, setOpen] = useState(false)
+  useBackClose(open, () => setOpen(false))
   const ref = useRef<HTMLDivElement>(null)
   const current = onOutfit ? { ...sectionOf('moda'), label: 'Outfit' } : onGifts ? { ...sectionOf(state.mode), label: giftSeason().id === 'halloween' ? 'Halloween' : 'Regali' } : sectionOf(state.mode)
   const [visited, setVisited] = useState(() => load<Universe[]>('sectionsVisited', []))

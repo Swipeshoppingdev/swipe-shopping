@@ -2,6 +2,7 @@ import { Camera, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { categoryGroupOf, categoryLabel, sectionOf, type Universe } from '../config/categories'
 import type { Product } from '../types/product'
+import { useBackClose } from '../lib/backClose'
 
 /**
  * "La mia wishlist" in una storia (1080×1920) da condividere su Instagram o TikTok.
@@ -11,6 +12,7 @@ import type { Product } from '../types/product'
 export function WishlistStory({ items, section, deals }: { items: Product[]; section: Universe; deals: number }) {
   const [busy, setBusy] = useState(false)
   const [story, setStory] = useState<{ blob: Blob; url: string } | null>(null)
+  useBackClose(!!story, () => setStory(null))
   useEffect(() => {
     if (!story) return
     return () => URL.revokeObjectURL(story.url)
