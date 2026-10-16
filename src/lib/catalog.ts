@@ -31,12 +31,12 @@ export async function loadCatalog(
   // Leggere il catalogo (alcuni MB) blocca il telefono per un attimo: chi chiama può farlo aspettare un momento libero,
   // così non capita in mezzo a uno swipe. Il file intanto si scarica a pezzi (tenerli costa poco); trasformarlo in
   // testo e poi in prodotti si fa dopo, in passi separati, così tra un passo e l'altro il telefono risponde ai tocchi.
-  let bytes: Uint8Array
+  let bytes: Uint8Array[]
   let sections: Universe[] = [section]
   if (isNative) {
     const got = await fetchOrSaved(`catalog-${section}.json`, { signal, priority: opts.low ? 'low' : 'auto' }, 5000)
     if (!got) throw new Error('Catalogo non disponibile')
-    bytes = got
+    bytes = [got]
   } else {
     let res = await fetch(`${DATA_BASE}catalog-${section}.json`, { signal, priority: opts.low ? 'low' : 'auto' })
     if (!res.ok) {
@@ -44,12 +44,10 @@ export async function loadCatalog(
       sections = [...UNIVERSES]
     }
     if (!res.ok) throw new Error(`Catalogo non disponibile (HTTP ${res.status})`)
-    bytes = await readBody(res)
+    bytes = await readChunks(res)
   }
   await beforeParse?.()
-  const text = new TextDecoder().decode(bytes)
-  await yieldToMain()
-  const parsed = await parseInPieces(text)
+  const parsed = await parseInPieces(bytes)
   const { valid, invalid } = await quickCheck(parsed)
   if (invalid) console.warn('Prodotti scartati dal catalogo:', invalid)
   const available = valid.filter((p) => p.availability !== 'out_of_stock')
@@ -115,35 +113,6 @@ async function quickCheck(list: Record<string, unknown>[]) {
 }
 const CHECK_SLICE = 8000
 
-/** Circa quanti caratteri leggere per volta (~2 MB: sui telefoni economici ~150 ms invece di un blocco unico). */
-const PIECE = 2_000_000
-
-/**
- * Il build scrive un prodotto per riga (`[\n{…},\n{…}\n]`): si legge a pezzi di righe intere, con una pausa tra un pezzo
- * e l'altro. Un file scritto diversamente (versioni vecchie, sviluppo) si legge tutto in una volta.
- */
-async function parseInPieces(text: string): Promise<Record<string, unknown>[]> {
-  if (text.length <= PIECE || !text.startsWith('[\n{')) return JSON.parse(text)
-  try {
-    const out: Record<string, unknown>[] = []
-    let start = 2
-    while (start < text.length) {
-      const cut = text.indexOf('\n{', start + PIECE)
-      let piece = cut < 0 ? text.slice(start, text.lastIndexOf(']')) : text.slice(start, cut)
-      piece = piece.trimEnd()
-      if (piece.endsWith(',')) piece = piece.slice(0, -1)
-      const list = JSON.parse(`[${piece}]`) as Record<string, unknown>[]
-      for (const p of list) out.push(p)
-      if (cut < 0) break
-      start = cut + 1
-      await yieldToMain()
-    }
-    return out
-  } catch {
-    return JSON.parse(text)
-  }
-}
-
 /** Ricostruisce i campi tolti dal build per risparmiare peso (vedi scripts/build-catalog.ts). */
 // Modifica l'oggetto appena letto dal JSON invece di copiarlo: con decine di migliaia di prodotti la copia pesa.
 function expand(p: Record<string, unknown>) {
@@ -152,17 +121,70 @@ function expand(p: Record<string, unknown>) {
   return p
 }
 
-async function readBody(res: Response): Promise<Uint8Array> {
-  if (!res.body) return new Uint8Array(await res.arrayBuffer())
+/** Il file come arriva dalla rete, a pezzi: unirli in un blocco unico costava ~0,2 s sui telefoni lenti. */
+async function readChunks(res: Response): Promise<Uint8Array[]> {
+  if (!res.body) return [new Uint8Array(await res.arrayBuffer())]
   const reader = res.body.getReader()
   const chunks: Uint8Array[] = []
-  let size = 0
   for (;;) {
     const { done, value } = await reader.read()
     if (done) break
     chunks.push(value)
-    size += value.length
   }
+  return chunks
+}
+
+/**
+ * Da byte a prodotti a piccoli passi, con una pausa tra l'uno e l'altro. Il build scrive un prodotto per riga
+ * (`[\n{…},\n{…}\n]`): ogni pezzo di testo si legge fino all'ultima riga intera, il resto passa al pezzo dopo.
+ * Prima si trasformava tutto il file (10 MB di moda) in un testo unico: sui telefoni lenti bloccava lo schermo per più
+ * di un secondo, proprio durante i primi swipe. Un file scritto diversamente (versioni vecchie, sviluppo) si legge
+ * tutto in una volta.
+ */
+async function parseInPieces(parts: Uint8Array[]): Promise<Record<string, unknown>[]> {
+  const decoder = new TextDecoder()
+  const out: Record<string, unknown>[] = []
+  const take = (lines: string) => {
+    lines = lines.trimEnd()
+    if (lines.startsWith('[')) lines = lines.slice(1)
+    if (lines.endsWith(',')) lines = lines.slice(0, -1)
+    if (!lines.trim()) return
+    for (const p of JSON.parse(`[${lines}]`) as Record<string, unknown>[]) out.push(p)
+  }
+  let carry = ''
+  let byLine: boolean | undefined
+  try {
+    for (const part of parts) {
+      for (let off = 0; off < part.length; off += PIECE) {
+        // stream: un carattere spezzato tra due pezzi viene completato col pezzo dopo.
+        carry += decoder.decode(part.subarray(off, off + PIECE), { stream: true })
+        if (byLine === undefined && carry.length >= 3) byLine = carry.startsWith('[\n{')
+        if (!byLine) continue
+        const cut = carry.lastIndexOf('\n{')
+        if (cut <= 0) continue
+        take(carry.slice(0, cut))
+        carry = carry.slice(cut + 1)
+        await yieldToMain()
+      }
+    }
+    carry += decoder.decode()
+    if (!byLine) return JSON.parse(carry)
+    take(carry.slice(0, carry.lastIndexOf(']')))
+    return out
+  } catch {
+    // Formato inatteso: lettura classica, tutto insieme.
+    const all = new TextDecoder().decode(await new Blob(parts as BlobPart[]).arrayBuffer())
+    return JSON.parse(all)
+  }
+}
+/** Byte letti per volta (~256 KB: sui telefoni lenti qualche decina di millisecondi). */
+const PIECE = 256 * 1024
+
+async function readBody(res: Response): Promise<Uint8Array> {
+  const chunks = await readChunks(res)
+  if (chunks.length === 1) return chunks[0]
+  let size = 0
+  for (const c of chunks) size += c.length
   const out = new Uint8Array(size)
   let off = 0
   for (const c of chunks) {

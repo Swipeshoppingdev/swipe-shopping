@@ -1,5 +1,5 @@
 import type { CategoryId } from '../config/categories'
-import { freshPriceValue } from './price.ts'
+import { freshPriceValue, priceExpiry } from './price.ts'
 import { modelKey } from './dedupe.ts'
 import { isNew } from './newness.ts'
 import { yieldToMain } from './idle.ts'
@@ -228,23 +228,28 @@ function fits(p: Product, gender: 'uomo' | 'donna') {
 }
 
 export function outfitTotal(items: Product[]) {
-  // Ricalcolato al massimo una volta al minuto per outfit: il mazzo ne filtra migliaia per prezzo a ogni apertura.
+  // Tenuto finché il primo prezzo dell'outfit non scade (un prezzo che manca o è scaduto non torna valido con lo
+  // stesso catalogo): il mazzo ne filtra migliaia per prezzo a ogni apertura, rifare i conti costava ~0,4 s sui
+  // telefoni lenti.
   const now = Date.now()
   const cached = totals.get(items)
-  if (cached && now - cached.at < 60_000) return cached.total
+  if (cached && now <= cached.until) return cached.total
   let total: number | null = 0
+  let until = Infinity
   for (const p of items) {
-    const price = freshPriceValue(p, now)
-    if (price === undefined) {
+    const end = priceExpiry(p)
+    if (p.price === undefined || !(now <= end)) {
       total = null
+      until = Infinity
       break
     }
-    total += price
+    total += p.price
+    until = Math.min(until, end)
   }
-  totals.set(items, { at: now, total })
+  totals.set(items, { until, total })
   return total
 }
-const totals = new WeakMap<Product[], { at: number; total: number | null }>()
+const totals = new WeakMap<Product[], { until: number; total: number | null }>()
 
 /** I capi che possono entrare negli outfit di un genere, divisi per categoria (calcolati una volta per catalogo). */
 function outfitPool(products: Product[], gender: 'uomo' | 'donna', cold: boolean) {
@@ -256,6 +261,31 @@ function outfitPool(products: Product[], gender: 'uomo' | 'donna', cold: boolean
   return pool
 }
 const pools = new WeakMap<Product[], Map<string, Map<CategoryId, Product[]>>>()
+
+/** I capi per gli outfit sono già pronti (completeLook non dovrà calcolarli)? */
+export function hasOutfitPool(products: Product[], gender: 'uomo' | 'donna', month = new Date().getMonth()) {
+  return !!pools.get(products)?.has(`${gender}:${isColdSeason(month)}`)
+}
+
+/**
+ * Come outfitPool, ma con una pausa ogni tanto: aprendo la scheda di un capo, "Completa il look" calcolava tutto
+ * subito e la scheda restava ferma ~0,5 s sui telefoni lenti. Così la scheda si apre e il look arriva un attimo dopo.
+ */
+export async function prepareOutfitPool(products: Product[], gender: 'uomo' | 'donna', month = new Date().getMonth()) {
+  if (hasOutfitPool(products, gender, month)) return
+  const cold = isColdSeason(month)
+  const steps = poolSteps(products, gender, cold)
+  for (;;) {
+    const r = steps.next()
+    if (r.done) {
+      let byKey = pools.get(products)
+      if (!byKey) pools.set(products, (byKey = new Map()))
+      byKey.set(`${gender}:${cold}`, r.value)
+      return
+    }
+    await yieldToMain()
+  }
+}
 
 /** Esegue tutto e subito un lavoro diviso a passi (vedi buildOutfitsAsync per la versione con le pause). */
 function runSync<T>(steps: Generator<void, T>): T {
@@ -391,6 +421,11 @@ export function buildOutfitsAsync(products: Product[], gender: 'uomo' | 'donna',
     for (;;) {
       const r = steps.next()
       if (r.done) {
+        // Totali calcolati qui, a blocchi: la pagina li filtra per prezzo appena li riceve.
+        for (let i = 0; i < r.value.length; i++) {
+          if (i && i % 1500 === 0) await yieldToMain()
+          outfitTotal(r.value[i].items)
+        }
         byKey.set(key, r.value)
         return r.value
       }

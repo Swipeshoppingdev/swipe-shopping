@@ -1,8 +1,9 @@
 // Dopo `vite build`: riscrive dist/catalog.json compatto (senza spazi e senza prodotti esauriti),
 // così l'app scarica e legge meno dati all'avvio.
-import { readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { UNIVERSES, universeOf, type CategoryId } from '../src/config/categories.ts'
 import { checkCatalog } from '../src/lib/validate.ts'
+import { DETAIL_SHARDS, SMALL_SHARDS, detailShard } from '../src/lib/details.ts'
 
 function hash(s: string) {
   let h = 2166136261
@@ -52,3 +53,20 @@ for (const section of UNIVERSES) {
   writeFileSync(new URL(`../dist/catalog-${section}-anteprima.json`, import.meta.url), JSON.stringify(preview))
 }
 console.log(`catalog.json: ${(source.length / 1e6).toFixed(2)} MB → ${(out.length / 1e6).toFixed(2)} MB, ${catalog.length} prodotti`)
+
+// Dettagli (foto in più, caratteristiche) divisi anche in file piccoli: details/<n>.json ne ha ~230 prodotti (~40 KB)
+// e per ogni carta se ne scaricava uno intero. details/p/<n>.json ne ha ~15 (~3 KB). I file grandi restano per le
+// versioni dell'app già installate.
+const small: Record<string, unknown>[] = Array.from({ length: SMALL_SHARDS }, () => ({}))
+let detailCount = 0
+for (let n = 0; n < DETAIL_SHARDS; n++) {
+  const f = new URL(`../dist/details/${n}.json`, import.meta.url)
+  if (!existsSync(f)) continue
+  for (const [id, d] of Object.entries(JSON.parse(readFileSync(f, 'utf8')) as Record<string, unknown>)) {
+    small[detailShard(id, SMALL_SHARDS)][id] = d
+    detailCount++
+  }
+}
+mkdirSync(new URL('../dist/details/p/', import.meta.url), { recursive: true })
+small.forEach((shard, n) => writeFileSync(new URL(`../dist/details/p/${n}.json`, import.meta.url), JSON.stringify(shard)))
+console.log(`details/p: ${detailCount} prodotti in ${SMALL_SHARDS} file`)

@@ -1,6 +1,6 @@
 import { useBoost } from '../lib/boost'
 import { countLikeForReview } from '../lib/review'
-import { afterPaint, whenIdle } from '../lib/idle'
+import { afterPaint, whenIdle, yieldToMain } from '../lib/idle'
 import { firstImage, warmImages } from '../lib/images'
 import { productImageUrl } from '../config/stores'
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
@@ -135,6 +135,17 @@ function buildSectionDeck(modeProducts: Product[], f: Filters) {
   const result = { ordered: buckets.flat(), inList: new Set(list) }
   byFilters.set(f, result)
   return result
+}
+const idMaps = new WeakMap<Product[], Map<string, Product>>()
+/** Prodotti per id, una volta sola per catalogo (preparata prima di mostrarlo, vedi reloadCatalog). */
+function idMap(list: Product[]) {
+  let m = idMaps.get(list)
+  if (!m) {
+    m = new Map()
+    for (const p of list) m.set(p.id, p)
+    idMaps.set(list, m)
+  }
+  return m
 }
 const sectionsOf = new WeakMap<Product[], Map<Universe, Product[]>>()
 /**
@@ -286,6 +297,10 @@ function useAppStore() {
 
   // Prima la sezione aperta (si vede subito), poi le altre in sottofondo (preferiti, link condivisi, cambio sezione).
   const modeRef = useRef(state.mode)
+  const filtersRef = useRef(activeFilters)
+  useEffect(() => {
+    filtersRef.current = activeFilters
+  }, [activeFilters])
   // Le altre sezioni si scaricano dopo, a mazzo già pronto (prima le foto delle prime card);
   // subito se si apre una sezione che manca.
   const wakeRest = useRef<(() => void) | null>(null)
@@ -326,12 +341,21 @@ function useAppStore() {
     loadCatalog(first, signal, beforeParse, { after: Promise.race([seen, sleep(4000)]), low: true })
       .then(async (r) => {
         await warmMixKeys(r.products, MIX_SEED)
+        // Mazzo della sezione aperta preparato prima, a passi con una pausa tra l'uno e l'altro: fatto tutto insieme
+        // quando arriva il catalogo era un blocco di ~0,5 s sui telefoni lenti, durante i primi swipe.
+        setNewBaseline(r.products)
+        await yieldToMain()
+        idMap(r.products)
+        await yieldToMain()
+        const mine = bySection(r.products).get(modeRef.current)
+        await yieldToMain()
+        if (mine) buildSectionDeck(mine, filtersRef.current)
+        await yieldToMain()
         if (signal?.aborted) return
         full = true
         if (previewShown.current) dispatch({ type: 'pin', ids: deckRef.current.slice(0, 3).map((p) => p.id) })
         previewShown.current = false
         setPreview(null)
-        setNewBaseline(r.products)
         dispatch({ type: 'catalog', catalog: { status: 'ready', products: r.products, exploreMode: r.exploreMode, sections: r.sections } })
         const others = UNIVERSES.filter((u) => !r.sections.includes(u))
         if (others.length === 0) return
@@ -404,11 +428,7 @@ function useAppStore() {
     if (sharedProduct) dispatch({ type: 'mode', mode: universeOf(sharedProduct.category) })
   }, [sharedProduct])
 
-  const byId = useMemo(() => {
-    const m = new Map<string, Product>()
-    for (const p of deckProducts) m.set(p.id, p)
-    return m
-  }, [deckProducts])
+  const byId = useMemo(() => idMap(deckProducts), [deckProducts])
   const boost = useBoost()
   // Solo la categoria (non i giri rimasti): il mazzo non si ricalcola a ogni swipe.
   const boostCat = boost && boost.section === state.mode ? boost.category : null
@@ -458,8 +478,9 @@ function useAppStore() {
         if (stop) return
         const { mode, filters, sectionFilters, disliked, wishlist } = warmRef.current
         const seen = new Set([...disliked, ...wishlist.map((w) => w.product.id)])
-        if (u === mode) continue
         const { ordered } = buildSectionDeck(bySection(products).get(u) ?? NO_PRODUCTS, u === 'moda' ? filters : sectionFilters[u])
+        // Anche la sezione aperta: il suo mazzo era fatto sul catalogo di prima, tornandoci si ricalcolava (~0,2 s).
+        if (u === mode) continue
         const models = new Set<string>()
         const first: Product[] = []
         for (const p of ordered) {
