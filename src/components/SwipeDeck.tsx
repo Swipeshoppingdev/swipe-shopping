@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, m as motion } from 'framer-motion'
 import { ArrowRight, Heart, X } from 'lucide-react'
 import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState, type ReactNode } from 'react'
 import { track } from '../lib/analytics'

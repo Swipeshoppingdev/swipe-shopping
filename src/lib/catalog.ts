@@ -19,8 +19,15 @@ export interface CatalogResult {
  * Sorgente del catalogo. Il build scrive `catalog-<sezione>.json` (compatti):
  * si scarica prima la sezione aperta, poi le altre. In sviluppo c'è solo `catalog.json` (tutto).
  */
-export async function loadCatalog(section: Universe, signal?: AbortSignal, beforeParse?: () => Promise<void>): Promise<CatalogResult> {
-  let res = await fetch(`${DATA_BASE}catalog-${section}.json`, { signal })
+export async function loadCatalog(
+  section: Universe,
+  signal?: AbortSignal,
+  beforeParse?: () => Promise<void>,
+  /** `after`: il download parte dopo questa promessa; `low`: passa dopo foto e anteprima se la rete è lenta. */
+  opts: { after?: Promise<unknown>; low?: boolean } = {},
+): Promise<CatalogResult> {
+  await opts.after
+  let res = await fetch(`${DATA_BASE}catalog-${section}.json`, { signal, priority: opts.low ? 'low' : 'auto' })
   let sections: Universe[] = [section]
   if (!res.ok) {
     res = await fetch(`${DATA_BASE}catalog.json`, { signal })
@@ -44,7 +51,7 @@ export async function loadCatalog(section: Universe, signal?: AbortSignal, befor
 
 /** Anteprima leggera della sezione (catalog-<sezione>-anteprima.json, vedi build-catalog): vuota se manca. */
 export async function loadCatalogPreview(section: Universe, signal?: AbortSignal): Promise<Product[]> {
-  const res = await fetch(`${DATA_BASE}catalog-${section}-anteprima.json`, { signal })
+  const res = await fetch(`${DATA_BASE}catalog-${section}-anteprima.json`, { signal, priority: 'high' })
   if (!res.ok) return []
   return (await quickCheck(await res.json())).valid.filter((p) => p.availability !== 'out_of_stock')
 }

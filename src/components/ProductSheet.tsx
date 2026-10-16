@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, m as motion } from 'framer-motion'
 import { Check, Heart, X } from 'lucide-react'
 import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
 import { categoryLabel } from '../config/categories'

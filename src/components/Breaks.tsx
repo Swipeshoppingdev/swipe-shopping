@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, m as motion } from 'framer-motion'
 import { ArrowDown, ArrowUp, ArrowUpDown, BadgeCheck, Disc3, Footprints, Check, Euro, Heart, Percent, Shuffle, Sparkles, Tag, TrendingUp, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { categoryLabel, universeOf, type CategoryId } from '../config/categories'

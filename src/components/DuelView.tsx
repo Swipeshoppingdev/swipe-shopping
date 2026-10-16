@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import { Heart, Swords, Trophy } from 'lucide-react'
 import { useState } from 'react'
 import { brandAndStore } from '../config/stores'

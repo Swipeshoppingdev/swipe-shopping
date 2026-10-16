@@ -1,8 +1,7 @@
 import { closeBreaks } from '../lib/closeBreaks'
-import { Check, Ghost, Cookie, Cpu, Gift, LayoutGrid, Menu, Moon, Music, PawPrint, Shirt, Sofa, Sparkles, Sun, TreePine } from 'lucide-react'
+import { Ghost, Cookie, Cpu, Gift, LayoutGrid, Menu, Moon, Music, PawPrint, Shirt, Sofa, Sparkles, Sun, TreePine } from 'lucide-react'
 import { giftSeason } from '../lib/giftSeason'
-import { Reorder, useDragControls } from 'framer-motion'
-import { useEffect, useRef, useState, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { APP_NAME } from '../config/app'
 import { SECTIONS, sectionOf, type Universe } from '../config/categories'
 import { load, save } from '../lib/storage'
@@ -10,6 +9,12 @@ import { useTheme } from '../lib/theme'
 import { SocialLinks } from './SocialLinks'
 import { useApp } from '../state/AppState'
 import { useSpecial } from '../lib/outfitMode'
+import { loadChunk } from '../lib/staleChunk'
+import type { MenuEntry, MenuId } from './MenuList'
+
+// Elenco riordinabile (con il trascinamento di framer-motion): scaricato a parte, appena l'app è ferma o al primo tocco sul menu.
+const loadMenuList = loadChunk(() => import('./MenuList').then((m) => ({ default: m.MenuList })))
+const MenuList = lazy(loadMenuList)
 
 /** Barra in alto: menu delle sezioni (tre linee del colore della sezione) a sinistra, logo al centro, tema chiaro/scuro a destra. */
 export function Header() {
@@ -106,6 +111,11 @@ function SectionMenu() {
     }
   }, [open])
 
+  useEffect(() => {
+    const t = setTimeout(() => void loadMenuList().catch(() => {}), 3000)
+    return () => clearTimeout(t)
+  }, [])
+
   const [order, setOrderState] = useState(loadMenuOrder)
   const setOrder = (next: MenuId[]) => {
     setOrderState(next)
@@ -141,6 +151,7 @@ function SectionMenu() {
     <div ref={ref} className="relative">
       <button
         type="button"
+        onPointerDown={() => void loadMenuList().catch(() => {})}
         onClick={() => {
           if (!open) closeBreaks()
           setOpen(!open)
@@ -162,11 +173,9 @@ function SectionMenu() {
       {open && (
         <div role="menu" className="absolute top-12 left-0 z-30 max-h-[calc(100dvh-10.5rem-env(safe-area-inset-bottom))] w-72 overflow-y-auto rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-neutral-200">
           {/* Tenendo premuta una voce la si trascina su o giù (nessun tasto: chi lo sa lo usa, gli altri non lo notano). */}
-          <Reorder.Group as="div" axis="y" values={order} onReorder={setOrder}>
-            {order.map((id) => (
-              <MenuItem key={id} id={id} entry={entries[id]} onPick={() => setOpen(false)} />
-            ))}
-          </Reorder.Group>
+          <Suspense fallback={<div style={{ height: order.length * 58 }} />}>
+            <MenuList order={order} entries={entries} onReorder={setOrder} onPick={() => setOpen(false)} />
+          </Suspense>
           <p className="px-2.5 pt-1 pb-0.5 text-center text-[10px] text-neutral-500">Tieni premuto e trascina per riordinare le voci</p>
           <div className="mt-1 border-t border-neutral-100 pt-1">
             <SocialLinks />
@@ -176,10 +185,6 @@ function SectionMenu() {
     </div>
   )
 }
-
-/** Voci del menu: le sezioni più Outfit e Regali. Ognuno può riordinarle (salvato sul telefono). */
-type MenuId = Universe | 'outfit' | 'regali'
-type MenuEntry = { label: string; hint: string; color: string; Icon: typeof Shirt; isNew: boolean; active: boolean; href?: string; onSelect?: () => void }
 
 /** Ordine di partenza scelto da Kevin (chi lo riordina tiene il suo). */
 const DEFAULT_ORDER: MenuId[] = ['moda', 'tech', 'snack', 'outfit', 'regali', 'gadget', 'casa', 'beauty', 'animali', 'musica']
@@ -195,100 +200,3 @@ function loadMenuOrder(): MenuId[] {
   })
   return out
 }
-
-/** Una voce del menu: tocco = apre, pressione lunga = si trascina. */
-function MenuItem({ id, entry: e, onPick }: { id: MenuId; entry: MenuEntry; onPick: () => void }) {
-  const controls = useDragControls()
-  const [dragging, setDragging] = useState(false)
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const start = useRef<{ x: number; y: number } | null>(null)
-  const moved = useRef(false)
-
-  const cancel = () => {
-    clearTimeout(timer.current)
-    start.current = null
-  }
-  const onPointerDown = (ev: RPointerEvent<HTMLElement>) => {
-    moved.current = false
-    start.current = { x: ev.clientX, y: ev.clientY }
-    const native = ev.nativeEvent
-    timer.current = setTimeout(() => {
-      moved.current = true
-      setDragging(true)
-      navigator.vibrate?.(15)
-      // Durante il trascinamento il menu non deve scorrere (iOS).
-      const block = (t: TouchEvent) => t.preventDefault()
-      const stop = () => {
-        document.removeEventListener('touchmove', block)
-        document.removeEventListener('pointerup', stop)
-        document.removeEventListener('pointercancel', stop)
-        setDragging(false)
-      }
-      document.addEventListener('touchmove', block, { passive: false })
-      document.addEventListener('pointerup', stop)
-      document.addEventListener('pointercancel', stop)
-      controls.start(native)
-    }, LONG_PRESS_MS)
-  }
-  const onPointerMove = (ev: RPointerEvent<HTMLElement>) => {
-    // Se il dito si muove prima del tempo è uno scorrimento, non una pressione lunga.
-    if (start.current && Math.hypot(ev.clientX - start.current.x, ev.clientY - start.current.y) > 8) cancel()
-  }
-  const onClick = (ev: RMouseEvent) => {
-    if (moved.current) {
-      ev.preventDefault()
-      moved.current = false
-      return
-    }
-    e.onSelect?.()
-    onPick()
-  }
-
-  const inner = (
-    <>
-      {/* Colori fissi: ogni voce mostra il suo colore, qualunque sia la sezione aperta. */}
-      <span className="grid size-9 shrink-0 place-items-center rounded-full text-[#fff]" style={{ background: e.color }}>
-        <e.Icon className="size-4.5" />
-      </span>
-      <span className="min-w-0 flex-1 leading-tight">
-        <span className="flex items-center gap-1.5 font-semibold">
-          {e.label}
-          {e.isNew && (
-            <span className="rounded-full px-1.5 py-px text-[10px] font-bold uppercase text-[#fff]" style={{ background: e.color }}>
-              Nuovo
-            </span>
-          )}
-        </span>
-        <span className="block truncate text-xs text-neutral-500">{e.hint}</span>
-      </span>
-      {e.active && <Check className="size-4 shrink-0" style={{ color: e.color }} />}
-    </>
-  )
-  const cls = `flex w-full items-center gap-3 rounded-xl p-2.5 text-left select-none [-webkit-touch-callout:none] active:bg-neutral-100 ${
-    dragging ? 'bg-white shadow-lg ring-1 ring-neutral-200' : e.active ? 'bg-neutral-100' : ''
-  }`
-  const handlers = { onPointerDown, onPointerMove, onPointerUp: cancel, onPointerCancel: cancel, onContextMenu: (ev: RMouseEvent) => ev.preventDefault(), onClick }
-  return (
-    <Reorder.Item
-      as="div"
-      value={id}
-      dragListener={false}
-      dragControls={controls}
-      animate={{ scale: dragging ? 1.03 : 1 }}
-      className="relative"
-      style={{ zIndex: dragging ? 1 : 0 }}
-    >
-      {e.href ? (
-        <a href={e.href} role="menuitemradio" aria-checked={e.active} draggable={false} className={cls} {...handlers}>
-          {inner}
-        </a>
-      ) : (
-        <button type="button" role="menuitemradio" aria-checked={e.active} className={cls} {...handlers}>
-          {inner}
-        </button>
-      )}
-    </Reorder.Item>
-  )
-}
-
-const LONG_PRESS_MS = 400

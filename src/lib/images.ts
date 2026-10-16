@@ -10,8 +10,13 @@ const conn = (): Conn | undefined => (navigator as Navigator & { connection?: Co
 const times: number[] = []
 let measuredSlow = false
 
+let firstShown: () => void
+/** Si risolve quando la prima foto di un prodotto è arrivata (per far partire dopo i download grossi). */
+export const firstImage = new Promise<void>((r) => (firstShown = r))
+
 /** Una foto è arrivata in `ms` (da quando è stata chiesta). */
 export function noteImageTime(ms: number) {
+  firstShown()
   times.push(ms)
   if (times.length > 6) times.shift()
   if (times.length >= 3) {

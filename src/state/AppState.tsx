@@ -1,6 +1,7 @@
 import { useBoost } from '../lib/boost'
 import { countLikeForReview } from '../lib/review'
 import { afterPaint, whenIdle } from '../lib/idle'
+import { firstImage } from '../lib/images'
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import { UNIVERSES, isUniverse, universeOf, type Universe } from '../config/categories'
 import { track } from '../lib/analytics'
@@ -255,9 +256,13 @@ function useAppStore() {
     dispatch({ type: 'catalog', catalog: { status: 'loading' } })
     const first = modeRef.current
     let full = false
+    let gotPreview = false
     const previewDone = loadCatalogPreview(first, signal)
       .then((p) => {
-        if (!full && !signal?.aborted && p.length) setPreview(p)
+        if (!full && !signal?.aborted && p.length) {
+          gotPreview = true
+          setPreview(p)
+        }
       })
       .catch(() => {})
     // Prima le carte dell'anteprima sullo schermo, poi il catalogo completo, letto in un momento libero (non a metà swipe).
@@ -268,7 +273,11 @@ function useAppStore() {
       await afterPaint()
       if (previewShown.current) await whenIdle()
     }
-    loadCatalog(first, signal, beforeParse)
+    // Il catalogo completo (MB) parte quando l'anteprima e la foto della prima carta sono arrivate (al massimo dopo 4 s)
+    // e con priorità bassa: con rete lenta la linea va prima a quello che si vede.
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+    const seen = previewDone.then(() => (gotPreview ? Promise.race([firstImage, sleep(2500)]) : undefined))
+    loadCatalog(first, signal, beforeParse, { after: Promise.race([seen, sleep(4000)]), low: true })
       .then(async (r) => {
         await warmMixKeys(r.products, MIX_SEED)
         if (signal?.aborted) return

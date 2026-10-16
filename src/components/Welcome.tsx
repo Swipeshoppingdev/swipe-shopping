@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, m as motion } from 'framer-motion'
 import { Bell, ChevronLeft, ChevronRight, Cpu, Gamepad2, Heart, Scale, Sparkles, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { APP_NAME } from '../config/app'
