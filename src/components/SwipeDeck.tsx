@@ -5,6 +5,7 @@ import { track } from '../lib/analytics'
 import { useApp } from '../state/AppState'
 import { productImageUrl, productUrl, storeLinkLabel, storeName } from '../config/stores'
 import { ProductImage } from './ProductImage'
+import { aheadCount, preloadImages } from '../lib/images'
 import { CoachMarks } from './CoachMarks'
 import { HeartBurst, type Burst } from './HeartBurst'
 import { discountBadge } from '../lib/price'
@@ -16,9 +17,6 @@ import { UndoMenu } from './UndoMenu'
 import { SwipeCard, type SwipeDir } from './SwipeCard'
 import type { Product } from '../types/product'
 
-// Foto delle prossime carte scaricate e già decodificate in anticipo: quando una carta arriva
-// in cima la foto c'è già e lo swipe non scatta. Si tengono vive solo le ultime, per la memoria.
-const AHEAD = 8
 /**
  * Lo swipe si registra (preferiti, mazzo, statistiche) solo quando la carta è già uscita: il ricalcolo del mazzo
  * pesa e, fatto subito, faceva scattare l'animazione di uscita sui telefoni lenti.
@@ -31,16 +29,6 @@ const SAVED_MS = 1500
  * il popup appare, rallentava il tocco sul link Amazon sui telefoni lenti.
  */
 const SAVED_COMMIT_MS = SAVED_MS + 200
-const preloaded = new Map<string, HTMLImageElement>()
-function preload(url?: string) {
-  if (!url || preloaded.has(url)) return
-  const img = new Image()
-  img.decoding = 'async'
-  img.src = url
-  img.decode?.().catch(() => {})
-  preloaded.set(url, img)
-  if (preloaded.size > 40) preloaded.delete(preloaded.keys().next().value!)
-}
 
 /** Il mazzo della sezione aperta, oppure `cards` (es. Regali, con prodotti di tutte le sezioni e il suo `undo`). */
 export function SwipeDeck({
@@ -154,10 +142,11 @@ export function SwipeDeck({
   }, [top])
 
   useEffect(() => {
-    // Prima le carte più vicine; il resto quando il telefono è libero, per non rallentare quella in cima.
-    shown.slice(1, 3).forEach((p) => preload(productImageUrl(p) ?? undefined))
+    // Foto delle prossime carte scaricate in anticipo, in ordine e poche alla volta (src/lib/images.ts): quando una
+    // carta arriva in cima la foto c'è già. Prima le più vicine; il resto quando il telefono è libero.
+    preloadImages(shown.slice(1, 3).map(productImageUrl))
     const later = () => {
-      shown.slice(3, 1 + AHEAD).forEach((p) => preload(productImageUrl(p) ?? undefined))
+      preloadImages(shown.slice(1, 1 + aheadCount()).map(productImageUrl))
       // "Prezzo giusto?" della prossima carta calcolato ora: quando arriva in cima non rallenta lo swipe.
       if (shown[1]) priceRank(shown[1], app.allProducts)
       // Anche le foto in più e le caratteristiche (file di dettagli) delle prossime carte, ora che il telefono è libero.

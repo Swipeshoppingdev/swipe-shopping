@@ -1,12 +1,12 @@
 import { useBoost } from '../lib/boost'
 import { countLikeForReview } from '../lib/review'
-import { whenIdle } from '../lib/idle'
+import { afterPaint, whenIdle } from '../lib/idle'
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import { UNIVERSES, isUniverse, universeOf, type Universe } from '../config/categories'
 import { track } from '../lib/analytics'
 import { loadCatalog, loadCatalogPreview } from '../lib/catalog'
 import { fetchUserData, mergeUserData, saveUserData } from '../lib/cloudSync'
-import { matchesFilters, normalizeFilters, sortProducts } from '../lib/filters'
+import { matchesFilters, normalizeFilters, sortProducts, warmMixKeys } from '../lib/filters'
 import { isNew, setNewBaseline } from '../lib/newness'
 import { fitSizes } from '../lib/sizes'
 import { isFollowed, useFollows } from '../lib/follows'
@@ -255,14 +255,23 @@ function useAppStore() {
     dispatch({ type: 'catalog', catalog: { status: 'loading' } })
     const first = modeRef.current
     let full = false
-    loadCatalogPreview(first, signal)
+    const previewDone = loadCatalogPreview(first, signal)
       .then((p) => {
         if (!full && !signal?.aborted && p.length) setPreview(p)
       })
       .catch(() => {})
-    // Se l'anteprima è già sullo schermo, il catalogo completo si legge in un momento libero (non a metà swipe).
-    loadCatalog(first, signal, () => (previewShown.current ? whenIdle() : Promise.resolve()))
+    // Prima le carte dell'anteprima sullo schermo, poi il catalogo completo, letto in un momento libero (non a metà swipe).
+    // Con rete veloce il catalogo arrivava insieme all'anteprima e leggerlo (più di un secondo sui telefoni economici)
+    // faceva aspettare la prima carta.
+    const beforeParse = async () => {
+      await Promise.race([previewDone, new Promise((r) => setTimeout(r, 2500))])
+      await afterPaint()
+      if (previewShown.current) await whenIdle()
+    }
+    loadCatalog(first, signal, beforeParse)
       .then(async (r) => {
+        await warmMixKeys(r.products, MIX_SEED)
+        if (signal?.aborted) return
         full = true
         if (previewShown.current) dispatch({ type: 'pin', ids: deckRef.current.slice(0, 3).map((p) => p.id) })
         previewShown.current = false
@@ -291,7 +300,9 @@ function useAppStore() {
           const i = Math.max(0, pending.indexOf(modeRef.current))
           urgent = false
           const section = pending.splice(i, 1)[0]
-          rest.push(await loadCatalog(section, signal, () => (urgent || section === modeRef.current ? Promise.resolve() : whenIdle())).catch(() => null))
+          const loaded = await loadCatalog(section, signal, () => (urgent || section === modeRef.current ? Promise.resolve() : whenIdle())).catch(() => null)
+          if (loaded) await warmMixKeys(loaded.products, MIX_SEED)
+          rest.push(loaded)
           // Chi ha aperto proprio questa sezione la vede subito, senza aspettare le altre.
           if (section === modeRef.current && pending.length && !signal?.aborted) {
             const sofar = [...r.products, ...rest.flatMap((x) => x?.products ?? [])]
@@ -301,6 +312,8 @@ function useAppStore() {
           }
         }
         wakeRest.current = null
+        // Mettere insieme tutte le sezioni ricalcola preferiti e mazzo: in un momento libero, non durante uno swipe.
+        await whenIdle()
         if (signal?.aborted) return
         const products = [...r.products, ...rest.flatMap((x) => x?.products ?? [])]
         setNewBaseline(products)
@@ -336,7 +349,11 @@ function useAppStore() {
     if (sharedProduct) dispatch({ type: 'mode', mode: universeOf(sharedProduct.category) })
   }, [sharedProduct])
 
-  const byId = useMemo(() => new Map(deckProducts.map((p) => [p.id, p])), [deckProducts])
+  const byId = useMemo(() => {
+    const m = new Map<string, Product>()
+    for (const p of deckProducts) m.set(p.id, p)
+    return m
+  }, [deckProducts])
   const boost = useBoost()
   // Solo la categoria (non i giri rimasti): il mazzo non si ricalcola a ogni swipe.
   const boostCat = boost && boost.section === state.mode ? boost.category : null
@@ -428,7 +445,8 @@ function useAppStore() {
   if (previewing) previewShown.current = true
 
   /** Gli scartati della sezione aperta, dal più vecchio al più recente */
-  const productsById = useMemo(() => new Map(products.map((p) => [p.id, p])), [products])
+  // Di solito è la stessa lista del mazzo: si riusa la mappa invece di rifarla su decine di migliaia di prodotti.
+  const productsById = useMemo(() => (products === deckProducts ? byId : new Map(products.map((p) => [p.id, p]))), [products, deckProducts, byId])
   const sectionDisliked = useMemo(() => {
     const byId = productsById
     return state.disliked.filter((id) => {

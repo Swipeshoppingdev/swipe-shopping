@@ -311,3 +311,21 @@ body {
     animation: none;
   }
 }
+
+/* Foto prodotto in arrivo (src/components/ProductImage.tsx): icona che pulsa piano, poi la foto compare. */
+.img-wait {
+  animation: img-wait 1.4s ease-in-out infinite;
+}
+@keyframes img-wait {
+  50% {
+    opacity: 0.45;
+  }
+}
+.img-in {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .img-wait {
+    animation: none;
+  }
+}

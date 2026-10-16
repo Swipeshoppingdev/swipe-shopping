@@ -28,7 +28,9 @@ for (const section of UNIVERSES) {
       if (p.availability === 'in_stock') delete p.availability
       return p
     })
-  const json = JSON.stringify(list)
+  // Un prodotto per riga: l'app può leggere il file a pezzi (vedi parseInPieces in src/lib/catalog.ts)
+  // invece che tutto in un colpo, che sui telefoni economici bloccava lo schermo per quasi un secondo.
+  const json = `[\n${list.map((p) => JSON.stringify(p)).join(',\n')}\n]`
   writeFileSync(new URL(`../dist/catalog-${section}.json`, import.meta.url), json)
   console.log(`catalog-${section}.json: ${(json.length / 1e6).toFixed(2)} MB, ${list.length} prodotti`)
   // Anteprima: ~300 prodotti vari (al massimo 12 per categoria e genere, con foto e prezzo recente), scelti a caso
