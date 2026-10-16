@@ -297,7 +297,6 @@ function PriceGuess({ product, price, options, onDone }: { product: Product; pri
               disabled={picked !== null}
               onClick={() => {
                 setPicked(o)
-                navigator.vibrate?.(isReal ? [10, 40, 10] : 30)
               }}
               animate={state === 'wrong' ? { x: [0, -6, 6, -4, 4, 0] } : state === 'right' ? { scale: [1, 1.08, 1] } : {}}
               className={`flex h-12 items-center justify-center gap-1 rounded-2xl text-base font-bold ring-1 transition ${
@@ -373,7 +372,6 @@ function ThisOrThat({ options, onDone }: { options: { category: string; product:
                 if (chosen) return
                 setChosen(o.category)
                 setBoost({ section: state.mode, category: o.category, left: 15 })
-                navigator.vibrate?.(15)
                 setTimeout(onDone, 900)
               }}
               className={`relative flex min-h-0 flex-col overflow-hidden rounded-2xl bg-white p-2 text-center shadow-md ring-2 ${on ? 'ring-rose-500' : 'ring-transparent'}`}
@@ -420,7 +418,6 @@ function WhichCostsMore({ pair, onDone }: { pair: [Product, Product]; onDone: ()
               disabled={picked !== null}
               onClick={() => {
                 setPicked(p)
-                navigator.vibrate?.(p === dearer ? [10, 40, 10] : 30)
               }}
               animate={st === 'wrong' ? { x: [0, -6, 6, -4, 4, 0] } : st === 'right' ? { scale: [1, 1.04, 1] } : {}}
               className={`relative flex min-h-0 flex-col overflow-hidden rounded-2xl bg-white text-left shadow-md ring-2 ${
@@ -489,7 +486,6 @@ function BrandGuess({ product, options, onDone }: { product: Product; options: s
               disabled={picked !== null}
               onClick={() => {
                 setPicked(o)
-                navigator.vibrate?.(isReal ? [10, 40, 10] : 30)
               }}
               animate={st === 'wrong' ? { x: [0, -6, 6, -4, 4, 0] } : st === 'right' ? { scale: [1, 1.04, 1] } : {}}
               className={`flex h-11 items-center justify-center gap-1 truncate rounded-2xl px-3 text-base font-bold ring-1 transition ${
@@ -545,7 +541,6 @@ function HigherLower({ chain, onDone }: { chain: Product[]; onDone: () => void }
   const streak = result === 'ko' ? i : i + (result === 'end' ? 1 : 0)
   const guess = (up: boolean) => {
     const right = up === price(b) > price(a)
-    navigator.vibrate?.(right ? [10, 40, 10] : 30)
     if (!right) {
       setResult('ko')
       if (i > best) save('piumenoBest', i)
@@ -635,11 +630,7 @@ function ScratchDeal({ product, onDone }: { product: Product; onDone: () => void
   const [scratched, setScratched] = useState(0)
   const open = scratched >= 1
   const scratch = (amount: number) =>
-    setScratched((v) => {
-      const n = Math.min(1, v + amount)
-      if (n >= 1 && v < 1) navigator.vibrate?.([10, 40, 10])
-      return n
-    })
+    setScratched((v) => Math.min(1, v + amount))
   return (
     <motion.div {...fade} className={frame} role="dialog" aria-label="Gratta lo sconto" data-break>
       <div className="pt-1 text-center">
@@ -708,7 +699,6 @@ function MysteryCard({ product, onDone }: { product: Product; onDone: () => void
   const [saved, setSaved] = useState(false)
   const flip = () => {
     if (open) return
-    navigator.vibrate?.([10, 40, 10])
     setOpen(true)
   }
   return (
@@ -808,7 +798,6 @@ function SortByPrice({ products, onDone }: { products: Product[]; onDone: () => 
               type="button"
               disabled={pos >= 0}
               onClick={() => {
-                navigator.vibrate?.(10)
                 setOrder([...order, p.id])
               }}
               animate={done && !ok ? { x: [0, -5, 5, -3, 3, 0] } : {}}
@@ -872,11 +861,9 @@ function Wheel({ options, onDone }: { options: { category: string; product: Prod
     const pick = Math.floor(Math.random() * n)
     // Il centro della fetta scelta finisce sotto la freccia in alto (più qualche giro completo).
     setAngle(360 * 5 + (360 - (pick * slice + slice / 2)))
-    navigator.vibrate?.(10)
     setTimeout(() => {
       setWon(options[pick].category)
       setBoost({ section: state.mode, category: options[pick].category, left: 15 })
-      navigator.vibrate?.([10, 40, 10])
       setTimeout(onDone, 1600)
     }, 3200)
   }
@@ -960,7 +947,6 @@ function MissingPiece({ outfit, missing, options, onDone }: { outfit: Outfit; mi
       window.dispatchEvent(new Event(OUTFITS_SAVED_EVENT))
     }
     setSaved(true)
-    navigator.vibrate?.(15)
     setTimeout(onDone, 900)
   }
   return (
@@ -988,7 +974,6 @@ function MissingPiece({ outfit, missing, options, onDone }: { outfit: Outfit; mi
             type="button"
             onClick={() => {
               setChosen(p)
-              navigator.vibrate?.(10)
             }}
             animate={{ scale: chosen?.id === p.id ? 1.05 : 1 }}
             className={`relative overflow-hidden rounded-2xl bg-[#fff] shadow-md ring-2 ${chosen?.id === p.id ? 'ring-rose-500' : 'ring-transparent'}`}

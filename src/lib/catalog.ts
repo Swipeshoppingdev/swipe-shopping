@@ -1,6 +1,7 @@
 import { UNIVERSES, type Universe } from '../config/categories'
-import { DATA_BASE } from './native'
-import { yieldToMain } from './idle'
+import { DATA_BASE, isNative } from './native'
+import { loadOffline, saveOffline } from './offlineStore'
+import { whenIdle, yieldToMain } from './idle'
 import { buildExploreCards } from '../data/exploreCards'
 import type { Product } from '../types/product'
 import { isCategoryId } from '../config/categories'
@@ -27,17 +28,24 @@ export async function loadCatalog(
   opts: { after?: Promise<unknown>; low?: boolean } = {},
 ): Promise<CatalogResult> {
   await opts.after
-  let res = await fetch(`${DATA_BASE}catalog-${section}.json`, { signal, priority: opts.low ? 'low' : 'auto' })
-  let sections: Universe[] = [section]
-  if (!res.ok) {
-    res = await fetch(`${DATA_BASE}catalog.json`, { signal })
-    sections = [...UNIVERSES]
-  }
-  if (!res.ok) throw new Error(`Catalogo non disponibile (HTTP ${res.status})`)
   // Leggere il catalogo (alcuni MB) blocca il telefono per un attimo: chi chiama può farlo aspettare un momento libero,
   // così non capita in mezzo a uno swipe. Il file intanto si scarica a pezzi (tenerli costa poco); trasformarlo in
   // testo e poi in prodotti si fa dopo, in passi separati, così tra un passo e l'altro il telefono risponde ai tocchi.
-  const bytes = await readBody(res)
+  let bytes: Uint8Array
+  let sections: Universe[] = [section]
+  if (isNative) {
+    const got = await fetchOrSaved(`catalog-${section}.json`, { signal, priority: opts.low ? 'low' : 'auto' }, 5000)
+    if (!got) throw new Error('Catalogo non disponibile')
+    bytes = got
+  } else {
+    let res = await fetch(`${DATA_BASE}catalog-${section}.json`, { signal, priority: opts.low ? 'low' : 'auto' })
+    if (!res.ok) {
+      res = await fetch(`${DATA_BASE}catalog.json`, { signal })
+      sections = [...UNIVERSES]
+    }
+    if (!res.ok) throw new Error(`Catalogo non disponibile (HTTP ${res.status})`)
+    bytes = await readBody(res)
+  }
   await beforeParse?.()
   const text = new TextDecoder().decode(bytes)
   await yieldToMain()
@@ -51,9 +59,38 @@ export async function loadCatalog(
 
 /** Anteprima leggera della sezione (catalog-<sezione>-anteprima.json, vedi build-catalog): vuota se manca. */
 export async function loadCatalogPreview(section: Universe, signal?: AbortSignal): Promise<Product[]> {
-  const res = await fetch(`${DATA_BASE}catalog-${section}-anteprima.json`, { signal, priority: 'high' })
-  if (!res.ok) return []
-  return (await quickCheck(await res.json())).valid.filter((p) => p.availability !== 'out_of_stock')
+  let list: Record<string, unknown>[]
+  if (isNative) {
+    const bytes = await fetchOrSaved(`catalog-${section}-anteprima.json`, { signal, priority: 'high' }, 2500)
+    if (!bytes) return []
+    list = JSON.parse(new TextDecoder().decode(bytes))
+  } else {
+    const res = await fetch(`${DATA_BASE}catalog-${section}-anteprima.json`, { signal, priority: 'high' })
+    if (!res.ok) return []
+    list = await res.json()
+  }
+  return (await quickCheck(list)).valid.filter((p) => p.availability !== 'out_of_stock')
+}
+
+/**
+ * Nell'app: file dal sito, salvato sul telefono a ogni download riuscito. Senza rete, o se il sito non risponde
+ * entro `waitMs`, si usa la copia salvata (il download intanto continua e aggiorna la copia per la volta dopo).
+ */
+async function fetchOrSaved(file: string, init: RequestInit, waitMs: number): Promise<Uint8Array | null> {
+  const net = fetch(`${DATA_BASE}${file}`, init)
+    .then((res) => (res.ok ? readBody(res) : null))
+    .then((bytes) => {
+      // Salvato quando il telefono è libero (copiare alcuni MB costa un attimo).
+      if (bytes) void whenIdle().then(() => saveOffline(file, bytes))
+      return bytes
+    })
+  // Gestito subito: senza rete il download fallisce prima che la copia salvata sia letta.
+  const netOrNull = net.catch(() => null)
+  const saved = await loadOffline(file)
+  if (!saved) return net
+  const timeout = new Promise<null>((r) => setTimeout(() => r(null), waitMs))
+  const fresh = await Promise.race([netOrNull, timeout])
+  return fresh ?? saved
 }
 
 /**
