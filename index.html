@@ -35,20 +35,20 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <style>html.dark #root{background:#0e0e10;color:#9d9da4}html.dark #root h1{color:#f4f4f6!important}</style>
     <script>
-      // Il catalogo della sezione aperta inizia a scaricarsi subito, in parallelo al codice dell'app.
+      // L'anteprima del catalogo della sezione aperta inizia a scaricarsi subito, in parallelo al codice dell'app.
       // Nell'app (Capacitor) il catalogo arriva dal sito online, non da qui.
       if (!window.Capacitor) {
         var c = document.documentElement.classList
         var sec = ['tech', 'gadget', 'snack', 'beauty', 'casa', 'animali', 'musica'].filter(function (x) { return c.contains(x) })[0] || 'moda'
-        // Prima l'anteprima (piccola: le prime carte), poi il catalogo completo.
-        ;['-anteprima.json', '.json'].forEach(function (end) {
-          var l = document.createElement('link')
-          l.rel = 'preload'
-          l.as = 'fetch'
-          l.crossOrigin = 'anonymous'
-          l.href = './catalog-' + sec + end
-          document.head.appendChild(l)
-        })
+        // Solo l'anteprima (piccola: le prime carte). Il catalogo completo (alcuni MB) parte dopo, quando l'anteprima
+        // è arrivata (src/state/AppState.tsx): con rete lenta si prendeva la linea e rallentava codice, anteprima e foto.
+        var l = document.createElement('link')
+        l.rel = 'preload'
+        l.as = 'fetch'
+        l.crossOrigin = 'anonymous'
+        l.fetchPriority = 'high'
+        l.href = './catalog-' + sec + '-anteprima.json'
+        document.head.appendChild(l)
       }
     </script>
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />

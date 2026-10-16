@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
+import { AnimatePresence, m as motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion'
 import { Heart, RefreshCw, X } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { PriceTag } from '../components/PriceTag'

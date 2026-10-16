@@ -1,3 +1,4 @@
+import { LazyMotion } from 'framer-motion'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
@@ -11,6 +12,8 @@ import { AppStateProvider } from './state/AppState.tsx'
 import { AuthProvider } from './state/AuthState.tsx'
 
 cleanReloadParam()
+const loadMotionFeatures = () => import('./lib/motionFeatures').then((m) => m.default)
+
 watchErrors()
 // Un pezzo dell'app non si carica perché il sito è stato aggiornato nel frattempo: si ricarica con i file nuovi.
 // L'errore prosegue comunque (niente preventDefault, che farebbe arrivare a React un modulo vuoto: "reading 'default'"):
@@ -24,11 +27,14 @@ void setupNative()
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
-      <AuthProvider>
-        <AppStateProvider>
-          <App />
-        </AppStateProvider>
-      </AuthProvider>
+      {/* Il motore delle animazioni arriva in un file a parte: la prima carta si vede prima, le animazioni partono appena è scaricato. */}
+      <LazyMotion features={loadMotionFeatures}>
+        <AuthProvider>
+          <AppStateProvider>
+            <App />
+          </AppStateProvider>
+        </AuthProvider>
+      </LazyMotion>
     </ErrorBoundary>
   </StrictMode>,
 )

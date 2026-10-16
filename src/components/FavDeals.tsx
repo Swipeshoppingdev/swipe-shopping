@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, m as motion } from 'framer-motion'
 import { BadgePercent } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { universeOf } from '../config/categories'

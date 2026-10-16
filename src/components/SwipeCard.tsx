@@ -1,4 +1,4 @@
-import { animate, motion, useMotionValue, usePresence, usePresenceData, useTransform } from 'framer-motion'
+import { m as motion, useMotionValue, usePresence, usePresenceData, useTransform } from 'framer-motion'
 import { useEffect, useRef, useState, type MouseEvent, type PointerEvent } from 'react'
 import { categoryLabel } from '../config/categories'
 import { brandAndStore } from '../config/stores'
@@ -140,7 +140,8 @@ export function SwipeCard({
     const velocity = t1 > t0 ? ((x1 - x0) / (t1 - t0)) * 1000 : 0
     if (e.type === 'pointerup' && (offset > SWIPE_DISTANCE || velocity > SWIPE_VELOCITY)) onSwipe(1)
     else if (e.type === 'pointerup' && (offset < -SWIPE_DISTANCE || velocity < -SWIPE_VELOCITY)) onSwipe(-1)
-    else animate(x, 0, { type: 'spring', stiffness: 420, damping: 32 })
+    // Molla di ritorno dal motore delle animazioni scaricato a parte (già arrivato quando si trascina una carta).
+    else void import('../lib/motionFeatures').then((m) => m.animate(x, 0, { type: 'spring', stiffness: 420, damping: 32 }))
     // Il click che segue un trascinamento non deve aprire il link.
     setTimeout(() => (dragged.current = false), 0)
   }
