@@ -38322,7 +38322,7 @@
   "id": "amazon:B0HLFSQLS4",
   "store": "amazon",
   "externalId": "B0HLFSQLS4",
-  "title": "JACK & JONES JPSTKANE Landon Uncuffed SWT - Pantaloni da jogging da uomo | Pantaloni sportivi Relaxed Fit, per il tempo libero, colore nero, grigio, blu, beige, taglie S, M, L, XL",
+  "title": "JACK & JONES JPSTKANE Landon Uncuffed SWT - Pantaloni da jogging da uomo | Pantaloni sportivi Relaxed Fit, per il tempo libero, colore nero, grigio, blu, beige, taglie S, M, L",
   "brand": "Jack & Jones",
   "gender": "uomo",
   "category": "pantaloni",
@@ -38339,6 +38339,7 @@
   "price": 37.53,
   "priceCheckedAt": "2026-10-16T04:36:31.158Z",
   "sizes": [
+   "XL",
    "XXL",
    "3XL"
   ]
@@ -40385,7 +40386,7 @@
   "id": "amazon:B08CTQ177C",
   "store": "amazon",
   "externalId": "B08CTQ177C",
-  "title": "JACK & JONES 12171776 - Confezione da 3 polo da uomo slim fit, a maniche corte, colore nero, bianco, blu, grigio, taglie: XS, S, M, L, XL",
+  "title": "JACK & JONES 12171776 - Confezione da 3 polo da uomo slim fit, a maniche corte, colore nero, bianco, blu, grigio, taglie: XS, S, M, L",
   "brand": "Jack & Jones",
   "gender": "donna",
   "category": "pantaloni",
@@ -40403,6 +40404,7 @@
   "priceCheckedAt": "2026-10-16T04:36:31.158Z",
   "sizes": [
    "S",
+   "XL",
    "XXL"
   ]
  },
@@ -91100,7 +91102,7 @@
   "id": "amazon:B0HM7RSSHT",
   "store": "amazon",
   "externalId": "B0HM7RSSHT",
-  "title": "JACK & JONES JJSOCIETY - Felpa da uomo, girocollo, vestibilità regolare | Felpa girocollo a maniche lunghe, nero, verde, blu, S, M, L, XL",
+  "title": "JACK & JONES JJSOCIETY - Felpa da uomo, girocollo, vestibilità regolare | Felpa girocollo a maniche lunghe, nero, verde, blu, S, M, L",
   "brand": "Jack & Jones",
   "gender": "uomo",
   "category": "felpe",
@@ -91116,6 +91118,7 @@
   "price": 39.99,
   "priceCheckedAt": "2026-10-16T04:36:31.158Z",
   "sizes": [
+   "XL",
    "XXL",
    "3XL"
   ]
@@ -239995,7 +239998,7 @@
   "id": "amazon:B07CNX24CM",
   "store": "amazon",
   "externalId": "B07CNX24CM",
-  "title": "JACK & JONES 12171776 - Confezione da 3 polo da uomo slim fit, a maniche corte, colore nero, bianco, blu, grigio, taglie: XS, S, M, L",
+  "title": "JACK & JONES 12171776 - Confezione da 3 polo da uomo slim fit, a maniche corte, colore nero, bianco, blu, grigio, taglie: XS, S, M",
   "brand": "Jack & Jones",
   "gender": "donna",
   "category": "pantaloni",
