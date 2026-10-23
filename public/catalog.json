@@ -654261,24 +654261,6 @@
   "addedAt": "2026-10-09T15:31:17.043Z"
  },
  {
-  "id": "benetton:16007031718232",
-  "store": "benetton",
-  "externalId": "16007031718232",
-  "title": "Piumino corto con cintura",
-  "brand": "Benetton",
-  "gender": "donna",
-  "category": "giacche",
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0953/6729/9416/files/Y1jhwmubTDqY4cJrm9w6-g_05dbba83-a077-474d-bcb9-97e8628a6248.jpg?v=1789498946&width=900",
-  "affiliateUrl": "https://it.benetton.com/products/piumino-corto-con-cintura-grigio-scuro-2niwdn0ap_270",
-  "price": 159,
-  "priceCheckedAt": "2026-10-23T07:56:03.692Z",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T15:31:17.043Z",
-  "colors": [
-   "Grigio"
-  ]
- },
- {
   "id": "benetton:16007030669656",
   "store": "benetton",
   "externalId": "16007030669656",
@@ -656819,24 +656801,6 @@
   "addedAt": "2026-10-18T07:25:30.471Z",
   "colors": [
    "Bianco"
-  ]
- },
- {
-  "id": "benetton:15905550106968",
-  "store": "benetton",
-  "externalId": "15905550106968",
-  "title": "Giacca corta doppiopetto",
-  "brand": "Benetton",
-  "gender": "donna",
-  "category": "giacche",
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0953/6729/9416/files/TWmD_HE-St2pg_xxPurdFg_123301d3-167a-4e5e-b970-7093e04ecb2e.jpg?v=1785520861&width=900",
-  "affiliateUrl": "https://it.benetton.com/products/giacca-corta-doppiopetto-grigio-scuro-26w4dn0ai_270",
-  "price": 99.95,
-  "priceCheckedAt": "2026-10-23T07:56:03.692Z",
-  "availability": "in_stock",
-  "addedAt": "2026-10-18T07:25:30.471Z",
-  "colors": [
-   "Grigio"
   ]
  },
  {
