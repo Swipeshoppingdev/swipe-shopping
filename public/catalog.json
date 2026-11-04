@@ -655791,24 +655791,6 @@
   ]
  },
  {
-  "id": "benetton:15989864694104",
-  "store": "benetton",
-  "externalId": "15989864694104",
-  "title": "Dolcevita blu notte in pura lana Merino",
-  "brand": "Benetton",
-  "gender": "uomo",
-  "category": "maglioni",
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0953/6729/9416/files/YkowrPN0SMKKMKzzdPjCww_956b9672-3b6a-456e-81ff-5f43ff8f4f1f.jpg?v=1788868830&width=900",
-  "affiliateUrl": "https://it.benetton.com/products/dolcevita-blu-notte-in-pura-lana-merino-blu-scuro-1002u2180_3c1",
-  "price": 79.95,
-  "priceCheckedAt": "2026-11-04T09:50:40.436Z",
-  "availability": "in_stock",
-  "addedAt": "2026-10-09T15:31:17.043Z",
-  "colors": [
-   "Blu"
-  ]
- },
- {
   "id": "benetton:15989864399192",
   "store": "benetton",
   "externalId": "15989864399192",
@@ -660116,21 +660098,6 @@
   "colors": [
    "Bianco"
   ]
- },
- {
-  "id": "benetton:15581737714008",
-  "store": "benetton",
-  "externalId": "15581737714008",
-  "title": "Maglione dolcevita pesca in pura lana Merino",
-  "brand": "Benetton",
-  "gender": "donna",
-  "category": "maglioni",
-  "imageUrl": "https://cdn.shopify.com/s/files/1/0953/6729/9416/files/ynCqBwEwRHOwqgcBMPRzyQ_19fcab0e-7786-4ead-9c71-ecb24b2e773a.jpg?v=1785906759&width=900",
-  "affiliateUrl": "https://it.benetton.com/products/maglione-dolcevita-pesca-in-pura-lana-merino-pesca-1002d2348_164",
-  "price": 69.95,
-  "priceCheckedAt": "2026-11-04T09:50:40.436Z",
-  "availability": "in_stock",
-  "addedAt": "2026-10-29T08:54:33.181Z"
  },
  {
   "id": "benetton:15581738795352",
