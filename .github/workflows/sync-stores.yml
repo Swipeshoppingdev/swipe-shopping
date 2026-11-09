@@ -1,9 +1,10 @@
 name: Aggiorna catalogo negozi
 
 on:
+  # PAUSA (Kevin, 2026-11-09): partenze automatiche spente, si toglie il "#PAUSA " per riattivarle.
   # Una volta al giorno: prezzi e disponibilità di Benetton e Calzedonia, nuovi arrivi.
-  schedule:
-    - cron: '41 2 * * *'
+#PAUSA   schedule:
+#PAUSA     - cron: '41 2 * * *'
   workflow_dispatch:
     inputs:
       dry:

@@ -1,17 +1,18 @@
 name: Aggiorna catalogo Amazon
 
 on:
+  # PAUSA (Kevin, 2026-11-09): partenze automatiche spente, si toglie il "#PAUSA " per riattivarle.
   # Tre aggiornamenti al giorno (prezzi sempre con meno di 24 ore, come richiede Amazon; la prova del 14/10
   # con 300 richieste subito dopo un giro intero non ha avuto risposte 429).
   # GitHub a volte ritarda o salta le partenze programmate: si prova ogni 2 ore e il giro parte
   # solo se l'ultimo catalogo ha più di 7 ore (vedi il job "check"). A mano parte sempre.
-  schedule:
-    - cron: '17 */2 * * *'
-  # GitHub salta molte partenze programmate (il 13/10 nessuna tra le 03:25 e le 16:40): si controlla anche
-  # a ogni modifica del sito. Il controllo è veloce e il giro parte solo se serve.
-  push:
-    branches: [main]
-    paths-ignore: ['public/catalog.json', 'public/details/**']
+#PAUSA   schedule:
+#PAUSA     - cron: '17 */2 * * *'
+#PAUSA   # GitHub salta molte partenze programmate (il 13/10 nessuna tra le 03:25 e le 16:40): si controlla anche
+#PAUSA   # a ogni modifica del sito. Il controllo è veloce e il giro parte solo se serve.
+#PAUSA   push:
+#PAUSA     branches: [main]
+#PAUSA     paths-ignore: ['public/catalog.json', 'public/details/**']
   workflow_dispatch:
 
 permissions:

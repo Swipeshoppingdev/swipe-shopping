@@ -8,15 +8,16 @@ name: Backup database Supabase
 # Ogni notte arriva anche una mail a Kevin (Resend) con il backup cifrato e una copia cifrata del codice del repository
 # (senza catalogo e file generati, che si rifanno da soli): così ne resta una fuori da GitHub per sempre.
 on:
+  # PAUSA (Kevin, 2026-11-09): partenze automatiche spente, si toglie il "#PAUSA " per riattivarle.
   # GitHub ritarda o salta spesso i giri programmati: si prova ogni 3 ore e si fa il backup
   # solo se oggi non ce n'è già uno (vedi "Già fatto oggi?"). A mano parte sempre.
-  schedule:
-    - cron: '53 */3 * * *'
-  # Anche i giri programmati qui li salta: si prova pure dopo ogni aggiornamento del catalogo
-  # (che parte in modo affidabile). Sempre con il controllo "Già fatto oggi?".
-  workflow_run:
-    workflows: ['Aggiorna catalogo Amazon']
-    types: [completed]
+#PAUSA   schedule:
+#PAUSA     - cron: '53 */3 * * *'
+#PAUSA   # Anche i giri programmati qui li salta: si prova pure dopo ogni aggiornamento del catalogo
+#PAUSA   # (che parte in modo affidabile). Sempre con il controllo "Già fatto oggi?".
+#PAUSA   workflow_run:
+#PAUSA     workflows: ['Aggiorna catalogo Amazon']
+#PAUSA     types: [completed]
   workflow_dispatch:
     inputs:
       mail:

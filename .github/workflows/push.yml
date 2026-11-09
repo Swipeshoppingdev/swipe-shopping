@@ -2,8 +2,9 @@ name: Notifiche push
 
 # Avvisa sul telefono (app Android) chi ha ricevuto qualcosa dagli amici in "Per te". Ogni 5 minuti.
 on:
-  schedule:
-    - cron: '*/5 * * * *'
+  # PAUSA (Kevin, 2026-11-09): partenze automatiche spente, si toglie il "#PAUSA " per riattivarle.
+#PAUSA   schedule:
+#PAUSA     - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
       prova:

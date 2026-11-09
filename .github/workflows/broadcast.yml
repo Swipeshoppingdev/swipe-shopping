@@ -2,8 +2,9 @@ name: Invia comunicazioni
 
 # Manda le email scritte dalla pagina Statistiche (#/admin). Controlla la coda ogni 10 minuti.
 on:
-  schedule:
-    - cron: '*/10 * * * *'
+  # PAUSA (Kevin, 2026-11-09): partenze automatiche spente, si toglie il "#PAUSA " per riattivarle.
+#PAUSA   schedule:
+#PAUSA     - cron: '*/10 * * * *'
   workflow_dispatch:
 
 permissions:
